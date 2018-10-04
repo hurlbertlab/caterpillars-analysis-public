@@ -3,67 +3,7 @@
 library(dplyr)
 library(lubridate)
 
-#source(analysis_functions.r)
-
-# Function for substituting values based on a condition using dplyr::mutate
-# Modification of dplyr's mutate function that only acts on the rows meeting a condition
-mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
-  condition <- eval(substitute(condition), .data, envir)
-  .data[condition, ] <- .data[condition, ] %>% mutate(...)
-  .data
-}
-
-# Function for calculating and displaying arthropod phenology
-meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthropodSighting tables
-                            ordersToInclude = 'All',       # which arthropod orders to calculate density for (codes)
-                            
-                            minLength = 0,         # minimum arthropod size to include 
-                            jdRange = c(1,365),
-                            outlierCount = 10000,
-                            plot = F,
-                            plotVar = 'meanDensity', # 'meanDensity' or 'fracSurveys' or 'meanBiomass'
-                            new = T,
-                            color = 'black',
-                            ...)                  
-  
-{
-  
-  if(length(ordersToInclude)==1 & ordersToInclude[1]=='All') {
-    ordersToInclude = unique(surveyData$Group)
-  }
-  
-  firstFilter = surveyData %>%
-    filter(julianday >= jdRange[1], julianday <= jdRange[2])
-  
-  effortByDay = firstFilter %>%
-    distinct(ID, julianday) %>%
-    count(julianday)
-  
-  arthCount = firstFilter %>%
-    filter(Length >= minLength, 
-           Quantity < outlierCount, 
-           Group %in% ordersToInclude) %>%
-    group_by(julianday) %>%
-    summarize(totalCount = sum(Quantity, na.rm = T),
-              numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
-    right_join(effortByDay, by = 'julianday') %>%
-    #next line replaces 3 fields with 0 if the totalCount is NA
-    mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
-    mutate(meanDensity = totalCount/n,
-           fracSurveys = 100*numSurveysGTzero/n) %>%
-    data.frame()
-  
-  if (plot & new) {
-    plot(arthCount$julianday, arthCount[, plotVar], type = 'l', 
-         col = color, las = 1, ...)
-    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
-  } else if (plot & new==F) {
-    points(arthCount$julianday, arthCount[, plotVar], type = 'l', col = color, ...)
-    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
-  }
-  return(arthCount)
-}
-
+source('code/analysis_functions.r')
 
 
 # Read in data files
@@ -81,7 +21,8 @@ surveys$julianday = yday(surveys$LocalDate)
 
 
 fullDataset = surveys %>%
-  select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
+  select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, 
+         ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
@@ -89,9 +30,9 @@ fullDataset = surveys %>%
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
 
-# Criteria for inclusion
-minNumRecords = 50 
-minNumDates = 5
+# Criteria for inclusion (records refers to survey events)
+minNumRecords = 40 
+minNumDates = 4
 
 siteList = fullDataset %>%
   filter(Year == 2018) %>%
@@ -101,8 +42,8 @@ siteList = fullDataset %>%
   arrange(desc(Latitude)) %>%
   filter(nRecs >= minNumRecords, nDates >= minNumDates, Name != "Example Site")
 
-pdf('figs/caterpillarPhenologyAllSites2018.pdf', height = 11, width = 8.5)
-par(mfrow = c(6, 4), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
+pdf('figs/caterpillarPhenologyAllSites2018.pdf', height = 8.5, width = 11)
+par(mfrow = c(4, 6), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
 
 for (site in siteList$Name) {
   sitedata = fullDataset %>%
@@ -146,12 +87,13 @@ for (site in siteList$Name) {
   legend("topleft", legend = siteList$nRecs[siteList$Name == site], bty = 'n', text.col = 'blue')
   axis(1, at = jds[minPos:maxPos], labels = F, tck = -.03)
   axis(1, at = jds[minPos:maxPos] + 14, labels = F, tck = -.02)
-  #mtext(text = dates[minPos:maxPos], at = jds[minPos:maxPos], side = 1, line = 0.6, cex = 1.2)
   
   monthLabs = minPos:(maxPos-1)
   rect(jds[monthLabs[monthLabs%%2 == 0]], rep(-10, length(monthLabs[monthLabs%%2 == 0])), 
        jds[monthLabs[monthLabs%%2 == 0] + 1]-1, rep(110, length(monthLabs[monthLabs%%2 == 0])), 
        col = rgb(.2, .2, .2, .2), border = NA)
   mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
-  
 }
+mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+mtext("Percent of surveys", 2, outer = TRUE, line = 1, cex = 1.5)
+dev.off()
