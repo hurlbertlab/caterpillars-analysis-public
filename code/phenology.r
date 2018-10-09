@@ -171,3 +171,66 @@ mtext("Date", 1, outer = TRUE, line = 1.5, cex = 1.75)
 mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1.75, cex = 1.5)
 dev.off()
 
+
+# Top 12 sites without ECU, weighted mean fraction of surveys with caterpillars
+## GD
+
+library(tidyr)
+library(purrr)
+library(ggplot2)
+library(viridis)
+
+# Create nested data frame containing top 12 sites, get mean density by day of caterpillars for each
+# Calculate mean peak in caterpillar abundance based on fraction of surveys
+t12_nested <- fullDataset %>%
+  filter(Name %in% siteList$Name) %>%
+  group_by(Name) %>%
+  nest() %>%
+  mutate(meanDens = purrr::map(data, ~{meanDensityByDay(., ordersToInclude = 'caterpillar', 
+                                     plot = FALSE, plotVar = 'fracSurveys')})) %>%
+  mutate(weightedPeak = map_dbl(meanDens, ~{
+    df <- .
+    sum(df$fracSurveys*df$julianday)/sum(df$fracSurveys) # weighted mean of survey day by fraction of surveys with caterpillars
+  })) %>%
+  left_join(siteList) %>%
+  left_join(unique(fullDataset[, c("Name", "Longitude")]))
+
+## Plots 
+theme_set(theme_bw())
+
+# julian day labels
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+year <- data.frame(jds = jds, month = dates)
+summer <- filter(year, jds > 100 & jds < 220)
+
+# Plot of weighted mean peak in fraction of surveys with caterpillars by latitude
+pdf('figs/weightedCaterpillarPeakScatter2018.pdf', height = 8.5, width = 11)
+ggplot(t12_nested, aes(x = Latitude, y = weightedPeak)) + geom_point(aes(size = nRecs), col = "dodgerblue3") +
+  labs(y = "Mean peak in caterpillars", size = "N. Surveys") + xlim(32, 49) + 
+  scale_y_continuous(breaks = summer$jds, labels = summer$month)
+# add site names: geom_text(aes(x = Latitude + 1, y = weightedPeak - 2, label = Name))
+dev.off()
+
+# Map of same info
+us_states <- map_data("state")
+eastern_states <- us_states %>%
+  filter(region %in% c("michigan", "indiana", "kentucky", "tennessee", "north carolina", "virginia",
+                       "west virginia", "ohio", "maryland", "delaware","new jersey", "pennsylvania",
+                       "new york", "rhode island", "connecticut", "massachusetts", "new hampshire",
+                       "vermont", "maine", "south carolina"))
+
+pdf('figs/weightedCaterpillarPeakMap2018.pdf', height = 8.5, width = 11)
+ggplot() + geom_polygon(data = eastern_states, aes(x = long, y = lat, group = group), fill = "gray88", color = "white") + 
+  coord_map() +
+  theme(panel.border = element_blank()) + 
+  theme(panel.background = element_blank()) +
+  theme(panel.grid = element_blank()) + 
+  theme(axis.ticks = element_blank()) +
+  theme(axis.text = element_blank()) +
+  geom_point(data = t12_nested, 
+             aes(x = Longitude, y = Latitude, size = nRecs, color = weightedPeak)) +
+  labs(x = NULL, y = NULL, size = "Number of surveys", color = "Mean peak in caterpillars") +
+  scale_color_viridis(option = "C", breaks = summer$jds, labels = summer$month)
+dev.off()
