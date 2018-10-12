@@ -263,7 +263,7 @@ ggplot() + geom_polygon(data = eastern_states, aes(x = long, y = lat, group = gr
   labs(x = NULL, y = NULL, size = "Number of surveys", color = "Mean peak in caterpillars") +
   ylim(31, 50) +
   scale_color_viridis(option = "C", breaks = summer$jds, labels = summer$month, limits = c(150, 215)) +
-  scale_size(range=c(2, 5))
+  scale_size(range=c(2.5, 5))
 dev.off()
 
 # Plot of peak date in June/July window
@@ -291,5 +291,5 @@ ggplot() + geom_polygon(data = eastern_states, aes(x = long, y = lat, group = gr
   labs(x = NULL, y = NULL, size = "Number of surveys", color = "Peak in caterpillars") +
   ylim(31, 50) +
   scale_color_viridis(option = "C", breaks = summer$jds, labels = summer$month, limits = c(150, 215)) +
-  scale_size(range=c(2, 5))
+  scale_size(range=c(2.5, 5))
 dev.off()
