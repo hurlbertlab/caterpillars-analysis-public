@@ -243,7 +243,8 @@ pdf('figs/weightedCaterpillarPeakScatter2018.pdf', height = 6, width = 8)
 ggplot(t12_nested, aes(x = Latitude, y = weightedPeakJunJul)) + geom_point(aes(size = nRecs), col = "dodgerblue3") +
   labs(y = "Mean peak in caterpillars", size = "N. Surveys") + xlim(32, 49) +
   scale_y_continuous(breaks = summer$jds, labels = summer$month, limits = c(150, 215)) +
-  scale_size(range = c(2, 7))
+  scale_size(range = c(2, 7)) +
+  theme(panel.grid = element_blank())
 # add site names: geom_text(aes(x = Latitude + 1, y = weightedPeak - 2, label = Name))
 dev.off()
 
