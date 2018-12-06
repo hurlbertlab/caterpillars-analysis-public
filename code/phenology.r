@@ -2,33 +2,13 @@
 
 library(dplyr)
 library(lubridate)
+library(sp)
+library(maps)
+library(maptools)
 
 source('code/analysis_functions.r')
+source('code/CCrawdata2masterdataframe.r')
 
-
-# Read in data files
-sites = read.csv(paste('data/', list.files('data')[grep('Site.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
-
-surveys = read.csv(paste('data/', list.files('data')[grep('Survey.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
-
-arths = read.csv(paste('data/', list.files('data')[grep('ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
-
-plants = read.csv(paste('data/', list.files('data')[grep('Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
-
-surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
-surveys$Year = format(surveys$LocalDate, "%Y")
-surveys$julianday = yday(surveys$LocalDate)
-
-
-fullDataset = surveys %>%
-  select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, 
-         ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
-         AverageLeafLength, HerbivoryScore) %>%
-  left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
-  left_join(plants, by = c('PlantFK' = 'ID')) %>%
-  left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region')], by = c('SiteFK' = 'ID')) %>% 
-  mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
-  rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
 
 # Criteria for inclusion (records refers to survey events)
 minNumRecords = 40 
@@ -40,7 +20,12 @@ siteList = fullDataset %>%
   summarize(nRecs = n_distinct(ID),
             nDates = n_distinct(LocalDate)) %>%
   arrange(desc(Latitude)) %>%
-  filter(nRecs >= minNumRecords, nDates >= minNumDates, Name != "Example Site")
+  filter(nRecs >= minNumRecords, nDates >= minNumDates, Name != "Example Site") %>%
+  mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
+
+write.table(siteList, 'data/revi/sitelist2018.txt', sep = '\t', row.names = F)
+
+
 
 pdf('figs/caterpillarPhenologyAllSites2018.pdf', height = 8.5, width = 11)
 par(mfrow = c(4, 6), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
@@ -173,8 +158,10 @@ dev.off()
 
 
 
-####################
-#
+############################################################
+# Interpolate phenology values on a daily basis for the purpose
+# of color coding line segements over time
+
 interpolatePhenoByDay = function(phenodata, var = 'fracSurveys') {
   # phenodata is object created by meanDensityByDay()
   # var can be either 'fracSurveys' or 'meanDensity'
@@ -206,46 +193,6 @@ interpolatePhenoByDay = function(phenodata, var = 'fracSurveys') {
 }
 
 
-
-interpolatePhenoByWeek = function(phenodata, var = 'fracSurveys') {
-  # phenodata is object created by meanDensityByDay()
-  # var can be either 'fracSurveys' or 'meanDensity'
-  
-  # coarsen to jd_wk
-  phenodata$jd_wk = 7*floor(phenodata$julianday/7) + 4
-  
-  weeks = data.frame(jd_wk = seq(min(phenodata$jd_wk), max(phenodata$jd_wk), 7))
-  
-  weekly = phenodata %>%
-    group_by(jd_wk) %>%
-    summarize(meanDensity = mean(meanDensity, na.rm = TRUE),
-              fracSurveys = mean(fracSurveys, na.rm = TRUE))
-  
-  weekly = weekly[, c('jd_wk', var)]
-  names(weekly)[2] = 'x'
-
-  pheno = weeks %>% 
-    left_join(weekly, by = 'jd_wk')
-  
-  # Find interior NAs
-  intNAs = which(sapply(1:nrow(pheno), function(row) is.na(pheno$x[row]) &
-                    sum(pheno$x[1:(row-1)], na.rm = TRUE) > 0 &
-                    sum(pheno$x[(row+1):nrow(pheno)], na.rm = TRUE) > 0))
-    
-  if (length(intNAs) > 0) {
-    for (i in intNAs) {
-      preValPos = max(which(!is.na(pheno$x[1:(i-1)])))
-      postValPos = min(which(!is.na(pheno$x[(i+1):nrow(pheno)]))) + i
-      
-      slope = (pheno$x[postValPos] - pheno$x[preValPos])/(pheno$jd_wk[postValPos] - pheno$jd_wk[preValPos])
-      
-      pheno$x[i] = pheno$x[preValPos] + slope*(pheno$jd_wk[i] - pheno$jd_wk[preValPos])
-    }
-  }
-  
-  pheno$x[is.na(pheno$x)]
-  return(pheno)
-}
 
 
 # Take an interpolated pheno object as returned by interpolatePheno()
@@ -338,6 +285,12 @@ rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
     dev.off()
   }
 }
+
+
+
+
+
+
 
 
 
