@@ -36,7 +36,7 @@ minNumDates = 4
 
 siteList = fullDataset %>%
   filter(Year == 2018) %>%
-  group_by(Name, Region, Latitude) %>%
+  group_by(Name, Region, Latitude, Longitude) %>%
   summarize(nRecs = n_distinct(ID),
             nDates = n_distinct(LocalDate)) %>%
   arrange(desc(Latitude)) %>%
@@ -170,6 +170,186 @@ for (site in siteList$Name) {
 mtext("Date", 1, outer = TRUE, line = 1.5, cex = 1.75)
 mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1.75, cex = 1.5)
 dev.off()
+
+
+
+####################
+#
+interpolatePhenoByDay = function(phenodata, var = 'fracSurveys') {
+  # phenodata is object created by meanDensityByDay()
+  # var can be either 'fracSurveys' or 'meanDensity'
+  
+  days = data.frame(julianday = min(phenodata$julianday):max(phenodata$julianday))
+  
+  phenodat = phenodata[, c('julianday', var)]
+  names(phenodat)[2] = 'x'
+  
+  pheno = days %>% 
+    left_join(phenodat, by = 'julianday')
+  
+  # Find interior NAs
+  intNAs = which(sapply(1:nrow(pheno), function(row) is.na(pheno$x[row]) &
+                          sum(pheno$x[1:(row-1)], na.rm = TRUE) >= 0 &
+                          sum(pheno$x[(row+1):nrow(pheno)], na.rm = TRUE) >= 0))
+  
+  if (length(intNAs) > 0) {
+    for (i in intNAs) {
+      preValPos = max(which(!is.na(pheno$x[1:(i-1)])))
+      postValPos = min(which(!is.na(pheno$x[(i+1):nrow(pheno)]))) + i
+      
+      slope = (pheno$x[postValPos] - pheno$x[preValPos])/(pheno$julianday[postValPos] - pheno$julianday[preValPos])
+      
+      pheno$x[i] = pheno$x[preValPos] + slope*(pheno$julianday[i] - pheno$julianday[preValPos])
+    }
+  }
+  return(pheno)
+}
+
+
+
+interpolatePhenoByWeek = function(phenodata, var = 'fracSurveys') {
+  # phenodata is object created by meanDensityByDay()
+  # var can be either 'fracSurveys' or 'meanDensity'
+  
+  # coarsen to jd_wk
+  phenodata$jd_wk = 7*floor(phenodata$julianday/7) + 4
+  
+  weeks = data.frame(jd_wk = seq(min(phenodata$jd_wk), max(phenodata$jd_wk), 7))
+  
+  weekly = phenodata %>%
+    group_by(jd_wk) %>%
+    summarize(meanDensity = mean(meanDensity, na.rm = TRUE),
+              fracSurveys = mean(fracSurveys, na.rm = TRUE))
+  
+  weekly = weekly[, c('jd_wk', var)]
+  names(weekly)[2] = 'x'
+
+  pheno = weeks %>% 
+    left_join(weekly, by = 'jd_wk')
+  
+  # Find interior NAs
+  intNAs = which(sapply(1:nrow(pheno), function(row) is.na(pheno$x[row]) &
+                    sum(pheno$x[1:(row-1)], na.rm = TRUE) > 0 &
+                    sum(pheno$x[(row+1):nrow(pheno)], na.rm = TRUE) > 0))
+    
+  if (length(intNAs) > 0) {
+    for (i in intNAs) {
+      preValPos = max(which(!is.na(pheno$x[1:(i-1)])))
+      postValPos = min(which(!is.na(pheno$x[(i+1):nrow(pheno)]))) + i
+      
+      slope = (pheno$x[postValPos] - pheno$x[preValPos])/(pheno$jd_wk[postValPos] - pheno$jd_wk[preValPos])
+      
+      pheno$x[i] = pheno$x[preValPos] + slope*(pheno$jd_wk[i] - pheno$jd_wk[preValPos])
+    }
+  }
+  
+  pheno$x[is.na(pheno$x)]
+  return(pheno)
+}
+
+
+# Take an interpolated pheno object as returned by interpolatePheno()
+# and plot phenocurve with line rainbow-colored by date
+rainbowPhenoPlot = function(phenodata, minJD = 95, maxJD = 221, ...) {
+
+  colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
+             '#EFF121', '#F5952D', '#E93131', '#D70131')
+  col.ramp = colorRampPalette(colors)
+  cols = data.frame(julianday = minJD:maxJD, 
+                    col = col.ramp(length(minJD:maxJD)))
+  
+  phenocol = cols %>%
+    left_join(phenodata, by = 'julianday')
+  phenocol$col = as.character(phenocol$col)
+    
+  x = phenocol$julianday
+  y = phenocol$x
+
+  par(bg = NA)
+  plot(x, y, xaxt = "n", yaxt = "n", xlab = "", ylab = "", type = 'n', bty = 'n')
+  
+  # Plot the colored line segments  
+  sapply(1:(nrow(phenocol) - 1), function(jd) 
+    segments(x0 = x[jd], y0 = y[jd], x1 = x[jd + 1], y1 = y[jd + 1], col = phenocol$col[jd], ...))
+  
+  # Plot month bar along the bottom
+  
+}
+  
+
+
+
+
+#########################
+# Map and rainbow phenocurves
+
+# Base map
+NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
+pdf('figs/basemap_easternNA.pdf', height = 12, width = 16)
+plot(NAmap, xlim = c(-100, -64), ylim = c(25, 50), border = 'gray80', col = 'gray90')
+points(siteList$Longitude, siteList$Latitude, pch = 16, cex = 2)
+dev.off()
+
+# Rainbow plots for sites
+
+for (s in siteList$Name) {
+  sitedata = fullDataset %>%
+    filter(Name == s, Year == 2018)
+  
+  byday = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
+                           plot = FALSE, plotVar = 'fracSurveys')
+  
+  interp = interpolatePhenoByDay(byday)
+  
+  png(paste('figs/rainbowPheno_', s, '_2018.png', sep = ''), height = 600, width = 800, bg = NA)
+  rainbowPhenoPlot(interp, lwd = 10)
+  mtext(s, 3, cex = 3)
+  dev.off()
+}
+
+rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
+  colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
+             '#EFF121', '#F5952D', '#E93131', '#D70131')
+  col.ramp = colorRampPalette(colors)
+  cols = data.frame(julianday = minJD:maxJD, 
+                    col = col.ramp(length(minJD:maxJD)))
+
+  # labels
+  monthLabels = data.frame(jd = c(1, 15, 32, 46, 60, 74, 91, 105, 121, 135, 152, 166, 
+                                  182, 196, 213, 227, 244, 258, 274, 288, 305, 319, 335, 349),
+                           
+                           date = c("Jan 1", "Jan 15", "Feb 1", "Feb 15", "Mar 1", 
+                                    "Mar 15", "Apr 1", "Apr 15", "May 1", "May 15", 
+                                    "Jun 1", "Jun 15", "Jul 1", "Jul 15", "Aug 1", 
+                                    "Aug 15", "Sep 1", "Sep 15", "Oct 1", "Oct 15", 
+                                    "Nov 1", "Nov 15", "Dec 1", "Dec 15"))
+  
+  bar = left_join(cols, monthLabels, by = c('julianday' = 'jd'))
+  bar$col = as.character(bar$col)
+  
+  barlabs = bar[!is.na(bar$date), ]
+  
+  if (plot) {
+    png('figs/rainbow_scale.png', height = 600, width = 150, bg = NA)
+    par(mar = c(0,0,0,0))
+    plot(rep(1, nrow(bar)), -bar$julianday, pch = 15, cex = 4, col = bar$col,
+         xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', xlim = c(.9, 3.5))
+    text(rep(1.4, nrow(barlabs)), -barlabs$julianday, barlabs$date, adj = 0, cex = 3)
+    dev.off()
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Top 12 sites without ECU, weighted mean fraction of surveys with caterpillars
