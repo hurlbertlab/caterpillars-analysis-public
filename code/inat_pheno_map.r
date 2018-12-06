@@ -41,7 +41,14 @@ recsByBinYear = function(binsize) {
 
 # For a given lat-lon cell and year, plot a line graph of phenology color-coded
 # (blue segments correspond to early in the year, red segments to late in the year)
-phenoMapPlot = function(yr, latCenter, lonCenter, binWidth = 2, plotScaleX = 2, plotScaleY = 2, ...) {
+phenoMapPlot = function(yr, 
+                        latCenter, 
+                        lonCenter, 
+                        binWidth = 2, 
+                        plotScaleX = 2, 
+                        plotScaleY = 2, 
+                        jd_beg = 4, 
+                        jd_end = 361, ...) {
 
   # Colors
   colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
