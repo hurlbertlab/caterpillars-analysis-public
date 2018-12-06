@@ -1,0 +1,25 @@
+Name	Region	Latitude	Longitude	nRecs	nDates	county	LatestWeekWithFreq0	WeekOfPeakFreq
+Sault College	ON	46.53449905	-84.30692999	400	10	algoma	5/1/2018	6/8/2018
+RVCC	ON	43.81900253	-79.17087835	252	8	NA	4/22/2018	5/22/2018
+Stage Nature Center	MI	42.61602548	-83.19144908	336	25	"michigan,oakland"	4/22/2018	5/22/2018
+Mt. Auburn Cemetery	MA	42.37140748	-71.14532217	52	11	"massachusetts,middlesex"	4/15/2018	5/15/2018
+Kalamazoo Nature Center	MI	42.3604	-85.5836	362	13	"michigan,kalamazoo"	4/8/2018	5/15/2018
+Wellesley College	MA	42.29562523	-71.30567647	156	7	"massachusetts,norfolk"	4/22/2018	5/22/2018
+Mass Audubon's Boston Nature Center	MA	42.28600403	-71.09968994	228	9	"massachusetts,suffolk"	4/8/2018	5/22/2018
+Mass Audubon's Broadmoor Wildlife Sanctuary	MA	42.25669936	-71.33891702	267	9	"massachusetts,middlesex"	4/15/2018	5/15/2018
+Museum of American Bird Art	MA	42.16321993	-71.13999235	429	15	"massachusetts,norfolk"	4/22/2018	5/22/2018
+The Children's Museum	CT	41.76199706	-72.73706675	127	9	"connecticut,hartford"	4/15/2018	5/15/2018
+Walker Nature Center	VA	38.92576741	-77.34153167	144	15	"virginia,fairfax"	4/8/2018	5/8/2018
+Georgetown	DC	38.90960235	-77.07900567	370	14	"district of columbia,washington"	4/8/2018	5/15/2018
+Currituck Banks Reserve	NC	36.3895896	-75.83078007	130	13	"north carolina,currituck"	4/15/2018	5/8/2018
+Ijams Nature Center	TN	35.95756122	-83.86663556	59	8	"tennessee,knox"	4/1/2018	5/1/2018
+Pritchard Park (Chapel Hill Public Library)	NC	35.93091423	-79.03695029	59	7	"north carolina,orange"	3/22/2018	5/8/2018
+Piedmont Wildlife Center	NC	35.91706349	-78.98191074	71	4	"north carolina,durham"	3/22/2018	5/1/2018
+UNC Chapel Hill Campus	NC	35.90987665	-79.04964402	1715	22	"north carolina,orange"	3/22/2018	5/8/2018
+NC Botanical Garden	NC	35.8994	-79.0339	1841	23	"north carolina,orange"	3/22/2018	5/8/2018
+Prairie Ridge Ecostation	NC	35.8117	-78.7139	2521	21	"north carolina,wake"	3/22/2018	4/22/2018
+NC State University	NC	35.78107172	-78.6754681	417	20	"north carolina,wake"	3/22/2018	4/22/2018
+Hemlock Bluffs	NC	35.72409809	-78.77930919	694	23	"north carolina,wake"	3/22/2018	4/22/2018
+Great Smoky Mountains Institute at Tremont	TN	35.63997924	-83.68877283	329	9	"tennessee,blount"	4/1/2018	5/15/2018
+East Carolina University	NC	35.60639336	-77.36630421	943	27	"north carolina,pitt"	3/22/2018	5/15/2018
+CawCaw Interpretive Center	SC	32.78225207	-80.1930971	576	18	"south carolina,charleston"	3/15/2018	5/1/2018
