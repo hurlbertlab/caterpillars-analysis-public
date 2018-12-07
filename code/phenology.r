@@ -316,7 +316,7 @@ library(viridis)
 # Create nested data frame containing top 12 sites, get mean density by day of caterpillars for each
 # Calculate mean peak and absolute peak in % surveys containing caterpillars
 t12_nested <- fullDataset %>%
-  filter(Name %in% siteList$Name) %>%
+  filter(Name %in% siteList$Name, Year == 2018) %>%
   group_by(Name) %>%
   nest() %>%
   mutate(meanDens = purrr::map(data, ~{meanDensityByDay(., ordersToInclude = 'caterpillar', 
