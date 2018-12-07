@@ -335,7 +335,7 @@ t12_nested <- fullDataset %>%
   })) %>%
   mutate(weightedPeakJunJul = map_dbl(meanDens, ~{
     df <- .
-    commonTime <- filter(df, julianday >= 157 & julianday <= 205) # JD time period all surveys overlap - June and July
+    commonTime <- filter(df, julianday >= 152 & julianday <= 212) # JD time period all surveys overlap - June and July
     sum(commonTime$fracSurveys*commonTime$julianday)/sum(commonTime$fracSurveys) # weighted mean of survey day by fraction of surveys with caterpillars
   })) %>%
   mutate(peak = map_dbl(meanDens, ~{
@@ -344,7 +344,7 @@ t12_nested <- fullDataset %>%
   })) %>%
   mutate(peakJunJul = map_dbl(meanDens, ~{
     df <- .
-    commonTime <- filter(df, julianday >= 157 & julianday <= 205)
+    commonTime <- filter(df, julianday >= 152 & julianday <= 212)
     commonTime[which.max(commonTime$fracSurveys), "julianday"] # Day of max peak in % surveys with caterpillars in June/July
   }))   %>%
   left_join(siteList) %>%

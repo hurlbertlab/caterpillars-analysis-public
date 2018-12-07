@@ -16,7 +16,7 @@ surveys$julianday = yday(surveys$LocalDate)
 
 
 fullDataset = surveys %>%
-  select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, 
+  dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, 
          ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%

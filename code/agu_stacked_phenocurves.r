@@ -68,7 +68,7 @@ for (site in phenosites$Name) {
   
   caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
                                           plot = TRUE, plotVar = 'fracSurveys', xlab = 'Date',
-                                          ylab = 'Percent of surveys', col = 'black', lwd = 3, 
+                                          ylab = 'Percent of surveys', col = 'darkviolet', lwd = 3, 
                                           xaxt = 'n', cex.lab = 1.5, cex.axis = .9,
                                           xlim = c(jdMin, jdMax),
                                           ylim = c(0, max(1, 1.1*max(caterpillarPhenology$fracSurveys))), 
