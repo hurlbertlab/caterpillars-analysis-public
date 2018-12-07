@@ -57,6 +57,7 @@ summaryCC <- fullDataset %>%
 
 round(cor(summaryCC[,c('weightedPeak','weightedPeakJunJul','peak','peakJunJul','peakMayJun', 'hatching','gdd600jd','leafIndex')]),2)
 
+cormat = round(cor(summaryCC[,c('gdd600jd','leafIndex','peakMayJun', 'hatching')]),2)
 
 
 jdMin = 91
