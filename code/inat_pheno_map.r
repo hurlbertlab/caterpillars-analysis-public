@@ -60,11 +60,12 @@ phenoMapPlot = function(yr,
     filter(year == yr, 
            latitude >= latCenter - 0.5*binWidth, latitude < latCenter + 0.5*binWidth,
            longitude >= lonCenter - 0.5*binWidth, longitude < lonCenter + 0.5*binWidth) %>%
-    select(jday, jd_wk, latitude, longitude, scientific_name) %>%
+    dplyr::select(jday, jd_wk, latitude, longitude, scientific_name) %>%
     distinct() %>%
     group_by(jd_wk) %>%
     count() %>%
-    left_join(cols, by = 'jd_wk') 
+    left_join(cols, by = 'jd_wk') %>%
+    filter(jd_wk >= jd_beg, jd_wk <= jd_end)
   pheno$col = as.character(pheno$col)
   
   x = lonCenter - 0.5*plotScaleX + plotScaleX*pheno$jd_wk/365
@@ -77,9 +78,17 @@ phenoMapPlot = function(yr,
 
 
 binsize = 2 #degrees
+jdBeg = 91
+jdEnd = 240
+
+colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
+           '#EFF121', '#F5952D', '#E93131', '#D70131', '#D70131')
+col.ramp = colorRampPalette(colors)
+cols = data.frame(jd_wk = seq(4, 362, 7), col = col.ramp(52))
+cols$col = as.character(cols$col)
 
 recsPerBinThreshold = 100
-pdf(paste('figs/iNat_caterpillar_phenomap_byYear_', binsize, 'deg_bin.pdf', sep = ''), height = 8, width = 10)
+pdf(paste('figs/iNat_caterpillar_phenomap_byYear_', binsize, 'deg_bin_jd_', jdBeg, '-', jdEnd, '.pdf', sep = ''), height = 8, width = 10)
 for (y in 2013:2018) {
   inatBins = recsByBinYear(binsize) %>%
     filter(year == y, n >= recsPerBinThreshold)
@@ -89,9 +98,15 @@ for (y in 2013:2018) {
   mtext(paste("iNaturalist caterpillar observations, >=", recsPerBinThreshold, "records per bin"), 1, cex = 1.5)
   for (i in 1:nrow(inatBins)) {
     phenoMapPlot(yr = y, lat = inatBins$lat_bin[i], lon = inatBins$lon_bin[i], 
-                 lwd = 2, binWidth = binsize, plotScaleY = .7*binsize, plotScaleX = .85*binsize)
+                 lwd = 2, binWidth = binsize, plotScaleY = .7*binsize, plotScaleX = .85*binsize, jd_beg = jdBeg, jd_end = jdEnd)
   }
-  points(rep(-70, 20), seq(28, 38, length.out = 20), pch = 15, cex = 2, col = col.ramp(20))
-  text(rep(-68, 5), seq(28, 38, length.out = 5), c('4 Jan', '3 Apr', '1 Jul', '29 Sep', '27 Dec'))
+  
+  whichcols = which(cols$jd_wk >= jdBeg & cols$jd_wk <= jdEnd)
+  subsetCols = cols[whichcols,]
+  points(rep(-70, length(whichcols)), seq(28, 38, length.out = length(whichcols)), pch = 15, cex = 2, 
+         col = cols$col[whichcols])
+  labelInterval = floor(length(whichcols)/4)
+  lastLabelFrac = (subsetCols$jd_wk[1 + 4*labelInterval] - subsetCols$jd_wk[1]) / (subsetCols$jd_wk[nrow(subsetCols)] - subsetCols$jd_wk[1])
+  text(rep(-68, 5), seq(28, 28 + 10*lastLabelFrac, length.out = 5), cols$jd_wk[whichcols][1 + (0:4)*labelInterval])
 }
 dev.off()
