@@ -1,5 +1,5 @@
 scientific_name	genus	tribe	subfamily	family	superfamily	ITIS_id	hairy	spiny	leafroll	silktent	unpalatable	iNat_taxon_link
-Bombycoidea	NA		NA	NA	Bombycoidea	117536						
+Bombycoidea	NA		NA	NA	Bombycoidea	117536	y	y	n	n		jhjfjf
 Anisota	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936007						
 Anisota peigleri	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936148						
 Anisota senatoria	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936186						
