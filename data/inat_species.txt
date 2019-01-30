@@ -115,32 +115,32 @@ Apoda biguttata	Apoda	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N				https://www.in
 Arogalea cristifasciella	Arogalea	Litini	Gelechiinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N				https://www.inaturalist.org/taxa/214195-Arogalea-cristifasciella	
 Arsenura armida	Arsenura	NA	Arsenurinae	Saturniidae	Bombycoidea	NA	N	N	N	N			Y	https://www.inaturalist.org/taxa/257159-Arsenura-armida	
 Atteva aurea	Atteva	NA	NA	Attevidae	Yponomeutoidea	NA	N	N	N	Y			Y	https://www.inaturalist.org/taxa/116681-Atteva-aurea	may need to revisit this species to determine social column
-Automeris banus	Automeris		NA	NA	NA	NA									
-Automeris metzli	Automeris		NA	NA	NA	NA									
+Automeris banus	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/256348-Automeris-banus	
+Automeris metzli	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/257193-Automeris-metzli	
 Automeris s	Automeris		NA	NA	NA	NA									
 Caligo	Caligo		NA	NA	NA	NA									
-Choristoneura houstonana	Choristoneura		NA	NA	NA	NA									
-Chrysoesthia sexguttella	Chrysoesthia		NA	NA	NA	NA									
-Comadia redtenbacheri	Comadia		NA	NA	NA	NA									
-Copaxa multifenestrata	Copaxa		NA	NA	NA	NA									
-Dahlica triquetrella	Dahlica		NA	NA	NA	NA									
-Depressaria radiella	Depressaria		NA	NA	NA	NA									
+Choristoneura houstonana	Choristoneura	Archipini	Tortricinae	Tortricidae	Tortricoidea	NA	N	N	N	N			N	https://www.inaturalist.org/taxa/559931-Choristoneura-houstonana	
+Chrysoesthia sexguttella	Chrysoesthia	Apatetrini	Apatetrinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N			N	https://www.inaturalist.org/taxa/216840-Chrysoesthia-sexguttella/browse_photos	Leaf mine rather than a true leaf roll
+Comadia redtenbacheri	Comadia	NA	Cossinae	Cossidae	Cossoidea	NA	N	N	N	N				https://www.inaturalist.org/taxa/334247-Comadia-redtenbacheri	"possibly social, hard to tell and not many observations "
+Copaxa multifenestrata	Copaxa	Saturniini	Saturniinae	Saturniidae	Bombycoidea	NA	Y	N	N	N			N	https://www.inaturalist.org/taxa/257260-Copaxa-multifenestrata	"Need to verify that this is considered hairy, could be a point of reference"
+Dahlica triquetrella	Dahlica	NA	Naryciinae	Psychidae	Tineoidea	NA	N	N	N	N			N	https://www.inaturalist.org/taxa/218117-Dahlica-triquetrella	
+Depressaria radiella	Depressaria	NA	Depressaiinae	Depressariidae	Gelechioidea	NA	Y	N	N	N			N	https://www.inaturalist.org/taxa/493492-Depressaria-radiella	Has hairs but only a few rows down length of body
 Desmia s	Desmia		NA	NA	NA	NA									
-Diaethria bacchis	Diaethria		NA	NA	NA	NA									
-Epipaschia superatalis	Epipaschia		NA	NA	NA	NA									
-Eumaeus childrenae	Eumaeus		NA	NA	NA	NA									
-Evergestis rimosalis	Evergestis		NA	NA	NA	NA									
-Harrisina americana	Harrisina		NA	NA	NA	NA									
+Diaethria bacchis	Diaethria	Callicorini	Biblidinae	Nymphalidae	Papilionoidea	NA	N	N	N	N			N	https://www.inaturalist.org/taxa/336930-Diaethria-bacchis	
+Epipaschia superatalis	Epipaschia	NA	Epipaschiinae	Pyralidae	Pyraloidea	NA	N	N	N	N			N	https://www.inaturalist.org/taxa/219354-Epipaschia-superatalis	
+Eumaeus childrenae	Eumaeus	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	NA	N	N	N	N			Y	https://www.inaturalist.org/taxa/123312-Eumaeus-childrenae	"Very fine hairs, check this classification.  Also they gather in groups but it's not evident that they work together…is this still considered social"
+Evergestis rimosalis	Evergestis	NA	Glaphyriinae	Crambidae	Pyraloidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/359686-Evergestis-rimosalis	"A couple considerations here: are the structures hairs or spines, by count they appear to be spines, but they curve and appear structurally like hairs.  Are there enough to deter a bird"
+Harrisina americana	Harrisina	Procridini	Procridinae	Zygaenidae	Zygaenoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/126905-Harrisina-americana	"Listed as spiny needs verification, based on body coverage and structure"
 Hellinsia	Hellinsia		NA	NA	NA	NA									
-Hemileuca peigleri	Hemileuca		NA	NA	NA	NA									
+Hemileuca peigleri	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/424934-Hemileuca-peigleri	
 Herpetogramma	Herpetogramma		NA	NA	NA	NA									
-Homoeosoma electella	Homoeosoma		NA	NA	NA	NA									
-Isa textula	Isa		NA	NA	NA	NA									
+Homoeosoma electella	Homoeosoma	Phycitini	Phycitinae	Pyralidae	Pyraloidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/343382-Homoeosoma-electella	"Said they were spiny but sturctures are very minute, possibly shouldn't be listed as hairy or spiny"
+Isa textula	Isa	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/154469-Isa-textula	
 Lepidoptera	NA		NA	NA	NA	117232									
 Leucanella	Leucanella		NA	NA	NA	NA									
-Leucanella hosmera	Leucanella		NA	NA	NA	NA									
-Leucanella saturata	Leucanella		NA	NA	NA	NA									
-Leucanella viridescens	Leucanella		NA	NA	NA	NA									
+Leucanella hosmera	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/371748-Leucanella-hosmera	"Images of them in groups but also lots of singular images so leaning towards no for ""social"".  Also they look awesome "
+Leucanella saturata	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/257236-Leucanella-saturata	Also put no for social.  See above for reasoning 
+Leucanella viridescens	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N	https://www.inaturalist.org/taxa/83650-Leucanella-viridescens	
 Lithacodes fasciola	Lithacodes		NA	NA	NA	NA									
 Lophocampa catenulata	Lophocampa		NA	NA	NA	NA									
 Malacosoma americana	Malacosoma		NA	NA	NA	NA									
