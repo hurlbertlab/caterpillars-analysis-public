@@ -194,6 +194,7 @@ inat_families <- inat_noCC %>%
 # Phenology of families (make abundance curves on map plot for each family)
 family_pheno <- inat_families %>%
   filter(!is.na(family), family != "") %>%
+  filter(year == 2018) %>%
   group_by(family, jd_wk) %>%
   count()
 
@@ -207,11 +208,12 @@ ggplot(family_pheno) +
   scale_y_log10() + facet_wrap(~family, nrow = 4) +
   scale_x_continuous(breaks = jds, labels = dates) +
   ylab("Number of observations") + theme(axis.title.x = element_blank())
-ggsave("figs/CaterpillarPhenology_Families.pdf", width = 12, height = 8, units = "in")
+ggsave("figs/CaterpillarPhenology_Families_2018.pdf", width = 12, height = 8, units = "in")
 
 # Plot geographic distribution of families
 jdBeg = 91
 jdEnd = 240
+recsPerBinThreshold = 100
 
 widespread_families <- family_pheno %>%
   group_by(family) %>%
@@ -220,6 +222,7 @@ widespread_families <- family_pheno %>%
 
 inat_families_spring <- inat_families %>%
   filter(!is.na(family), family != "") %>%
+  filter(year == 2018) %>%
   filter(jday <= jdEnd, jday >= jdBeg) %>%
   filter(!is.na(longitude), !is.na(latitude))
 
@@ -231,4 +234,4 @@ inat_fam_sf <- st_as_sf(inat_families_spring, coords = c("longitude", "latitude"
 
 fam_map <- US_map + tm_shape(inat_fam_sf) + tm_dots(size = 0.25, alpha = 0.75) + tm_facets(by = "family", nrow = 4) + 
   tm_layout(panel.label.size = 2)
-tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat.pdf", width = 12, height = 8, units = "in")
+tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat_2018.pdf", width = 12, height = 8, units = "in")
