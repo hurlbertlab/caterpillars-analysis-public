@@ -150,37 +150,37 @@ Megalopyge opercularis	Megalopyge	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		N	
 Melittia cucurbitae	Melittia	Melittiini	Sesiinae	Sesiidae	Sesioidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/133346-Melittia-cucurbitae	
 Mimoides	Mimoides		NA	NA	NA	NA										
 Morpho helenor	Morpho	Morphini	Satyrinae	Nymphalidae	Papilionoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81741-Morpho-helenor	good example of something that is not consider aposematic despite vibrant pattern because it blends in reasonably well and doesn't have a simple and distinct pattern
-Natada nasoni	Natada		NA	NA	NA	NA										
-Norape ovina	Norape		NA	NA	NA	NA										
-Norape virgo	Norape		NA	NA	NA	NA										
-Oiketicus abbotii	Oiketicus		NA	NA	NA	NA										
-Olceclostera angelica	Olceclostera		NA	NA	NA	NA										
-Olethreutes exoletum	Olethreutes		NA	NA	NA	NA										
-Omphalocera munroei	Omphalocera		NA	NA	NA	NA										
-Opsiphanes cassina	Opsiphanes		NA	NA	NA	NA										
-Oreana unicolorella	Oreana		NA	NA	NA	NA										
-Packardia elegans	Packardia		NA	NA	NA	NA										
-Papilio rumiko	Papilio		NA	NA	NA	NA										
-Paradirphia fumosa	Paradirphia		NA	NA	NA	NA										
-Parasa wellesca	Parasa		NA	NA	NA	NA										
-Plodia interpunctella	Plodia		NA	NA	NA	NA										
-Prolimacodes badia	Prolimacodes		NA	NA	NA	NA										
-Pryeria sinica	Pryeria		NA	NA	NA	NA										
-Pseudothyatira cymatophoroides	Pseudothyatira		NA	NA	NA	NA										
-Psilocorsis reflexella	Psilocorsis		NA	NA	NA	NA										
-Psyche casta	Psyche		NA	NA	NA	NA										
-Rectiostoma xanthobasis	Rectiostoma		NA	NA	NA	NA										
-Saucrobotys futilalis	Saucrobotys		NA	NA	NA	NA										
-Schizura ipomaeae	Schizura		NA	NA	NA	NA										
+Natada nasoni	Natada	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/225460-Natada-nasoni	Has some red but wouldn't consider it aposematic
+Norape ovina	Norape	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/225994-Norape-ovina	
+Norape virgo	Norape	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/318974-Norape-virgo	
+Oiketicus abbotii	Oiketicus	NA	Oiketicinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/358315-Oiketicus-abbotii	
+Olceclostera angelica	Olceclostera	NA	Apatelodinae	Apatelodidae	Bombycoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/83860-Olceclostera-angelica	
+Olethreutes exoletum	Olethreutes	Olethreutini	Olethreutinae	Tortricidae	Tortricoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/320609-Olethreutes-exoletum	very small spines
+Omphalocera munroei	Omphalocera	Megarthridiini	Galleriinae	Pyralidae	Pyraloidea	NA	Y	N	Y	N		N	N	Y	https://www.inaturalist.org/taxa/325973-Omphalocera-munroei	
+Opsiphanes cassina	Opsiphanes	Brassolini	Satyrinae	Nymphalidae	Papilionoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/148693-Opsiphanes-cassina	
+Oreana unicolorella	Oreana	Phycitini	Phycitinae	Pyralidae	Pyraloidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/176496-Oreana-unicolorella	
+Packardia elegans	Packardia	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/226847-Packardia-elegans	
+Papilio rumiko	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/509627-Papilio-rumiko	
+Paradirphia fumosa	Paradirphia	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/257240-Paradirphia-fumosa	
+Parasa wellesca	Parasa	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/525614-Parasa-wellesca	
+Plodia interpunctella	Plodia	Phycitini	Phycitinae	Pyralidae	Pyraloidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/124184-Plodia-interpunctella	
+Prolimacodes badia	Prolimacodes	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/207603-Prolimacodes-badia	
+Pryeria sinica	Pryeria	NA	NA	Phaudidae	Zygaenoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/84168-Pryeria-sinica	
+Pseudothyatira cymatophoroides	Pseudothyatira	Habrosynini	Thyatirinae	Drepanidae	Drepanoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/204699-Pseudothyatira-cymatophoroides	
+Psilocorsis reflexella	Psilocorsis	NA	NA	Depressariidae	Gelechioidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/147992-Psilocorsis-reflexella	
+Psyche casta	Psyche	NA	Psychinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/61413-Psyche-casta	Bag worms?
+Rectiostoma xanthobasis	Rectiostoma	NA	Stenomatinae	Depressariidae	Gelechioidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/325666-Rectiostoma-xanthobasis	
+Saucrobotys futilalis	Saucrobotys	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/146889-Saucrobotys-futilalis	
+Schizura ipomaeae	Schizura	NA	Heterocampinae	Notodontidae	Noctuoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/204014-Schizura-ipomaeae	
 Setiostoma xuthobasis	Setiostoma		NA	NA	NA	NA										
-Sitochroa palealis	Sitochroa		NA	NA	NA	NA										
+Sitochroa palealis	Sitochroa	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	N	N	N		N	N	N	Sitochroa palealis	
 Synchlora s	Synchlora		NA	NA	NA	NA										
-Syssphinx albolineata	Syssphinx		NA	NA	NA	NA										
-Thyridopteryx ephemeraeformis	Thyridopteryx		NA	NA	NA	NA										
-Tinea pellionella	Tinea		NA	NA	NA	NA										
+Syssphinx albolineata	Syssphinx	NA	Ceratocampinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/293787-Syssphinx-albolineata	
+Thyridopteryx ephemeraeformis	Thyridopteryx	NA	Oiketicinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/121594-Thyridopteryx-ephemeraeformis	
+Tinea pellionella	Tinea	NA	Tineinae	Tineidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/193928-Tinea-pellionella	
 Tolype	Tolype		NA	NA	NA	NA										
-Tolype velleda	Tolype		NA	NA	NA	NA										
-Tortricidia pallida	Tortricidia		NA	NA	NA	NA										
+Tolype velleda	Tolype	NA	Poecilocampinae	Lasiocampidae	Lasiocampoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143323-Tolype-velleda	
+Tortricidia pallida	Tortricidia	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/128787-Tortricidia-pallida	
 Uresiphita reversalis	Uresiphita		NA	NA	NA	NA										
 Apantesis	Apantesis		Arctiinae	Erebidae	Noctuoidea	188652										
 Arctia caja	Arctia		Arctiinae	Erebidae	Noctuoidea	188662										
