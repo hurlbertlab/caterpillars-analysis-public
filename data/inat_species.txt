@@ -181,25 +181,25 @@ Tinea pellionella	Tinea	NA	Tineinae	Tineidae	Tineoidea	NA	N	N	N	N		N	N	N	https:/
 Tolype	Tolype		NA	NA	NA	NA										
 Tolype velleda	Tolype	NA	Poecilocampinae	Lasiocampidae	Lasiocampoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143323-Tolype-velleda	
 Tortricidia pallida	Tortricidia	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/128787-Tortricidia-pallida	
-Uresiphita reversalis	Uresiphita		NA	NA	NA	NA										
+Uresiphita reversalis	Uresiphita	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/121716-Uresiphita-reversalis	
 Apantesis	Apantesis		Arctiinae	Erebidae	Noctuoidea	188652										
-Arctia caja	Arctia		Arctiinae	Erebidae	Noctuoidea	188662										
-Ctenucha virginica	Ctenucha		Arctiinae	Erebidae	Noctuoidea	188644										
-Cycnia collaris	Cycnia		Arctiinae	Erebidae	Noctuoidea	938382										
-Cycnia tenera	Cycnia		Arctiinae	Erebidae	Noctuoidea	938385										
-Empyreuma pugione	Empyreuma		Arctiinae	Erebidae	Noctuoidea	938538										
-Estigmene acrea	Estigmene		Arctiinae	Erebidae	Noctuoidea	117299										
-Euchaetes egle	Euchaetes		Arctiinae	Erebidae	Noctuoidea	938578										
+Arctia caja	Arctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	188662	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/68330-Arctia-caja	
+Ctenucha virginica	Ctenucha	Arctiini	Arctiinae	Erebidae	Noctuoidea	188644	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/119013-Ctenucha-virginica	
+Cycnia collaris	Cycnia	Arctiini	Arctiinae	Erebidae	Noctuoidea	938382	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/479737-Cycnia-collaris	
+Cycnia tenera	Cycnia	Arctiini	Arctiinae	Erebidae	Noctuoidea	938385	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/479737-Cycnia-collaris	
+Empyreuma pugione	Empyreuma	Arctiini	Arctiinae	Erebidae	Noctuoidea	938538	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/324144-Empyreuma-pugione	
+Estigmene acrea	Estigmene	Arctiini	Arctiinae	Erebidae	Noctuoidea	117299	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/121612-Estigmene-acrea	
+Euchaetes egle	Euchaetes	Arctiini	Arctiinae	Erebidae	Noctuoidea	938578	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/81677-Euchaetes-egle	
 Halysidota	Halysidota		Arctiinae	Erebidae	Noctuoidea	937234										
-Halysidota harrisii	Halysidota		Arctiinae	Erebidae	Noctuoidea	938959										
-Halysidota tessellaris	Halysidota		Arctiinae	Erebidae	Noctuoidea	938961										
+Halysidota harrisii	Halysidota	Arctiini	Arctiinae	Erebidae	Noctuoidea	938959	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/126397-Halysidota-harrisii	
+Halysidota tessellaris	Halysidota	Arctiini	Arctiinae	Erebidae	Noctuoidea	938961	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/120217-Halysidota-tessellaris	
 Haploa	Haploa		Arctiinae	Erebidae	Noctuoidea	937235										
-Haploa clymene	Haploa		Arctiinae	Erebidae	Noctuoidea	938962										
-Haploa confusa	Haploa		Arctiinae	Erebidae	Noctuoidea	938964										
-Haploa contigua	Haploa		Arctiinae	Erebidae	Noctuoidea	938965										
-Hypercompe scribonia	Hypercompe		Arctiinae	Erebidae	Noctuoidea	939113										
-Hyphantria cunea	Hyphantria	Arctiini	Arctiinae	Erebidae	Noctuoidea	117304	Y	N	N	Y			Y		https://www.inaturalist.org/taxa/127133-Hyphantria-cunea	
-Hypoprepia fucosa	Hypoprepia		Arctiinae	Erebidae	Noctuoidea	939128										
+Haploa clymene	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938962	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/126106-Haploa-clymene	
+Haploa confusa	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938964	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/130821-Haploa-confusa	
+Haploa contigua	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938965	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/220910-Haploa-contigua	
+Hypercompe scribonia	Hypercompe	Arctiini	Arctiinae	Erebidae	Noctuoidea	939113	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/63028-Hypercompe-scribonia	
+Hyphantria cunea	Hyphantria	Arctiini	Arctiinae	Erebidae	Noctuoidea	117304	Y	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/127133-Hyphantria-cunea	
+Hypoprepia fucosa	Hypoprepia	Lithosiini	Arctiinae	Erebidae	Noctuoidea	939128	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/119953-Hypoprepia-fucosa	
 Hypoprepia miniata	Hypoprepia		Arctiinae	Erebidae	Noctuoidea	939130										
 Lerina incarnata	Lerina		Arctiinae	Erebidae	Noctuoidea	939301										
 Lophocampa caryae	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	117307	Y	N	N	N			Y		https://www.inaturalist.org/taxa/82225-Lophocampa-caryae	Social at earlier instars and then disband
