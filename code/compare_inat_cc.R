@@ -211,43 +211,43 @@ minNumDates = 4
 # Filter and merge data
 
 sites <- siteList %>%
-  filter(Region %in% c("MA", "DC", "NC"), Name != "UNC Chapel Hill Campus", Name != "East Carolina University")
+  filter(Region %in% c("MA", "DC", "NC"), Name != "UNC Chapel Hill Campus", Name != "East Carolina University",
+         Name != "Currituck Banks Reserve")
 
 inat_surveys_plot <- inat_noCC %>%
-  filter(year == 2018, bin_coord %in% sites$bin_coord) %>%
-  group_by(lat_bin, bin_coord, jd_wk) %>%
+  filter(bin_coord %in% sites$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
   count() %>%
   rename(N_obs_inat = n)
 
 firstFilter = fullDataset %>%
-  filter(Year == 2018, julianday >= jdBeg, julianday <= jdEnd, Name %in% sites$Name)
+  filter(julianday >= jdBeg, julianday <= jdEnd, Name %in% sites$Name)
 
-effortByWeek = firstFilter %>%
-  group_by(Region, bin_coord) %>%
-  distinct(ID, jd_wk) %>%
+effortByWeek <- firstFilter %>%
+  group_by(Year, Region, bin_coord) %>%
+  distinct(Year, ID, jd_wk) %>%
   count(jd_wk)
 
-# Fix this with fields
-arthCount = firstFilter %>%
+arthCount <- firstFilter %>%
   filter(Quantity < 10000, 
          Group %in% 'caterpillar') %>%
-  group_by(Region, bin_coord, jd_wk) %>%
+  group_by(Year, Region, bin_coord, jd_wk) %>%
   summarize(totalCount = sum(Quantity, na.rm = T),
             numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
-  right_join(effortByWeek, by = c("Region", "bin_coord", "jd_wk")) %>%
+  right_join(effortByWeek, by = c("Region", "bin_coord", "Year", "jd_wk")) %>%
   #next line replaces 3 fields with 0 if the totalCount is NA
   mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
   mutate(meanDensity = totalCount/n,
          fracSurveys = 100*numSurveysGTzero/n) %>%
-  right_join(filter(inat_surveys_plot, bin_coord %in% sites$bin_coord), by = c("bin_coord", "jd_wk"))
+  right_join(filter(inat_surveys_plot, bin_coord %in% sites$bin_coord), by = c("bin_coord", "Year"="year", "jd_wk"))
 
 # Plot
-jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
-dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+jds <- c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
 theme_set(theme_bw())
 phenoplot <- ggplot(arthCount, aes(x = jd_wk)) + 
-  facet_wrap(~fct_reorder(bin_coord, lat_bin, .desc = T), nrow = 2, ncol = 2) +
+  facet_wrap(fct_reorder(bin_coord, lat_bin, .desc = T)~Year, ncol = 4) +
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(x = "", y = "Fraction of surveys with caterpillars") +
   scale_y_continuous(sec.axis = dup_axis(name = "Number of iNaturalist observations"))
@@ -262,8 +262,97 @@ phenoplot + geom_point(aes(y = fracSurveys, col = "Caterpillars Count")) +
   geom_text(aes(x = 100, y = max(arthCount$N_obs_inat, na.rm = T), label = Region)) +
   ggtitle(paste0(binsize, "° bin size"))
   
-ggsave(paste0("figs/CaterpillarPhenology_withiNat_2018_", binsize, "_deg.pdf"), width = 8, height = 6, units = "in")
+ggsave(paste0("figs/CaterpillarPhenology_withiNat_2018_", binsize, "_deg.pdf"), width = 10, height = 10, units = "in")
 }
+
+#### Correlate NC CC and iNat observations, 1 deg bins, 2016-2018
+
+binsize <- 1
+
+inat_noCC$lat_bin <- binsize*floor(inat_noCC$latitude/binsize) + binsize/2
+inat_noCC$lon_bin <- binsize*floor(inat_noCC$longitude/binsize) + binsize/2
+inat_noCC$bin_coord <- paste0(inat_noCC$lon_bin, ", ", inat_noCC$lat_bin)
+
+siteList$lat_bin <- binsize*floor(siteList$Latitude/binsize) + binsize/2
+siteList$lon_bin <- binsize*floor(siteList$Longitude/binsize) + binsize/2
+siteList$bin_coord <- paste0(siteList$lon_bin, ", ", siteList$lat_bin)
+
+fullDataset$lat_bin <- binsize*floor(fullDataset$Latitude/binsize) + binsize/2
+fullDataset$lon_bin <- binsize*floor(fullDataset$Longitude/binsize) + binsize/2
+fullDataset$bin_coord <- paste0(fullDataset$lon_bin, ", ", fullDataset$lat_bin)
+fullDataset$jd_wk <- 7*floor(fullDataset$julianday/7) + 4    # week 1 = jd 4, week 2 = jd 11, etc
+
+minNumRecords <- 267
+minNumDates <- 4
+
+# Filter and merge data
+
+sites <- siteList %>%
+  filter(Region %in% c("MA", "DC", "NC"), Name != "UNC Chapel Hill Campus", Name != "East Carolina University",
+         Name != "Currituck Banks Reserve")
+
+region_names <- unique(sites[, c(2, 10)])
+
+inat_surveys_plot <- inat_noCC %>%
+  filter(bin_coord %in% sites$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
+  count() %>%
+  rename(N_obs_inat = n)
+
+firstFilter <- fullDataset %>%
+  filter(julianday >= jdBeg, julianday <= jdEnd, Name %in% sites$Name)
+
+effortByWeek <- firstFilter %>%
+  group_by(Year, Region, bin_coord) %>%
+  distinct(Year, ID, jd_wk) %>%
+  count(jd_wk)
+
+arthCount_deltas <- firstFilter %>%
+  filter(Quantity < 10000, 
+         Group %in% 'caterpillar') %>%
+  group_by(Year, Region, bin_coord, jd_wk) %>%
+  summarize(totalCount = sum(Quantity, na.rm = T),
+            numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
+  right_join(effortByWeek, by = c("Region", "bin_coord", "Year", "jd_wk")) %>%
+  #next line replaces 3 fields with 0 if the totalCount is NA
+  mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
+  mutate(meanDensity = totalCount/n,
+         fracSurveys = 100*numSurveysGTzero/n) %>%
+  right_join(filter(inat_surveys_plot, bin_coord %in% sites$bin_coord), by = c("bin_coord", "Year"="year", "jd_wk")) %>%
+  group_by(Year, bin_coord) %>%
+  nest() %>%
+  mutate(deltasDF = purrr::map(data, ~{
+    df <- .
+    len <- nrow(df) - 1
+    deltaJD <- c()
+    deltaFS <- c()
+    deltaiNat <- c()
+    for(i in 1:len) {
+      JD <- df[i + 1, 2]$jd_wk - df[i, 2]$jd_wk
+      FS <- df[i + 1, 7]$fracSurveys - df[i, 7]$fracSurveys
+      iNat <- df[i + 1, 9]$N_obs_inat - df[i, 9]$N_obs_inat
+      
+      deltaJD <- c(deltaJD, JD)
+      deltaFS <- c(deltaFS, FS)
+      deltaiNat <- c(deltaiNat, iNat)
+    }
+    data.frame(deltaJD = deltaJD, deltaFS = deltaFS, deltaiNat = deltaiNat)
+  })) %>%
+  dplyr::select(Year, bin_coord, deltasDF) %>%
+  unnest() %>%
+  mutate(deltaFSwk = deltaFS/(deltaJD/7),
+         deltaiNatwk = deltaiNat/(deltaJD/7)) %>%
+  left_join(region_names, by = "bin_coord")
+
+# Plot
+
+theme_set(theme_bw())
+ggplot(arthCount_deltas, aes(x = deltaFSwk, y = deltaiNatwk)) + 
+  geom_point() + geom_abline(slope = 1, intercept = 0, lty = 2) + 
+  facet_wrap(~bin_coord) +
+  geom_text(aes(x = -20, y = max(arthCount_deltas$deltaiNatwk, na.rm = T), label = Region)) +
+  labs(x = "Change in iNaturalist observations by week", y = "Change in fraction of Cat Count surveys by week")
+ggsave("figs/iNat_CC_correlations.pdf", height = 6, width = 8, units = "in")
 
 #### Determine/plot widespread families ####
 ## Common/widespread families from iNat
@@ -275,8 +364,9 @@ inat_families <- inat_noCC %>%
 family_pheno <- inat_families %>%
   filter(!is.na(family), family != "") %>%
   filter(year == 2018) %>%
-  mutate(lat_band = ifelse(latitude < 30, "15-30° Latitude", 
-                           ifelse(latitude < 45, "30-45° Latitude", "45-60° Latitude"))) %>%
+  filter(latitude >= 25) %>%
+  mutate(lat_band = ifelse(latitude < 35, "25-35° Latitude", 
+                           ifelse(latitude < 45, "35-45° Latitude", "45-60° Latitude"))) %>%
   group_by(family, lat_band, jd_wk) %>%
   count()
 
@@ -295,12 +385,13 @@ ggplot(family_pheno) +
   scale_color_viridis_d()
 ggsave("figs/CaterpillarPhenology_Families_2018.pdf", width = 12, height = 8, units = "in")
 
-# For 11 most abundant families, stacked bar chart showing number observations/family each JD week
+# For 10 most abundant families, stacked bar chart showing number observations/family each JD week
 fam_abund <- family_pheno %>%
   group_by(family) %>%
   summarize(sum = sum(n)) %>%
-  filter(sum > 30)
-
+  arrange(desc(sum)) %>%
+  filter(sum > 100)
+  
 family_pheno_abund <- family_pheno %>%
   filter(family %in% fam_abund$family)
 
@@ -336,3 +427,76 @@ inat_fam_sf <- st_as_sf(inat_families_spring, coords = c("longitude", "latitude"
 fam_map <- US_map + tm_shape(inat_fam_sf) + tm_dots(size = 0.25, alpha = 0.75) + tm_facets(by = "family", nrow = 4) + 
   tm_layout(panel.label.size = 2)
 tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat_2018.pdf", width = 12, height = 8, units = "in")
+
+### Families in CC data
+## 489 CC observations in iNaturalist, 113 ID-d to family
+
+## Subset iNat by CC sites
+jdBeg = 91
+jdEnd = 240
+
+inat_CC <- inat %>%
+  filter(user_login == "caterpillarscount", jday >= jdBeg, jday <= jdEnd) %>%
+  left_join(inat_species, by = "scientific_name")
+
+# Phenology of families (make abundance curves on map plot for each family)
+family_pheno_CC <- inat_CC %>%
+  filter(!is.na(family), family != "") %>%
+  filter(year == 2018) %>%
+  filter(latitude >= 25) %>%
+  mutate(lat_band = ifelse(latitude < 35, "25-35° Latitude", 
+                           ifelse(latitude < 45, "35-45° Latitude", "45-60° Latitude"))) %>%
+  group_by(family, lat_band, jd_wk) %>%
+  count()
+
+# Plot: line plots for each family, separate lines for latitudinal regions
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+theme_set(theme_bw())
+ggplot(family_pheno_CC) + 
+  geom_point(aes(x = jd_wk, y = n, col = lat_band)) + 
+  geom_line(aes(x = jd_wk, y = n, col = lat_band), cex = 1) +
+  scale_y_log10() + facet_wrap(~family, nrow = 4) +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  ylab("Number of observations") + theme(axis.title.x = element_blank()) +
+  theme(legend.position = c(0.9, 0.1), legend.title = element_blank()) +
+  scale_color_viridis_d()
+ggsave("figs/CaterpillarPhenology_Families_CC_2018.pdf", width = 12, height = 8, units = "in")
+
+# For 10 most abundant families, stacked bar chart showing number observations/family each JD week
+
+ggplot(family_pheno_CC) +
+  geom_col(aes(x = jd_wk, y = n, fill = family), position = "stack") +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  scale_fill_brewer(palette = "Set3") +
+  ylab("Number of observations") + theme(axis.title.x = element_blank(), legend.title = element_blank())
+ggsave("figs/CaterpillarPhenology_Families_2018_byWeek_CC.pdf", width = 8, height = 6, units = "in")
+
+# Plot geographic distribution of families
+jdBeg = 91
+jdEnd = 240
+recsPerBinThreshold = 100
+
+widespread_families <- family_pheno %>%
+  group_by(family) %>%
+  summarize(sum_recs = sum(n)) %>%
+  filter(sum_recs > recsPerBinThreshold)
+
+inat_families_CC <- inat_CC %>%
+  filter(!is.na(family), family != "") %>%
+  filter(jday <= jdEnd, jday >= jdBeg) %>%
+  filter(!is.na(longitude), !is.na(latitude)) %>%
+  group_by(latitude, longitude, family) %>%
+  summarize(nObs = n())
+
+NA_sf <- read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
+easternUS <- st_bbox(c(xmin = -100, xmax = -64, ymin = 25, ymax = 50), crs = st_crs(NA_sf))
+US_map <- tm_shape(NA_sf, bbox = easternUS) + tm_borders(col = "grey80") + tm_fill(col = "grey90")
+
+inat_fam_CC_sf <- st_as_sf(inat_families_CC, coords = c("longitude", "latitude"))
+
+fam_map <- US_map + tm_shape(inat_fam_CC_sf) + tm_dots(size = "nObs", alpha = 0.5) + tm_facets(by = "family", nrow = 4) + 
+  tm_layout(panel.label.size = 2)
+tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat_2018_CC.pdf", width = 12, height = 8, units = "in")
+
