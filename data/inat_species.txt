@@ -1,68 +1,68 @@
 scientific_name	genus	tribe	subfamily	family	superfamily	ITIS_id	hairy	spiny	leafroll	silktent	unpalatable	aposematic	social	aggregate 	iNat_taxon_link	notes
 Bombycoidea	NA		NA	NA	Bombycoidea	117536										
 Anisota	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936007										
-Anisota peigleri	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936148										
-Anisota senatoria	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936186										
-Anisota stigma	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936154										
-Anisota virginiensis	Anisota		Ceratocampinae	Saturniidae	Bombycoidea	936147										
-Citheronia regalis	Citheronia		Ceratocampinae	Saturniidae	Bombycoidea	936172										
-Dryocampa rubicunda	Dryocampa		Ceratocampinae	Saturniidae	Bombycoidea	936177										
-Eacles imperialis	Eacles		Ceratocampinae	Saturniidae	Bombycoidea	936166										
-Eacles imperialis pini	Eacles		Ceratocampinae	Saturniidae	Bombycoidea	936251										
-Automeris io	Automeris		Hemileucinae	Saturniidae	Bombycoidea	936158										
-Hemileuca grotei	Hemileuca		Hemileucinae	Saturniidae	Bombycoidea	936187										
-Hemileuca maia	Hemileuca		Hemileucinae	Saturniidae	Bombycoidea	936200										
+Anisota peigleri	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936148	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/48266-Anisota-peigleri	
+Anisota senatoria	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936186	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/81583-Anisota-senatoria	
+Anisota stigma	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936154	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/81585-Anisota-stigma	
+Anisota virginiensis	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936147	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81584-Anisota-virginiensis	
+Citheronia regalis	Citheronia	NA	Ceratocampinae	Saturniidae	Bombycoidea	936172	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81586-Citheronia-regalis	
+Dryocampa rubicunda	Dryocampa	NA	Ceratocampinae	Saturniidae	Bombycoidea	936177	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/48094-Dryocampa-rubicunda	
+Eacles imperialis	Eacles	NA	Ceratocampinae	Saturniidae	Bombycoidea	936166	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/81590-Eacles-imperialis	
+Eacles imperialis pini	Eacles	NA	Ceratocampinae	Saturniidae	Bombycoidea	936251	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/235767-Eacles-imperialis-pini	
+Automeris io	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936158	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/82279-Automeris-io	
+Hemileuca grotei	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936187	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/221171-Hemileuca-grotei	
+Hemileuca maia	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936200	N	Y	N	N		N	Y	Y	https://www.inaturalist.org/taxa/122256-Hemileuca-maia	Check literature on social behavior
 Hylesia	Hylesia		Hemileucinae	Saturniidae	Bombycoidea	935998										Hylesia lineata is the only species in this genus to form silktents
 Saturniidae	NA		NA	Saturniidae	Bombycoidea	117551										
-Actias luna	Actias		Saturniinae	Saturniidae	Bombycoidea	936178										
-Antheraea polyphemus	Antheraea		Saturniinae	Saturniidae	Bombycoidea	189057										
-Callosamia promethea	Callosamia	Attacini	Saturniinae	Saturniidae	Bombycoidea	936189	N	N	N	N			Y		https://www.inaturalist.org/taxa/81580-Callosamia-promethea	Not social until 3rd instar 
+Actias luna	Actias	Saturniini	Saturniinae	Saturniidae	Bombycoidea	936178	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/47916-Actias-luna	Very small hairs/spines opted to go with no as far as hair/spines
+Antheraea polyphemus	Antheraea	Saturniini	Saturniinae	Saturniidae	Bombycoidea	189057	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/47919-Antheraea-polyphemus	
+Callosamia promethea	Callosamia	Attacini	Saturniinae	Saturniidae	Bombycoidea	936189	N	N	N	N		N	Y	Y	https://www.inaturalist.org/taxa/81580-Callosamia-promethea	Not social until 3rd instar 
 Eupackardia	Eupackardia		Saturniinae	Saturniidae	Bombycoidea	936009										
-Eupackardia calleta	Eupackardia		Saturniinae	Saturniidae	Bombycoidea	936180										
-Hyalophora cecropia	Hyalophora		Saturniinae	Saturniidae	Bombycoidea	936196										
-Darapsa myron	Darapsa		Macroglossinae	Sphingidae	Bombycoidea	936039										
-Deidamia inscriptum	Deidamia		Macroglossinae	Sphingidae	Bombycoidea	936041										
+Eupackardia calleta	Eupackardia	Attacini	Saturniinae	Saturniidae	Bombycoidea	936180	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/192721-Eupackardia-calleta	
+Hyalophora cecropia	Hyalophora	Attacini	Saturniinae	Saturniidae	Bombycoidea	936196	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81582-Hyalophora-cecropia	
+Darapsa myron	Darapsa	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936039	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/118503-Darapsa-myron	
+Deidamia inscriptum	Deidamia	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936041	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143452-Deidamia-inscriptum	
 Eumorpha	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	935971										
-Eumorpha achemon	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	936056										
-Eumorpha fasciatus	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	936058										
-Eumorpha pandorus	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	936062										
-Eumorpha satellitia	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	936063										
-Eumorpha vitis	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	936065										
-Hemaris diffinis	Hemaris		Macroglossinae	Sphingidae	Bombycoidea	936068										
-Hemaris thysbe	Hemaris		Macroglossinae	Sphingidae	Bombycoidea	188633										
-Hyles euphorbiae	Hyles		Macroglossinae	Sphingidae	Bombycoidea	936074										
-Hyles gallii	Hyles		Macroglossinae	Sphingidae	Bombycoidea	188637										
-Hyles lineata	Hyles		Macroglossinae	Sphingidae	Bombycoidea	936075										
-Pachylia ficus	Pachylia		Macroglossinae	Sphingidae	Bombycoidea	936102										
-Pseudosphinx tetrio	Pseudosphinx		Macroglossinae	Sphingidae	Bombycoidea	936118										
-Sphecodina abbottii	Sphecodina		Macroglossinae	Sphingidae	Bombycoidea	936122										
-Xylophanes pluto	Xylophanes		Macroglossinae	Sphingidae	Bombycoidea	936141										
-Xylophanes tersa	Xylophanes		Macroglossinae	Sphingidae	Bombycoidea	936143										
+Eumorpha achemon	Eumorpha	Philampelini	Macroglossinae	Sphingidae	Bombycoidea	936056	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/122356-Eumorpha-achemon	
+Eumorpha fasciatus	Eumorpha	Philampelini	Macroglossinae	Sphingidae	Bombycoidea	936058	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/128012-Eumorpha-fasciatus	hard to determine if it's aposematic
+Eumorpha pandorus	Eumorpha	Philampelini	Macroglossinae	Sphingidae	Bombycoidea	936062	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/47914-Eumorpha-pandorus	hard to determine if it's aposematic
+Eumorpha satellitia	Eumorpha	Philampelini	Macroglossinae	Sphingidae	Bombycoidea	936063	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143829-Eumorpha-satellitia	
+Eumorpha vitis	Eumorpha	Philampelini	Macroglossinae	Sphingidae	Bombycoidea	936065	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143830-Eumorpha-vitis	
+Hemaris diffinis	Hemaris	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936068	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/358549-Hemaris-diffinis	have been saying that caterpillars with single horn are not spiny 
+Hemaris thysbe	Hemaris	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	188633	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82379-Hemaris-thysbe	
+Hyles euphorbiae	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936074	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/70071-Hyles-euphorbiae	
+Hyles gallii	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	188637	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/118901-Hyles-gallii	
+Hyles lineata	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936075	N	N	N	N	N	N	N	N	https://www.inaturalist.org/taxa/49348-Hyles-lineata	Saw photos of them being consumed 
+Pachylia ficus	Pachylia	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936102	N	N	N	N		unsure	N	N	https://www.inaturalist.org/taxa/143834-Pachylia-ficus	very cryptic in some instars and vibrant in others
+Pseudosphinx tetrio	Pseudosphinx	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936118	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/124467-Pseudosphinx-tetrio	
+Sphecodina abbottii	Sphecodina	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936122	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/130350-Sphecodina-abbottii	
+Xylophanes pluto	Xylophanes	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936141	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143839-Xylophanes-pluto	
+Xylophanes tersa	Xylophanes	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936143	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/69737-Xylophanes-tersa	
 Sphingidae	NA		NA	Sphingidae	Bombycoidea	117293										
-Amorpha juglandis	Amorpha		Smerinthinae	Sphingidae	Bombycoidea	936021										
-Pachysphinx modesta	Pachysphinx		Smerinthinae	Sphingidae	Bombycoidea	936104										
-Paonias astylus	Paonias		Smerinthinae	Sphingidae	Bombycoidea	936106										
-Paonias excaecata	Paonias		Smerinthinae	Sphingidae	Bombycoidea	936107										
-Paonias myops	Paonias		Smerinthinae	Sphingidae	Bombycoidea	936108										
-Smerinthus jamaicensis	Smerinthus		Smerinthinae	Sphingidae	Bombycoidea	188626										
+Amorpha juglandis	Amorpha	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	936021	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/84023-Amorpha-juglandis	
+Pachysphinx modesta	Pachysphinx	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	936104	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143445-Pachysphinx-modesta	
+Paonias astylus	Paonias	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	936106	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143581-Paonias-astylus	
+Paonias excaecata	Paonias	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	936107	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/49716-Paonias-excaecata	
+Paonias myops	Paonias	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	936108	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143446-Paonias-myops	
+Smerinthus jamaicensis	Smerinthus	Smerinthini	Smerinthinae	Sphingidae	Bombycoidea	188626	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/142993-Smerinthus-jamaicensis	
 Agrius	Agrius		Sphinginae	Sphingidae	Bombycoidea	188616										
-Agrius cingulata	Agrius		Sphinginae	Sphingidae	Bombycoidea	936020										
-Ceratomia amyntor	Ceratomia		Sphinginae	Sphingidae	Bombycoidea	936028										
-Ceratomia catalpae	Ceratomia		Sphinginae	Sphingidae	Bombycoidea	936029										
-Ceratomia undulosa	Ceratomia		Sphinginae	Sphingidae	Bombycoidea	188619										
-Dolba hyloeus	Dolba		Sphinginae	Sphingidae	Bombycoidea	936043										
+Agrius cingulata	Agrius	Acherontiini	Sphinginae	Sphingidae	Bombycoidea	936020	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/119086-Agrius-cingulata	
+Ceratomia amyntor	Ceratomia	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936028	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/84470-Ceratomia-amyntor	
+Ceratomia catalpae	Ceratomia	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936029	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/143440-Ceratomia-catalpae	
+Ceratomia undulosa	Ceratomia	Sphingini	Sphinginae	Sphingidae	Bombycoidea	188619	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82153-Ceratomia-undulosa	
+Dolba hyloeus	Dolba	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936043	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143441-Dolba-hyloeus	
 Lapara	Lapara		Sphinginae	Sphingidae	Bombycoidea	935977										
-Lapara bombycoides	Lapara		Sphinginae	Sphingidae	Bombycoidea	936080										
-Lapara coniferarum	Lapara		Sphinginae	Sphingidae	Bombycoidea	936081										
+Lapara bombycoides	Lapara	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936080	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/120033-Lapara-bombycoides	
+Lapara coniferarum	Lapara	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936081	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143442-Lapara-coniferarum	
 Manduca	Manduca		Sphinginae	Sphingidae	Bombycoidea	935981										
-Manduca rustica	Manduca		Sphinginae	Sphingidae	Bombycoidea	936099										
-Manduca sexta	Manduca		Sphinginae	Sphingidae	Bombycoidea	936100										
+Manduca rustica	Manduca	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936099	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/126568-Manduca-rustica	
+Manduca sexta	Manduca	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936100	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/61505-Manduca-sexta	
 Sphingini	NA		Sphinginae	Sphingidae	Bombycoidea	694329										
-Paratrea plebeja	Paratrea		Sphinginae	Sphingidae	Bombycoidea	936109										
-Sphinx chersis	Sphinx		Sphinginae	Sphingidae	Bombycoidea	936125										
-Sphinx dollii	Sphinx		Sphinginae	Sphingidae	Bombycoidea	936127										
-Sphinx kalmiae	Sphinx		Sphinginae	Sphingidae	Bombycoidea	188622										
-Sphinx poecila	Sphinx		Sphinginae	Sphingidae	Bombycoidea	936133										
+Paratrea plebeja	Paratrea	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936109	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/227111-Paratrea-plebeja	
+Sphinx chersis	Sphinx	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936125	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/127169-Sphinx-chersis	
+Sphinx dollii	Sphinx	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936127	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143812-Sphinx-dollii	
+Sphinx kalmiae	Sphinx	Sphingini	Sphinginae	Sphingidae	Bombycoidea	188622	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/117452-Sphinx-kalmiae	
+Sphinx poecila	Sphinx	Sphingini	Sphinginae	Sphingidae	Bombycoidea	936133	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/231396-Sphinx-poecila	
 Oreta rosea	Oreta		Drepaninae	Drepanidae	Drepanoidea	189061										
 Gelechiidae	NA		NA	Gelechiidae	Gelechioidea	118700										
 Alsophila pometaria	Alsophila		Ennominae	Geometridae	Geometroidea	117558										
