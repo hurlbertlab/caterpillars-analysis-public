@@ -431,6 +431,25 @@ tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat_2018.pdf", width = 12, hei
 ### Families in CC data
 ## 489 CC observations in iNaturalist, 113 ID-d to family
 
+## Plot: what percent of caterpillars count observations are identified over time?
+inat_CC_dates <- inat %>%
+  filter(user_login == "caterpillarscount", jday >= jdBeg, jday <= jdEnd) %>%
+  group_by(year, jd_wk) %>%
+  mutate(nObs = n()) %>%
+  filter(scientific_name != "Lepidoptera") %>%
+  group_by(year, jd_wk, nObs) %>%
+  summarize(n = n()) %>%
+  mutate(pctID = n/nObs)
+
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+theme_set(theme_classic())
+ggplot(inat_CC_dates, aes(x = jd_wk, y = pctID)) + geom_col() +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  labs(x = "", y = "% Identified") + facet_grid(~year)
+ggsave("figs/percent_CC_obs_identified_byweek.pdf", units = "in", height = 6, width = 14)
+
 ## Subset iNat by CC sites
 jdBeg = 91
 jdEnd = 240
@@ -500,3 +519,112 @@ fam_map <- US_map + tm_shape(inat_fam_CC_sf) + tm_dots(size = "nObs", alpha = 0.
   tm_layout(panel.label.size = 2)
 tmap_save(fam_map, "figs/CaterpillarFamily_Range_iNat_2018_CC.pdf", width = 12, height = 8, units = "in")
 
+####### Compare iNaturalist and Caterpillars Count data: only 4 most common CatCount families ######
+families <- c("Erebidae", "Geometridae", "Noctuidae", "Notodontidae")
+
+inat_noCC_families <- inat_noCC %>%
+  left_join(inat_species, by = "scientific_name") %>%
+  filter(family %in% families)
+
+inat_CC_families <- inat %>%
+  filter(user_login == "caterpillarscount", jday >= jdBeg, jday <= jdEnd) %>%
+  left_join(inat_species, by = "scientific_name") %>%
+  filter(family %in% families)
+
+## Plot: 4 families, phenology curves, iNat and CC sites: DC, MA, NC
+binsize <- 1
+
+inat_noCC_families$lat_bin <- binsize*floor(inat_noCC_families$latitude/binsize) + binsize/2
+inat_noCC_families$lon_bin <- binsize*floor(inat_noCC_families$longitude/binsize) + binsize/2
+inat_noCC_families$bin_coord <- paste0(inat_noCC_families$lon_bin, ", ", inat_noCC_families$lat_bin)
+
+inat_CC_families$lat_bin <- binsize*floor(inat_CC_families$latitude/binsize) + binsize/2
+inat_CC_families$lon_bin <- binsize*floor(inat_CC_families$longitude/binsize) + binsize/2
+inat_CC_families$bin_coord <- paste0(inat_CC_families$lon_bin, ", ", inat_CC_families$lat_bin)
+
+siteList$lat_bin <- binsize*floor(siteList$Latitude/binsize) + binsize/2
+siteList$lon_bin <- binsize*floor(siteList$Longitude/binsize) + binsize/2
+siteList$bin_coord <- paste0(siteList$lon_bin, ", ", siteList$lat_bin)
+
+# Filter and merge data
+
+sites <- siteList %>%
+  filter(Region %in% c("MA", "DC", "NC"), Name != "UNC Chapel Hill Campus", Name != "East Carolina University",
+         Name != "Currituck Banks Reserve")
+
+inat_CC_plot <- inat_CC_families %>%
+  filter(bin_coord %in% sites$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
+  count() %>%
+  rename(N_obs_cc = n) %>%
+  left_join(dplyr::select(sites, lat_bin, bin_coord, Region), by = c("lat_bin", "bin_coord"))
+
+inat_surveys_plot <- inat_noCC_families %>%
+  filter(bin_coord %in% sites$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
+  count() %>%
+  rename(N_obs_inat = n) %>%
+  left_join(inat_CC_plot, by = c("year", "jd_wk", "lat_bin", "bin_coord")) %>%
+  filter(year > 2015)
+
+# Plot
+jds <- c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+theme_set(theme_bw())
+phenoplot <- ggplot(inat_surveys_plot, aes(x = jd_wk)) +
+  facet_wrap(fct_reorder(bin_coord, lat_bin, .desc = T)~year, ncol = 3) +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  labs(x = "", y = "Fraction of surveys with caterpillars")
+
+phenoplot + geom_point(aes(y = N_obs_cc, col = "Caterpillars Count")) + 
+  geom_line(aes(y = N_obs_cc, col = "Caterpillars Count"), cex = 1) +
+  geom_point(aes(y = N_obs_inat, color = "iNaturalist")) + 
+  geom_line(aes(y = N_obs_inat, color = "iNaturalist"), cex = 1) +
+  scale_color_manual(values = c("Caterpillars Count" = "firebrick", 
+                                "iNaturalist" = "dodgerblue")) +
+  theme(legend.position = "bottom", legend.title = element_blank()) +
+  geom_text(aes(x = 100, y = max(inat_surveys_plot$N_obs_inat, na.rm = T), label = Region)) +
+  ggtitle(paste0(binsize, "° bin size"))
+
+ggsave(paste0("figs/FourCatFamilies_Phenology_withiNat_2018_", binsize, "_deg.pdf"), width = 10, height = 10, units = "in")
+
+## Plot: 4 families, correlation iNat/CC phenology
+
+region_names <- unique(sites[, c(2, 10)])
+
+inat_surveys_corrplot <- inat_surveys_plot %>%
+  group_by(year, bin_coord) %>%
+  nest() %>%
+  mutate(deltasDF = purrr::map(data, ~{
+    df <- .
+    len <- nrow(df) - 1
+    deltaJD <- c()
+    deltaFS <- c()
+    deltaiNat <- c()
+    for(i in 1:len) {
+      JD <- df[i + 1, 2]$jd_wk - df[i, 2]$jd_wk
+      FS <- df[i + 1, 4]$N_obs_cc - df[i, 4]$N_obs_cc
+      iNat <- df[i + 1, 3]$N_obs_inat - df[i, 3]$N_obs_inat
+      
+      deltaJD <- c(deltaJD, JD)
+      deltaFS <- c(deltaFS, FS)
+      deltaiNat <- c(deltaiNat, iNat)
+    }
+    data.frame(deltaJD = deltaJD, deltaFS = deltaFS, deltaiNat = deltaiNat)
+  })) %>%
+  dplyr::select(year, bin_coord, deltasDF) %>%
+  unnest() %>%
+  mutate(deltaFSwk = deltaFS/(deltaJD/7),
+         deltaiNatwk = deltaiNat/(deltaJD/7)) %>%
+  left_join(region_names, by = "bin_coord")
+
+# Plot
+
+theme_set(theme_bw())
+ggplot(inat_surveys_corrplot, aes(x = deltaFSwk, y = deltaiNatwk)) + 
+  geom_point() + geom_abline(slope = 1, intercept = 0, lty = 2) + 
+  facet_wrap(~bin_coord) +
+  geom_text(aes(x = -20, y = max(inat_surveys_corrplot$deltaiNatwk, na.rm = T), label = Region)) +
+  labs(x = "Change in iNaturalist observations by week", y = "Change in Caterpillars Count observations by week")
+ggsave("figs/FourCatFamilies_iNat_CC_correlations.pdf", height = 6, width = 8, units = "in")
