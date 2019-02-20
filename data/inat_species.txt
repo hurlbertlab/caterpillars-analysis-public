@@ -262,15 +262,15 @@ Acronicta impleta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937614	Y	N	N	N	
 Acronicta impressa	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188672	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212433-Acronicta-impressa	
 Acronicta increta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937616	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212434-Acronicta-increta	
 Acronicta interrupta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937618	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/212436-Acronicta-interrupta	
-Acronicta lepusculina	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117344										
-Acronicta lobeliae	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937623										
-Acronicta longa	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188673										
-Acronicta modica	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937626										
-Acronicta oblinita	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117345										
-Acronicta ovata	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937630										
-Acronicta retardata	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937636										
-Acronicta rubricoma	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937637										
-Acronicta superans	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188669										
+Acronicta lepusculina	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	117344	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212439-Acronicta-lepusculina	
+Acronicta lobeliae	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937623	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212441-Acronicta-lobeliae/browse_photos	
+Acronicta longa	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188673	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/212442-Acronicta-longa	
+Acronicta modica	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937626	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212444-Acronicta-modica	
+Acronicta oblinita	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	117345	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/129428-Acronicta-oblinita	
+Acronicta ovata	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937630	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212446-Acronicta-ovata	
+Acronicta retardata	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937636	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/208032-Acronicta-retardata	
+Acronicta rubricoma	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937637	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212451-Acronicta-rubricoma	
+Acronicta superans	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188669	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212455-Acronicta-superans	
 Cerma cerintha	Cerma		Acronictinae	Noctuidae	Noctuoidea	938169										
 Cerma cora	Cerma		Acronictinae	Noctuidae	Noctuoidea	938170										
 Harrisimemna trisignata	Harrisimemna		Acronictinae	Noctuidae	Noctuoidea	117494										
