@@ -531,7 +531,6 @@ inat_CC_families <- inat %>%
   left_join(inat_species, by = "scientific_name") %>%
   filter(family %in% families)
 
-## Plot: 4 families, phenology curves, iNat and CC sites: DC, MA, NC
 binsize <- 1
 
 inat_noCC_families$lat_bin <- binsize*floor(inat_noCC_families$latitude/binsize) + binsize/2
@@ -542,10 +541,49 @@ inat_CC_families$lat_bin <- binsize*floor(inat_CC_families$latitude/binsize) + b
 inat_CC_families$lon_bin <- binsize*floor(inat_CC_families$longitude/binsize) + binsize/2
 inat_CC_families$bin_coord <- paste0(inat_CC_families$lon_bin, ", ", inat_CC_families$lat_bin)
 
+## Plot: 4 families, phenology curves, iNat and CC sites
+
+minNumRecords = 267
+minNumDates = 4
+
+# Filter and merge data
+
+siteList = fullDataset %>%
+  filter(Year == 2018) %>%
+  group_by(Name, Region, Latitude, Longitude) %>%
+  summarize(nRecs = n_distinct(ID),
+            nDates = n_distinct(LocalDate)) %>%
+  arrange(desc(Latitude)) %>%
+  filter(nRecs >= minNumRecords, nDates >= minNumDates, Name != "Example Site", Name != "East Carolina University", Name != "NC State University") %>%
+  mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
+
 siteList$lat_bin <- binsize*floor(siteList$Latitude/binsize) + binsize/2
 siteList$lon_bin <- binsize*floor(siteList$Longitude/binsize) + binsize/2
 siteList$bin_coord <- paste0(siteList$lon_bin, ", ", siteList$lat_bin)
 
+inat_CC_allsites <- inat_CC_families %>%
+  filter(bin_coord %in% siteList$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
+  count() %>%
+  rename(N_obs_cc = n) %>%
+  left_join(dplyr::select(sites, lat_bin, bin_coord, Region), by = c("lat_bin", "bin_coord"))
+
+inat_surveys_allsites <- inat_noCC_families %>%
+  filter(bin_coord %in% siteList$bin_coord) %>%
+  group_by(year, lat_bin, bin_coord, jd_wk) %>%
+  count() %>%
+  rename(N_obs_inat = n) %>%
+  left_join(inat_CC_allsites, by = c("year", "jd_wk", "lat_bin", "bin_coord")) %>%
+  filter(year > 2017)
+
+theme_set(theme_bw())
+ggplot(inat_surveys_allsites) + 
+  geom_point(aes(x = jd_wk, y = N_obs_cc), col = "firebrick") + geom_line(aes(x = jd_wk, y = N_obs_cc), col = "firebrick", cex = 1) +
+  geom_point(aes(x = jd_wk, y = N_obs_inat), col = "dodgerblue") + geom_line(aes(x = jd_wk, y = N_obs_inat), col = "dodgerblue", cex = 1) +
+  scale_y_log10() + geom_text(aes(x = 130, y = 300, label = bin_coord)) + facet_wrap(~fct_reorder(Name, Latitude, .desc = T), nrow = 3) +
+  scale_x_continuous(breaks = jds, labels = dates)
+
+## Plot: 4 families, phenology curves, iNat and CC sites: DC, MA, NC
 # Filter and merge data
 
 sites <- siteList %>%
@@ -575,7 +613,7 @@ theme_set(theme_bw())
 phenoplot <- ggplot(inat_surveys_plot, aes(x = jd_wk)) +
   facet_wrap(fct_reorder(bin_coord, lat_bin, .desc = T)~year, ncol = 3) +
   scale_x_continuous(breaks = jds, labels = dates) +
-  labs(x = "", y = "Fraction of surveys with caterpillars")
+  labs(x = "", y = "Number of observations")
 
 phenoplot + geom_point(aes(y = N_obs_cc, col = "Caterpillars Count")) + 
   geom_line(aes(y = N_obs_cc, col = "Caterpillars Count"), cex = 1) +
