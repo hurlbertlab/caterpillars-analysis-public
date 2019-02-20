@@ -252,16 +252,16 @@ Scolecocampa liburna	Scolecocampa	NA	Scolecocampinae	Erebidae	Noctuoidea	940271	
 Scoliopteryx libatrix	Scoliopteryx	Scoliopterygini	Scoliopteryginae	Erebidae	Noctuoidea	189022	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/134078-Scoliopteryx-libatrix	
 Noctuoidea	NA		NA	NA	Noctuoidea	117294										
 Acronicta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117342										
-Acronicta afflicta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937590										
-Acronicta americana	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117343	test edit									
-Acronicta clarescens	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937599										
-Acronicta dactylina	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188664										
-Acronicta funeralis	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937608										
-Acronicta hastulifera	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937612										
-Acronicta impleta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937614										
-Acronicta impressa	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188672										
-Acronicta increta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937616										
-Acronicta interrupta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937618										
+Acronicta afflicta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937590	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212420-Acronicta-afflicta	
+Acronicta americana	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	117343	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/145659-Acronicta-americana	
+Acronicta clarescens	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937599	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212422-Acronicta-clarescens	
+Acronicta dactylina	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188664	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/212425-Acronicta-dactylina	
+Acronicta funeralis	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937608	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/198777-Acronicta-funeralis	
+Acronicta hastulifera	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937612	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212432-Acronicta-hastulifera	
+Acronicta impleta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937614	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/153961-Acronicta-impleta	
+Acronicta impressa	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188672	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212433-Acronicta-impressa	
+Acronicta increta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937616	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212434-Acronicta-increta	
+Acronicta interrupta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937618	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/212436-Acronicta-interrupta	
 Acronicta lepusculina	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117344										
 Acronicta lobeliae	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937623										
 Acronicta longa	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188673										
