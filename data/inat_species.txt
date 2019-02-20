@@ -253,7 +253,7 @@ Scoliopteryx libatrix	Scoliopteryx	Scoliopterygini	Scoliopteryginae	Erebidae	Noc
 Noctuoidea	NA		NA	NA	Noctuoidea	117294										
 Acronicta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117342										
 Acronicta afflicta	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937590										
-Acronicta americana	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117343										
+Acronicta americana	Acronicta		Acronictinae	Noctuidae	Noctuoidea	117343	test edit									
 Acronicta clarescens	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937599										
 Acronicta dactylina	Acronicta		Acronictinae	Noctuidae	Noctuoidea	188664										
 Acronicta funeralis	Acronicta		Acronictinae	Noctuidae	Noctuoidea	937608										
