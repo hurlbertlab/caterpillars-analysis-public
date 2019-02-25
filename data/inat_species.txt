@@ -300,31 +300,31 @@ Noctuidae	NA		NA	Noctuidae	Noctuoidea	117318
 Anicla illapsa	Anicla	Noctuini	Noctuinae	Noctuidae	Noctuoidea	937764	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/213630-Anicla-illapsa		
 Anicla infecta	Anicla	Noctuini	Noctuinae	Noctuidae	Noctuoidea	937765	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/213631-Anicla-infecta		
 Cosmia calami	Cosmia	Xylenini	Noctuinae	Noctuidae	Noctuoidea	938303	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/126616-Cosmia-calami		
-Elaphria festivoides	Elaphria		Noctuinae	Noctuidae	Noctuoidea	188967											
-Himella fidelis	Himella		Noctuinae	Noctuidae	Noctuoidea	939025											
+Elaphria festivoides	Elaphria	Elaphriini	Noctuinae	Noctuidae	Noctuoidea	188967	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/218928-Elaphria-festivoides		
+Himella fidelis	Himella	Orthosiini	Noctuinae	Noctuidae	Noctuoidea	939025	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/221368-Himella-fidelis		
 Lithophane	Lithophane		Noctuinae	Noctuidae	Noctuoidea	117408											
-Lithophane antennata	Lithophane		Noctuinae	Noctuidae	Noctuoidea	117409											
-Lithophane oriunda	Lithophane		Noctuinae	Noctuidae	Noctuoidea	939383											
-Melanchra adjuncta	Melanchra		Noctuinae	Noctuidae	Noctuoidea	939479											
-Melanchra assimilis	Melanchra		Noctuinae	Noctuidae	Noctuoidea	939480											
-Morrisonia confusa	Morrisonia		Noctuinae	Noctuidae	Noctuoidea	939549											
-Mythimna unipuncta	Mythimna		Noctuinae	Noctuidae	Noctuoidea	939565											
+Lithophane antennata	Lithophane	Xylenini	Noctuinae	Noctuidae	Noctuoidea	117409	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/223978-Lithophane-antennata		
+Lithophane oriunda	Lithophane	Xylenini	Noctuinae	Noctuidae	Noctuoidea	939383	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/179728-Lithophane-oriunda		
+Melanchra adjuncta	Melanchra	Hadenini	Noctuinae	Noctuidae	Noctuoidea	939479	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/204701-Melanchra-adjuncta		
+Melanchra assimilis	Melanchra	Hadenini	Noctuinae	Noctuidae	Noctuoidea	939480	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/205826-Melanchra-assimilis		
+Morrisonia confusa	Morrisonia	Orthosiini	Noctuinae	Noctuidae	Noctuoidea	939549	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/176925-Morrisonia-confusa		
+Mythimna unipuncta	Mythimna	Leucaniini	Noctuinae	Noctuidae	Noctuoidea	939565	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/121183-Mythimna-unipuncta		
 Eriopygini	NA		Noctuinae	Noctuidae	Noctuoidea	694225											
 Noctuinae	NA		Noctuinae	Noctuidae	Noctuoidea	694085											
 Noctuini	NA		Noctuinae	Noctuidae	Noctuoidea	694280											
 Xylenini	NA		Noctuinae	Noctuidae	Noctuoidea	694348											
-Nephelodes minians	Nephelodes		Noctuinae	Noctuidae	Noctuoidea	117421											
+Nephelodes minians	Nephelodes	Tholerini	Noctuinae	Noctuidae	Noctuoidea	117421	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/153076-Nephelodes-minians		
 Noctua	Noctua		Noctuinae	Noctuidae	Noctuoidea	771324											
-Noctua pronuba	Noctua		Noctuinae	Noctuidae	Noctuoidea	771401											
-Orthosia hibisci	Orthosia		Noctuinae	Noctuidae	Noctuoidea	188859											
-Orthosia rubescens	Orthosia		Noctuinae	Noctuidae	Noctuoidea	939705											
-Papaipema sulphurata	Papaipema		Noctuinae	Noctuidae	Noctuoidea	939798											
-Phosphila miselioides	Phosphila		Noctuinae	Noctuidae	Noctuoidea	939849											
-Phosphila turbulenta	Phosphila		Noctuinae	Noctuidae	Noctuoidea	939850											
-Protolampra brunneicollis	Protolampra		Noctuinae	Noctuidae	Noctuoidea	771416											
+Noctua pronuba	Noctua	Noctuini	Noctuinae	Noctuidae	Noctuoidea	771401	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81687-Noctua-pronuba		
+Orthosia hibisci	Orthosia	Orthosiini	Noctuinae	Noctuidae	Noctuoidea	188859	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/226646-Orthosia-hibisci		
+Orthosia rubescens	Orthosia	Orthosiini	Noctuinae	Noctuidae	Noctuoidea	939705	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/203454-Orthosia-rubescens		
+Papaipema sulphurata	Papaipema	Apameini	Noctuinae	Noctuidae	Noctuoidea	939798	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/226943-Papaipema-sulphurata		
+Phosphila miselioides	Phosphila	Phosphilini	Noctuinae	Noctuidae	Noctuoidea	939849	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/227864-Phosphila-miselioides		
+Phosphila turbulenta	Phosphila	Phosphilini	Noctuinae	Noctuidae	Noctuoidea	939850	N	N	N	N		Y	Y	Y	https://www.inaturalist.org/taxa/122765-Phosphila-turbulenta		
+Protolampra brunneicollis	Protolampra	Noctuini	Noctuinae	Noctuidae	Noctuoidea	771416	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/153450-Protolampra-brunneicollis		
 Pyreferra	Pyreferra		Noctuinae	Noctuidae	Noctuoidea	937471											
 Spodoptera	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117468											
-Spodoptera dolichos	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	940321											
+Spodoptera dolichos	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	940321	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/231423-Spodoptera-dolichos		
 Spodoptera eridania	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117469											
 Spodoptera frugiperda	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117472											
 Spodoptera ornithogalli	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117474											
