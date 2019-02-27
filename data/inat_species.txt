@@ -325,104 +325,104 @@ Protolampra brunneicollis	Protolampra	Noctuini	Noctuinae	Noctuidae	Noctuoidea	77
 Pyreferra	Pyreferra		Noctuinae	Noctuidae	Noctuoidea	937471											
 Spodoptera	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117468											
 Spodoptera dolichos	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	940321	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/231423-Spodoptera-dolichos		
-Spodoptera eridania	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117469											
-Spodoptera frugiperda	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117472											
-Spodoptera ornithogalli	Spodoptera		Noctuinae	Noctuidae	Noctuoidea	117474											
-Trichordestra legitima	Trichordestra		Noctuinae	Noctuidae	Noctuoidea	117481											
+Spodoptera eridania	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117469	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/231424-Spodoptera-eridania		
+Spodoptera frugiperda	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117472	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/132468-Spodoptera-frugiperda		
+Spodoptera ornithogalli	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117474	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/118930-Spodoptera-ornithogalli		
+Trichordestra legitima	Trichordestra	Hadenini	Noctuinae	Noctuidae	Noctuoidea	117481	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/146633-Trichordestra-legitima		
 Xanthopastis	Xanthopastis		Noctuinae	Noctuidae	Noctuoidea	937536											
-Xanthopastis regnatrix	Xanthopastis		Noctuinae	Noctuidae	Noctuoidea	941100											
+Xanthopastis regnatrix	Xanthopastis	Glottulini	Noctuinae	Noctuidae	Noctuoidea	941100	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/322588-Xanthopastis-regnatrix		
 Xestia	Xestia		Noctuinae	Noctuidae	Noctuoidea	771332											
-Calophasia lunula	Calophasia		Oncocnemidinae	Noctuidae	Noctuoidea	938037											
-Charadra deridens	Charadra		Pantheinae	Noctuidae	Noctuoidea	938182											
-Panthea furcilla	Panthea		Pantheinae	Noctuidae	Noctuoidea	939752											
-Autographa precationis	Autographa		Plusiinae	Noctuidae	Noctuoidea	937936											
+Calophasia lunula	Calophasia	NA	Oncocnemidinae	Noctuidae	Noctuoidea	938037	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/215780-Calophasia-lunula		
+Charadra deridens	Charadra	NA	Pantheinae	Noctuidae	Noctuoidea	938182	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/148460-Charadra-deridens		
+Panthea furcilla	Panthea	NA	Pantheinae	Noctuidae	Noctuoidea	939752	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/226910-Panthea-furcilla		
+Autographa precationis	Autographa	Plusiini	Plusiinae	Noctuidae	Noctuoidea	937936	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/142990-Autographa-precationis		
 Plusiinae	NA		Plusiinae	Noctuidae	Noctuoidea	694104											
-Trichoplusia ni	Trichoplusia		Plusiinae	Noctuidae	Noctuoidea	117479											
+Trichoplusia ni	Trichoplusia	Argyrogrammatini	Plusiinae	Noctuidae	Noctuoidea	117479	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/202789-Trichoplusia-ni		
 Heterocampa	Heterocampa		Heterocampinae	Notodontidae	Noctuoidea	117516											
-Heterocampa biundata	Heterocampa		Heterocampinae	Notodontidae	Noctuoidea	936789											
-Heterocampa guttivitta	Heterocampa		Heterocampinae	Notodontidae	Noctuoidea	117517											
+Heterocampa biundata	Heterocampa	NA	Heterocampinae	Notodontidae	Noctuoidea	936789	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82210-Heterocampa-biundata		
+Heterocampa guttivitta	Heterocampa	NA	Heterocampinae	Notodontidae	Noctuoidea	117517	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/203462-Heterocampa-guttivitta		
 Lochmaeus	Lochmaeus		Heterocampinae	Notodontidae	Noctuoidea	936717											
-Lochmaeus bilineata	Lochmaeus		Heterocampinae	Notodontidae	Noctuoidea	936819											
-Lochmaeus manteo	Lochmaeus		Heterocampinae	Notodontidae	Noctuoidea	936820											
-Macrurocampa marthesia	Macrurocampa		Heterocampinae	Notodontidae	Noctuoidea	936822											
-Misogada unicolor	Misogada		Heterocampinae	Notodontidae	Noctuoidea	936823											
+Lochmaeus bilineata	Lochmaeus	NA	Heterocampinae	Notodontidae	Noctuoidea	936819	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/224089-Lochmaeus-bilineata		
+Lochmaeus manteo	Lochmaeus	NA	Heterocampinae	Notodontidae	Noctuoidea	936820	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/153443-Lochmaeus-manteo		
+Macrurocampa marthesia	Macrurocampa	NA	Heterocampinae	Notodontidae	Noctuoidea	936822	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/177197-Macrurocampa-marthesia		
+Misogada unicolor	Misogada	NA	Heterocampinae	Notodontidae	Noctuoidea	936823	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/225178-Misogada-unicolor		
 Heterocampinae	NA		Heterocampinae	Notodontidae	Noctuoidea	694058											
-Schizura concinna	Schizura		Heterocampinae	Notodontidae	Noctuoidea	117522											
-Schizura errucata	Schizura		Heterocampinae	Notodontidae	Noctuoidea	936858											
-Schizura unicornis	Schizura		Heterocampinae	Notodontidae	Noctuoidea	117523											
+Schizura concinna	Schizura	NA	Heterocampinae	Notodontidae	Noctuoidea	117522	Y	Y	N	N		Y	Y	Y	https://www.inaturalist.org/taxa/155234-Schizura-concinna		
+Schizura errucata	Schizura	NA	Heterocampinae	Notodontidae	Noctuoidea	936858	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/230607-Schizura-errucata		
+Schizura unicornis	Schizura	NA	Heterocampinae	Notodontidae	Noctuoidea	117523	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/126207-Schizura-unicornis		
 Notodontidae	NA		NA	Notodontidae	Noctuoidea	117511											
 Furcula	Furcula		Notodontinae	Notodontidae	Noctuoidea	936710											
-Furcula borealis	Furcula		Notodontinae	Notodontidae	Noctuoidea	936771											
-Hyperaeschra georgica	Hyperaeschra		Notodontinae	Notodontidae	Noctuoidea	936810											
+Furcula borealis	Furcula	Dicranurini	Notodontinae	Notodontidae	Noctuoidea	936771	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/220228-Furcula-borealis		
+Hyperaeschra georgica	Hyperaeschra	Notodontini	Notodontinae	Notodontidae	Noctuoidea	936810	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/132360-Hyperaeschra-georgica		
 Symmerista	Symmerista		Nystaleinae	Notodontidae	Noctuoidea	117524											
-Symmerista canicosta	Symmerista		Nystaleinae	Notodontidae	Noctuoidea	936861											
-Symmerista leucitys	Symmerista		Nystaleinae	Notodontidae	Noctuoidea	117525											
+Symmerista canicosta	Symmerista	NA	Nystaleinae	Notodontidae	Noctuoidea	936861	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/232056-Symmerista-canicosta		
+Symmerista leucitys	Symmerista	NA	Nystaleinae	Notodontidae	Noctuoidea	117525	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/232057-Symmerista-leucitys		
 Datana	Datana		Phalerinae	Notodontidae	Noctuoidea	117512											
-Datana contracta	Datana		Phalerinae	Notodontidae	Noctuoidea	936758											
-Datana drexelii	Datana		Phalerinae	Notodontidae	Noctuoidea	936760											
-Datana integerrima	Datana		Phalerinae	Notodontidae	Noctuoidea	117513											
-Datana major	Datana		Phalerinae	Notodontidae	Noctuoidea	117514											
-Datana ministra	Datana		Phalerinae	Notodontidae	Noctuoidea	117515											
-Ellida caniplaga	Ellida		Phalerinae	Notodontidae	Noctuoidea	936768											
-Nadata gibbosa	Nadata		Phalerinae	Notodontidae	Noctuoidea	189053											
-Peridea angulosa	Peridea		Phalerinae	Notodontidae	Noctuoidea	936845											
+Datana contracta	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	936758	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/154385-Datana-contracta		
+Datana drexelii	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	936760	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/136433-Datana-drexelii		
+Datana integerrima	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117513	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/218166-Datana-integerrima		
+Datana major	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117514	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/218167-Datana-major		
+Datana ministra	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117515	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/47719-Datana-ministra		
+Ellida caniplaga	Ellida	NA	Phalerinae	Notodontidae	Noctuoidea	936768	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/219028-Ellida-caniplaga		
+Nadata gibbosa	Nadata	NA	Phalerinae	Notodontidae	Noctuoidea	189053	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82204-Nadata-gibbosa		
+Peridea angulosa	Peridea	NA	Phalerinae	Notodontidae	Noctuoidea	936845	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/151770-Peridea-angulosa		
 Clostera	Clostera		Pygaerinae	Notodontidae	Noctuoidea	936702											
-Clostera inclusa	Clostera		Pygaerinae	Notodontidae	Noctuoidea	936748											
+Clostera inclusa	Clostera	NA	Pygaerinae	Notodontidae	Noctuoidea	936748	Y	N	Y	Y		Y	Y	Y	https://www.inaturalist.org/taxa/196518-Clostera-inclusa		
 Lycaenidae	NA		NA	Lycaenidae	Papilionoidea	117236											
-Celastrina neglectamajor	Celastrina		Polyommatinae	Lycaenidae	Papilionoidea	777898											
-Atlides halesus	Atlides		Theclinae	Lycaenidae	Papilionoidea	777807											
-Callophrys henrici	Callophrys		Theclinae	Lycaenidae	Papilionoidea	777852											
-Callophrys niphon	Callophrys		Theclinae	Lycaenidae	Papilionoidea	188504											
-Eumaeus toxea	Eumaeus		Theclinae	Lycaenidae	Papilionoidea	777805											
+Celastrina neglectamajor	Celastrina	Polyommatinae	Polyommatinae	Lycaenidae	Papilionoidea	777898	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82793-Celastrina-neglectamajor		
+Atlides halesus	Atlides	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777807	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/59128-Atlides-halesus		
+Callophrys henrici	Callophrys	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777852	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/127303-Callophrys-henrici		
+Callophrys niphon	Callophrys	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	188504	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/58550-Callophrys-niphon		
+Eumaeus toxea	Eumaeus	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777805	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/148489-Eumaeus-toxea		
 Eumaeini	NA		Theclinae	Lycaenidae	Papilionoidea	694230											
 Theclinae	NA		Theclinae	Lycaenidae	Papilionoidea	694139											
 Satyrium	Satyrium		Theclinae	Lycaenidae	Papilionoidea	777550											
-Satyrium calanus	Satyrium		Theclinae	Lycaenidae	Papilionoidea	777819											
-Satyrium edwardsii	Satyrium		Theclinae	Lycaenidae	Papilionoidea	777818											
-Satyrium favonius ontario	Satyrium		Theclinae	Lycaenidae	Papilionoidea	778714											
+Satyrium calanus	Satyrium	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777819	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/58539-Satyrium-calanus		
+Satyrium edwardsii	Satyrium	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777818	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81566-Satyrium-edwardsii		
+Satyrium favonius ontario	Satyrium	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	778714	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/238386-Satyrium-favonius-ontario		
 Papilionoidea	NA		NA	NA	Papilionoidea	117235											
-Asterocampa celtis	Asterocampa		Apaturinae	Nymphalidae	Papilionoidea	778004											
-Asterocampa celtis celtis	Asterocampa		Apaturinae	Nymphalidae	Papilionoidea	779234											
-Asterocampa clyton	Asterocampa		Apaturinae	Nymphalidae	Papilionoidea	778006											
+Asterocampa celtis	Asterocampa	NA	Apaturinae	Nymphalidae	Papilionoidea	778004	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/68264-Asterocampa-celtis		
+Asterocampa celtis celtis	Asterocampa	NA	Apaturinae	Nymphalidae	Papilionoidea	779234	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/234514-Asterocampa-celtis-celtis		
+Asterocampa clyton	Asterocampa	NA	Apaturinae	Nymphalidae	Papilionoidea	778006	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/58587-Asterocampa-clyton		
 Apaturinae	NA		Apaturinae	Nymphalidae	Papilionoidea	693995											
-Anaea aidea	Anaea		Charaxinae	Nymphalidae	Papilionoidea	778099											
-Danaus gilippus	Danaus		Danainae	Nymphalidae	Papilionoidea	777963											
-Danaus plexippus	Danaus		Danainae	Nymphalidae	Papilionoidea	117273											
+Anaea aidea	Anaea	Anaeini	Charaxinae	Nymphalidae	Papilionoidea	778099	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/148810-Anaea-aidea		
+Danaus gilippus	Danaus	Danaini	Danainae	Nymphalidae	Papilionoidea	777963	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/51743-Danaus-gilippus		
+Danaus plexippus	Danaus	Danaini	Danainae	Nymphalidae	Papilionoidea	117273	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/48662-Danaus-plexippus		
 Danainae	NA		Danainae	Nymphalidae	Papilionoidea	694025											
-Agraulis vanillae	Agraulis		Heliconiinae	Nymphalidae	Papilionoidea	777975											
-Euptoieta claudia	Euptoieta		Heliconiinae	Nymphalidae	Papilionoidea	777981											
-Heliconius charithonia	Heliconius		Heliconiinae	Nymphalidae	Papilionoidea	777979											
-Speyeria cybele	Speyeria		Heliconiinae	Nymphalidae	Papilionoidea	777991											
+Agraulis vanillae	Agraulis	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777975	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49150-Agraulis-vanillae		
+Euptoieta claudia	Euptoieta	Argynnini	Heliconiinae	Nymphalidae	Papilionoidea	777981	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/68244-Euptoieta-claudia		
+Heliconius charithonia	Heliconius	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777979	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49766-Heliconius-charithonia		
+Speyeria cybele	Speyeria	Argynnini	Heliconiinae	Nymphalidae	Papilionoidea	777991	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/47980-Speyeria-cybele		
 Limenitis	Limenitis		Limenitidinae	Nymphalidae	Papilionoidea	188602											
-Limenitis archippus	Limenitis		Limenitidinae	Nymphalidae	Papilionoidea	777969											
-Limenitis arthemis astyanax	Limenitis		Limenitidinae	Nymphalidae	Papilionoidea	779032											
-Morpho polyphemus	Morpho		Morphinae	Nymphalidae	Papilionoidea	778104											
+Limenitis archippus	Limenitis	Limenitidini	Limenitidinae	Nymphalidae	Papilionoidea	777969	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/58586-Limenitis-archippus		
+Limenitis arthemis astyanax	Limenitis	Limenitidini	Limenitidinae	Nymphalidae	Papilionoidea	779032	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/58585-Limenitis-arthemis-astyanax		
+Morpho polyphemus	Morpho	Morphini	Morphinae	Nymphalidae	Papilionoidea	778104	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/196878-Morpho-polyphemus		
 Nymphalidae	NA		NA	Nymphalidae	Papilionoidea	117276											
-Aglais milberti	Aglais		Nymphalinae	Nymphalidae	Papilionoidea	778038											
+Aglais milberti	Aglais	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778038	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/68269-Aglais-milberti		
 Chlosyne	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	188581											
-Chlosyne gorgone	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	778071											
-Chlosyne harrisii	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	188582											
-Chlosyne janais	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	778060											
-Chlosyne lacinia	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	778073											
-Chlosyne nycteis	Chlosyne		Nymphalinae	Nymphalidae	Papilionoidea	778070											
-Euphydryas phaeton	Euphydryas		Nymphalinae	Nymphalidae	Papilionoidea	778057											
-Junonia coenia	Junonia		Nymphalinae	Nymphalidae	Papilionoidea	778049											
-Nymphalis antiopa	Nymphalis	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188597	N	Y	N	N			Y		https://www.inaturalist.org/taxa/56832-Nymphalis-antiopa		
-Nymphalis l-album	Nymphalis		Nymphalinae	Nymphalidae	Papilionoidea	778039											
+Chlosyne gorgone	Chlosyne	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	778071	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/186842-Chlosyne-gorgone		
+Chlosyne harrisii	Chlosyne	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	188582	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/58575-Chlosyne-harrisii		
+Chlosyne janais	Chlosyne	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	778060	N	Y	N	N		Y	N	Y	https://www.inaturalist.org/taxa/132330-Chlosyne-janais		
+Chlosyne lacinia	Chlosyne	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	778073	N	Y	N	N		Y	N	Y	https://www.inaturalist.org/taxa/68240-Chlosyne-lacinia		
+Chlosyne nycteis	Chlosyne	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	778070	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/62978-Chlosyne-nycteis		
+Euphydryas phaeton	Euphydryas	Melitaeini	Nymphalinae	Nymphalidae	Papilionoidea	778057	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/58578-Euphydryas-phaeton		
+Junonia coenia	Junonia	Junoniini	Nymphalinae	Nymphalidae	Papilionoidea	778049	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/48505-Junonia-coenia		
+Nymphalis antiopa	Nymphalis	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188597	N	Y	N	N		Y	Y	Y	https://www.inaturalist.org/taxa/56832-Nymphalis-antiopa		
+Nymphalis l-album	Nymphalis	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778039	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/198813-Nymphalis-l-album		
 Polygonia	Polygonia		Nymphalinae	Nymphalidae	Papilionoidea	188587											
-Polygonia comma	Polygonia		Nymphalinae	Nymphalidae	Papilionoidea	778042											
-Polygonia interrogationis	Polygonia		Nymphalinae	Nymphalidae	Papilionoidea	778041											
-Vanessa atalanta	Vanessa		Nymphalinae	Nymphalidae	Papilionoidea	188599											
-Vanessa virginiensis	Vanessa		Nymphalinae	Nymphalidae	Papilionoidea	188600											
-Lethe appalachia leeuwi	Lethe		Satyrinae	Nymphalidae	Papilionoidea	779474											
-Battus philenor	Battus		Papilioninae	Papilionidae	Papilionoidea	777692											
-Battus philenor philenor	Battus		Papilioninae	Papilionidae	Papilionoidea	778405											
-Eurytides marcellus	Eurytides		Papilioninae	Papilionidae	Papilionoidea	777694											
+Polygonia comma	Polygonia	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778042	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/54064-Polygonia-comma		
+Polygonia interrogationis	Polygonia	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778041	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/58579-Polygonia-interrogationis		
+Vanessa atalanta	Vanessa	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188599	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49133-Vanessa-atalanta		
+Vanessa virginiensis	Vanessa	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188600	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/48549-Vanessa-virginiensis		
+Lethe appalachia leeuwi	Lethe	Satyrini	Satyrinae	Nymphalidae	Papilionoidea	779474									https://www.inaturalist.org/taxa/236682-Lethe-appalachia-leeuwi	Couldn't find a reliable image of a caterpillar	
+Battus philenor	Battus	Troidini	Papilioninae	Papilionidae	Papilionoidea	777692	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/49972-Battus-philenor		
+Battus philenor philenor	Battus	Troidini	Papilioninae	Papilionidae	Papilionoidea	778405	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/198798-Battus-philenor-philenor		
+Eurytides marcellus	Eurytides	Leptocircini	Papilioninae	Papilionidae	Papilionoidea	777694	N	N	N	N	N	Y	N	N	https://www.inaturalist.org/taxa/83086-Eurytides-marcellus		
 Papilioninae	NA		Papilioninae	Papilionidae	Papilionoidea	694098											
 Papilio	Papilio		Papilioninae	Papilionidae	Papilionoidea	188542											
-Papilio brevicauda	Papilio		Papilioninae	Papilionidae	Papilionoidea	188546											
-Papilio canadensis	Papilio		Papilioninae	Papilionidae	Papilionoidea	777710											
-Papilio cresphontes	Papilio		Papilioninae	Papilionidae	Papilionoidea	777702											
+Papilio brevicauda	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	188546	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/154436-Papilio-brevicauda		
+Papilio canadensis	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777710	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/57463-Papilio-canadensis		
+Papilio cresphontes	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777702	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/50072-Papilio-cresphontes	very cool osmeterium	
 Papilio garamas	Papilio		Papilioninae	Papilionidae	Papilionoidea	777716											
 Papilio glaucus	Papilio		Papilioninae	Papilionidae	Papilionoidea	188547											
 Papilio polyxenes	Papilio		Papilioninae	Papilionidae	Papilionoidea	188543											
