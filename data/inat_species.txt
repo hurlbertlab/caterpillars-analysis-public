@@ -423,20 +423,20 @@ Papilio	Papilio		Papilioninae	Papilionidae	Papilionoidea	188542
 Papilio brevicauda	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	188546	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/154436-Papilio-brevicauda		
 Papilio canadensis	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777710	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/57463-Papilio-canadensis		
 Papilio cresphontes	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777702	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/50072-Papilio-cresphontes	very cool osmeterium	
-Papilio garamas	Papilio		Papilioninae	Papilionidae	Papilionoidea	777716											
-Papilio glaucus	Papilio		Papilioninae	Papilionidae	Papilionoidea	188547											
-Papilio polyxenes	Papilio		Papilioninae	Papilionidae	Papilionoidea	188543											
-Papilio polyxenes asterius	Papilio		Papilioninae	Papilionidae	Papilionoidea	188545											
-Papilio rogeri pharnaces	Papilio		Papilioninae	Papilionidae	Papilionoidea	778439											
-Papilio troilus	Papilio		Papilioninae	Papilionidae	Papilionoidea	777719											
-Papilio victorinus victorinus	Papilio		Papilioninae	Papilionidae	Papilionoidea	778445											
+Papilio garamas	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777716	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/509480-Papilio-garamas		
+Papilio glaucus	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	188547	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/60551-Papilio-glaucus		
+Papilio polyxenes	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	188543	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/58523-Papilio-polyxenes		
+Papilio polyxenes asterius	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	188544	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/54900-Papilio-polyxenes-asterius		
+Papilio rogeri pharnaces	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	778439	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/509650-Papilio-rogeri-pharnaces		
+Papilio troilus	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777719	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/58525-Papilio-troilus		
+Papilio victorinus victorinus	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	778445	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/146843-Papilio-victorinus-victorinus		
 Pterourus	Papilio		Papilioninae	Papilionidae	Papilionoidea	777637											
-Abaeis nicippe	Abaeis		Coliadinae	Pieridae	Papilionoidea	777729											
+Abaeis nicippe	Abaeis	NA	Coliadinae	Pieridae	Papilionoidea	777729	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81727-Abaeis-nicippe/browse_photos		
 Phoebis	Phoebis		Coliadinae	Pieridae	Papilionoidea	777530											
-Phoebis philea	Phoebis		Coliadinae	Pieridae	Papilionoidea	777753											
-Phoebis sennae	Phoebis		Coliadinae	Pieridae	Papilionoidea	777750											
-Ascia monuste	Ascia		Pierinae	Pieridae	Papilionoidea	777784											
-Pieris rapae	Pieris		Pierinae	Pieridae	Papilionoidea	188541											
+Phoebis philea	Phoebis	NA	Coliadinae	Pieridae	Papilionoidea	777753	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/133416-Phoebis-philea		
+Phoebis sennae	Phoebis	NA	Coliadinae	Pieridae	Papilionoidea	777750	N	Y	N	Y		Y	N	N	https://www.inaturalist.org/taxa/48550-Phoebis-sennae		
+Ascia monuste	Ascia	Pierini	Pierinae	Pieridae	Papilionoidea	777784	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/51536-Ascia-monuste		
+Pieris rapae	Pieris	Pierini	Pierinae	Pieridae	Papilionoidea	188541	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/55626-Pieris-rapae		
 Pterophoridae	NA		NA	Pterophoridae	Pterophoroidea	117852											
 Pyraustinae	NA		Pyraustinae	Crambidae	Pyraloidea	694115											
 Psara obscuralis	Psara		Pyraustinae	Crambidae	Pyraloidea	117807											
