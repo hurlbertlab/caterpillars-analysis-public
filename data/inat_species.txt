@@ -439,7 +439,7 @@ Ascia monuste	Ascia	Pierini	Pierinae	Pieridae	Papilionoidea	777784	Y	N	N	N		Y	N	
 Pieris rapae	Pieris	Pierini	Pierinae	Pieridae	Papilionoidea	188541	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/55626-Pieris-rapae		
 Pterophoridae	NA		NA	Pterophoridae	Pterophoroidea	117852											
 Pyraustinae	NA		Pyraustinae	Crambidae	Pyraloidea	694115											
-Psara obscuralis	Psara		Pyraustinae	Crambidae	Pyraloidea	117807											
+Psara obscuralis	Psara	NA	Pyraustinae	Crambidae	Pyraloidea	117807	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/324627-Psara-obscuralis/browse_photos		
 Tineoidea	NA		NA	NA	Tineoidea	118724											
 Psychidae	NA		NA	Psychidae	Tineoidea	118739											
 Tortricidae	NA		NA	Tortricidae	Tortricoidea	117856											
