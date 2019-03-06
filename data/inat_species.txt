@@ -5,11 +5,11 @@ Anisota peigleri	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936148	N	Y	N	
 Anisota senatoria	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936186	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/81583-Anisota-senatoria		
 Anisota stigma	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936154	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/81585-Anisota-stigma		
 Anisota virginiensis	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	936147	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81584-Anisota-virginiensis		
-Citheronia regalis	Citheronia	NA	Ceratocampinae	Saturniidae	Bombycoidea	936172	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81586-Citheronia-regalis		
+Citheronia regalis	Citheronia	NA	Ceratocampinae	Saturniidae	Bombycoidea	936172	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/81586-Citheronia-regalis		
 Dryocampa rubicunda	Dryocampa	NA	Ceratocampinae	Saturniidae	Bombycoidea	936177	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/48094-Dryocampa-rubicunda		
 Eacles imperialis	Eacles	NA	Ceratocampinae	Saturniidae	Bombycoidea	936166	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/81590-Eacles-imperialis		
 Eacles imperialis pini	Eacles	NA	Ceratocampinae	Saturniidae	Bombycoidea	936251	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/235767-Eacles-imperialis-pini		
-Automeris io	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936158	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/82279-Automeris-io		
+Automeris io	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936158	N	Y	N	N		Y	N	Y	https://www.inaturalist.org/taxa/82279-Automeris-io		
 Hemileuca grotei	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936187	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/221171-Hemileuca-grotei		
 Hemileuca maia	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	936200	N	Y	N	N		N	Y	Y	https://www.inaturalist.org/taxa/122256-Hemileuca-maia	Check literature on social behavior	
 Hylesia	Hylesia		Hemileucinae	Saturniidae	Bombycoidea	935998										Hylesia lineata is the only species in this genus to form silktents	
@@ -19,7 +19,7 @@ Antheraea polyphemus	Antheraea	Saturniini	Saturniinae	Saturniidae	Bombycoidea	18
 Callosamia promethea	Callosamia	Attacini	Saturniinae	Saturniidae	Bombycoidea	936189	N	N	N	N		N	Y	Y	https://www.inaturalist.org/taxa/81580-Callosamia-promethea	Not social until 3rd instar 	
 Eupackardia	Eupackardia		Saturniinae	Saturniidae	Bombycoidea	936009											
 Eupackardia calleta	Eupackardia	Attacini	Saturniinae	Saturniidae	Bombycoidea	936180	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/192721-Eupackardia-calleta		
-Hyalophora cecropia	Hyalophora	Attacini	Saturniinae	Saturniidae	Bombycoidea	936196	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/81582-Hyalophora-cecropia		
+Hyalophora cecropia	Hyalophora	Attacini	Saturniinae	Saturniidae	Bombycoidea	936196	N	Y	N	N	N	Y	N	N	https://www.inaturalist.org/taxa/81582-Hyalophora-cecropia		
 Darapsa myron	Darapsa	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936039	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/118503-Darapsa-myron		
 Deidamia inscriptum	Deidamia	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936041	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143452-Deidamia-inscriptum		
 Eumorpha	Eumorpha		Macroglossinae	Sphingidae	Bombycoidea	935971											
@@ -34,7 +34,7 @@ Hyles euphorbiae	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	93607
 Hyles gallii	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	188637	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/118901-Hyles-gallii		
 Hyles lineata	Hyles	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936075	N	N	N	N	N	N	N	N	https://www.inaturalist.org/taxa/49348-Hyles-lineata	Saw photos of them being consumed 	
 Pachylia ficus	Pachylia	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936102	N	N	N	N		unsure	N	N	https://www.inaturalist.org/taxa/143834-Pachylia-ficus	very cryptic in some instars and vibrant in others	
-Pseudosphinx tetrio	Pseudosphinx	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936118	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/124467-Pseudosphinx-tetrio		
+Pseudosphinx tetrio	Pseudosphinx	Dilophonotini	Macroglossinae	Sphingidae	Bombycoidea	936118	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/124467-Pseudosphinx-tetrio		
 Sphecodina abbottii	Sphecodina	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936122	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/130350-Sphecodina-abbottii		
 Xylophanes pluto	Xylophanes	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936141	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143839-Xylophanes-pluto		
 Xylophanes tersa	Xylophanes	Macroglossini	Macroglossinae	Sphingidae	Bombycoidea	936143	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/69737-Xylophanes-tersa		
@@ -105,46 +105,46 @@ Malacosoma	Malacosoma		Lasiocampinae	Lasiocampidae	Lasiocampoidea	117542				Y			
 Malacosoma disstria	Malacosoma	Lasiocampini	Lasiocampinae	Lasiocampidae	Lasiocampoidea	117544	Y	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/81663-Malacosoma-disstria		
 Phyllodesma americana	Phyllodesma	Gastropachini	Lasiocampinae	Lasiocampidae	Lasiocampoidea	117550	Y	N	N	N		N	Y	Y	https://www.inaturalist.org/taxa/201281-Phyllodesma-americana		
 Lasiocampidae	NA		NA	Lasiocampidae	Lasiocampoidea	117541				Y			Y				
-Acharia stimulea	Acharia	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N					https://www.inaturalist.org/taxa/122228-Acharia-stimulea/browse_photos		
-Acronicta insularis	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	NA	Y	N	N	N					https://www.inaturalist.org/taxa/624408-Acronicta-insularis		
-Acronyctodes mexicanaria	Acronyctodes	Nephodiini	Ennominae	Geometridae	Geometroidea	NA	N	N	N	N					https://www.inaturalist.org/taxa/446721-Acronyctodes-mexicanaria		
-Anisota fuscosa	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	NA	N	Y	N	N					https://www.inaturalist.org/taxa/508780-Anisota-fuscosa	check with Allen about spiny	
-Apantesis virgo	Apantesis	Arctiini	Arctiinae	Erebidae	Noctuoidea	NA	N	Y	N	N					https://www.inaturalist.org/taxa/606580-Apantesis-virgo/browse_photos		
-Apatelodes torrefacta	Apatelodes	NA	Apatelodinae	Apatelodidae	Bombycoidea	NA	Y	N	N	N					https://www.inaturalist.org/taxa/48262-Apatelodes-torrefacta		
-Apoda biguttata	Apoda	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N					https://www.inaturalist.org/taxa/214013-Apoda-biguttata		
-Arogalea cristifasciella	Arogalea	Litini	Gelechiinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N					https://www.inaturalist.org/taxa/214195-Arogalea-cristifasciella		
-Arsenura armida	Arsenura	NA	Arsenurinae	Saturniidae	Bombycoidea	NA	N	N	N	N			Y		https://www.inaturalist.org/taxa/257159-Arsenura-armida		
-Atteva aurea	Atteva	NA	NA	Attevidae	Yponomeutoidea	NA	N	N	N	Y			Y		https://www.inaturalist.org/taxa/116681-Atteva-aurea	may need to revisit this species to determine social column	
-Automeris banus	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/256348-Automeris-banus		
-Automeris metzli	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/257193-Automeris-metzli		
+Acharia stimulea	Acharia	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/122228-Acharia-stimulea		
+Acronicta insularis	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/624408-Acronicta-insularis		
+Acronyctodes mexicanaria	Acronyctodes	Nephodiini	Ennominae	Geometridae	Geometroidea	NA	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/446721-Acronyctodes-mexicanaria		
+Anisota fuscosa	Anisota	NA	Ceratocampinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		N	N	Y	https://www.inaturalist.org/taxa/508780-Anisota-fuscosa	check with Allen about spiny	
+Apantesis virgo	Apantesis	Arctiini	Arctiinae	Erebidae	Noctuoidea	NA	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/606580-Apantesis-virgo		
+Apatelodes torrefacta	Apatelodes	NA	Apatelodinae	Apatelodidae	Bombycoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/48262-Apatelodes-torrefacta		
+Apoda biguttata	Apoda	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/214013-Apoda-biguttata		
+Arogalea cristifasciella	Arogalea	Litini	Gelechiinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N		Y	N	N	https://www.inaturalist.org/taxa/214195-Arogalea-cristifasciella		
+Arsenura armida	Arsenura	NA	Arsenurinae	Saturniidae	Bombycoidea	NA	N	N	N	N	Y	Y	Y	Y	https://www.inaturalist.org/taxa/257159-Arsenura-armida		
+Atteva aurea	Atteva	NA	NA	Attevidae	Yponomeutoidea	NA	Y	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/116681-Atteva-aurea	may need to revisit this species to determine social column	
+Automeris banus	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/256348-Automeris-banus		
+Automeris metzli	Automeris	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/257193-Automeris-metzli		
 Automeris s	Automeris		NA	NA	NA	NA											
 Caligo	Caligo		NA	NA	NA	NA											
-Choristoneura houstonana	Choristoneura	Archipini	Tortricinae	Tortricidae	Tortricoidea	NA	N	N	N	N			N		https://www.inaturalist.org/taxa/559931-Choristoneura-houstonana		
-Chrysoesthia sexguttella	Chrysoesthia	Apatetrini	Apatetrinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N			N		https://www.inaturalist.org/taxa/216840-Chrysoesthia-sexguttella/browse_photos	Leaf mine rather than a true leaf roll	
-Comadia redtenbacheri	Comadia	NA	Cossinae	Cossidae	Cossoidea	NA	N	N	N	N					https://www.inaturalist.org/taxa/334247-Comadia-redtenbacheri	"possibly social, hard to tell and not many observations "	
-Copaxa multifenestrata	Copaxa	Saturniini	Saturniinae	Saturniidae	Bombycoidea	NA	Y	N	N	N			N		https://www.inaturalist.org/taxa/257260-Copaxa-multifenestrata	"Need to verify that this is considered hairy, could be a point of reference"	
-Dahlica triquetrella	Dahlica	NA	Naryciinae	Psychidae	Tineoidea	NA	N	N	N	N			N		https://www.inaturalist.org/taxa/218117-Dahlica-triquetrella		
-Depressaria radiella	Depressaria	NA	Depressaiinae	Depressariidae	Gelechioidea	NA	Y	N	N	N			N		https://www.inaturalist.org/taxa/493492-Depressaria-radiella	Has hairs but only a few rows down length of body	
+Choristoneura houstonana	Choristoneura	Archipini	Tortricinae	Tortricidae	Tortricoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/559931-Choristoneura-houstonana		
+Chrysoesthia sexguttella	Chrysoesthia	Apatetrini	Apatetrinae	Gelechiidae	Gelechioidea	NA	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/216840-Chrysoesthia-sexguttella/browse_photos	Leaf mine rather than a true leaf roll	
+Comadia redtenbacheri	Comadia	NA	Cossinae	Cossidae	Cossoidea	NA	N	N	N	N	N	N	N	N	https://www.inaturalist.org/taxa/334247-Comadia-redtenbacheri	"possibly social, hard to tell and not many observations "	
+Copaxa multifenestrata	Copaxa	Saturniini	Saturniinae	Saturniidae	Bombycoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/257260-Copaxa-multifenestrata	"Need to verify that this is considered hairy, could be a point of reference"	
+Dahlica triquetrella	Dahlica	NA	Naryciinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/218117-Dahlica-triquetrella		
+Depressaria radiella	Depressaria	NA	Depressaiinae	Depressariidae	Gelechioidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/493492-Depressaria-radiella	Has hairs but only a few rows down length of body	
 Desmia s	Desmia		NA	NA	NA	NA											
-Diaethria bacchis	Diaethria	Callicorini	Biblidinae	Nymphalidae	Papilionoidea	NA	N	N	N	N			N		https://www.inaturalist.org/taxa/336930-Diaethria-bacchis		
-Epipaschia superatalis	Epipaschia	NA	Epipaschiinae	Pyralidae	Pyraloidea	NA	N	N	N	N			N		https://www.inaturalist.org/taxa/219354-Epipaschia-superatalis		
-Eumaeus childrenae	Eumaeus	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	NA	N	N	N	N			Y		https://www.inaturalist.org/taxa/123312-Eumaeus-childrenae	"Very fine hairs, check this classification.  Also they gather in groups but it's not evident that they work together…is this still considered social"	
-Evergestis rimosalis	Evergestis	NA	Glaphyriinae	Crambidae	Pyraloidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/359686-Evergestis-rimosalis	"A couple considerations here: are the structures hairs or spines, by count they appear to be spines, but they curve and appear structurally like hairs.  Are there enough to deter a bird"	
+Diaethria bacchis	Diaethria	Callicorini	Biblidinae	Nymphalidae	Papilionoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/336930-Diaethria-bacchis		
+Epipaschia superatalis	Epipaschia	NA	Epipaschiinae	Pyralidae	Pyraloidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/219354-Epipaschia-superatalis		
+Eumaeus childrenae	Eumaeus	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	NA	N	N	N	N		Y	Y	Y	https://www.inaturalist.org/taxa/123312-Eumaeus-childrenae	"Very fine hairs, check this classification.  Also they gather in groups but it's not evident that they work together…is this still considered social"	
+Evergestis rimosalis	Evergestis	NA	Glaphyriinae	Crambidae	Pyraloidea	NA	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/359686-Evergestis-rimosalis	"A couple considerations here: are the structures hairs or spines, by count they appear to be spines, but they curve and appear structurally like hairs.  Are there enough to deter a bird"	
 Harrisina americana	Harrisina	Procridini	Procridinae	Zygaenidae	Zygaenoidea	NA	Y	Y	N	N	Y	Y	N	Y	https://www.inaturalist.org/taxa/126905-Harrisina-americana	"Listed as spiny needs verification, based on body coverage and structure"	https://link.springer.com/content/pdf/10.1007%2FBF00384324.pdf
 Hellinsia	Hellinsia		NA	NA	NA	NA											
-Hemileuca peigleri	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/424934-Hemileuca-peigleri		
+Hemileuca peigleri	Hemileuca	Hemileucini	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	Y	https://www.inaturalist.org/taxa/424934-Hemileuca-peigleri		
 Herpetogramma	Herpetogramma		NA	NA	NA	NA											
-Homoeosoma electella	Homoeosoma	Phycitini	Phycitinae	Pyralidae	Pyraloidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/343382-Homoeosoma-electella	"Said they were spiny but sturctures are very minute, possibly shouldn't be listed as hairy or spiny"	
-Isa textula	Isa	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/154469-Isa-textula		
+Homoeosoma electella	Homoeosoma	Phycitini	Phycitinae	Pyralidae	Pyraloidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/343382-Homoeosoma-electella	"Said they were spiny but sturctures are very minute, possibly shouldn't be listed as hairy or spiny"	
+Isa textula	Isa	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/154469-Isa-textula		
 Lepidoptera	NA		NA	NA	NA	117232											
 Leucanella	Leucanella		NA	NA	NA	NA											
-Leucanella hosmera	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/371748-Leucanella-hosmera	"Images of them in groups but also lots of singular images so leaning towards no for ""social"".  Also they look awesome "	
-Leucanella saturata	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/257236-Leucanella-saturata	Also put no for social.  See above for reasoning 	
-Leucanella viridescens	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/83650-Leucanella-viridescens		
-Lithacodes fasciola	Lithacodes	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N			N		https://www.inaturalist.org/taxa/201343-Lithacodes-fasciola		
-Lophocampa catenulata	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	NA	Y	N	N	N			N		https://www.inaturalist.org/taxa/256971-Lophocampa-catenulata		
-Malacosoma americana	Malacosoma	Lasiocampinae	Lasiocampinae	NA	NA	NA	Y	N	N	Y			Y	Y	https://www.inaturalist.org/taxa/211100-Malacosoma-americana		
-Megalopyge crispata	Megalopyge	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N			N	N	https://www.inaturalist.org/taxa/703873-Megalopyge-crispata		
+Leucanella hosmera	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/371748-Leucanella-hosmera	"Images of them in groups but also lots of singular images so leaning towards no for ""social"".  Also they look awesome "	
+Leucanella saturata	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/257236-Leucanella-saturata	Also put no for social.  See above for reasoning 	
+Leucanella viridescens	Leucanella	NA	Hemileucinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/83650-Leucanella-viridescens		
+Lithacodes fasciola	Lithacodes	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/201343-Lithacodes-fasciola		
+Lophocampa catenulata	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/256971-Lophocampa-catenulata		
+Malacosoma americana	Malacosoma	Lasiocampinae	Lasiocampinae	NA	NA	NA	Y	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/211100-Malacosoma-americana		
+Megalopyge crispata	Megalopyge	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/703873-Megalopyge-crispata		
 Megalopyge lanata	Megalopyge	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/507472-Megalopyge-lanata		
 Megalopyge opercularis	Megalopyge	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/84185-Megalopyge-opercularis		
 Melittia cucurbitae	Melittia	Melittiini	Sesiinae	Sesiidae	Sesioidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/133346-Melittia-cucurbitae		
@@ -152,7 +152,7 @@ Mimoides	Mimoides		NA	NA	NA	NA
 Morpho helenor	Morpho	Morphini	Satyrinae	Nymphalidae	Papilionoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81741-Morpho-helenor	good example of something that is not consider aposematic despite vibrant pattern because it blends in reasonably well and doesn't have a simple and distinct pattern	
 Natada nasoni	Natada	NA	NA	Limacodidae	Zygaenoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/225460-Natada-nasoni	Has some red but wouldn't consider it aposematic	
 Norape ovina	Norape	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/225994-Norape-ovina		
-Norape virgo	Norape	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/318974-Norape-virgo		
+Norape virgo	Norape	NA	NA	Megalopygidae	Zygaenoidea	NA	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/318974-Norape-virgo		
 Oiketicus abbotii	Oiketicus	NA	Oiketicinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/358315-Oiketicus-abbotii		
 Olceclostera angelica	Olceclostera	NA	Apatelodinae	Apatelodidae	Bombycoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/83860-Olceclostera-angelica		
 Olethreutes exoletum	Olethreutes	Olethreutini	Olethreutinae	Tortricidae	Tortricoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/320609-Olethreutes-exoletum	very small spines	
@@ -173,7 +173,7 @@ Rectiostoma xanthobasis	Rectiostoma	NA	Stenomatinae	Depressariidae	Gelechioidea	
 Saucrobotys futilalis	Saucrobotys	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/146889-Saucrobotys-futilalis		
 Schizura ipomaeae	Schizura	NA	Heterocampinae	Notodontidae	Noctuoidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/204014-Schizura-ipomaeae		
 Setiostoma xuthobasis	Setiostoma		NA	NA	NA	NA											
-Sitochroa palealis	Sitochroa	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	N	N	N		N	N	N	Sitochroa palealis		
+Sitochroa palealis	Sitochroa	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/62424-Sitochroa-palealis		
 Synchlora s	Synchlora		NA	NA	NA	NA											
 Syssphinx albolineata	Syssphinx	NA	Ceratocampinae	Saturniidae	Bombycoidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/293787-Syssphinx-albolineata		
 Thyridopteryx ephemeraeformis	Thyridopteryx	NA	Oiketicinae	Psychidae	Tineoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/121594-Thyridopteryx-ephemeraeformis		
@@ -181,29 +181,29 @@ Tinea pellionella	Tinea	NA	Tineinae	Tineidae	Tineoidea	NA	N	N	N	N		N	N	N	https:/
 Tolype	Tolype		NA	NA	NA	NA											
 Tolype velleda	Tolype	NA	Poecilocampinae	Lasiocampidae	Lasiocampoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143323-Tolype-velleda		
 Tortricidia pallida	Tortricidia	NA	NA	Limacodidae	Zygaenoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/128787-Tortricidia-pallida		
-Uresiphita reversalis	Uresiphita	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/121716-Uresiphita-reversalis		
+Uresiphita reversalis	Uresiphita	NA	Pyraustinae	Crambidae	Pyraloidea	NA	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/121716-Uresiphita-reversalis		
 Apantesis	Apantesis		Arctiinae	Erebidae	Noctuoidea	188652											
 Arctia caja	Arctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	188662	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/68330-Arctia-caja		
 Ctenucha virginica	Ctenucha	Arctiini	Arctiinae	Erebidae	Noctuoidea	188644	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/119013-Ctenucha-virginica		
 Cycnia collaris	Cycnia	Arctiini	Arctiinae	Erebidae	Noctuoidea	938382	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/479737-Cycnia-collaris		
-Cycnia tenera	Cycnia	Arctiini	Arctiinae	Erebidae	Noctuoidea	938385	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/479737-Cycnia-collaris		
+Cycnia tenera	Cycnia	Arctiini	Arctiinae	Erebidae	Noctuoidea	938385	Y	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/479737-Cycnia-collaris	Aposematic clicking???	
 Empyreuma pugione	Empyreuma	Arctiini	Arctiinae	Erebidae	Noctuoidea	938538	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/324144-Empyreuma-pugione		
 Estigmene acrea	Estigmene	Arctiini	Arctiinae	Erebidae	Noctuoidea	117299	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/121612-Estigmene-acrea		
-Euchaetes egle	Euchaetes	Arctiini	Arctiinae	Erebidae	Noctuoidea	938578	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/81677-Euchaetes-egle		
+Euchaetes egle	Euchaetes	Arctiini	Arctiinae	Erebidae	Noctuoidea	938578	Y	N	N	N	Y	Y	N	Y	https://www.inaturalist.org/taxa/81677-Euchaetes-egle		
 Halysidota	Halysidota		Arctiinae	Erebidae	Noctuoidea	937234											
 Halysidota harrisii	Halysidota	Arctiini	Arctiinae	Erebidae	Noctuoidea	938959	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/126397-Halysidota-harrisii		
-Halysidota tessellaris	Halysidota	Arctiini	Arctiinae	Erebidae	Noctuoidea	938961	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/120217-Halysidota-tessellaris		
+Halysidota tessellaris	Halysidota	Arctiini	Arctiinae	Erebidae	Noctuoidea	938961	Y	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/120217-Halysidota-tessellaris		
 Haploa	Haploa		Arctiinae	Erebidae	Noctuoidea	937235											
 Haploa clymene	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938962	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/126106-Haploa-clymene		
-Haploa confusa	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938964	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/130821-Haploa-confusa		
+Haploa confusa	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938964	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/130821-Haploa-confusa		
 Haploa contigua	Haploa	Arctiini	Arctiinae	Erebidae	Noctuoidea	938965	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/220910-Haploa-contigua		
-Hypercompe scribonia	Hypercompe	Arctiini	Arctiinae	Erebidae	Noctuoidea	939113	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/63028-Hypercompe-scribonia		
+Hypercompe scribonia	Hypercompe	Arctiini	Arctiinae	Erebidae	Noctuoidea	939113	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/63028-Hypercompe-scribonia	Hairs do not urticant	
 Hyphantria cunea	Hyphantria	Arctiini	Arctiinae	Erebidae	Noctuoidea	117304	Y	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/127133-Hyphantria-cunea		
-Hypoprepia fucosa	Hypoprepia	Lithosiini	Arctiinae	Erebidae	Noctuoidea	939128	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/119953-Hypoprepia-fucosa		
+Hypoprepia fucosa	Hypoprepia	Lithosiini	Arctiinae	Erebidae	Noctuoidea	939128	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/119953-Hypoprepia-fucosa		
 Hypoprepia miniata	Hypoprepia		Arctiinae	Erebidae	Noctuoidea	939130											
 Lerina incarnata	Lerina		Arctiinae	Erebidae	Noctuoidea	939301											
-Lophocampa caryae	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	117307	Y	N	N	N		Y	Y	Y	https://www.inaturalist.org/taxa/82225-Lophocampa-caryae	Social at earlier instars and then disband	
-Lophocampa maculata	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	117308	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/67691-Lophocampa-maculata		
+Lophocampa caryae	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	117307	Y	N	N	N	Y	Y	Y	Y	https://www.inaturalist.org/taxa/82225-Lophocampa-caryae	Social at earlier instars and then disband	
+Lophocampa maculata	Lophocampa	Arctiini	Arctiinae	Erebidae	Noctuoidea	117308	Y	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/67691-Lophocampa-maculata	Likely toxic due to species It feeds on and nature of taxonomic family	
 Lymire edwardsii	Lymire	Arctiini	Arctiinae	Erebidae	Noctuoidea	939428	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/224215-Lymire-edwardsii		
 Arctiinae	NA		Arctiinae	Erebidae	Noctuoidea	693997											
 Arctiini	NA		Arctiinae	Erebidae	Noctuoidea	694170											
@@ -212,7 +212,7 @@ Phaegopterina	NA		Arctiinae	Erebidae	Noctuoidea	937001
 Spilosomina	NA		Arctiinae	Erebidae	Noctuoidea	937004											
 Phragmatobia fuliginosa	Phragmatobia	Arctiini	Arctiinae	Erebidae	Noctuoidea	188651	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/143114-Phragmatobia-fuliginosa		
 Arctia parthenos	Platarctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	188660	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/790921-Arctia-parthenos		
-Pyrrharctia isabella	Pyrrharctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	117310	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/59675-Pyrrharctia-isabella		
+Pyrrharctia isabella	Pyrrharctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	117310	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/59675-Pyrrharctia-isabella	Hairs do not urticate	
 Seirarctia echo	Seirarctia	Arctiini	Arctiinae	Erebidae	Noctuoidea	940287	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/371319-Seirarctia-echo		
 Spilosoma congrua	Spilosoma	Arctiini	Arctiinae	Erebidae	Noctuoidea	940311	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/61240-Spilosoma-congrua		
 Spilosoma virginica	Spilosoma	Arctiini	Arctiinae	Erebidae	Noctuoidea	117312	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/60839-Spilosoma-virginica		
@@ -243,7 +243,7 @@ Lymantria dispar	Lymantria	Lymantriini	Lymantriinae	Erebidae	Noctuoidea	709249	Y
 Lymantriinae	NA		Lymantriinae	Erebidae	Noctuoidea	936936											
 Orgyiini	NA		Lymantriinae	Erebidae	Noctuoidea	936963											
 Orgyia	Orgyia		Lymantriinae	Erebidae	Noctuoidea	709242											
-Orgyia antiqua	Orgyia	Orgyiini	Lymantriinae	Erebidae	Noctuoidea	939668	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/61910-Orgyia-antiqua		
+Orgyia antiqua	Orgyia	Orgyiini	Lymantriinae	Erebidae	Noctuoidea	939668	Y	N	N	N	N	Y	N	N	https://www.inaturalist.org/taxa/61910-Orgyia-antiqua	Venomous spines	
 Orgyia definita	Orgyia	Orgyiini	Lymantriinae	Erebidae	Noctuoidea	939670	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/122716-Orgyia-definita		
 Orgyia detrita	Orgyia	Orgyiini	Lymantriinae	Erebidae	Noctuoidea	939671	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/49016-Orgyia-detrita		
 Orgyia leucostigma	Orgyia	Orgyiini	Lymantriinae	Erebidae	Noctuoidea	709251	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/81665-Orgyia-leucostigma		
@@ -263,7 +263,7 @@ Acronicta impressa	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188672	Y	N	N	N
 Acronicta increta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937616	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212434-Acronicta-increta		
 Acronicta interrupta	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937618	Y	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/212436-Acronicta-interrupta		
 Acronicta lepusculina	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	117344	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212439-Acronicta-lepusculina		
-Acronicta lobeliae	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937623	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212441-Acronicta-lobeliae/browse_photos		
+Acronicta lobeliae	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937623	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212441-Acronicta-lobeliae		
 Acronicta longa	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	188673	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/212442-Acronicta-longa		
 Acronicta modica	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	937626	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/212444-Acronicta-modica		
 Acronicta oblinita	Acronicta	NA	Acronictinae	Noctuidae	Noctuoidea	117345	Y	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/129428-Acronicta-oblinita		
@@ -278,7 +278,7 @@ Alypia octomaculata	Alypia	NA	Agaristinae	Noctuidae	Noctuoidea	117359	Y	N	N	N		Y
 Eudryas grata	Eudryas	NA	Agaristinae	Noctuidae	Noctuoidea	938606	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/84333-Eudryas-grata		
 Eudryas unio	Eudryas	NA	Agaristinae	Noctuidae	Noctuoidea	938607	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/219719-Eudryas-unio		
 Agaristinae	NA		Agaristinae	Noctuidae	Noctuoidea	693987											
-Psychomorpha epimenis	Psychomorpha	NA	Agaristinae	Noctuidae	Noctuoidea	940072	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/60774-Psychomorpha-epimenis		
+Psychomorpha epimenis	Psychomorpha	NA	Agaristinae	Noctuidae	Noctuoidea	940072	N	N	Y	N		Y	N	N	https://www.inaturalist.org/taxa/60774-Psychomorpha-epimenis		
 Xerociris wilsonii	Xerociris	NA	Agaristinae	Noctuidae	Noctuoidea	940690	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/204087-Xerociris-wilsonii		
 Amphipyra pyramidoides	Amphipyra	Amphipyrini	Amphipyrinae	Noctuidae	Noctuoidea	188954	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/119340-Amphipyra-pyramidoides		
 Basilodes	Basilodes		Amphipyrinae	Noctuidae	Noctuoidea	937072											
@@ -328,7 +328,7 @@ Spodoptera dolichos	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	940321	
 Spodoptera eridania	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117469	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/231424-Spodoptera-eridania		
 Spodoptera frugiperda	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117472	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/132468-Spodoptera-frugiperda		
 Spodoptera ornithogalli	Spodoptera	Prodeniini	Noctuinae	Noctuidae	Noctuoidea	117474	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/118930-Spodoptera-ornithogalli		
-Trichordestra legitima	Trichordestra	Hadenini	Noctuinae	Noctuidae	Noctuoidea	117481	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/146633-Trichordestra-legitima		
+Trichordestra legitima	Trichordestra	Hadenini	Noctuinae	Noctuidae	Noctuoidea	117481	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/146633-Trichordestra-legitima		
 Xanthopastis	Xanthopastis		Noctuinae	Noctuidae	Noctuoidea	937536											
 Xanthopastis regnatrix	Xanthopastis	Glottulini	Noctuinae	Noctuidae	Noctuoidea	941100	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/322588-Xanthopastis-regnatrix		
 Xestia	Xestia		Noctuinae	Noctuidae	Noctuoidea	771332											
@@ -355,7 +355,7 @@ Furcula	Furcula		Notodontinae	Notodontidae	Noctuoidea	936710
 Furcula borealis	Furcula	Dicranurini	Notodontinae	Notodontidae	Noctuoidea	936771	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/220228-Furcula-borealis		
 Hyperaeschra georgica	Hyperaeschra	Notodontini	Notodontinae	Notodontidae	Noctuoidea	936810	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/132360-Hyperaeschra-georgica		
 Symmerista	Symmerista		Nystaleinae	Notodontidae	Noctuoidea	117524											
-Symmerista canicosta	Symmerista	NA	Nystaleinae	Notodontidae	Noctuoidea	936861	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/232056-Symmerista-canicosta		
+Symmerista canicosta	Symmerista	NA	Nystaleinae	Notodontidae	Noctuoidea	936861	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/232056-Symmerista-canicosta		
 Symmerista leucitys	Symmerista	NA	Nystaleinae	Notodontidae	Noctuoidea	117525	N	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/232057-Symmerista-leucitys		
 Datana	Datana		Phalerinae	Notodontidae	Noctuoidea	117512											
 Datana contracta	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	936758	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/154385-Datana-contracta		
@@ -363,11 +363,11 @@ Datana drexelii	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	936760	Y	N	N	N		Y	N
 Datana integerrima	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117513	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/218166-Datana-integerrima		
 Datana major	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117514	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/218167-Datana-major		
 Datana ministra	Datana	NA	Phalerinae	Notodontidae	Noctuoidea	117515	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/47719-Datana-ministra		
-Ellida caniplaga	Ellida	NA	Phalerinae	Notodontidae	Noctuoidea	936768	N	N	N	N		Y	N	N	https://www.inaturalist.org/taxa/219028-Ellida-caniplaga		
+Ellida caniplaga	Ellida	NA	Phalerinae	Notodontidae	Noctuoidea	936768	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/219028-Ellida-caniplaga		
 Nadata gibbosa	Nadata	NA	Phalerinae	Notodontidae	Noctuoidea	189053	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82204-Nadata-gibbosa		
 Peridea angulosa	Peridea	NA	Phalerinae	Notodontidae	Noctuoidea	936845	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/151770-Peridea-angulosa		
 Clostera	Clostera		Pygaerinae	Notodontidae	Noctuoidea	936702											
-Clostera inclusa	Clostera	NA	Pygaerinae	Notodontidae	Noctuoidea	936748	Y	N	Y	Y		Y	Y	Y	https://www.inaturalist.org/taxa/196518-Clostera-inclusa		
+Clostera inclusa	Clostera	NA	Pygaerinae	Notodontidae	Noctuoidea	936748	Y	N	Y	Y		N	Y	Y	https://www.inaturalist.org/taxa/196518-Clostera-inclusa		
 Lycaenidae	NA		NA	Lycaenidae	Papilionoidea	117236											
 Celastrina neglectamajor	Celastrina	Polyommatinae	Polyommatinae	Lycaenidae	Papilionoidea	777898	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/82793-Celastrina-neglectamajor		
 Atlides halesus	Atlides	Eumaeini	Theclinae	Lycaenidae	Papilionoidea	777807	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/59128-Atlides-halesus		
@@ -389,9 +389,9 @@ Anaea aidea	Anaea	Anaeini	Charaxinae	Nymphalidae	Papilionoidea	778099	N	N	Y	N		N
 Danaus gilippus	Danaus	Danaini	Danainae	Nymphalidae	Papilionoidea	777963	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/51743-Danaus-gilippus		
 Danaus plexippus	Danaus	Danaini	Danainae	Nymphalidae	Papilionoidea	117273	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/48662-Danaus-plexippus		
 Danainae	NA		Danainae	Nymphalidae	Papilionoidea	694025											
-Agraulis vanillae	Agraulis	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777975	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49150-Agraulis-vanillae		
+Agraulis vanillae	Agraulis	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777975	N	Y	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/49150-Agraulis-vanillae		
 Euptoieta claudia	Euptoieta	Argynnini	Heliconiinae	Nymphalidae	Papilionoidea	777981	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/68244-Euptoieta-claudia		
-Heliconius charithonia	Heliconius	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777979	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49766-Heliconius-charithonia		
+Heliconius charithonia	Heliconius	Heliconiini	Heliconiinae	Nymphalidae	Papilionoidea	777979	N	Y	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/49766-Heliconius-charithonia		
 Speyeria cybele	Speyeria	Argynnini	Heliconiinae	Nymphalidae	Papilionoidea	777991	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/47980-Speyeria-cybele		
 Limenitis	Limenitis		Limenitidinae	Nymphalidae	Papilionoidea	188602											
 Limenitis archippus	Limenitis	Limenitidini	Limenitidinae	Nymphalidae	Papilionoidea	777969	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/58586-Limenitis-archippus		
@@ -412,7 +412,7 @@ Nymphalis l-album	Nymphalis	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778
 Polygonia	Polygonia		Nymphalinae	Nymphalidae	Papilionoidea	188587											
 Polygonia comma	Polygonia	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778042	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/54064-Polygonia-comma		
 Polygonia interrogationis	Polygonia	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	778041	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/58579-Polygonia-interrogationis		
-Vanessa atalanta	Vanessa	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188599	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/49133-Vanessa-atalanta		
+Vanessa atalanta	Vanessa	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188599	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/49133-Vanessa-atalanta		
 Vanessa virginiensis	Vanessa	Nymphalini	Nymphalinae	Nymphalidae	Papilionoidea	188600	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/48549-Vanessa-virginiensis		
 Lethe appalachia leeuwi	Lethe	Satyrini	Satyrinae	Nymphalidae	Papilionoidea	779474									https://www.inaturalist.org/taxa/236682-Lethe-appalachia-leeuwi	Couldn't find a reliable image of a caterpillar	
 Battus philenor	Battus	Troidini	Papilioninae	Papilionidae	Papilionoidea	777692	N	N	N	N	Y	Y	N	N	https://www.inaturalist.org/taxa/49972-Battus-philenor		
@@ -431,11 +431,11 @@ Papilio rogeri pharnaces	Papilio	Papilionini	Papilioninae	Papilionidae	Papiliono
 Papilio troilus	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	777719	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/58525-Papilio-troilus		
 Papilio victorinus victorinus	Papilio	Papilionini	Papilioninae	Papilionidae	Papilionoidea	778445	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/146843-Papilio-victorinus-victorinus		
 Pterourus	Papilio		Papilioninae	Papilionidae	Papilionoidea	777637											
-Abaeis nicippe	Abaeis	NA	Coliadinae	Pieridae	Papilionoidea	777729	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81727-Abaeis-nicippe/browse_photos		
+Abaeis nicippe	Abaeis	NA	Coliadinae	Pieridae	Papilionoidea	777729	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/81727-Abaeis-nicippe		
 Phoebis	Phoebis		Coliadinae	Pieridae	Papilionoidea	777530											
 Phoebis philea	Phoebis	NA	Coliadinae	Pieridae	Papilionoidea	777753	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/133416-Phoebis-philea		
 Phoebis sennae	Phoebis	NA	Coliadinae	Pieridae	Papilionoidea	777750	N	Y	N	Y		Y	N	N	https://www.inaturalist.org/taxa/48550-Phoebis-sennae		
-Ascia monuste	Ascia	Pierini	Pierinae	Pieridae	Papilionoidea	777784	Y	N	N	N		Y	N	Y	https://www.inaturalist.org/taxa/51536-Ascia-monuste		
+Ascia monuste	Ascia	Pierini	Pierinae	Pieridae	Papilionoidea	777784	Y	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/51536-Ascia-monuste		
 Pieris rapae	Pieris	Pierini	Pierinae	Pieridae	Papilionoidea	188541	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/55626-Pieris-rapae		
 Pterophoridae	NA		NA	Pterophoridae	Pterophoroidea	117852											
 Pyraustinae	NA		Pyraustinae	Crambidae	Pyraloidea	694115											
@@ -443,16 +443,26 @@ Psara obscuralis	Psara	NA	Pyraustinae	Crambidae	Pyraloidea	117807	N	N	N	N		N	N	N
 Tineoidea	NA		NA	NA	Tineoidea	118724											
 Psychidae	NA		NA	Psychidae	Tineoidea	118739											
 Tortricidae	NA		NA	Tortricidae	Tortricoidea	117856											
-Archips cerasivorana	Archips		Tortricinae	Tortricidae	Tortricoidea	117887											
+Archips cerasivorana	Archips	Archipini	Tortricinae	Tortricidae	Tortricoidea	117887	N	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/129576-Archips-cerasivorana		
 Tortricinae	NA		Tortricinae	Tortricidae	Tortricoidea	694144											
-Adoneta spinuloides	Adoneta		Limacodinae	Limacodidae	Zygaenoidea	117614											
+Adoneta spinuloides	Adoneta	NA	Limacodinae	Limacodidae	Zygaenoidea	117614	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/212510-Adoneta-spinuloides		
 Euclea	Euclea		Limacodinae	Limacodidae	Zygaenoidea	117615											
-Euclea delphinii	Euclea		Limacodinae	Limacodidae	Zygaenoidea	117619											
-Euclea incisa	Euclea		Limacodinae	Limacodidae	Zygaenoidea	117618											
-Parasa chloris	Parasa		Limacodinae	Limacodidae	Zygaenoidea	117622											
-Parasa indetermina	Parasa		Limacodinae	Limacodidae	Zygaenoidea	117625											
+Euclea delphinii	Euclea	NA	Limacodinae	Limacodidae	Zygaenoidea	117619	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/136548-Euclea-delphinii		
+Euclea incisa	Euclea	NA	Limacodinae	Limacodidae	Zygaenoidea	117618	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/324665-Euclea-incisa		
+Parasa chloris	Parasa	NA	Limacodinae	Limacodidae	Zygaenoidea	117622	N	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/207602-Parasa-chloris		
+Parasa indetermina	Parasa	NA	Limacodinae	Limacodidae	Zygaenoidea	117625	N	Y	N	N		Y	N	N	https://www.inaturalist.org/taxa/153078-Parasa-indetermina		
 Phobetron	Phobetron		Limacodinae	Limacodidae	Zygaenoidea	117605											
-Phobetron pithecium	Phobetron		Limacodinae	Limacodidae	Zygaenoidea	117606											
+Phobetron pithecium	Phobetron	NA	Limacodinae	Limacodidae	Zygaenoidea	117606	Y	Y	N	N		N	N	N	https://www.inaturalist.org/taxa/122254-Phobetron-pithecium		
 Megalopyge	Megalopyge		NA	Megalopygidae	Zygaenoidea	117629											
 Megalopygidae	NA		NA	Megalopygidae	Zygaenoidea	117626											
 Hemileuca	Hemileuca		Hemileucina														
+Episimus argutana	Episimus	Olethreutini	Olethreutinae	Tortricidae	Tortricoidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/357353-Episimus-argutana		
+Caloptilia burgessiella	Caloptilia	NA	Gracillariinae	Gracillariidae	Gracillarioidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/215887-Caloptilia-burgessiella		
+Anacampsis tristrigella	Anacampsis	Anacampsini	Anacampsinae	Gelechiidae	Gelechioidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/213500-Anacampsis-tristrigella		
+Pseudosciaphilia duplex	Pseudosciaphilia	Olethreutini	Olethreutinae	Tortricidae	Tortricoidea												
+Caloptilia serotinella	Caloptilia	NA	Gracillariinae	Gracillariidae	Gracillarioidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/215899-Caloptilia-serotinella		
+Anacampsis rhoifructella	Anacampsis	Anacampsini	Anacampsinae	Gelechiidae	Gelechioidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/213499-Anacampsis-rhoifructella		
+Cenopis pettitana	Cenopis	Sparganothini	Tortricinae	Tortricidae	Tortricoidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/337467-Cenopis-pettitana		
+Argyrotaenia juglandana	Argyrotaenia	Archipini	Tortricinae	Tortricidae	Tortricoidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/208119-Argyrotaenia-juglandana		
+Rheumaptera prunivorata	Rheumaptera	Rheumapterini	Larentiinae	Geometridae	Geometroidea		N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/127016-Rheumaptera-prunivorata		
+Yponomeuta cagnagel	Yponomeuta	NA	Yponomeutinae	Yponomeutidae	Yponomeutoidea		N	N	N	Y		N	Y	Y	https://www.inaturalist.org/taxa/319551-Yponomeuta-cagnagella		
