@@ -1,216 +1,216 @@
-"scientific_name"	"genus"	"subfamily"	"family"	"superfamily"	"ITIS_id"
-"Dolerus"	"Alpheus"	NA	"Alpheidae"	"Alpheoidea"	"659913"
-"Craesus"	"Ectemnius"	"Crabroninae"	"Crabronidae"	"Apoidea"	"1022782"
-"Trichiosoma"	"Cerceris"	"Philanthinae"	"Crabronidae"	"Apoidea"	"1035527"
-"Pamphilius"	"Manduca"	"Sphinginae"	"Sphingidae"	"Bombycoidea"	"936275"
-"Cephidae"	NA	NA	"Cephidae"	"Cephoidea"	"152855"
-"Nematinae"	NA	"Macronematinae"	"Hydropsychidae"	"Hydropsychoidea"	"598226"
-"Nematini"	NA	"Macronematinae"	"Hydropsychidae"	"Hydropsychoidea"	"555648"
-"Orussidae"	NA	NA	"Orussidae"	"Orussoidea"	"152853"
-"Acantholyda"	"Acantholyda"	NA	"Pamphiliidae"	"Pamphilioidea"	"152752"
-"Acantholyda erythrocephala"	"Acantholyda"	NA	"Pamphiliidae"	"Pamphilioidea"	"152753"
-"Pamphiliidae"	NA	NA	"Pamphiliidae"	"Pamphilioidea"	"152747"
-"Euura"	"Platygaster"	"Platygastrinae"	"Platygastridae"	"Platygastroidea"	"732545"
-"Sirex"	"Sirex"	NA	"Siricidae"	"Siricoidea"	"152850"
-"Tremex"	"Tremex"	NA	"Siricidae"	"Siricoidea"	"152848"
-"Tremex columba"	"Tremex"	NA	"Siricidae"	"Siricoidea"	"152849"
-"Siricidae"	NA	NA	"Siricidae"	"Siricoidea"	"152847"
-"Siricoidea"	NA	NA	NA	"Siricoidea"	"152843"
-"Arge"	"Arge"	NA	"Argidae"	"Tenthredinoidea"	"152760"
-"Arge humeralis"	"Arge"	NA	"Argidae"	"Tenthredinoidea"	"152761"
-"Arge pectoralis"	"Arge"	NA	"Argidae"	"Tenthredinoidea"	"152760"
-"Schizocerella pilicornis"	"Schizocerella"	NA	"Argidae"	"Tenthredinoidea"	"152765"
-"Sphacophilus cellularis"	"Sphacophilus"	NA	"Argidae"	"Tenthredinoidea"	"152763"
-"Argidae"	NA	NA	"Argidae"	"Tenthredinoidea"	"152757"
-"Cimbex"	"Cimbex"	NA	"Cimbicidae"	"Tenthredinoidea"	"152768"
-"Cimbex americana"	"Cimbex"	NA	"Cimbicidae"	"Tenthredinoidea"	"152768"
-"Cimbicidae"	NA	NA	"Cimbicidae"	"Tenthredinoidea"	"152766"
-"Diprion similis"	"Diprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152773"
-"Gilpinia"	"Gilpinia"	NA	"Diprionidae"	"Tenthredinoidea"	"152775"
-"Gilpinia hercyniae"	"Gilpinia"	NA	"Diprionidae"	"Tenthredinoidea"	"152775"
-"Diprion"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152776"
-"Neodiprion"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152781"
-"Neodiprion abietis"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152777"
-"Neodiprion excitans"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152780"
-"Neodiprion lecontei"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152781"
-"Neodiprion merkeli"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152782"
-"Neodiprion pinetum"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152784"
-"Neodiprion sertifer"	"Neodiprion"	NA	"Diprionidae"	"Tenthredinoidea"	"152789"
-"Diprionidae"	NA	NA	"Diprionidae"	"Tenthredinoidea"	"152771"
-"Acordulecera"	"Acordulecera"	NA	"Pergidae"	"Tenthredinoidea"	"152756"
-"Pergidae"	NA	NA	"Pergidae"	"Tenthredinoidea"	"152755"
-"Allantus"	"Allantus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152797"
-"Allantus cinctus"	"Allantus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152797"
-"Ametastegia"	"Ametastegia"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152798"
-"Caliroa"	"Caliroa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152801"
-"Caliroa cerasi"	"Caliroa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152802"
-"Caliroa quercuscoccineae"	"Caliroa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152803"
-"Cladius"	"Cladius"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152805"
-"Cladius difformis"	"Cladius"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152805"
-"Endelomyia aethiops"	"Endelomyia"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152809"
-"Fenusa dohrnii"	"Fenusa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152813"
-"Fenusa ulmi"	"Fenusa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152815"
-"Hemichroa crocea"	"Hemichroa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152817"
-"Hoplocampa"	"Hoplocampa"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152818"
-"Nematus"	"Nematus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152825"
-"Nematus ribesii"	"Nematus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152824"
-"Nematus ventralis"	"Nematus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152825"
-"Pikonema alaskensis"	"Pikonema"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152831"
-"Pontania"	"Pontania"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152834"
-"Pristiphora"	"Pristiphora"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152835"
-"Pristiphora erichsonii"	"Pristiphora"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152837"
-"Pristiphora geniculata"	"Pristiphora"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152838"
-"Tethida barda"	"Tethida"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152840"
-"Tomostethus multicinctus"	"Tomostethus"	NA	"Tenthredinidae"	"Tenthredinoidea"	"152842"
-"Tenthredinidae"	NA	NA	"Tenthredinidae"	"Tenthredinoidea"	"152795"
-"Tenthredinoidea"	NA	NA	NA	"Tenthredinoidea"	"152754"
-"Xiphydriidae"	NA	NA	"Xiphydriidae"	"Xiphydrioidea"	"152852"
-"Xyelidae"	NA	NA	"Xyelidae"	"Xyeloidea"	"152744"
-"Abia"	"Lampropeltis"	"Colubrinae"	"Colubridae"	NA	"209256"
-"Xyela"	"Xyelacyba"	"Neobythitinae"	"Ophidiidae"	NA	"165021"
-"Abia americana"	NA	NA	NA	NA	NA
-"Abia lonicerae"	NA	NA	NA	NA	NA
-"Aglaostigma semiluteum"	NA	NA	NA	NA	NA
-"Allantinae"	NA	NA	NA	NA	NA
-"Allantus nigritibialis"	NA	NA	NA	NA	NA
-"Allantus viennensis"	NA	NA	NA	NA	NA
-"Ametastegia tenera"	NA	NA	NA	NA	NA
-"Arge coccinea"	NA	NA	NA	NA	NA
-"Arge ochropa"	NA	NA	NA	NA	NA
-"Arge ochropus"	NA	NA	NA	NA	NA
-"Arge quidia"	NA	NA	NA	NA	NA
-"Arge scapularis"	NA	NA	NA	NA	NA
-"Atomacera"	NA	NA	NA	NA	NA
-"Atomacera debilis"	NA	NA	NA	NA	NA
-"Atomacera decepta"	NA	NA	NA	NA	NA
-"Blennocampinae"	NA	NA	NA	NA	NA
-"Blennocampini"	NA	NA	NA	NA	NA
-"Blennogeneris spissipes"	NA	NA	NA	NA	NA
-"Caliroa annulipes"	NA	NA	NA	NA	NA
-"Caliroa obsoleta"	NA	NA	NA	NA	NA
-"Caliroini"	NA	NA	NA	NA	NA
-"Caulocampus acericaulis"	NA	NA	NA	NA	NA
-"Cephalcia fulviceps"	NA	NA	NA	NA	NA
-"Ceratulus spectabilis"	NA	NA	NA	NA	NA
-"Cimbex femoratus"	NA	NA	NA	NA	NA
-"Cladius brullei"	NA	NA	NA	NA	NA
-"Cladius grandis"	NA	NA	NA	NA	NA
-"Cladius pectinicornis"	NA	NA	NA	NA	NA
-"Craesus latitarsus"	NA	NA	NA	NA	NA
-"Craesus septentrionalis"	NA	NA	NA	NA	NA
-"Dimorphopteryx"	NA	NA	NA	NA	NA
-"Dimorphopteryx abnormis"	NA	NA	NA	NA	NA
-"Dimorphopteryx melanognathus"	NA	NA	NA	NA	NA
-"Diprion pini"	NA	NA	NA	NA	NA
-"Dolerus neoagcistus"	NA	NA	NA	NA	NA
-"Dolerus nitens"	NA	NA	NA	NA	NA
-"Dolerus unicolor"	NA	NA	NA	NA	NA
-"Eriocampa"	NA	NA	NA	NA	NA
-"Eriocampa juglandis"	NA	NA	NA	NA	NA
-"Eriocampa ovata"	NA	NA	NA	NA	NA
-"Eriotremex formosanus"	NA	NA	NA	NA	NA
-"Eupareophora parca"	NA	NA	NA	NA	NA
-"Eutomostethus"	NA	NA	NA	NA	NA
-"Eutomostethus ephippium"	NA	NA	NA	NA	NA
-"Eutomostethus luteiventris"	NA	NA	NA	NA	NA
-"Euura pavida"	NA	NA	NA	NA	NA
-"Fenusa pumila"	NA	NA	NA	NA	NA
-"Fenusella nana"	NA	NA	NA	NA	NA
-"Fenusini"	NA	NA	NA	NA	NA
-"Halidamia affinis"	NA	NA	NA	NA	NA
-"Hartigia"	NA	NA	NA	NA	NA
-"Hartigia trimaculata"	NA	NA	NA	NA	NA
-"Hemitaxonus"	NA	NA	NA	NA	NA
-"Hemitaxonus dubitatus"	NA	NA	NA	NA	NA
-"Heterarthrinae"	NA	NA	NA	NA	NA
-"Lagium atroviolaceum"	NA	NA	NA	NA	NA
-"Macremphytus"	NA	NA	NA	NA	NA
-"Macremphytus tarsatus"	NA	NA	NA	NA	NA
-"Macremphytus testaceus"	NA	NA	NA	NA	NA
-"Macrophya"	NA	NA	NA	NA	NA
-"Macrophya alboannulata"	NA	NA	NA	NA	NA
-"Macrophya flavicoxae"	NA	NA	NA	NA	NA
-"Macrophya formosa"	NA	NA	NA	NA	NA
-"Macrophya pulchella"	NA	NA	NA	NA	NA
-"Macrophya punctumalbum"	NA	NA	NA	NA	NA
-"Macrophya succincta"	NA	NA	NA	NA	NA
-"Macrophya trisyllaba"	NA	NA	NA	NA	NA
-"Macroxyela ferruginea"	NA	NA	NA	NA	NA
-"Megaxyela"	NA	NA	NA	NA	NA
-"Metallus lanceolatus"	NA	NA	NA	NA	NA
-"Metallus rohweri"	NA	NA	NA	NA	NA
-"Monoctenus"	NA	NA	NA	NA	NA
-"Monoctenus suffusus"	NA	NA	NA	NA	NA
-"Monophadnoides rubi"	NA	NA	NA	NA	NA
-"Monostegia abdominalis"	NA	NA	NA	NA	NA
-"Nefusa ambigua"	NA	NA	NA	NA	NA
-"Nematus calais"	NA	NA	NA	NA	NA
-"Nematus salicisodoratus"	NA	NA	NA	NA	NA
-"Nematus tibialis"	NA	NA	NA	NA	NA
-"Neodiprion fabricii"	NA	NA	NA	NA	NA
-"Neodiprion pinusrigidae"	NA	NA	NA	NA	NA
-"Neoptilia"	NA	NA	NA	NA	NA
-"Neoptilia tora"	NA	NA	NA	NA	NA
-"Nesoselandria morio"	NA	NA	NA	NA	NA
-"Neurotoma fasciata"	NA	NA	NA	NA	NA
-"Onycholyda amplecta"	NA	NA	NA	NA	NA
-"Onycholyda luteicornis"	NA	NA	NA	NA	NA
-"Orussus"	NA	NA	NA	NA	NA
-"Orussus minutus"	NA	NA	NA	NA	NA
-"Orussus terminalis"	NA	NA	NA	NA	NA
-"Pamphilius ochreipes"	NA	NA	NA	NA	NA
-"Pamphilius ocreatus"	NA	NA	NA	NA	NA
-"Pamphilius semicinctus"	NA	NA	NA	NA	NA
-"Periclista"	NA	NA	NA	NA	NA
-"Periclista marginicollis"	NA	NA	NA	NA	NA
-"Perreyia"	NA	NA	NA	NA	NA
-"Perreyia tropica"	NA	NA	NA	NA	NA
-"Phymatocera"	NA	NA	NA	NA	NA
-"Phymatocera aterrima"	NA	NA	NA	NA	NA
-"Phymatocerini"	NA	NA	NA	NA	NA
-"Pleroneura bruneicornis"	NA	NA	NA	NA	NA
-"Pontania californica"	NA	NA	NA	NA	NA
-"Pontania proxima"	NA	NA	NA	NA	NA
-"Priophorus morio"	NA	NA	NA	NA	NA
-"Pristiphora rufipes"	NA	NA	NA	NA	NA
-"Profenusa thomsoni"	NA	NA	NA	NA	NA
-"Pseudosiobla"	NA	NA	NA	NA	NA
-"Pseudosiobla excavata"	NA	NA	NA	NA	NA
-"Selandriinae"	NA	NA	NA	NA	NA
-"Sericoceros krugii"	NA	NA	NA	NA	NA
-"Sericoceros mexicanus"	NA	NA	NA	NA	NA
-"Sericoceros n"	NA	NA	NA	NA	NA
-"Sirex nigricornis"	NA	NA	NA	NA	NA
-"Sirex noctilio"	NA	NA	NA	NA	NA
-"Sphacophilus apios"	NA	NA	NA	NA	NA
-"Sterictiphora"	NA	NA	NA	NA	NA
-"Sterictiphorinae"	NA	NA	NA	NA	NA
-"Strongylogaster"	NA	NA	NA	NA	NA
-"Strongylogaster multicincta"	NA	NA	NA	NA	NA
-"Strongylogaster tacita"	NA	NA	NA	NA	NA
-"Strongylogastrini"	NA	NA	NA	NA	NA
-"Symphyta"	NA	NA	NA	NA	"152742"
-"Taxonus"	NA	NA	NA	NA	NA
-"Taxonus pallidicornis"	NA	NA	NA	NA	NA
-"Taxonus terminalis"	NA	NA	NA	NA	NA
-"Tenthredininae"	NA	NA	NA	NA	NA
-"Tenthredinini"	NA	NA	NA	NA	NA
-"Tenthredo"	NA	NA	NA	NA	NA
-"Tenthredo basilaris"	NA	NA	NA	NA	NA
-"Tenthredo grandis"	NA	NA	NA	NA	NA
-"Tenthredo mellicoxa"	NA	NA	NA	NA	NA
-"Tenthredo scrophulariae"	NA	NA	NA	NA	NA
-"Tenthredo semirufa"	NA	NA	NA	NA	NA
-"Tenthredo verticalis"	NA	NA	NA	NA	NA
-"Trichiocampus"	NA	NA	NA	NA	NA
-"Trichiocampus grandis"	NA	NA	NA	NA	NA
-"Trichiosoma triangulum"	NA	NA	NA	NA	NA
-"Urocerus"	NA	NA	NA	NA	NA
-"Urocerus albicornis"	NA	NA	NA	NA	NA
-"Urocerus cressoni"	NA	NA	NA	NA	NA
-"Urocerus flavicornis"	NA	NA	NA	NA	NA
-"Urocerus gigas"	NA	NA	NA	NA	NA
-"Xiphydria"	NA	NA	NA	NA	NA
-"Xiphydria maculata"	NA	NA	NA	NA	NA
-"Zaschizonyx montana"	NA	NA	NA	NA	NA
-"Zynzus bicolor"	NA	NA	NA	NA	NA
+scientific_name	genus	tribe	subfamily	family	superfamily	ITIS_id	hairy	spiny	leafroll	silktent	unpalatable	aposematic	social	aggregate 	iNat_taxon_link	notes
+Dolerus	Alpheus		NA	Alpheidae	Alpheoidea	659913										
+Craesus	Ectemnius		Crabroninae	Crabronidae	Apoidea	1022782										
+Trichiosoma	Cerceris		Philanthinae	Crabronidae	Apoidea	1035527										
+Pamphilius	Manduca		Sphinginae	Sphingidae	Bombycoidea	936275										
+Cephidae	NA		NA	Cephidae	Cephoidea	152855										
+Nematinae	NA		Macronematinae	Hydropsychidae	Hydropsychoidea	598226										
+Nematini	NA		Macronematinae	Hydropsychidae	Hydropsychoidea	555648										
+Orussidae	NA		NA	Orussidae	Orussoidea	152853										
+Acantholyda	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152752										
+Acantholyda erythrocephala	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152753										
+Pamphiliidae	NA		NA	Pamphiliidae	Pamphilioidea	152747										
+Euura	Platygaster		Platygastrinae	Platygastridae	Platygastroidea	732545										
+Sirex	Sirex		NA	Siricidae	Siricoidea	152850										
+Tremex	Tremex		NA	Siricidae	Siricoidea	152848										
+Tremex columba	Tremex		NA	Siricidae	Siricoidea	152849										
+Siricidae	NA		NA	Siricidae	Siricoidea	152847										
+Siricoidea	NA		NA	NA	Siricoidea	152843										
+Arge	Arge		NA	Argidae	Tenthredinoidea	152760										
+Arge humeralis	Arge		NA	Argidae	Tenthredinoidea	152761										
+Arge pectoralis	Arge		NA	Argidae	Tenthredinoidea	152760										
+Schizocerella pilicornis	Schizocerella		NA	Argidae	Tenthredinoidea	152765										
+Sphacophilus cellularis	Sphacophilus		NA	Argidae	Tenthredinoidea	152763										
+Argidae	NA		NA	Argidae	Tenthredinoidea	152757										
+Cimbex	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
+Cimbex americana	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
+Cimbicidae	NA		NA	Cimbicidae	Tenthredinoidea	152766										
+Diprion similis	Diprion		NA	Diprionidae	Tenthredinoidea	152773										
+Gilpinia	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
+Gilpinia hercyniae	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
+Diprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152776										
+Neodiprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
+Neodiprion abietis	Neodiprion		NA	Diprionidae	Tenthredinoidea	152777										
+Neodiprion excitans	Neodiprion		NA	Diprionidae	Tenthredinoidea	152780										
+Neodiprion lecontei	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
+Neodiprion merkeli	Neodiprion		NA	Diprionidae	Tenthredinoidea	152782										
+Neodiprion pinetum	Neodiprion		NA	Diprionidae	Tenthredinoidea	152784										
+Neodiprion sertifer	Neodiprion		NA	Diprionidae	Tenthredinoidea	152789										
+Diprionidae	NA		NA	Diprionidae	Tenthredinoidea	152771										
+Acordulecera	Acordulecera		NA	Pergidae	Tenthredinoidea	152756										
+Pergidae	NA		NA	Pergidae	Tenthredinoidea	152755										
+Allantus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
+Allantus cinctus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
+Ametastegia	Ametastegia		NA	Tenthredinidae	Tenthredinoidea	152798										
+Caliroa	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152801										
+Caliroa cerasi	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152802										
+Caliroa quercuscoccineae	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152803										
+Cladius	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
+Cladius difformis	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
+Endelomyia aethiops	Endelomyia		NA	Tenthredinidae	Tenthredinoidea	152809										
+Fenusa dohrnii	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152813										
+Fenusa ulmi	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152815										
+Hemichroa crocea	Hemichroa		NA	Tenthredinidae	Tenthredinoidea	152817										
+Hoplocampa	Hoplocampa		NA	Tenthredinidae	Tenthredinoidea	152818										
+Nematus	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
+Nematus ribesii	Nematus		NA	Tenthredinidae	Tenthredinoidea	152824										
+Nematus ventralis	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
+Pikonema alaskensis	Pikonema		NA	Tenthredinidae	Tenthredinoidea	152831										
+Pontania	Pontania		NA	Tenthredinidae	Tenthredinoidea	152834										
+Pristiphora	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152835										
+Pristiphora erichsonii	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152837										
+Pristiphora geniculata	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152838										
+Tethida barda	Tethida		NA	Tenthredinidae	Tenthredinoidea	152840										
+Tomostethus multicinctus	Tomostethus		NA	Tenthredinidae	Tenthredinoidea	152842										
+Tenthredinidae	NA		NA	Tenthredinidae	Tenthredinoidea	152795										
+Tenthredinoidea	NA		NA	NA	Tenthredinoidea	152754										
+Xiphydriidae	NA		NA	Xiphydriidae	Xiphydrioidea	152852										
+Xyelidae	NA		NA	Xyelidae	Xyeloidea	152744										
+Abia	Lampropeltis		Colubrinae	Colubridae	NA	209256										
+Xyela	Xyelacyba		Neobythitinae	Ophidiidae	NA	165021										
+Abia americana	NA		NA	NA	NA	NA										
+Abia lonicerae	NA		NA	NA	NA	NA										
+Aglaostigma semiluteum	NA		NA	NA	NA	NA										
+Allantinae	NA		NA	NA	NA	NA										
+Allantus nigritibialis	NA		NA	NA	NA	NA										
+Allantus viennensis	NA		NA	NA	NA	NA										
+Ametastegia tenera	NA		NA	NA	NA	NA										
+Arge coccinea	NA		NA	NA	NA	NA										
+Arge ochropa	NA		NA	NA	NA	NA										
+Arge ochropus	NA		NA	NA	NA	NA										
+Arge quidia	NA		NA	NA	NA	NA										
+Arge scapularis	NA		NA	NA	NA	NA										
+Atomacera	NA		NA	NA	NA	NA										
+Atomacera debilis	NA		NA	NA	NA	NA										
+Atomacera decepta	NA		NA	NA	NA	NA										
+Blennocampinae	NA		NA	NA	NA	NA										
+Blennocampini	NA		NA	NA	NA	NA										
+Blennogeneris spissipes	NA		NA	NA	NA	NA										
+Caliroa annulipes	NA		NA	NA	NA	NA										
+Caliroa obsoleta	NA		NA	NA	NA	NA										
+Caliroini	NA		NA	NA	NA	NA										
+Caulocampus acericaulis	NA		NA	NA	NA	NA										
+Cephalcia fulviceps	NA		NA	NA	NA	NA										
+Ceratulus spectabilis	NA		NA	NA	NA	NA										
+Cimbex femoratus	NA		NA	NA	NA	NA										
+Cladius brullei	NA		NA	NA	NA	NA										
+Cladius grandis	NA		NA	NA	NA	NA										
+Cladius pectinicornis	NA		NA	NA	NA	NA										
+Craesus latitarsus	NA		NA	NA	NA	NA										
+Craesus septentrionalis	NA		NA	NA	NA	NA										
+Dimorphopteryx	NA		NA	NA	NA	NA										
+Dimorphopteryx abnormis	NA		NA	NA	NA	NA										
+Dimorphopteryx melanognathus	NA		NA	NA	NA	NA										
+Diprion pini	NA		NA	NA	NA	NA										
+Dolerus neoagcistus	NA		NA	NA	NA	NA										
+Dolerus nitens	NA		NA	NA	NA	NA										
+Dolerus unicolor	NA		NA	NA	NA	NA										
+Eriocampa	NA		NA	NA	NA	NA										
+Eriocampa juglandis	NA		NA	NA	NA	NA										
+Eriocampa ovata	NA		NA	NA	NA	NA										
+Eriotremex formosanus	NA		NA	NA	NA	NA										
+Eupareophora parca	NA		NA	NA	NA	NA										
+Eutomostethus	NA		NA	NA	NA	NA										
+Eutomostethus ephippium	NA		NA	NA	NA	NA										
+Eutomostethus luteiventris	NA		NA	NA	NA	NA										
+Euura pavida	NA		NA	NA	NA	NA										
+Fenusa pumila	NA		NA	NA	NA	NA										
+Fenusella nana	NA		NA	NA	NA	NA										
+Fenusini	NA		NA	NA	NA	NA										
+Halidamia affinis	NA		NA	NA	NA	NA										
+Hartigia	NA		NA	NA	NA	NA										
+Hartigia trimaculata	NA		NA	NA	NA	NA										
+Hemitaxonus	NA		NA	NA	NA	NA										
+Hemitaxonus dubitatus	NA		NA	NA	NA	NA										
+Heterarthrinae	NA		NA	NA	NA	NA										
+Lagium atroviolaceum	NA		NA	NA	NA	NA										
+Macremphytus	NA		NA	NA	NA	NA										
+Macremphytus tarsatus	NA		NA	NA	NA	NA										
+Macremphytus testaceus	NA		NA	NA	NA	NA										
+Macrophya	NA		NA	NA	NA	NA										
+Macrophya alboannulata	NA		NA	NA	NA	NA										
+Macrophya flavicoxae	NA		NA	NA	NA	NA										
+Macrophya formosa	NA		NA	NA	NA	NA										
+Macrophya pulchella	NA		NA	NA	NA	NA										
+Macrophya punctumalbum	NA		NA	NA	NA	NA										
+Macrophya succincta	NA		NA	NA	NA	NA										
+Macrophya trisyllaba	NA		NA	NA	NA	NA										
+Macroxyela ferruginea	NA		NA	NA	NA	NA										
+Megaxyela	NA		NA	NA	NA	NA										
+Metallus lanceolatus	NA		NA	NA	NA	NA										
+Metallus rohweri	NA		NA	NA	NA	NA										
+Monoctenus	NA		NA	NA	NA	NA										
+Monoctenus suffusus	NA		NA	NA	NA	NA										
+Monophadnoides rubi	NA		NA	NA	NA	NA										
+Monostegia abdominalis	NA		NA	NA	NA	NA										
+Nefusa ambigua	NA		NA	NA	NA	NA										
+Nematus calais	NA		NA	NA	NA	NA										
+Nematus salicisodoratus	NA		NA	NA	NA	NA										
+Nematus tibialis	NA		NA	NA	NA	NA										
+Neodiprion fabricii	NA		NA	NA	NA	NA										
+Neodiprion pinusrigidae	NA		NA	NA	NA	NA										
+Neoptilia	NA		NA	NA	NA	NA										
+Neoptilia tora	NA		NA	NA	NA	NA										
+Nesoselandria morio	NA		NA	NA	NA	NA										
+Neurotoma fasciata	NA		NA	NA	NA	NA										
+Onycholyda amplecta	NA		NA	NA	NA	NA										
+Onycholyda luteicornis	NA		NA	NA	NA	NA										
+Orussus	NA		NA	NA	NA	NA										
+Orussus minutus	NA		NA	NA	NA	NA										
+Orussus terminalis	NA		NA	NA	NA	NA										
+Pamphilius ochreipes	NA		NA	NA	NA	NA										
+Pamphilius ocreatus	NA		NA	NA	NA	NA										
+Pamphilius semicinctus	NA		NA	NA	NA	NA										
+Periclista	NA		NA	NA	NA	NA										
+Periclista marginicollis	NA		NA	NA	NA	NA										
+Perreyia	NA		NA	NA	NA	NA										
+Perreyia tropica	NA		NA	NA	NA	NA										
+Phymatocera	NA		NA	NA	NA	NA										
+Phymatocera aterrima	NA		NA	NA	NA	NA										
+Phymatocerini	NA		NA	NA	NA	NA										
+Pleroneura bruneicornis	NA		NA	NA	NA	NA										
+Pontania californica	NA		NA	NA	NA	NA										
+Pontania proxima	NA		NA	NA	NA	NA										
+Priophorus morio	NA		NA	NA	NA	NA										
+Pristiphora rufipes	NA		NA	NA	NA	NA										
+Profenusa thomsoni	NA		NA	NA	NA	NA										
+Pseudosiobla	NA		NA	NA	NA	NA										
+Pseudosiobla excavata	NA		NA	NA	NA	NA										
+Selandriinae	NA		NA	NA	NA	NA										
+Sericoceros krugii	NA		NA	NA	NA	NA										
+Sericoceros mexicanus	NA		NA	NA	NA	NA										
+Sericoceros n	NA		NA	NA	NA	NA										
+Sirex nigricornis	NA		NA	NA	NA	NA										
+Sirex noctilio	NA		NA	NA	NA	NA										
+Sphacophilus apios	NA		NA	NA	NA	NA										
+Sterictiphora	NA		NA	NA	NA	NA										
+Sterictiphorinae	NA		NA	NA	NA	NA										
+Strongylogaster	NA		NA	NA	NA	NA										
+Strongylogaster multicincta	NA		NA	NA	NA	NA										
+Strongylogaster tacita	NA		NA	NA	NA	NA										
+Strongylogastrini	NA		NA	NA	NA	NA										
+Symphyta	NA		NA	NA	NA	152742										
+Taxonus	NA		NA	NA	NA	NA										
+Taxonus pallidicornis	NA		NA	NA	NA	NA										
+Taxonus terminalis	NA		NA	NA	NA	NA										
+Tenthredininae	NA		NA	NA	NA	NA										
+Tenthredinini	NA		NA	NA	NA	NA										
+Tenthredo	NA		NA	NA	NA	NA										
+Tenthredo basilaris	NA		NA	NA	NA	NA										
+Tenthredo grandis	NA		NA	NA	NA	NA										
+Tenthredo mellicoxa	NA		NA	NA	NA	NA										
+Tenthredo scrophulariae	NA		NA	NA	NA	NA										
+Tenthredo semirufa	NA		NA	NA	NA	NA										
+Tenthredo verticalis	NA		NA	NA	NA	NA										
+Trichiocampus	NA		NA	NA	NA	NA										
+Trichiocampus grandis	NA		NA	NA	NA	NA										
+Trichiosoma triangulum	NA		NA	NA	NA	NA										
+Urocerus	NA		NA	NA	NA	NA										
+Urocerus albicornis	NA		NA	NA	NA	NA										
+Urocerus cressoni	NA		NA	NA	NA	NA										
+Urocerus flavicornis	NA		NA	NA	NA	NA										
+Urocerus gigas	NA		NA	NA	NA	NA										
+Xiphydria	NA		NA	NA	NA	NA										
+Xiphydria maculata	NA		NA	NA	NA	NA										
+Zaschizonyx montana	NA		NA	NA	NA	NA										
+Zynzus bicolor	NA		NA	NA	NA	NA										
