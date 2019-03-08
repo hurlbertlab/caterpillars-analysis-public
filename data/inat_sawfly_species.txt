@@ -1,79 +1,9 @@
 scientific_name	genus	tribe	subfamily	family	superfamily	ITIS_id	hairy	spiny	leafroll	silktent	unpalatable	aposematic	social	aggregate 	iNat_taxon_link	notes
-Dolerus	Alpheus		NA	Alpheidae	Alpheoidea	659913										
-Craesus	Ectemnius		Crabroninae	Crabronidae	Apoidea	1022782										
-Trichiosoma	Cerceris		Philanthinae	Crabronidae	Apoidea	1035527										
-Pamphilius	Manduca		Sphinginae	Sphingidae	Bombycoidea	936275										
-Cephidae	NA		NA	Cephidae	Cephoidea	152855										
-Nematinae	NA		Macronematinae	Hydropsychidae	Hydropsychoidea	598226										
-Nematini	NA		Macronematinae	Hydropsychidae	Hydropsychoidea	555648										
-Orussidae	NA		NA	Orussidae	Orussoidea	152853										
-Acantholyda	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152752										
-Acantholyda erythrocephala	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152753										
-Pamphiliidae	NA		NA	Pamphiliidae	Pamphilioidea	152747										
-Euura	Platygaster		Platygastrinae	Platygastridae	Platygastroidea	732545										
-Sirex	Sirex		NA	Siricidae	Siricoidea	152850										
-Tremex	Tremex		NA	Siricidae	Siricoidea	152848										
-Tremex columba	Tremex		NA	Siricidae	Siricoidea	152849										
-Siricidae	NA		NA	Siricidae	Siricoidea	152847										
-Siricoidea	NA		NA	NA	Siricoidea	152843										
-Arge	Arge		NA	Argidae	Tenthredinoidea	152760										
-Arge humeralis	Arge		NA	Argidae	Tenthredinoidea	152761										
-Arge pectoralis	Arge		NA	Argidae	Tenthredinoidea	152760										
-Schizocerella pilicornis	Schizocerella		NA	Argidae	Tenthredinoidea	152765										
-Sphacophilus cellularis	Sphacophilus		NA	Argidae	Tenthredinoidea	152763										
-Argidae	NA		NA	Argidae	Tenthredinoidea	152757										
-Cimbex	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
-Cimbex americana	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
-Cimbicidae	NA		NA	Cimbicidae	Tenthredinoidea	152766										
-Diprion similis	Diprion		NA	Diprionidae	Tenthredinoidea	152773										
-Gilpinia	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
-Gilpinia hercyniae	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
-Diprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152776										
-Neodiprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
-Neodiprion abietis	Neodiprion		NA	Diprionidae	Tenthredinoidea	152777										
-Neodiprion excitans	Neodiprion		NA	Diprionidae	Tenthredinoidea	152780										
-Neodiprion lecontei	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
-Neodiprion merkeli	Neodiprion		NA	Diprionidae	Tenthredinoidea	152782										
-Neodiprion pinetum	Neodiprion		NA	Diprionidae	Tenthredinoidea	152784										
-Neodiprion sertifer	Neodiprion		NA	Diprionidae	Tenthredinoidea	152789										
-Diprionidae	NA		NA	Diprionidae	Tenthredinoidea	152771										
-Acordulecera	Acordulecera		NA	Pergidae	Tenthredinoidea	152756										
-Pergidae	NA		NA	Pergidae	Tenthredinoidea	152755										
-Allantus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
-Allantus cinctus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
-Ametastegia	Ametastegia		NA	Tenthredinidae	Tenthredinoidea	152798										
-Caliroa	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152801										
-Caliroa cerasi	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152802										
-Caliroa quercuscoccineae	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152803										
-Cladius	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
-Cladius difformis	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
-Endelomyia aethiops	Endelomyia		NA	Tenthredinidae	Tenthredinoidea	152809										
-Fenusa dohrnii	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152813										
-Fenusa ulmi	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152815										
-Hemichroa crocea	Hemichroa		NA	Tenthredinidae	Tenthredinoidea	152817										
-Hoplocampa	Hoplocampa		NA	Tenthredinidae	Tenthredinoidea	152818										
-Nematus	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
-Nematus ribesii	Nematus		NA	Tenthredinidae	Tenthredinoidea	152824										
-Nematus ventralis	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
-Pikonema alaskensis	Pikonema		NA	Tenthredinidae	Tenthredinoidea	152831										
-Pontania	Pontania		NA	Tenthredinidae	Tenthredinoidea	152834										
-Pristiphora	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152835										
-Pristiphora erichsonii	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152837										
-Pristiphora geniculata	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152838										
-Tethida barda	Tethida		NA	Tenthredinidae	Tenthredinoidea	152840										
-Tomostethus multicinctus	Tomostethus		NA	Tenthredinidae	Tenthredinoidea	152842										
-Tenthredinidae	NA		NA	Tenthredinidae	Tenthredinoidea	152795										
-Tenthredinoidea	NA		NA	NA	Tenthredinoidea	152754										
-Xiphydriidae	NA		NA	Xiphydriidae	Xiphydrioidea	152852										
-Xyelidae	NA		NA	Xyelidae	Xyeloidea	152744										
-Abia	Lampropeltis		Colubrinae	Colubridae	NA	209256										
-Xyela	Xyelacyba		Neobythitinae	Ophidiidae	NA	165021										
-Abia americana	NA		NA	NA	NA	NA										
-Abia lonicerae	NA		NA	NA	NA	NA										
-Aglaostigma semiluteum	NA		NA	NA	NA	NA										
-Allantinae	NA		NA	NA	NA	NA										
-Allantus nigritibialis	NA		NA	NA	NA	NA										
-Allantus viennensis	NA		NA	NA	NA	NA										
+Abia americana	Abia	NA	NA	Cimbicidae	Tenthredinoidea	NA	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/461224-Abia-americana	
+Abia lonicerae	Abia	NA	NA	Cimbicidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/495047-Abia-lonicerae	
+Aglaostigma semiluteum	Aglaostigma	Tenthredopsini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/493836-Aglaostigma-semiluteum	
+Allantus nigritibialis	Allantus	NA	Allantinae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/495074-Allantus-nigritibialis	
+Allantus viennensis	Allantus	NA	Allantinae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/495075-Allantus-viennensis	
 Ametastegia tenera	NA		NA	NA	NA	NA										
 Arge coccinea	NA		NA	NA	NA	NA										
 Arge ochropa	NA		NA	NA	NA	NA										
@@ -212,5 +142,65 @@ Urocerus flavicornis	NA		NA	NA	NA	NA
 Urocerus gigas	NA		NA	NA	NA	NA										
 Xiphydria	NA		NA	NA	NA	NA										
 Xiphydria maculata	NA		NA	NA	NA	NA										
+Xyela	Xyelacyba		Neobythitinae	Ophidiidae	NA	165021										
 Zaschizonyx montana	NA		NA	NA	NA	NA										
 Zynzus bicolor	NA		NA	NA	NA	NA										
+Orussidae	NA		NA	Orussidae	Orussoidea	152853										
+Acantholyda	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152752										
+Acantholyda erythrocephala	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152753										
+Pamphiliidae	NA		NA	Pamphiliidae	Pamphilioidea	152747										
+Sirex	Sirex		NA	Siricidae	Siricoidea	152850										
+Siricidae	NA		NA	Siricidae	Siricoidea	152847										
+Siricoidea	NA		NA	NA	Siricoidea	152843										
+Tremex	Tremex		NA	Siricidae	Siricoidea	152848										
+Tremex columba	Tremex		NA	Siricidae	Siricoidea	152849										
+Acordulecera	Acordulecera		NA	Pergidae	Tenthredinoidea	152756										
+Allantus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
+Allantus cinctus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
+Ametastegia	Ametastegia		NA	Tenthredinidae	Tenthredinoidea	152798										
+Arge	Arge		NA	Argidae	Tenthredinoidea	152760										
+Arge humeralis	Arge		NA	Argidae	Tenthredinoidea	152761										
+Arge pectoralis	Arge		NA	Argidae	Tenthredinoidea	152760										
+Argidae	NA		NA	Argidae	Tenthredinoidea	152757										
+Caliroa	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152801										
+Caliroa cerasi	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152802										
+Caliroa quercuscoccineae	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152803										
+Cimbex	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
+Cimbex americana	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
+Cimbicidae	NA		NA	Cimbicidae	Tenthredinoidea	152766										
+Cladius	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
+Cladius difformis	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
+Diprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152776										
+Diprion similis	Diprion		NA	Diprionidae	Tenthredinoidea	152773										
+Diprionidae	NA		NA	Diprionidae	Tenthredinoidea	152771										
+Endelomyia aethiops	Endelomyia		NA	Tenthredinidae	Tenthredinoidea	152809										
+Fenusa dohrnii	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152813										
+Fenusa ulmi	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152815										
+Gilpinia	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
+Gilpinia hercyniae	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
+Hemichroa crocea	Hemichroa		NA	Tenthredinidae	Tenthredinoidea	152817										
+Hoplocampa	Hoplocampa		NA	Tenthredinidae	Tenthredinoidea	152818										
+Nematus	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
+Nematus ribesii	Nematus		NA	Tenthredinidae	Tenthredinoidea	152824										
+Nematus ventralis	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
+Neodiprion	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
+Neodiprion abietis	Neodiprion		NA	Diprionidae	Tenthredinoidea	152777										
+Neodiprion excitans	Neodiprion		NA	Diprionidae	Tenthredinoidea	152780										
+Neodiprion lecontei	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
+Neodiprion merkeli	Neodiprion		NA	Diprionidae	Tenthredinoidea	152782										
+Neodiprion pinetum	Neodiprion		NA	Diprionidae	Tenthredinoidea	152784										
+Neodiprion sertifer	Neodiprion		NA	Diprionidae	Tenthredinoidea	152789										
+Pergidae	NA		NA	Pergidae	Tenthredinoidea	152755										
+Pikonema alaskensis	Pikonema		NA	Tenthredinidae	Tenthredinoidea	152831										
+Pontania	Pontania		NA	Tenthredinidae	Tenthredinoidea	152834										
+Pristiphora	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152835										
+Pristiphora erichsonii	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152837										
+Pristiphora geniculata	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152838										
+Schizocerella pilicornis	Schizocerella		NA	Argidae	Tenthredinoidea	152765										
+Sphacophilus cellularis	Sphacophilus		NA	Argidae	Tenthredinoidea	152763										
+Tenthredinidae	NA		NA	Tenthredinidae	Tenthredinoidea	152795										
+Tenthredinoidea	NA		NA	NA	Tenthredinoidea	152754										
+Tethida barda	Tethida		NA	Tenthredinidae	Tenthredinoidea	152840										
+Tomostethus multicinctus	Tomostethus		NA	Tenthredinidae	Tenthredinoidea	152842										
+Xiphydriidae	NA		NA	Xiphydriidae	Xiphydrioidea	152852										
+Xyelidae	NA		NA	Xyelidae	Xyeloidea	152744										
