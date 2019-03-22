@@ -31,8 +31,8 @@ Dolerus unicolor	Dolerus	NA	Selandriinae	Tenthredinidae	Tenthredinoidea	NA	N	N	N
 Eriocampa juglandis	Eriocampa	Eriocampini	Allantinae	Tenthredinidae	Tenthredinoidea	NA	Y	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/464177-Eriocampa-juglandis	
 Eriocampa ovata	Eriocampa	Eriocampini	Allantinae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/418164-Eriocampa-ovata	
 Eupareophora parca	Eupareophora	Blennocampini	Blennocampinae	Tenthredinidae	Tenthredinoidea	NA	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/495096-Eupareophora-parca	
-Eutomostethus ephippium	NA		NA	NA	NA	NA										
-Eutomostethus luteiventris	NA		NA	NA	NA	NA										
+Eutomostethus ephippium	Eutomostethus	Phymatocerini	Blennocampinae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/130721-Eutomostethus-ephippium	
+Eutomostethus luteiventris	Eutomostethus	Phymatocerini	Blennocampinae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/495098-Eutomostethus-luteiventris	
 Euura pavida	Euura	NA	Nematinae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/805203-Euura-pavida	
 Fenusa pumila	Fenusa	Fenusini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	NA	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/495099-Fenusa-pumila	
 Fenusella nana	Fenusella	Fenusini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	NA	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/496566-Fenusella-nana	
@@ -83,53 +83,50 @@ Sirex noctilio	NA		NA	NA	NA	NA
 Sphacophilus apios	Sphacophilus	NA	NA	Argidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/550903-Sphacophilus-apios	
 Strongylogaster multicincta	NA		NA	NA	NA	NA										
 Strongylogaster tacita	NA		NA	NA	NA	NA										
-Taxonus pallidicornis	NA		NA	NA	NA	NA										
-Taxonus terminalis	NA		NA	NA	NA	NA										
-Tenthredo basilaris	NA		NA	NA	NA	NA										
-Tenthredo grandis	NA		NA	NA	NA	NA										
-Tenthredo mellicoxa	NA		NA	NA	NA	NA										
-Tenthredo scrophulariae	NA		NA	NA	NA	NA										
-Tenthredo semirufa	NA		NA	NA	NA	NA										
-Tenthredo verticalis	NA		NA	NA	NA	NA										
+Taxonus pallidicornis	Taxonus	NA	Allantinae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/361980-Taxonus-pallidicornis	
+Taxonus terminalis	Taxonus	NA	Allantinae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/495345-Taxonus-terminalis	
+Tenthredo basilaris	Tenthredo	Tenthredinini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/232380-Tenthredo-basilaris	
+Tenthredo grandis	Tenthredo	Tenthredinini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/132761-Tenthredo-grandis	
+Tenthredo mellicoxa	Tenthredo	Tenthredinini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/495347-Tenthredo-mellicoxa	
+Tenthredo scrophulariae	Tenthredo	Tenthredinini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/55966-Tenthredo-scrophulariae	
+Tenthredo semirufa	NA		NA	NA	NA	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/502512-Tenthredo-semirufa	
+Tenthredo verticalis	NA		NA	NA	NA	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/321413-Tenthredo-verticalis	
 Trichiocampus grandis	Trichiocampus	NA	NA	Tenthredinidae	Tenthredinoidea	NA	Y	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/559470-Trichiocampus-grandis	
 Trichiosoma triangulum	Trichiosom	NA	NA	Cimbicidae	Tenthredinoidea	NA	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/53847-Trichiosoma-triangulum	
-Urocerus albicornis	NA		NA	NA	NA	NA										
-Urocerus cressoni	NA		NA	NA	NA	NA	test edit									
-Urocerus flavicornis	NA		NA	NA	NA	NA										
-Urocerus gigas	NA		NA	NA	NA	NA										
-Xiphydria maculata	NA		NA	NA	NA	NA										
-Zaschizonyx montana	NA		NA	NA	NA	NA										
-Zynzus bicolor	NA		NA	NA	NA	NA										
-Acantholyda erythrocephala	Acantholyda		NA	Pamphiliidae	Pamphilioidea	152753										
+Urocerus albicornis	Urocerus	NA	NA	Siricidae	Siricoidea	NA									https://www.inaturalist.org/taxa/53249-Urocerus-albicornis	
+Urocerus cressoni	Urocerus	NA	NA	Siricidae	Siricoidea	NA									https://www.inaturalist.org/taxa/53250-Urocerus-cressoni	
+Urocerus flavicornis	Urocerus	NA	NA	Siricidae	Siricoidea	NA									https://www.inaturalist.org/taxa/566157-Urocerus-flavicornis	
+Urocerus gigas	Urocerus	NA	NA	Siricidae	Siricoidea	NA									https://www.inaturalist.org/taxa/51560-Urocerus-gigas	
+Xiphydria maculata	Xiphydria	NA	NA	Xiphydriidae	Xyeloidea	NA									https://www.inaturalist.org/taxa/465076-Xiphydria-maculata	
+Zaschizonyx montana	Zaschizonyx	Sciapterygini	Tenthredininae	Tenthredinidae	Tenthredinoidea	NA									https://www.inaturalist.org/taxa/634752-Zaschizonyx-montana	
+Zynzus bicolor	Zynzus	NA	Sterictiphorinae	Argidae	Tenthredinoidea	NA	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/706478-Zynzus-bicolor	
+Acantholyda erythrocephala	Acantholyda	NA	NA	Pamphiliidae	Pamphilioidea	152753									https://www.inaturalist.org/taxa/212218-Acantholyda-erythrocephala	
 Tremex columba	Tremex		NA	Siricidae	Siricoidea	152849										
-Allantus cinctus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797										
-Ametastegia	Ametastegia		NA	Tenthredinidae	Tenthredinoidea	152798										
-Arge humeralis	Arge		NA	Argidae	Tenthredinoidea	152761										
-Arge pectoralis	Arge		NA	Argidae	Tenthredinoidea	152760										
-Caliroa cerasi	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152802										
-Caliroa quercuscoccineae	Caliroa		NA	Tenthredinidae	Tenthredinoidea	152803										
-Cimbex americana	Cimbex		NA	Cimbicidae	Tenthredinoidea	152768										
-Cladius difformis	Cladius		NA	Tenthredinidae	Tenthredinoidea	152805										
-Diprion similis	Diprion		NA	Diprionidae	Tenthredinoidea	152773										
-Diprionidae	NA		NA	Diprionidae	Tenthredinoidea	152771										
-Endelomyia aethiops	Endelomyia		NA	Tenthredinidae	Tenthredinoidea	152809										
-Fenusa dohrnii	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152813										
-Fenusa ulmi	Fenusa		NA	Tenthredinidae	Tenthredinoidea	152815										
-Gilpinia hercyniae	Gilpinia		NA	Diprionidae	Tenthredinoidea	152775										
-Hemichroa crocea	Hemichroa		NA	Tenthredinidae	Tenthredinoidea	152817										
-Nematus ribesii	Nematus		NA	Tenthredinidae	Tenthredinoidea	152824										
-Nematus ventralis	Nematus		NA	Tenthredinidae	Tenthredinoidea	152825										
-Neodiprion abietis	Neodiprion		NA	Diprionidae	Tenthredinoidea	152777										
-Neodiprion excitans	Neodiprion		NA	Diprionidae	Tenthredinoidea	152780										
-Neodiprion lecontei	Neodiprion		NA	Diprionidae	Tenthredinoidea	152781										
-Neodiprion merkeli	Neodiprion		NA	Diprionidae	Tenthredinoidea	152782										
-Neodiprion pinetum	Neodiprion		NA	Diprionidae	Tenthredinoidea	152784										
-Neodiprion sertifer	Neodiprion		NA	Diprionidae	Tenthredinoidea	152789										
-Pikonema alaskensis	Pikonema		NA	Tenthredinidae	Tenthredinoidea	152831										
-Pristiphora erichsonii	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152837										
-Pristiphora geniculata	Pristiphora		NA	Tenthredinidae	Tenthredinoidea	152838										
-Schizocerella pilicornis	Schizocerella		NA	Argidae	Tenthredinoidea	152765										
-Sphacophilus cellularis	Sphacophilus		NA	Argidae	Tenthredinoidea	152763										
-Tenthredinoidea	NA		NA	NA	Tenthredinoidea	152754										
-Tethida barda	Tethida		NA	Tenthredinidae	Tenthredinoidea	152840										
-Tomostethus multicinctus	Tomostethus		NA	Tenthredinidae	Tenthredinoidea	152842										
+Allantus cinctus	Allantus		NA	Tenthredinidae	Tenthredinoidea	152797	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/321568-Allantus-cinctus	
+Arge humeralis	Arge	NA	NA	Argidae	Tenthredinoidea	152761	N	N	N	N		N	N	y	https://www.inaturalist.org/taxa/147068-Arge-humeralis	
+Arge pectoralis	Arge	NA	NA	Argidae	Tenthredinoidea	152760	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/202672-Arge-pectoralis	
+																
+Caliroa quercuscoccineae	Caliroa	Caliroini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	152803	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/495085-Caliroa-quercuscoccineae/browse_photos	
+Cimbex americana	Cimbex	NA	NA	Cimbicidae	Tenthredinoidea	152768	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/62423-Cimbex-americana	
+Cladius difformis	Cladius	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152805	Y	N	N	N		N	N	N	https://www.inaturalist.org/taxa/448992-Cladius-difformis	
+Diprion similis	Diprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152773	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/62626-Diprion-similis	
+Endelomyia aethiops	Endelomyia	Caliroini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	152809	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/483621-Endelomyia-aethiops	
+Fenusa dohrnii	Fenusa	Fenusini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	152813	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/775656-Fenusa-dohrnii	
+Fenusa ulmi	Fenusa	Fenusini	Heterarthrinae	Tenthredinidae	Tenthredinoidea	152815	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/357808-Fenusa-ulmi	
+Gilpinia hercyniae	Gilpinia	NA	Diprioninae	Diprionidae	Tenthredinoidea	152775	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/371190-Gilpinia-hercyniae	
+Hemichroa crocea	Hemichroa	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152817	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/344755-Hemichroa-crocea	
+Nematus ribesii	Nematus	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152824	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/483620-Nematus-ribesii	
+Nematus ventralis	Nematus	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152825	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/332189-Nematus-ventralis	
+Neodiprion abietis	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152777	N	N	N	N		N	N	y	https://www.inaturalist.org/taxa/542313-Neodiprion-abietis	
+Neodiprion excitans	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152780	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/534933-Neodiprion-excitans	
+Neodiprion lecontei	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152781	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/135292-Neodiprion-lecontei	
+Neodiprion merkeli	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152782	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/747564-Neodiprion-merkeli	
+Neodiprion pinetum	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152784	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/326712-Neodiprion-pinetum	
+Neodiprion sertifer	Neodiprion	NA	Diprioninae	Diprionidae	Tenthredinoidea	152789	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/494066-Neodiprion-sertifer	
+Pikonema alaskensis	Pikonema	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152831	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/228121-Pikonema-alaskensis	
+Pristiphora erichsonii	Pristiphora	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152837	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/454773-Pristiphora-erichsonii	
+Pristiphora geniculata	Pristiphora	NA	Nematinae	Tenthredinidae	Tenthredinoidea	152838	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/228729-Pristiphora-geniculata	
+Schizocerella pilicornis	Schizocerella	NA	NA	Argidae	Tenthredinoidea	152765	N	N	Y	N		N	N	N	https://www.inaturalist.org/taxa/470763-Schizocerella-pilicornis	
+Sphacophilus cellularis	Sphacophilus	NA	NA	Argidae	Tenthredinoidea	152763	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/367090-Sphacophilus-cellularis	
+Tethida barda	Tethida	Tomostethini	Blennocampinae	Tenthredinidae	Tenthredinoidea	152840	N	N	N	N		N	N	N	https://www.inaturalist.org/taxa/349905-Tethida-barda	
+Tomostethus multicinctus	Tomostethus	Tomostethini	Blennocampinae	Tenthredinidae	Tenthredinoidea	152842	N	N	N	N		N	N	Y	https://www.inaturalist.org/taxa/851506-Tomostethus-multicinctus	
