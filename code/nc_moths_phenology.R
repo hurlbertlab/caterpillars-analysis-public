@@ -5,7 +5,7 @@ library(tidyverse)
 library(ggplot2)
 
 # Read in data
-mnc <- read.csv("/Volumes/HurlbertLab/Databases/NC Moths/nc_moths.txt", header=T, sep = '\t', stringsAsFactors = F)
+mnc <- read.csv("/Volumes/HurlbertLab/Databases/NC Moths/moth_records_thru2018_lineCleaned.txt", header=T, sep = '\t', stringsAsFactors = F)
 mnc_species <- read.table("data/mnc_species.txt", header = T)
 
 #### Get taxonomic information - creates mnc_species.txt #####
@@ -64,9 +64,9 @@ mnc_species <- read.table("data/mnc_species.txt", header = T)
 
 #### Phenological trends ####
 
-mnc$jd <- yday(as.Date(mnc$date, format = "%m/%d/%Y"))
+mnc$jd <- yday(as.Date(mnc$date, format = "%Y-%m-%d"))
 mnc$jd_wk = 7*floor(mnc$jd/7) + 4
-mnc$year <- year(as.Date(mnc$date, format = "%m/%d/%Y"))
+mnc$year <- year(as.Date(mnc$date, format = "%Y-%m-%d"))
 
 mnc_pheno <- mnc %>%
   filter(immature != T) %>%
