@@ -12,12 +12,10 @@ mnc_species <- read.table("data/mnc_species.txt", header = T)
 #### Get taxonomic information - creates mnc_species.txt #####
 uniqueNames = unique(mnc$sciName)
 
-uniqueNames2 <- uniqueNames[!(uniqueNames %in% mnc_species$sci_name)]
-
-output = data.frame(sci_name = uniqueNames2, genus = NA, subfamily = NA, family = NA, superfamily = NA, ITIS_id = NA)
+output = data.frame(sci_name = uniqueNames, genus = NA, subfamily = NA, family = NA, superfamily = NA, ITIS_id = NA)
 
 namecount = 1
-for (name in uniqueNames2) {
+for (name in uniqueNames) {
   print(paste(namecount, "out of", length(uniqueNames2)))
   hierarchy = classification(name, db = 'itis')[[1]]
   
@@ -68,6 +66,8 @@ output %>% arrange(superfamily, family, subfamily, genus, sci_name) %>%
   distinct() %>%
   write.table('data/mnc_species.txt', sep = '\t', row.names = F)
 
+missingSpp <- uniqueNames[!(uniqueNames %in% mnc_species$sci_name)]
+write.table(missingSpp, "data/mnc_species_unid.txt", sep = '\t', row.names = F)
 
 #### Phenological trends ####
 
