@@ -4,6 +4,7 @@
 library(tidyverse)
 library(taxize)
 library(lubridate)
+library(ggplot2)
 
 #### Read in Data ####
 inat = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
@@ -29,3 +30,17 @@ inat_traits <- inat %>%
   left_join(inat_species, by = 'scientific_name') %>%
   filter(genus != "NA",jday >= jdBeg, jday <= jdEnd)
 
+# changes in traits by year caterpillars 
+
+traits_by_year <- inat_traits %>%
+  group_by(year, jd_wk, hairy, spiny) %>%
+  count() %>%
+  filter(year>=2015)
+
+ggplot(data=traits_by_year, aes(x=jd_wk,y=n,color=hairy,fill=hairy)) +
+#  geom_line() +
+ # geom_point() +
+  #geom_col() +
+  geom_area() +
+  facet_wrap(~year)
+  
