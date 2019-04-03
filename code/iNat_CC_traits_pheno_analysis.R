@@ -30,17 +30,36 @@ inat_traits <- inat %>%
   left_join(inat_species, by = 'scientific_name') %>%
   filter(genus != "NA",jday >= jdBeg, jday <= jdEnd)
 
+# add column denoting if caterpillar is defended 
+inat_traits$defended <- ifelse(inat_traits$hairy == "Y", "Y",
+                               ifelse(inat_traits$spiny == "Y", "Y",
+                                      ifelse(inat_traits$leafroll == "Y", "Y",
+                                             ifelse(inat_traits$aposematic == "Y", "Y",
+                                                    ifelse(inat_traits$silktent == "Y", "Y", "N")))))
+
 # changes in traits by year caterpillars 
 
-traits_by_year <- inat_traits %>%
-  group_by(year, jd_wk, hairy, spiny) %>%
+defended_by_year <- inat_traits %>%
+  group_by(year, jd_wk, defended) %>%
   count() %>%
+  #count(spiny)%>%
   filter(year>=2015)
 
-ggplot(data=traits_by_year, aes(x=jd_wk,y=n,color=hairy,fill=hairy)) +
-#  geom_line() +
+trait_year <- inat_traits%>%
+  mutate_at(.vars = c("hairy", "spiny"), .funs = gsub("Y", 1, .))
+
+#### Plots ####
+ggplot(data=traits_by_year, aes(x=jd_wk,y=n, color = hairy)) +
+ geom_line() +
  # geom_point() +
   #geom_col() +
-  geom_area() +
+  #geom_area() +
+  facet_wrap(~year)
+
+ggplot(defended_by_year, aes(x=jd_wk, y=n, color = defended, fill = defended)) + 
+  geom_area() + 
+  ggtitle("Plot of Proportion of Defended and Undefended Caterpillars by Year")+
+  xlab("Julian Week")+
+  ylab("Number of Caterpillars")+
   facet_wrap(~year)
   
