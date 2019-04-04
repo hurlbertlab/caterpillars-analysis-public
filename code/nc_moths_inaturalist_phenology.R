@@ -15,6 +15,8 @@ library(sf)
 # iNaturalist, four families, combine
 # Filter out caterpillar records 
 
+inat_moths <- read.csv("data/inat_moths.csv", header = T)
+
 inat_cats = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
 NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
