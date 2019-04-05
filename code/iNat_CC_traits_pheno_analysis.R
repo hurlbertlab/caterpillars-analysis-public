@@ -45,8 +45,13 @@ defended_by_year <- inat_traits %>%
   #count(spiny)%>%
   filter(year>=2015)
 
-trait_year <- inat_traits%>%
-  mutate_at(.vars = c("hairy", "spiny"), .funs = gsub("Y", 1, .))
+change1 <- function(x) {
+  gsub("Y", 1, x)
+}
+
+traits_by_year <- inat_traits%>%
+  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent"), .funs = change1) %>%
+  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent"), .funs = as.numeric)
 
 #### Plots ####
 ggplot(data=traits_by_year, aes(x=jd_wk,y=n, color = hairy)) +
