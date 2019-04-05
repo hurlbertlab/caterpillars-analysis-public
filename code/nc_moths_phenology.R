@@ -9,14 +9,14 @@ library(lubridate)
 mnc <- read.csv("/Volumes/HurlbertLab/Databases/NC Moths/moth_records_thru2018_lineCleaned.txt", header=T, sep = ';', stringsAsFactors = F)
 mnc_species <- read.table("data/mnc_species.txt", header = T)
 
-#### Get taxonomic information - creates mnc_species.txt #####
+#### Get taxonomic information - creates mnc_species.txt, mnc_species_unid.txt, mnc_species_complete.txt #####
 uniqueNames = unique(mnc$sciName)
 
 output = data.frame(sci_name = uniqueNames, genus = NA, subfamily = NA, family = NA, superfamily = NA, ITIS_id = NA)
 
 namecount = 1
 for (name in uniqueNames) {
-  print(paste(namecount, "out of", length(uniqueNames2)))
+  print(paste(namecount, "out of", length(uniqueNames)))
   hierarchy = classification(name, db = 'itis')[[1]]
   
   # class is logical if taxonomic name does not match any existing names
@@ -69,6 +69,14 @@ output %>% arrange(superfamily, family, subfamily, genus, sci_name) %>%
 missingSpp <- uniqueNames[!(uniqueNames %in% mnc_species$sci_name)]
 write.table(missingSpp, "data/mnc_species_unid.txt", sep = '\t', row.names = F)
 
+mnc_unid <- read.table("data/mnc_species_unid.txt", header = T, sep = "\t")
+mnc_unid <- mnc_unid %>%
+  select(-sci_name) %>%
+  rename("sci_name" = "x")
+
+mnc_complete <- rbind(mnc_species, mnc_unid)
+write.table(mnc_complete, 'data/mnc_species_complete.txt', sep = '\t', row.names = F)
+
 #### Phenological trends ####
 
 mnc$jd <- yday(as.Date(mnc$date, format = "%Y-%m-%d"))
@@ -101,7 +109,7 @@ ggsave("figs/mnc_annualPheno.pdf", units = "in")
 
 mnc %>%
   filter(immature != T) %>%
-  left_join(mnc_species, by = c("sciName" = "sci_name")) %>%
+  left_join(mnc_species_complete, by = c("sciName" = "sci_name")) %>%
   group_by(year, jd_wk, family) %>%
   summarize(nB = sum(as.numeric(number)), na.rm = T) %>%
   filter(year >= 2000) %>%

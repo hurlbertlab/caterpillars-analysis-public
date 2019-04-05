@@ -1,359 +1,359 @@
-"x"
-"Elachista leucofrons"
-"Diploschizia lanista"
-"Drymoana blanchardi"
-"Crambidia xanthocorpa"
-"Pseudopostega quadristrigella"
-"Bucculatrix cuneigera"
-"Bucculatrix pomifoliella"
-"Bucculatrix quinquenotella"
-"Psilocorsis quercicella"
-"Macrosaccus robiniella"
-"Pseudopostega cretea"
-"Macrosaccus morrisella"
-"Bucculatrix recognita "
-"Agonopterix hyperella"
-"Bucculatrix luteella"
-"Philonome clemensella"
-"Gazoryctra sciophanes"
-"Cenopis croatanensis"
-"Synanthedon castaneae"
-"Pelecystola nearctica"
-"Xestia elimata complex"
-"Zale intenta/lunifera"
-"Acrolepiopsis incertella"
-"Anania coronata complex"
-"Crambidia unidentified species"
-"Palpita maritima"
-"Catocala aestivalia"
-"Geina tenuidactylus"
-"Anisota unidentified species"
-"Glyphodes sibillalis"
-"Tallula unidentified species"
-"Sinoe robiniella"
-"Epiblema separationis"
-"Catocala unidentified species"
-"Metaxaglaea unidentified species"
-"Iridopsis unidentified species"
-"Phaecasiophora niveiguttana"
-"Prochoreutis inflatella"
-"Diastictis unidentified species"
-"Spilosoma unidentified species"
-"Hypsopygia unidentified species"
-"Synanthedon arkansasensis"
-"Cyclophora unidentified species"
-"Rusicada privata"
-"Acleris unidentified species"
-"Antaeotricha unidentified species"
-"Macaria unidentified species"
-"Acrolepiopsis leucoscia"
-"Hypomecis unidentified species"
-"Polyhymno luteostrigella"
-"Pococera unidentified species"
-"Xubida panalope"
-"Acrolophus cressoni"
-"Lipocosma septa"
-"Herpetogramma centrostrigalis"
-"Choristoneura unidentified species"
-"Platynota semiustana"
-"Leucania unidentified species"
-"Donacaula unidentified species"
-"Renia unidentified species"
-"Zale unidentified species"
-"Herpetogramma fluctuosalis"
-"Caloptilia unidentified species"
-"Agonopterix thelmae"
-"Anicla unidentified species"
-"Eupithecia unidentified species"
-"Eupsilia schweitzeri"
-"Sereda tautana"
-"Acleris maculidorsana"
-"Choristoneura fractivittana"
-"Agonopterix curvilineella"
-"Saucrobotys futilalis"
-"Olethreutes inornatana"
-"Olethreutes fasciatana"
-"Olethreutes griseoalbana"
-"Pelochrista similiana"
-"Notocelia rosaecolana"
-"Proteoteras unidentified species"
-"Acleris robinsoniana"
-"Pandemis lamprosana"
-"Henricus edwardsiana"
-"Eucopina tocullionana"
-"Halysidota unidentified species"
-"Olethreutes unidentified species"
-"Epiblema unidentified species"
-"Cryptothelea unidentified species"
-"Peoria roseotinctella"
-"Carposina unidentified species"
-"Bucculatrix coronatella"
-"Zanclognatha unidentified species"
-"Pselnophorus belfragei"
-"Pyrausta laticlavia"
-"Lochmaeus unidentified species"
-"Diaphania costata"
-"Agonopterix unidentified species"
-"Crambus saltuellus"
-"Ephestiodes unidentified species"
-"Tinea mandarinella"
-"Retinia virginiana"
-"Dichomeris bilobella"
-"Platyptilia carduidactylus"
-"Argyresthia oreasella"
-"Acleris semipurpurana"
-"Prodoxus decipiens"
-"Olethreutes permundana"
-"Melanocinclis lineigera"
-"Acrolophus unidentified species"
-"Caloptilia stigmatella"
-"Parachma ochracealis"
-"Datana unidentified species"
-"Tortricidia unidentified species"
-"Herpetogramma sphingealis"
-"Agonopterix alstroemeriana"
-"Clepsis virescana"
-"Lipocosmodes fuliginosalis"
-"Ategumia ebulealis"
-"Homostinea curviliniella"
-"Phoberia unidentified species"
-"Scoparia unidentified species"
-"Haploa unidentified species"
-"Decantha stecia"
-"Olethreutes connectum"
-"Taygete gallaegenitella"
-"Aethes unidentified species"
-"Lipocosma unidentified species"
-"Desmia unidentified species"
-"Olethreutes corylana"
-"Geina unidentified species"
-"Dichomeris unidentified species"
-"Amolita unidentified species"
-"Phaecasiophora confixana"
-"Epiblema boxcana"
-"Episimus unidentified species"
-"Pelochrista dorsisignatana"
-"Scardia amurensis"
-"Amblyptilia pica"
-"Anacampsis levipedella"
-"Argyrotaenia hodgesi"
-"Grapholita tristrigana"
-"Euchlaena unidentified species"
-"Gondysia unidentified species"
-"Scythris fuscicomella"
-"Bucculatrix angustata"
-"Xestia dolosa complex"
-"Blastodacna unidentified species"
-"Pelochrista robinsonana"
-"Glaucolepis saccharella"
-"Bucculatrix canadensisella"
-"Argyrotaenia pinatubana"
-"Acrobasis amplexella"
-"Gerdana caritella"
-"Actrix unidentified species"
-"Cucullia unidentified species"
-"Coleotechnites atrupictella"
-"Acleris celiana"
-"Acleris variana"
-"Diasemiodes nigralis"
-"Elachista illectella"
-"Orthotaenia undulana"
-"Blastobasis unidentified species"
-"Walshia unidentified species"
-"Feltia unidentified species"
-"Nemapogon acapnopennella"
-"Mompha passerella"
-"Pelochrista quinquemaculana"
-"Acrolepiopsis unidentified species"
-"Paralobesia unidentified species"
-"Acleris placidana"
-"Caloptilia bimaculatella"
-"Anacampsis conclusella"
-"Elaphria unidentified species"
-"Canarsia ulmiarrosorella"
-"Proteoteras naracana"
-"Ancylis unidentified species"
-"Melanolophia unidentified species"
-"Pristerognatha agilana"
-"Ephestia unidentified species"
-"Virbia unidentified species"
-"Brenthia pavonacella"
-"Geina periscelidactylus"
-"Retinia comstockiana"
-"Holcocera unidentified species"
-"Rhyacionia unidentified species"
-"Clemensia umbrata"
-"Phyllocnistis unidentified species"
-"Coleophora trifolii"
-"Rhopobota dietziana"
-"Gillmeria pallidactyla"
-"Bucculatrix montana"
-"Leucospilapteryx venustella"
-"Agonopterix canadensis"
-"Bibarrambla allenella"
-"Elachista madarella"
-"Holcocera chalcofrontella"
-"Calosima unidentified species"
-"Pseudochelaria pennsylvanica"
-"Chionodes unidentified species"
-"Celypha cespitana"
-"Epinotia transmissana"
-"Ancylis nubeculana"
-"Grapholita interstinctana"
-"Pseudopostega unidentified species"
-"Apantesis unidentified species"
-"Epiblema brightonana"
-"Elachista unidentified species"
-"Tampa dimediatella"
-"Herpetogramma unidentified species"
-"Laetilia unidentified species"
-"Eucosma gomonana"
-"Platynota exasperatana"
-"Marmara fasciella"
-"Phyllocnistis insignis"
-"Phaneta raracana"
-"Pelochrista derelicta"
-"Herpetogramma phaeopteralis"
-"Glyphidocera septentrionella"
-"Perimede unidentified species"
-"Lithophane unidentified species"
-"Clemensia ochreata"
-"Zale pine-feeding complex"
-"Diasemiodes janassialis"
-"Eoparargyractis unidentified species"
-"Glyphipterix quadragintapunctata"
-"Sitochroa palealis"
-"Eudarcia eunitariaeella"
-"Anacampsis agrimoniella"
-"Catocala myristica"
-"Sinoe chambersi"
-"Eoparargyractis irroratalis"
-"Ecpyrrhorrhoe puralis"
-"Autosticha kyotensis"
-"Elophila tinealis"
-"Rhectocraspeda periusalis"
-"Pammene felicitana"
-"Phyllonorycter basistrigella"
-"Coleophora unidentified species"
-"Coleotechnites unidentified species"
-"Pseudotelphusa quercinigracella"
-"Eucopina cocana"
-"Epinotia lindana"
-"Monopis crocicapitella"
-"Argyresthia alternatella"
-"Pelochrista guttulana"
-"Epiblema tripartitana"
-"Doryodes unidentified species"
-"Argyresthia subreticulata"
-"Paranthrene simulans"
-"Diatraea lisetta"
-"Dasychira unidentified species"
-"Synanthedon alleri"
-"Carmenta bassiformis"
-"Coleophora deauratella"
-"Omphalocera cariosa"
-"Platynota unidentified species"
-"Palpita unidentified species"
-"Vitacea scepsiformis"
-"Carmenta texana"
-"Synanthedon decipiens"
-"Eucosma ochroterminana"
-"Glyphidocera unidentified species"
-"Mea skinnerella"
-"Carposina sasakii"
-"Cameraria ulmella"
-"Bactra verutana"
-"Untomia albistrigella"
-"Stigmella macrocarpae"
-"Phyllonorycter celtifoliella"
-"Crambus leachellus"
-"Acleris subnivana"
-"Hydriomena unidentified species"
-"Spiloloma unidentified species"
-"Apogeshna stenialis"
-"Sciota unidentified species"
-"Chalcoela iphitalis"
-"Gretchena deludana"
-"Aphomia unidentified species"
-"Sciota celtidella"
-"Salebriaria unidentified species"
-"Diathrausta harlequinalis"
-"Olethreutes hamameliana"
-"Ostrinia unidentified species"
-"Pseudochelaria walsinghami"
-"Phalonidia unidentified species"
-"Gypsonoma salicicolana"
-"Adela ridingsella"
-"Aroga unidentified species"
-"Nephrogramma reniculalis"
-"Acrobasis unidentified species"
-"Coleophora atromarginata"
-"Ethmia trifurcella"
-"Hellinsia linus"
-"Acleris nivisellana"
-"Glaphyria fulminalis"
-"Cochylis bucera"
-"Olethreutes sericoranum"
-"Olethreutes lacunanum"
-"Chionodes bicostomaculella"
-"Amydria unidentified species"
-"Epiblema glenni"
-"Acleris ptychogrammos"
-"Idia unidentified species"
-"Caloptilia azaleella"
-"Cenopis directana"
-"Dichomeris furia"
-"Chionodes fondella"
-"Amydria clemensella"
-"Acrocercops unidentified species"
-"Hypatopa unidentified species"
-"Chionodes sevir"
-"Dichomeris ventrella"
-"Eucosma tomonana"
-"Sonia unidentified species"
-"Gretchena amatana"
-"Cydia candana"
-"Acleris nigrolinea"
-"Argyrotaenia ivana"
-"Phalonidia lepidana"
-"Neodactria zeellus"
-"Aphomia fulminalis"
-"Rheumaptera unidentified species"
-"Glyphidocera juniperella"
-"Oenoe unidentified species"
-"Suleima helianthana"
-"Thyraylia unidentified species"
-"Xanthorhoe unidentified species"
-"Epiblema carolinana"
-"Pero unidentified species"
-"Crambus unidentified species"
-"Eucosma parmatana"
-"Samea baccatalis"
-"Gabara unidentified species"
-"Petrophila unidentified species"
-"Cochylis unidentified species"
-"Adoxophyes unidentified species"
-"Scythropiodes issikii"
-"Carmenta pyralidiformis"
-"Podosesia aureocincta"
-"Olethreutes nigranum"
-"Phaneta argutipunctana"
-"Fumibotys fumalis"
-"Anania plectilis"
-"Ulophora groteii"
-"Episimus tyrius"
-"Thyraylia hollandana species complex"
-"Hellinsia balanotes"
-"Acleris flavivittana"
-"Decodes basiplagana"
-"Choreutis pariana"
-"Aristotelia unidentified species"
-"Caloreas leucobasis"
-"Caloreas unidentified species"
-"Agonopterix clemensella"
-"Epiglaea unidentified species"
-"Acleris negundana"
-"Symmetrischema unidentified species"
-"Chimoptesis gerulae"
-"Rhyacionia granti"
-"Hellinsia unidentified species"
+x	sci_name	genus	subfamily	family	superfamily	ITIS_id
+Acleris celiana				Tortricidae		
+Acleris flavivittana				Tortricidae		
+Acleris maculidorsana				Tortricidae		
+Acleris negundana				Tortricidae		
+Acleris nigrolinea				Tortricidae		
+Acleris nivisellana				Tortricidae		
+Acleris placidana				Tortricidae		
+Acleris ptychogrammos				Tortricidae		
+Acleris robinsoniana				Tortricidae		
+Acleris semipurpurana				Tortricidae		
+Acleris subnivana				Tortricidae		
+Acleris unidentified species	Acleris	NA	NA	Tortricidae	NA	NA
+Acleris variana				Tortricidae		
+Acrobasis amplexella				Pyralidae		
+Acrobasis unidentified species	Acrobasis	NA	NA	Pyralidae	NA	NA
+Acrocercops unidentified species	Acrocercops	NA	NA	Gracillariidae	NA	NA
+Acrolepiopsis incertella				Acrolepiidae		
+Acrolepiopsis leucoscia				Acrolepiidae		
+Acrolepiopsis unidentified species	Acrolepiopsis	NA	NA	Acrolepiidae	NA	NA
+Acrolophus cressoni				Acrolophidae		
+Acrolophus unidentified species	Acrolophus	NA	NA	Acrolophidae	NA	NA
+Actrix unidentified species	Actrix	NA	NA	Phycitinae	NA	NA
+Adela ridingsella				Adelidae		
+Adoxophyes unidentified species	Adoxophyes	NA	NA	Tortricidae	NA	NA
+Aethes unidentified species	Aethes	NA	NA	Tortricidae	NA	NA
+Agonopterix alstroemeriana				Gelechioidea		
+Agonopterix canadensis				Gelechioidea		
+Agonopterix clemensella				Gelechioidea		
+Agonopterix curvilineella				Gelechioidea		
+Agonopterix hyperella				Gelechioidea		
+Agonopterix thelmae				Gelechioidea		
+Agonopterix unidentified species	Agonopterix	NA	NA	Gelechioidea	NA	NA
+Amblyptilia pica				Pterophoridae		
+Amolita unidentified species	Amolita	Amolita	Erebinae	Erebidae	Noctuoidea	937037
+Amydria clemensella				Acrolophidae		
+Amydria unidentified species	Amydria	NA	NA	Acrolophidae	NA	NA
+Anacampsis agrimoniella				Gelechiidae		
+Anacampsis conclusella				Gelechiidae		
+Anacampsis levipedella				Gelechiidae		
+Anania coronata complex				Crambidae		
+Anania plectilis				Crambidae		
+Ancylis nubeculana				Tortricidae		
+Ancylis unidentified species	Ancylis	NA	NA	Tortricidae	NA	NA
+Anicla unidentified species	Anicla	Anicla	Noctuinae	Noctuidae	Noctuoidea	937042
+Anisota unidentified species	Anisota	Anisota	Ceratocampinae	Saturniidae	Bombycoidea	936007
+Antaeotricha unidentified species	Antaeotricha	NA	NA	Stenomatinae	NA	NA
+Apantesis unidentified species	Apantesis	Apantesis	Arctiinae	Erebidae	Noctuoidea	188652
+Aphomia fulminalis				Pyralidae		
+Aphomia unidentified species	Aphomia	NA	NA	Pyralidae	NA	NA
+Apogeshna stenialis				Crambidae		
+Argyresthia alternatella				Yponomeutidae		
+Argyresthia oreasella				Yponomeutidae		
+Argyresthia subreticulata				Yponomeutidae		
+Argyrotaenia hodgesi				Tortricidae		
+Argyrotaenia ivana				Tortricidae		
+Argyrotaenia pinatubana				Tortricidae		
+Aristotelia unidentified species	Aristotelia	Aristotelia	NA	Elaeocarpaceae	NA	896728
+Aroga unidentified species	Aroga	NA	NA	Gelechiidae	NA	NA
+Ategumia ebulealis				Crambidae		
+Autosticha kyotensis				Oecophoridae		
+Bactra verutana				Tortricidae		
+Bibarrambla allenella				Elachistidae		
+Blastobasis unidentified species	Blastobasis	NA	NA	Blastobasidae	NA	NA
+Blastodacna unidentified species	Blastodacna	NA	NA	Elachistidae	NA	NA
+Brenthia pavonacella				Choreutidae		
+Bucculatrix angustata				Bucculatricidae		
+Bucculatrix canadensisella				Bucculatricidae		
+Bucculatrix coronatella				Bucculatricidae		
+Bucculatrix cuneigera				Bucculatricidae		
+Bucculatrix luteella				Bucculatricidae		
+Bucculatrix montana				Bucculatricidae		
+Bucculatrix pomifoliella				Bucculatricidae		
+Bucculatrix quinquenotella				Bucculatricidae		
+Bucculatrix recognita 				Bucculatricidae		
+Caloptilia azaleella				Gracillariidae		
+Caloptilia bimaculatella				Gracillariidae		
+Caloptilia stigmatella				Gracillariidae		
+Caloptilia unidentified species	Caloptilia	NA	NA	Gracillariidae	NA	NA
+Caloreas leucobasis				Choreutidae		
+Caloreas unidentified species	Caloreas	NA	NA	Choreutidae	NA	NA
+Calosima unidentified species	Calosima	NA	NA	Blastobasidae	NA	NA
+Cameraria ulmella				Gracillariidae		
+Canarsia ulmiarrosorella				Pyralidae		
+Carmenta bassiformis				Sesiidae		
+Carmenta pyralidiformis				Sesiidae		
+Carmenta texana				Sesiidae		
+Carposina sasakii				Carposinidae		
+Carposina unidentified species	Carposina	NA	NA	Carposinidae	NA	NA
+Catocala aestivalia				Erebidae		
+Catocala myristica				Erebidae		
+Catocala unidentified species	Catocala	Catocala	Erebinae	Erebidae	Noctuoidea	189014
+Celypha cespitana				Tortricidae		
+Cenopis croatanensis				Tortricidae		
+Cenopis directana				Tortricidae		
+Chalcoela iphitalis				Crambidae		
+Chimoptesis gerulae				Tortricidae		
+Chionodes bicostomaculella				Gelechiidae		
+Chionodes fondella				Gelechiidae		
+Chionodes sevir				Gelechiidae		
+Chionodes unidentified species	Chionodes	NA	NA	Gelechiidae	NA	NA
+Choreutis pariana				Choreutidae		
+Choristoneura fractivittana				Tortricidae		
+Choristoneura unidentified species	Choristoneura	NA	NA	Tortricidae	NA	NA
+Clemensia ochreata				Erebidae		
+Clemensia umbrata				Erebidae		
+Clepsis virescana				Tortricidae		
+Cochylis bucera				Tortricidae		
+Cochylis unidentified species	Cochylis	NA	NA	Tortricidae	NA	NA
+Coleophora atromarginata				Coleophoridae		
+Coleophora deauratella				Coleophoridae		
+Coleophora trifolii				Coleophoridae		
+Coleophora unidentified species	Coleophora	Coleophora	Coleophorinae	Coleophoridae	Gelechioidea	118726
+Coleotechnites atrupictella				Gelechiidae		
+Coleotechnites unidentified species	Coleotechnites	NA	NA	Gelechiidae	NA	NA
+Crambidia unidentified species	Crambidia	Crambidia	Arctiinae	Erebidae	Noctuoidea	937131
+Crambidia xanthocorpa				Erebidae		
+Crambus leachellus				Crambidae		
+Crambus saltuellus				Crambidae		
+Crambus unidentified species	Crambus	NA	NA	Crambidae	NA	NA
+Cryptothelea unidentified species	Cryptothelea	NA	NA	Psychidae	NA	NA
+Cucullia unidentified species	Cucullia	Cucullia	Cuculliinae	Noctuidae	Noctuoidea	188870
+Cyclophora unidentified species	Cyclophora	Cyclophora	Sterrhinae	Geometridae	Geometroidea	189137
+Cydia candana				Tortricidae		
+Dasychira unidentified species	Dasychira	Dasychira	Lymantriinae	Erebidae	Noctuoidea	709246
+Datana unidentified species	Datana	Datana	Phalerinae	Notodontidae	Noctuoidea	117512
+Decantha stecia				Oecophoridae		
+Decodes basiplagana				Tortricidae		
+Desmia unidentified species	Desmia	NA	NA	Crambidae	NA	NA
+Diaphania costata				Crambidae		
+Diasemiodes janassialis				Crambidae		
+Diasemiodes nigralis				Crambidae		
+Diastictis unidentified species	Diastictis	NA	NA	Crambidae	NA	NA
+Diathrausta harlequinalis				Crambidae		
+Diatraea lisetta				Crambidae		
+Dichomeris bilobella				Gelechiidae		
+Dichomeris furia				Gelechiidae		
+Dichomeris unidentified species	Dichomeris	NA	NA	Gelechiidae	NA	NA
+Dichomeris ventrella				Gelechiidae		
+Diploschizia lanista				Glyphipterigidae		
+Donacaula unidentified species	Donacaula	NA	NA	Crambidae	NA	NA
+Doryodes unidentified species	Doryodes	Doryodes	Erebinae	Erebidae	Noctuoidea	937155
+Drymoana blanchardi				Glyphipterigidae		
+Ecpyrrhorrhoe puralis				Crambidae		
+Elachista illectella				Elachistidae		
+Elachista leucofrons				Elachistidae		
+Elachista madarella				Elachistidae		
+Elachista unidentified species	Elachista	Elachista	NA	Elachistaceae	NA	10937
+Elaphria unidentified species	Elaphria	Elaphria	Noctuinae	Noctuidae	Noctuoidea	188965
+Elophila tinealis				Crambidae		
+Eoparargyractis irroratalis				Crambidae		
+Eoparargyractis unidentified species	Eoparargyractis	Eoparargyractis	Nymphulinae	Crambidae	Pyraloidea	117695
+Ephestia unidentified species	Ephestia	NA	NA	Pyralidae	NA	NA
+Ephestiodes unidentified species	Ephestiodes	NA	NA	Pyralidae	NA	NA
+Epiblema boxcana				Tortricidae		
+Epiblema brightonana				Tortricidae		
+Epiblema carolinana				Tortricidae		
+Epiblema glenni				Tortricidae		
+Epiblema separationis				Tortricidae		
+Epiblema tripartitana				Tortricidae		
+Epiblema unidentified species	Epiblema	NA	NA	Tortricidae	NA	NA
+Epiglaea unidentified species	Epiglaea	Epiglaea	Noctuinae	Noctuidae	Noctuoidea	188911
+Epinotia lindana				Tortricidae		
+Epinotia transmissana				Tortricidae		
+Episimus tyrius				Hekelidae		
+Episimus unidentified species	Episimus	Hekelus	NA	Hekelidae	NA	595316
+Ethmia trifurcella				Elachistidae 		
+Euchlaena unidentified species	Euchlaena	Euchlaena	Ennominae	Geometridae	Geometroidea	941479
+Eucopina cocana				Tortricidae		
+Eucopina tocullionana				Tortricidae		
+Eucosma gomonana				Tortricidae		
+Eucosma ochroterminana				Tortricidae		
+Eucosma parmatana				Tortricidae		
+Eucosma tomonana				Tortricidae		
+Eudarcia eunitariaeella				Tineidae		
+Eupithecia unidentified species	Eupithecia	Eupithecia	Larentiinae	Geometridae	Geometroidea	117571
+Eupsilia schweitzeri				Noctuidae		
+Feltia unidentified species	Feltia	Feltia	Noctuinae	Noctuidae	Noctuoidea	117393
+Fumibotys fumalis				Crambidae		
+Gabara unidentified species	Gabara	Gabara	Scolecocampinae	Erebidae	Noctuoidea	937214
+Gazoryctra sciophanes				Hepialidae		
+Geina periscelidactylus				Pterophoridae		
+Geina tenuidactylus				Pterophoridae		
+Geina unidentified species	Geina	NA	NA	Pterophoridae	NA	NA
+Gerdana caritella				Autostichidae		
+Gillmeria pallidactyla				Pterophoridae		
+Glaphyria fulminalis				Crambidae		
+Glaucolepis saccharella				Nepticulidae		
+Glyphidocera juniperella				Autostichidae		
+Glyphidocera septentrionella				Autostichidae		
+Glyphidocera unidentified species	Glyphidocera	NA	NA	Autostichidae	NA	NA
+Glyphipterix quadragintapunctata				Glyphipterigidae		
+Glyphodes sibillalis				Crambidae		
+Gondysia unidentified species	Gondysia	Gondysia	Erebinae	Erebidae	Noctuoidea	937549
+Grapholita interstinctana				Tortricidae		
+Grapholita tristrigana				Tortricidae		
+Gretchena amatana				Tortricidae		
+Gretchena deludana				Tortricidae		
+Gypsonoma salicicolana				Tortricidae		
+Halysidota unidentified species	Halysidota	Halysidota	Arctiinae	Erebidae	Noctuoidea	937234
+Haploa unidentified species	Haploa	Haploa	Arctiinae	Erebidae	Noctuoidea	937235
+Hellinsia balanotes				Pterophoridae		
+Hellinsia linus				Pterophoridae		
+Hellinsia unidentified species	Hellinsia	NA	NA	Pterophoridae	NA	NA
+Henricus edwardsiana				Tortricidae		
+Herpetogramma centrostrigalis				Crambidae		
+Herpetogramma fluctuosalis				Crambidae		
+Herpetogramma phaeopteralis				Crambidae		
+Herpetogramma sphingealis				Crambidae		
+Herpetogramma unidentified species	Herpetogramma	NA	NA	Crambidae	NA	NA
+Holcocera chalcofrontella				Blastobasidae		
+Holcocera unidentified species	Holcocera	NA	NA	Blastobasidae	NA	NA
+Homostinea curviliniella				Tineidae		
+Hydriomena unidentified species	Hydriomena	Hydriomena	Larentiinae	Geometridae	Geometroidea	189189
+Hypatopa unidentified species	Hypatopa	NA	NA	Blastobasidae	NA	NA
+Hypomecis unidentified species	Hypomecis	Hypomecis	Ennominae	Geometridae	Geometroidea	941515
+Hypsopygia unidentified species	Hypsopygia	NA	NA	Pyralidae	NA	NA
+Idia unidentified species	Idia	NA	NA	Erebidae	NA	NA
+Iridopsis unidentified species	Iridopsis	Iridopsis	Ennominae	Geometridae	Geometroidea	189278
+Laetilia unidentified species	Laetilia	NA	NA	Pyralidae	NA	NA
+Leucania unidentified species	Leucania	Leucania	Noctuinae	Noctuidae	Noctuoidea	188862
+Leucospilapteryx venustella				Gracillariidae		
+Lipocosma septa				Crambidae		
+Lipocosma unidentified species	Lipocosma	NA	NA	Crambidae	NA	NA
+Lipocosmodes fuliginosalis				Crambidae		
+Lithophane unidentified species	Lithophane	Lithophane	Noctuinae	Noctuidae	Noctuoidea	117408
+Lochmaeus unidentified species	Lochmaeus	Lochmaeus	Heterocampinae	Notodontidae	Noctuoidea	936717
+Macaria unidentified species	Macaria	NA	NA	Geometridae	NA	NA
+Macrosaccus morrisella				Gracillariidae		
+Macrosaccus robiniella				Gracillariidae		
+Marmara fasciella				Gracillariidae		
+Mea skinnerella				Tineidae		
+Melanocinclis lineigera				Cosmopterigidae		
+Melanolophia unidentified species	Melanolophia	Melanolophia	Ennominae	Geometridae	Geometroidea	941532
+Metaxaglaea unidentified species	Metaxaglaea	Metaxaglaea	Noctuinae	Noctuidae	Noctuoidea	937336
+Mompha passerella				Momphidae		
+Monopis crocicapitella				Tineidae		
+Nemapogon acapnopennella				Tineidae		
+Neodactria zeellus				Crambidae		
+Nephrogramma reniculalis				Crambidae		
+Notocelia rosaecolana				Tortricidae		
+Oenoe unidentified species	Oenoe	NA	NA	Tineidae	NA	NA
+Olethreutes connectum				Tortricidae		
+Olethreutes corylana				Tortricidae		
+Olethreutes fasciatana				Tortricidae		
+Olethreutes griseoalbana				Tortricidae		
+Olethreutes hamameliana				Tortricidae		
+Olethreutes inornatana				Tortricidae		
+Olethreutes lacunanum				Tortricidae		
+Olethreutes nigranum				Tortricidae		
+Olethreutes permundana				Tortricidae		
+Olethreutes sericoranum				Tortricidae		
+Olethreutes unidentified species	Olethreutes	NA	NA	Tortricidae	NA	NA
+Omphalocera cariosa				Pyralidae		
+Orthotaenia undulana				Tortricidae		
+Ostrinia unidentified species	Ostrinia	Ostrinia	Pyraustinae	Crambidae	Pyraloidea	117730
+Palpita maritima				Crambidae		
+Palpita unidentified species	Palpita	NA	NA	Crambidae	NA	NA
+Pammene felicitana				Tortricidae		
+Pandemis lamprosana				Tortricidae		
+Parachma ochracealis				Pyralidae		
+Paralobesia unidentified species	Paralobesia	NA	NA	Tortricidae	NA	NA
+Paranthrene simulans				Sesiidae		
+Pelecystola nearctica				Tineidae		
+Pelochrista derelicta				Tortricidae		
+Pelochrista dorsisignatana				Tortricidae		
+Pelochrista guttulana				Tortricidae		
+Pelochrista quinquemaculana				Tortricidae		
+Pelochrista robinsonana				Tortricidae		
+Pelochrista similiana				Tortricidae		
+Peoria roseotinctella				Pyralidae		
+Perimede unidentified species	Perimede	Augochloropsis	Halictinae	Halictidae	Apoidea	754453
+Pero unidentified species	Pero	NA	NA	Geometridae	NA	NA
+Petrophila unidentified species	Petrophila	Petrophila	Nymphulinae	Crambidae	Pyraloidea	117682
+Phaecasiophora confixana				Tortricidae		
+Phaecasiophora niveiguttana				Tortricidae		
+Phalonidia lepidana				Tortricidae		
+Phalonidia unidentified species	Phalonidia	NA	NA	Tortricidae	NA	NA
+Phaneta argutipunctana				Tortricidae		
+Phaneta raracana				Tortricidae		
+Philonome clemensella				Tineidae		
+Phoberia unidentified species	Phoberia	Phoberia	Erebinae	Erebidae	Noctuoidea	937413
+Phyllocnistis insignis				Gracillariidae		
+Phyllocnistis unidentified species	Phyllocnistis	NA	NA	Gracillariidae	NA	NA
+Phyllonorycter basistrigella				Gracillariidae		
+Phyllonorycter celtifoliella				Gracillariidae		
+Platynota exasperatana				Tortricidae		
+Platynota semiustana				Tortricidae		
+Platynota unidentified species	Platynota	NA	NA	Tortricidae	NA	NA
+Platyptilia carduidactylus				Pterophoridae		
+Pococera unidentified species	Pococera	NA	NA	Epipaschiinae	NA	NA
+Podosesia aureocincta				Sesiidae		
+Polyhymno luteostrigella				Gelechiidae		
+Pristerognatha agilana				Tortricidae		
+Prochoreutis inflatella				Choreutidae		
+Prodoxus decipiens				Prodoxidae		
+Proteoteras naracana				Tortricidae		
+Proteoteras unidentified species	Proteoteras	NA	NA	Tortricidae	NA	NA
+Pselnophorus belfragei				Pterophoridae		
+Pseudochelaria pennsylvanica				Pterophoridae		
+Pseudochelaria walsinghami				Pterophoridae		
+Pseudopostega cretea				Opostegidae		
+Pseudopostega quadristrigella				Opostegidae		
+Pseudopostega unidentified species	Pseudopostega	NA	NA	Opostegidae	NA	NA
+Pseudotelphusa quercinigracella				Gelechiidae		
+Psilocorsis quercicella				Depressariidae		
+Pyrausta laticlavia				Crambidae		
+Renia unidentified species	Renia	Renia	Herminiinae	Erebidae	Noctuoidea	937476
+Retinia comstockiana				Tortricidae		
+Retinia virginiana				Tortricidae		
+Rhectocraspeda periusalis				Crambidae		
+Rheumaptera unidentified species	Rheumaptera	NA	NA	Geometridae	NA	NA
+Rhopobota dietziana				Tortricidae		
+Rhyacionia granti				Braconidae		
+Rhyacionia unidentified species	Rhyacionia	Bracon	NA	Braconidae	Ichneumonoidea	153339
+Rusicada privata				Erebidae		
+Salebriaria unidentified species	Salebriaria	NA	NA	Pyralidae	NA	NA
+Samea baccatalis				Crambidae		
+Saucrobotys futilalis				Crambidae		
+Scardia amurensis				Tineidae		
+Sciota celtidella				Pyralidae		
+Sciota unidentified species	Sciota	NA	NA	Pyralidae	NA	NA
+Scoparia unidentified species	Scoparia	Scoparia	NA	Plantaginaceae	NA	34028
+Scythris fuscicomella				Scythrididae 		
+Scythropiodes issikii				Xyloryctidae		
+Sereda tautana				Tortricidae		
+Sinoe chambersi				Gelechiidae		
+Sinoe robiniella				Gelechiidae		
+Sitochroa palealis				Crambidae		
+Sonia unidentified species	Sonia	NA	NA	Tortricidae	NA	NA
+Spiloloma unidentified species	Spiloloma	Spiloloma	Erebinae	Erebidae	Noctuoidea	937497
+Spilosoma unidentified species	Spilosoma	Spilosoma	Arctiinae	Erebidae	Noctuoidea	117311
+Stigmella macrocarpae				Nepticulidae		
+Suleima helianthana				Tortricidae		
+Symmetrischema unidentified species	Symmetrischema	NA	NA	Gelechiidae	NA	NA
+Synanthedon alleri				Sesiidae		
+Synanthedon arkansasensis				Sesiidae		
+Synanthedon castaneae				Sesiidae		
+Synanthedon decipiens				Sesiidae		
+Tallula unidentified species	Tallula	Floricomus	NA	Linyphiidae	NA	856743
+Tampa dimediatella				Pyralidae		
+Taygete gallaegenitella				Autostichidae		
+Thyraylia hollandana species complex				Tortricidae		
+Thyraylia unidentified species	Thyraylia	NA	NA	Tortricidae	NA	NA
+Tinea mandarinella				Tineidae		
+Tortricidia unidentified species	Tortricidia	NA	NA	Limacodidae	NA	NA
+Ulophora groteii				Pyralidae		
+Untomia albistrigella				Gelechiidae		
+Virbia unidentified species	Virbia	Virbia	Arctiinae	Erebidae	Noctuoidea	937533
+Vitacea scepsiformis				Sesiidae		
+Walshia unidentified species	Walshia	NA	NA	Cosmopterigidae	NA	NA
+Xanthorhoe unidentified species	Xanthorhoe	Xanthorhoe	Larentiinae	Geometridae	Geometroidea	189196
+Xestia dolosa complex				Noctuidae		
+Xestia elimata complex				Noctuidae		
+Xubida panalope				Crambidae		
+Zale intenta/lunifera				Erebidae		
+Zale pine-feeding complex				Erebidae		
+Zale unidentified species	Zale	Zale	Erebinae	Erebidae	Noctuoidea	937541
+Zanclognatha unidentified species	Zanclognatha	Zanclognatha	Herminiinae	Erebidae	Noctuoidea	937543
