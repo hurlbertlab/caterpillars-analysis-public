@@ -62,6 +62,19 @@ inat_traits_ones$hs <- ifelse(inat_traits_ones$hairy == 1, 1,
 inat_traits$hs <- ifelse(inat_traits$hairy == "Y", "Y", 
                          ifelse(inat_traits$spiny == "Y", "Y", "N" ))
 #### Functions ####
+
+# Count number of records per Defended/Undefended and lat-long bin as a function of bin size (in degrees)
+recsByBinTrait = function(df, binsize) {
+  df$lat_bin = binsize*floor(df$latitude/binsize) + binsize/2
+  df$lon_bin = binsize*floor(df$longitude/binsize) + binsize/2
+  
+  inat_by_latlon_Trait = df %>%
+    group_by(lat_bin, Trait,jd_wk) %>%
+    count()
+  
+  return(inat_by_latlon_Trait)
+}
+
 # change Y to 1's
 change1 <- function(x) {
   
@@ -87,27 +100,9 @@ inat_species_numeric$hs <- ifelse(inat_species_numeric$hairy == 1, 1,
                                   ifelse(inat_species_numeric$spiny == 1, 1, 0))
 
 
-#Hairy and Spiny by week per year
-hs_wk_year <- inat_traits_ones_zeros %>%
-  filter(year>=2015)%>%
-  group_by(year, jday,hs) %>%
-  count()
-hs_wk_year$sum <- hs_wk_year$hs * hs_wk_year$n
 
-#Aposematic by week per year
-aposematic_wk_year <- inat_traits_ones_zeros%>%
-  filter(year>=2015)%>%
-  group_by(year, jday,aposematic) %>%
-  count()
-aposematic_wk_year$sum <- aposematic_wk_year$aposematic * aposematic_wk_year$n
-
-#Leafroll by week per year
-leafroll_wk_year <- inat_traits_ones_zeros %>%
-  filter(year>=2015)%>%
-  group_by(year, jday,leafroll) %>%
-  count()
-
-leafroll_wk_year$sum <- leafroll_wk_year$leafroll * leafroll_wk_year$n
+two_deg <- recsByBinTrait(inat_traits, 2)
+  
 
 #counts of traits
 Counts_traits <- inat_species_numeric%>%
