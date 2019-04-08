@@ -13,13 +13,11 @@ inat_moths <- read.csv("data/inat_moths.csv", header = T)
 
 inat_cats = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
-inat_species <- read.table("data/inat_species.txt", header = T, sep = "\t")
+inat_species <- read.table("data/inat_species.txt", header = T, sep = "\t", quote = '\"')
 
 # Remove caterpillar observations
 inat_adults <- inat_moths %>%
   filter(!(id %in% inat_cats$id))
-
-NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
 ###### Caterpillars: iNaturalist vs. Caterpillars Count
 
@@ -32,16 +30,27 @@ NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 mnc_species <- read.table("data/mnc_species_complete.txt", header = T)
 mnc <- read.csv("\\\\BioArk\\HurlbertLab\\Databases\\NC Moths\\moth_records_thru2018_lineCleaned.txt", header=T, sep = ';', stringsAsFactors = F)
 
+# Map of data records at county level for four major woody moth families
+
+NC <- st_read("data/CountyBoundary/BoundaryCountyPolygon.shp") %>%
+  dplyr::select(CountyName, geometry)
+NC_geog = st_transform(NC, "+proj=longlat +datum=WGS84")
+NC_centroids = st_centroid(NC_geog) %>% 
+  st_coordinates() %>%
+  data.frame() %>%
+  mutate(CountyName = NC$CountyName)
+
+
+
 mnc_filtered <- mnc %>%
   left_join(mnc_species, by = c("sciName" = "sci_name")) %>%
   filter(family == "Geometridae" | family == "Erebidae" | family == "Noctuidae" | family == "Notodontidae") %>%
   mutate(year = year(as.Date(date)), jday = yday(as.Date(date))) %>%
+  left_join(NC_centroids, by = c('county' = 'CountyName')) %>%
+  rename('lat_old' = 'lat', 'lon_old' = 'lon', 'lat' = 'Y', 'lon' = 'X') %>%
   filter(year == 2018)
 
-# Map of data records at county level for four major woody moth families
 
-NC <- st_read("C:/Users/gdicecco/Desktop/CountyBoundary/BoundaryCountyPolygon.shp") %>%
-  dplyr::select(CountyName, geometry)
 
 mnc_survey_effort <- mnc_filtered %>%
   group_by(county) %>%
@@ -97,7 +106,7 @@ nc_moths_comb <- mnc_bins %>%
 
 # Raw correlations of phenology
 
-ggplot(nc_moths_comb, aes(x = jd_wk, y = nMoths, col = data_source)) +
+ggplot(filter(nc_moths_comb, lat_bin %in% c(35, 36)), aes(x = jd_wk, y = nMoths, col = data_source)) +
   geom_line() + 
   geom_point() + 
   scale_color_viridis_d(begin = 0.5) +
