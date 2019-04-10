@@ -45,6 +45,7 @@ NC_centroids = st_centroid(NC_geog) %>%
 mnc_filtered <- mnc %>%
   left_join(mnc_species, by = c("sciName" = "sci_name")) %>%
   filter(family == "Geometridae" | family == "Erebidae" | family == "Noctuidae" | family == "Notodontidae") %>%
+  filter(grepl("UV", method)) %>%
   mutate(year = year(as.Date(date)), jday = yday(as.Date(date))) %>%
   left_join(NC_centroids, by = c('county' = 'CountyName')) %>%
   rename('lat_old' = 'lat', 'lon_old' = 'lon', 'lat' = 'Y', 'lon' = 'X') %>%
@@ -65,25 +66,35 @@ tmap_save(mnc_tm, "figs/NC_moths_countyMap.pdf")
 
 # NC iNaturalist obs
 
+nc_border <- st_union(NC)
+
 nc_inat <- inat_adults %>%
   mutate(Date = as.Date(observed_on, format = "%m/%d/%Y")) %>%
   mutate(year = year(Date), 
          jday = yday(Date)) %>%
   filter(year == 2018) %>%
   filter(latitude > 33, latitude < 38, longitude > -83, longitude < -75) %>%
-  st_as_sf(coords = c("longitude", "latitude"))
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>%
+  st_transform(crs = st_crs(NC)) %>%
+  filter(st_intersects(x = ., y = nc_border, sparse = F))
 
 inat_nc_tmap <- tm_shape(NC) + tm_borders() + tm_shape(nc_inat) + tm_dots(col = "jday")
+inat_nc_tmap
 tmap_save(inat_nc_tmap, "figs/NC_iNat_adultMoths_Map.pdf")
 
 # Phenology curves for these two, group by 1 degree lat lon bins
+# Threshold: 30 data points per spatial bin, march through june (jday 60-181)
+
+begin <- 0
+end <- 243
+minNumWks <- 10
 
 nc_bins <- inat_adults %>%
   mutate(Date = as.Date(observed_on, format = "%m/%d/%Y")) %>%
   mutate(year = year(Date), 
          jday = yday(Date)) %>%
   filter(year == 2018) %>%
-  filter(latitude > 33, latitude < 38, longitude > -83, longitude < -75) %>%
+  filter(id %in% nc_inat$id) %>%
   mutate(lat_bin = round(latitude, 0),
          lon_bin = round(longitude, 0),
          jd_wk = 7*floor(jday/7)) %>%
@@ -98,15 +109,21 @@ mnc_bins <- mnc_filtered %>%
   summarize(MNC_moths = sum(as.numeric(number), na.rm = T))
 
 nc_moths_spread <- mnc_bins %>%
-  full_join(nc_bins, by = c("lat_bin", "lon_bin", "jd_wk"))
+  full_join(nc_bins, by = c("lat_bin", "lon_bin", "jd_wk")) %>%
+  filter(jd_wk >= begin, jd_wk <= end) %>%
+  group_by(lat_bin, lon_bin) %>%
+  filter(n_distinct(jd_wk) > minNumWks)
 
 nc_moths_comb <- mnc_bins %>%
   full_join(nc_bins, by = c("lat_bin", "lon_bin", "jd_wk")) %>%
-  gather(key = 'data_source', value = "nMoths", MNC_moths, iNat_moths)
+  gather(key = 'data_source', value = "nMoths", MNC_moths, iNat_moths) %>%
+  filter(jd_wk >= begin, jd_wk <= end) %>%
+  group_by(lat_bin, lon_bin) %>%
+  filter(n_distinct(jd_wk) > minNumWks)
 
 # Raw correlations of phenology
 
-ggplot(filter(nc_moths_comb, lat_bin %in% c(35, 36)), aes(x = jd_wk, y = nMoths, col = data_source)) +
+ggplot(nc_moths_comb, aes(x = jd_wk, y = nMoths, col = data_source)) +
   geom_line() + 
   geom_point() + 
   scale_color_viridis_d(begin = 0.5) +
@@ -158,6 +175,10 @@ ggsave("figs/pheno_deltas_NCMoths_iNat_Asheville.pdf")
 
 ###### Caterpillars <-> Adults: iNaturalist vs. iNaturalist ########
 
+begin <- 0
+end <- 243
+minNumWks <- 10
+
 adult_moths <- inat_adults %>%
   mutate(Date = as.Date(observed_on, format = "%m/%d/%Y")) %>%
   mutate(year = year(Date), 
@@ -167,7 +188,10 @@ adult_moths <- inat_adults %>%
          lon_bin = 2*floor(longitude/2) + 2/2,
          jd_wk = 7*floor(jday/7)) %>%
   group_by(lat_bin, lon_bin, jd_wk) %>%
-  summarize(moths = n())
+  summarize(moths = n()) %>%
+  filter(jd_wk >= begin, jd_wk <= end) %>%
+  group_by(lat_bin, lon_bin) %>%
+  filter(n_distinct(jd_wk) >= minNumWks)
 
 caterpillars <- inat_cats %>%
   left_join(inat_species, by = "scientific_name") %>%
@@ -180,24 +204,50 @@ caterpillars <- inat_cats %>%
          lon_bin = 2*floor(longitude/2) + 2/2,
          jd_wk = 7*floor(jday/7)) %>%
   group_by(lat_bin, lon_bin, jd_wk) %>%
-  summarize(caterpillars = n())
+  summarize(caterpillars = n()) %>%
+  filter(jd_wk >= begin, jd_wk <= end) %>%
+  group_by(lat_bin, lon_bin) %>%
+  filter(n_distinct(jd_wk) >= minNumWks)
 
 inat_combined <- adult_moths %>%
   full_join(caterpillars, by = c("lat_bin", "lon_bin", "jd_wk")) %>%
   filter(lat_bin > 24)
 
 inat_combined_gather <- inat_combined %>%
+  group_by(lat_bin, lon_bin) %>%
+  filter(sum(caterpillars, na.rm = T) > 0) %>%
   gather(key = 'life_stage', value = "nObs", moths, caterpillars)
 
 # Phenology curves, group by 2 degree lat lon bins
 
+bins <- inat_combined_gather %>%
+  distinct(lat_bin, lon_bin)
+bins$group <- row.names(bins)
+
+inat_combined_ids <- inat_combined_gather %>%
+  left_join(bins, by = c("lat_bin", "lon_bin"))
+
 # Raw correlations of phenology
 
 ggplot(inat_combined_gather, aes(x = jd_wk, y = nObs, col = life_stage)) +
-  geom_line() + 
-  geom_point() + 
+  geom_line(cex = 1) + 
   scale_color_viridis_d(begin = 0.5) +
   scale_y_log10() +
   facet_grid(forcats::fct_reorder(factor(lat_bin), desc(lat_bin))~lon_bin) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ggsave("figs/phenocurves_iNat_mothsAndCaterpillars.pdf", units = "in", height = 20, width = 24)
+
+pdf("figs/phenocurves_iNat_mothsAndCaterpillars_pages.pdf")
+for(i in 1:nrow(bins)) {
+  df <- inat_combined_ids %>%
+    filter(group == i)
+  location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
+  plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
+    geom_line(cex = 1) + 
+    scale_color_viridis_d(begin = 0.5) +
+    scale_y_log10() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggtitle(location)
+  print(plot)
+}
+dev.off()
