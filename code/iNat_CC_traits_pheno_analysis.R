@@ -25,8 +25,8 @@ inat$lon_round = round(inat$longitude, 1)
 # Join iNat Records with Traits on Scientific Name 
 # Filter observations not identified to species
 # Filter observations outside of breeding season
-jdBeg = 1
-jdEnd = 182 
+jdBeg = 50
+jdEnd = 211 
 
 # Main Dataframes
 inat_traits <- inat %>%
@@ -74,6 +74,17 @@ recsByBinTrait = function(df, binsize) {
   
   return(inat_by_latlon_Trait)
 }
+# Same as previous function, groups by year as well
+recsByBinTraitYear = function(df, binsize) {
+  df$lat_bin = binsize*floor(df$latitude/binsize) + binsize/2
+  df$lon_bin = binsize*floor(df$longitude/binsize) + binsize/2
+  
+  inat_by_latlon_Trait = df %>%
+    group_by(lat_bin, defended,jd_wk, year) 
+    
+  
+  return(inat_by_latlon_Trait)
+}
 
 # change Y to 1's
 change1 <- function(x) {
@@ -99,6 +110,7 @@ inat_species_numeric <- inat_species%>%
 inat_species_numeric$hs <- ifelse(inat_species_numeric$hairy == 1, 1,
                                   ifelse(inat_species_numeric$spiny == 1, 1, 0))
 
+#### Forming latitudinal bins and gleaning proportions ####
 
 #intermediate bins to get proportions for each latitudinal band
 two_deg <- recsByBinTrait(inat_traits, 2)%>%
@@ -219,6 +231,77 @@ binned_latitude <- rbind(twentynine_n, twentynine_y, thirtyone_n, thirtyone_y,
                          thirtyseven_n, thirtyseven_y, thirtynine_n, thirtynine_y, 
                          fortyone_n, fortyone_y, fortythree_n, fortythree_y, fortyfive_n,
                          fortyfive_y, fortyseven_n, fortyseven_y, fortynine_n, fortynine_y)
+
+
+# intermediate traits for making other binned by lat df (will delete either this one or
+#the previous one)
+
+twentynine <- two_deg%>%
+  filter(lat_bin == 29)
+twentynine$total = sum(twentynine$n)
+twentynine$proportion = (twentynine$n/twentynine$total)*100
+
+thirtyone <- two_deg%>%
+  filter(lat_bin == 31)
+thirtyone$total = sum(thirtyone$n)
+thirtyone$proportion = (thirtyone$n/thirtyone$total)*100
+
+thirtythree <- two_deg%>%
+  filter(lat_bin == 33)
+thirtythree$total = sum(thirtythree$n)
+thirtythree$proportion = (thirtythree$n/thirtythree$total)*100
+
+thirtyfive <- two_deg%>%
+  filter(lat_bin == 35)
+thirtyfive$total = sum(thirtyfive$n)
+thirtyfive$proportion = (thirtyfive$n/thirtyfive$total)*100
+
+thirtyseven <- two_deg%>%
+  filter(lat_bin == 37)
+thirtyseven$total = sum(thirtyseven$n)
+thirtyseven$proportion = (thirtyseven$n/thirtyseven$total)*100
+
+thirtynine <- two_deg%>%
+  filter(lat_bin == 39)
+thirtynine$total = sum(thirtynine$n)
+thirtynine$proportion = (thirtynine$n/thirtynine$total)*100
+
+fortyone <- two_deg%>%
+  filter(lat_bin == 41)
+fortyone$total = sum(fortyone$n)
+fortyone$proportion = (fortyone$n/fortyone$total)*100
+
+fortythree <- two_deg%>%
+  filter(lat_bin == 43)
+fortythree$total = sum(fortythree$n)
+fortythree$proportion = (fortythree$n/fortythree$total)*100
+
+fortyfive <- two_deg%>%
+  filter(lat_bin == 45)
+fortyfive$total = sum(fortyfive$n)
+fortyfive$proportion = (fortyfive$n/fortyfive$total)*100
+
+fortyseven <- two_deg%>%
+  filter(lat_bin == 47)
+fortyseven$total = sum(fortyseven$n)
+fortyseven$proportion = (fortyseven$n/fortyseven$total)*100
+
+fortynine <- two_deg%>%
+  filter(lat_bin == 49)
+fortynine$total = sum(fortynine$n)
+fortynine$proportion = (fortynine$n/fortynine$total)*100
+
+alt_binned_latitude <- rbind(twentynine, thirtyfive, thirtyone,
+                             thirtynine, thirtyseven, fortyone,
+                             fortythree, fortyfive, fortyseven,
+                             fortynine, thirtythree)
+
+
+#### df for linear model ####
+jd_wk_model <- recsByBinTraitYear(inat_traits, 2)%>%
+  filter(lat_bin >= 29, lat_bin <=49)%>%
+  filter(year >= 2015)%>%
+  
 #counts of traits
 Counts_traits <- inat_species_numeric%>%
   group_by(hs, leafroll, aposematic,silktent)%>%
@@ -243,7 +326,23 @@ ggplot(defended_by_year, aes(x=jd_wk, y=n, color = defended, fill = defended)) +
   facet_wrap(~year)
 ggsave("figs/iNat_Defended_Caterpillars_2015-2018.pdf", width = 12, height = 8, units = "in")
   
-ggplot(Counts_traits, aes(x=))
+ggplot(binned_latitude, aes(x= jd_wk, y = proportion, color = defended))+
+  geom_line()+
+  ggtitle("Percent of Defended and Undefended Caterpillars over time")+
+  ylab("Percent of Caterpillars")+
+  xlab("Julian Week")+
+  facet_wrap(~lat_bin)
 
-  
+ggplot(alt_binned_latitude, aes(x= jd_wk, y = proportion, color = defended))+
+  geom_line()+
+  ggtitle("Percent of Defended and Undefended Caterpillars over time")+
+  ylab("Proportion of Caterpillars")+
+  xlab("Julian Week")+
+  facet_wrap(~lat_bin)
+
+test <- two_deg%>%
+  group_by(lat_bin, defended)%>%
+  mutate(total = sum(n))%>%
+  mutate(proportion = n/total)
+
   
