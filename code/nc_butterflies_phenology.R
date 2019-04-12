@@ -5,8 +5,7 @@ library(tidyverse)
 library(ggplot2)
 
 # Read in data
-setwd("//BioArk/HurlbertLab/Databases/NC Butterflies/")
-bnc <- read.csv("bnc_thru2017.csv", stringsAsFactors = F)
+bnc <- read.csv("//BioArk/HurlbertLab/Databases/NC Butterflies/bnc_thru2017.csv", stringsAsFactors = F)
 bnc_species <- read.table("data/bnc_species.txt", header = T)
 
 #### Get taxonomic information - creates bnc_species.txt #####
@@ -74,8 +73,9 @@ bnc_pheno <- bnc %>%
 theme_set(theme_classic())
 
 bnc_pheno %>% group_by(year) %>% summarize(n = sum(nB)) %>%
-  ggplot(aes(x = year, y = n)) + geom_col() + scale_y_log10() +
-  labs(y = "Number of observations", x = "Year")
+  ggplot(aes(x = year, y = n)) + geom_col() + scale_y_log10(label = scales::comma) +
+  labs(y = "Number of observations", x = "Year") +
+  theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15))
 ggsave("figs/bnc_obsperyear.pdf", units = "in")
 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
@@ -89,13 +89,19 @@ ggplot(aes(x = jd_wk, y = nB, group = factor(year), color = factor(year))) +
   scale_color_viridis_d()
 ggsave("figs/bnc_annualPheno.pdf", units = "in")
 
-bnc %>%
-  left_join(bnc_species, by = c("Cname" = "common_name")) %>%
-  group_by(year, jd_wk, family) %>%
-  summarize(nB = sum(number)) %>%
-  filter(year >= 2000) %>%
-  ggplot(aes(x = jd_wk, y = nB, group = factor(year), color = factor(year))) + 
-  geom_point(alpha= 0.5) + geom_line(alpha = 0.5) + 
-  scale_x_continuous(breaks = jds, labels = dates) + 
-  labs(y = "Number of Butterflies", x = "", color = "Year") + facet_wrap(~family, nrow = 2) + theme_bw()
-ggsave("figs/bnc_familyPheno.pdf", units = "in", height = 6, width = 15)
+
+family <- c("Hesperiidae", "Nymphalidae", "Papilionidae", "Pieridae")
+for(fam in family) {
+  bnc %>%
+    left_join(bnc_species, by = c("Cname" = "common_name")) %>%
+    group_by(year, jd_wk, family) %>%
+    summarize(nB = sum(number)) %>%
+    filter(year >= 2000, family == fam) %>%
+    ggplot(aes(x = jd_wk, y = nB, group = factor(year), color = factor(year))) + 
+    geom_line() + 
+    scale_x_continuous(breaks = jds, labels = dates) + 
+    theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15), 
+          legend.text = element_text(size = 15), legend.title = element_text(size = 15)) +
+    labs(y = "Number of Butterflies", x = "", color = "Year", title = fam)
+  ggsave(paste0("figs/bnc_", fam, "Pheno.pdf"), units = "in")
+}
