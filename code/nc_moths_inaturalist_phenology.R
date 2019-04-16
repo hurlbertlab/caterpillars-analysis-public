@@ -43,6 +43,14 @@ NC_centroids = st_centroid(NC_geog) %>%
   data.frame() %>%
   mutate(CountyName = NC$CountyName)
 
+regions <- mnc %>%
+  distinct(region, county)
+regions$region <- regions$region %>% fct_collapse(Mountains = c("Low Mountains", "High Mountains"), Piedmont = c("P", "Piedmont"))
+
+regions_cleaned <- regions %>%
+  mutate(region = as.character(region), 
+         county = str_to_title(county)) %>%
+  filter(region != "")
 
 years <- c(2016:2018)
 for(yr in years){
@@ -101,35 +109,35 @@ nc_bins <- inat_adults %>%
          jday = yday(Date)) %>%
   filter(year == yr) %>%
   filter(id %in% nc_inat$id) %>%
-  mutate(lat_bin = round(latitude, 0),
-         lon_bin = round(longitude, 0),
-         jd_wk = 7*floor(jday/7)) %>%
-  group_by(lat_bin, lon_bin, jd_wk) %>%
+  mutate(jd_wk = 7*floor(jday/7)) %>%
+  left_join(regions_cleaned, by = c("place_county_name" = "county")) %>%
+  group_by(region, jd_wk) %>%
   summarize(iNat_moths = n()) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(region) %>%
   filter(sum(iNat_moths) > 10)
 
 mnc_bins <- mnc_filtered %>%
-  mutate(lat_bin = round(lat, 0),
-         lon_bin = round(lon, 0),
-         jd_wk = 7*floor(jday/7)) %>%
-  group_by(lat_bin, lon_bin, jd_wk) %>%
+  mutate(jd_wk = 7*floor(jday/7), 
+         county = str_to_title(county)) %>%
+  dplyr::select(-region) %>%
+  left_join(regions_cleaned) %>%
+  group_by(region, jd_wk) %>%
   summarize(MNC_moths = sum(as.numeric(number), na.rm = T)) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(region) %>%
   filter(sum(MNC_moths) > 10)
 
 nc_moths_spread <- mnc_bins %>%
-  full_join(nc_bins, by = c("lat_bin", "lon_bin", "jd_wk")) %>%
+  full_join(nc_bins, by = c("region", "jd_wk")) %>%
   filter(jd_wk >= begin, jd_wk <= end) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(region) %>%
   filter(n_distinct(jd_wk) > minNumWks)
 
 nc_moths_comb <- mnc_bins %>%
-  full_join(nc_bins, by = c("lat_bin", "lon_bin", "jd_wk")) %>%
+  full_join(nc_bins, by = c("region", "jd_wk")) %>%
   filter(jd_wk >= begin, jd_wk <= end) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(region) %>%
   filter(n_distinct(jd_wk) > minNumWks) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(region) %>%
   filter(sum(MNC_moths, na.rm = T) > 10) %>%
   gather(key = 'data_source', value = "nMoths", MNC_moths, iNat_moths)
 
@@ -141,7 +149,7 @@ ggplot(nc_moths_comb, aes(x = jd_wk, y = nMoths, col = data_source)) +
   scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
                      labels = c("iNat_moths" = "iNaturalist", "MNC_moths" = "Moths NC")) +
   scale_y_log10() +
-  facet_grid(lat_bin~lon_bin) +
+  facet_wrap(~fct_relevel(region, "Mountains", "Piedmont", "Coastal Plain")) +
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(x = "", y = "Number of Moths", col = "Data source", title = as.character(yr)) +
   theme(axis.text = element_text(size = 14), axis.title.y = element_text(size = 15),
