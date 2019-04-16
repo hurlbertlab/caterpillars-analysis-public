@@ -5,7 +5,7 @@ library(tidyverse)
 library(ggplot2)
 
 # Read in data
-bnc <- read.csv("//BioArk/HurlbertLab/Databases/NC Butterflies/bnc_thru2017.csv", stringsAsFactors = F)
+bnc <- read.csv("//BioArk/HurlbertLab/Databases/NC Butterflies/bnc_thru2018.csv", stringsAsFactors = F)
 bnc_species <- read.table("data/bnc_species.txt", header = T)
 
 #### Get taxonomic information - creates bnc_species.txt #####
@@ -72,9 +72,9 @@ bnc_pheno <- bnc %>%
 
 theme_set(theme_classic())
 
-bnc_pheno %>% group_by(year) %>% summarize(n = sum(nB)) %>%
-  ggplot(aes(x = year, y = n)) + geom_col() + scale_y_log10(label = scales::comma) +
-  labs(y = "Number of observations", x = "Year") +
+bnc %>% count(year) %>%
+  ggplot(aes(x = year, y = n)) + geom_col() +
+  labs(y = "Number of records", x = "Year") +
   theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15))
 ggsave("figs/bnc_obsperyear.pdf", units = "in")
 
