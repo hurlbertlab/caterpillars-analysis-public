@@ -75,7 +75,7 @@ for(yr in years){
     tm_shape(NC) + tm_borders() +
     tm_layout(title = as.character(yr), legend.text.size = 1, legend.title.size = 1.5)
   mnc_tm
-  tmap_save(mnc_tm, paste0("figs/NC_moths_countyMap_", as.character(yr), ".pdf"))
+#  tmap_save(mnc_tm, paste0("figs/NC_moths_countyMap_", as.character(yr), ".pdf"))
 
 # NC iNaturalist obs
 
@@ -94,7 +94,7 @@ nc_inat <- inat_adults %>%
 inat_nc_tmap <- tm_shape(NC) + tm_borders() + tm_shape(nc_inat) + tm_dots() +
   tm_layout(title = as.character(yr))
 inat_nc_tmap
-tmap_save(inat_nc_tmap, paste0("figs/NC_iNat_adultMoths_Map_", as.character(yr), ".pdf"))
+#tmap_save(inat_nc_tmap, paste0("figs/NC_iNat_adultMoths_Map_", as.character(yr), ".pdf"))
 
 # Phenology curves for these two, group by 1 degree lat lon bins
 # Threshold: 30 data points per spatial bin, march through june (jday 60-181)
@@ -155,7 +155,7 @@ ggplot(nc_moths_comb, aes(x = jd_wk, y = nMoths, col = data_source)) +
   theme(axis.text = element_text(size = 14), axis.title.y = element_text(size = 15),
         legend.text = element_text(size = 14), legend.title = element_text(size = 14),
         strip.text = element_text(size = 15), panel.spacing = unit(1, "lines"))
-ggsave(paste0("figs/phenocurves_iNat_NCMoths_", as.character(yr), ".pdf"), units = "in", width = 14)
+ggsave(paste0("figs/phenocurves_iNat_NCMoths_", as.character(yr), ".pdf"), units = "in", width = 14, height = 5)
 }
 
 # Correlation of deltas
