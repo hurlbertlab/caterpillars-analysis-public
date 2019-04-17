@@ -110,6 +110,7 @@ mnc_pheno %>% filter(year >= 2000) %>%
   scale_color_viridis_d()
 ggsave("figs/mnc_annualPheno.pdf", units = "in")
 
+# Phenology of total number of individuals observed
 family <- c("Geometridae", "Erebidae", "Noctuidae", "Notodontidae")
 for(fam in family) {
   mnc %>%
@@ -126,3 +127,21 @@ for(fam in family) {
     labs(y = "Number of Moths", x = "", color = "Year", title = fam)
   ggsave(paste0("figs/mnc_", fam, "Pheno.pdf"), units = "in")
 }
+
+# Phenology by number of records (indpendent of number of individuals)
+for(fam in family) {
+  mnc %>%
+    filter(immature != T, grepl("UV", method)) %>%
+    left_join(mnc_species_complete, by = c("sciName" = "sci_name")) %>%
+    group_by(year, jd_wk, family) %>%
+    summarize(nRecs = n()) %>%
+    filter(year >= 2000, family == fam) %>%
+    ggplot(aes(x = jd_wk, y = nRecs, group = factor(year), color = factor(year))) + 
+    geom_line() + 
+    scale_x_continuous(breaks = jds, labels = dates) + 
+    theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15), 
+          legend.text = element_text(size = 15), legend.title = element_text(size = 15)) +
+    labs(y = "Number of Moths", x = "", color = "Year", title = fam)
+  ggsave(paste0("figs/mnc_", fam, "_nRecs_Pheno.pdf"), height = 5, width = 7, units = "in")
+}
+
