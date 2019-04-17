@@ -43,20 +43,20 @@ CC_traits$Defended <- ifelse(CC_traits$Hairy == 1, 1,
 
 # add column denoting if caterpillar is defended 
 inat_traits$defended <- ifelse(inat_traits$hairy == "Y", "Y",
-                               ifelse(inat_traits$spiny == "Y", "Y",
+                               ifelse(inat_traits$spiny == "Y", "Y", 
                                       ifelse(inat_traits$leafroll == "Y", "Y",
-                                             #ifelse(inat_traits$aposematic == "Y", "Y",
-                                                    ifelse(inat_traits$silktent == "Y", "Y", "N"))))
+                                             ifelse(inat_traits$aposematic == "Y", "Y", 
+                                                    ifelse(inat_traits$silktent == "Y", "Y", "N")))))
 
 # changes in traits by year caterpillars 
-defended_by_year <- inat_traits %>%
-  group_by(year, jd_wk, defended) %>%
-  count() %>%
-  filter(year>=2015)
+#defended_by_year <- inat_traits %>%
+  #group_by(year, jd_wk, defended) %>%
+  #count() %>%
+  #filter(year>=2015)
 
 #combine hairy and spiny column
-inat_traits_ones$hs <- ifelse(inat_traits_ones$hairy == 1, 1, 
-                              ifelse(inat_traits_ones$spiny == 1, 1, .))
+#inat_traits_ones$hs <- ifelse(inat_traits_ones$hairy == 1, 1, 
+                              #ifelse(inat_traits_ones$spiny == 1, 1, .))
 
 
 inat_traits$hs <- ifelse(inat_traits$hairy == "Y", "Y", 
@@ -97,24 +97,38 @@ change0 <- function(x) {
   ifelse(x == "Y", 1, 0)
 }
 
-inat_traits_ones <- inat_traits%>%
-  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "defended"), .funs = change1) %>%
-  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "defended"), .funs = as.numeric)
+# Change that fam #
+changeFAM <- function(x){
+  ifelse(x == 'Erebidae', 'Erebidae',
+         ifelse(x== 'Nymphalidae', 'Nymphalidae',
+                ifelse(x == 'Papilionidae','Papilionidae',
+                       ifelse(x == 'Noctuidae', 'Noctuidae', 
+                              ifelse(x == 'Lasiocampidae', 'Lasiocampidae', 
+                                     ifelse(x== 'Saturniidae', 'Saturniidae',
+                                            ifelse(x == 'Sphingidae', 'Sphingidae',
+                                                   ifelse(x == 'Geometridae', 'Geometridae',
+                                                          ifelse(x == 'Notodontidae', 'Notodontidae', 'Other')))))))))
+}
+#change Na's#
 
-inat_traits_ones_zeros <- inat_traits%>%
-  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "hs","defended"), .funs = change0)
+# change
+#inat_traits_ones <- inat_traits%>%
+  #mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "defended"), .funs = change1) %>%
+  #mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "defended"), .funs = as.numeric)
 
-inat_species_numeric <- inat_species%>%
-  mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent","aggregate", "social"), .funs = change0)
+#inat_traits_ones_zeros <- inat_traits%>%
+  #mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent", "hs","defended"), .funs = change0)
+
+#inat_species_numeric <- inat_species%>%
+  #mutate_at(.vars = c("hairy", "spiny","aposematic", "leafroll","silktent","aggregate", "social"), .funs = change0)
   
-inat_species_numeric$hs <- ifelse(inat_species_numeric$hairy == 1, 1,
-                                  ifelse(inat_species_numeric$spiny == 1, 1, 0))
+#inat_species_numeric$hs <- ifelse(inat_species_numeric$hairy == 1, 1,
+                                  #ifelse(inat_species_numeric$spiny == 1, 1, 0))
 
 #### Forming latitudinal bins and gleaning proportions ####
-
-#intermediate bins to get proportions for each latitudinal band
 two_deg <- recsByBinTrait(inat_traits, 2)%>%
   filter(lat_bin >= 29, lat_bin <=49)
+
 
 binned_latitude <- two_deg%>%
   group_by(lat_bin, defended)%>%
@@ -126,7 +140,7 @@ binned_latitude <- two_deg%>%
 #### df for linear model ####
 jd_wk_model <- recsByBinTraitYear(inat_traits, 2)%>%
   filter(lat_bin >= 29, lat_bin <=49)%>%
-  filter(year >= 2015)%>%
+  filter(year >= 2015)
 #### df for graphs of defended and undefended over time per year ####
 two_deg_year <- recsByBinTraitYear(inat_traits,2)%>%
   filter(lat_bin >= 29, lat_bin <=49)%>%
@@ -136,14 +150,38 @@ binned_lat_year <- two_deg_year%>%
   group_by(year, lat_bin, defended)%>%
   mutate(total = sum(n))%>%
   mutate(proportion = n/total)
+  
 
-#counts of traits
-Counts_traits <- inat_species_numeric%>%
-  group_by(hs, leafroll, aposematic,silktent)%>%
+LessBins_lat_year <- two_deg_year%>%
+  group_by(year, lat_bin, defended)%>%
+  mutate(total = sum(n))%>%
+  mutate(proportion = n/total)%>%
+  filter(year >= 2015)%>%
+  filter(lat_bin != 29, lat_bin != 33, lat_bin != 37, lat_bin != 41, lat_bin != 45, lat_bin != 49)
+ 
+  
+
+
+  
+#### df for bar charts ####
+families <- inat_traits%>%
+  mutate_at(.vars = c("family"), .funs = changeFAM)%>%
+  mutate(family = coalesce(family, 'Other'))%>%
+  group_by(family, defended)%>%
+  count()%>%
+  ungroup()%>%
+  group_by(family)%>%
+  mutate(total = sum(n))%>%
+  mutate(proportion = n/total)
+
+
+
+# review of number of obs. per family #
+count_of_families <- inat_traits%>%
+  group_by(family)%>%
   count()
   
 
-  
 #### Plots ####
 
 ggplot(hs_wk_year, aes(x=jday,y=sum)) +
@@ -169,10 +207,18 @@ ggplot(binned_latitude, aes(x= jd_wk, y = proportion, color = defended))+
   facet_wrap(~lat_bin)
 
 
-ggplot(binned_lat_year, aes(x = jd_wk, y= proportion, color = defended))+
+ggplot(LessBins_lat_year, aes(x = jd_wk, y= proportion, color = defended))+
   geom_line()+
   facet_grid(lat_bin~year)
 
+ggplot(families, aes(x = family, y = proportion, color = defended, fill = defended))+
+  geom_bar(stat = "identity")+
+  coord_flip()
+  
 
+#### modeling ####
 
+# predicting jd_wk #
+mod1 <- lm(jd_wk~defended * lat_bin + year, jd_wk_model)
+summary(mod1)
   
