@@ -89,7 +89,7 @@ ggplot(aes(x = jd_wk, y = nB, group = factor(year), color = factor(year))) +
   scale_color_viridis_d()
 ggsave("figs/bnc_annualPheno.pdf", units = "in")
 
-
+# Number of individuals
 family <- c("Hesperiidae", "Nymphalidae", "Papilionidae", "Pieridae")
 for(fam in family) {
   bnc %>%
@@ -105,3 +105,22 @@ for(fam in family) {
     labs(y = "Number of Butterflies", x = "", color = "Year", title = fam)
   ggsave(paste0("figs/bnc_", fam, "Pheno.pdf"), units = "in")
 }
+
+# Number of unique records (independent of number)
+family <- c("Hesperiidae", "Nymphalidae", "Papilionidae", "Pieridae")
+for(fam in family) {
+  bnc %>%
+    left_join(bnc_species, by = c("Cname" = "common_name")) %>%
+    group_by(year, jd_wk, family) %>%
+    summarize(nB = sum(number),
+              nRecs = n()) %>%
+    filter(year >= 2000, family == fam) %>%
+    ggplot(aes(x = jd_wk, y = nRecs, group = factor(year), color = factor(year))) + 
+    geom_line() + 
+    scale_x_continuous(breaks = jds, labels = dates) + 
+    theme(axis.text = element_text(size = 15), axis.title = element_text(size = 15), 
+          legend.text = element_text(size = 15), legend.title = element_text(size = 15)) +
+    labs(y = "Number of Butterflies", x = "", color = "Year", title = fam)
+  ggsave(paste0("figs/bnc_", fam, "_nRecs_Pheno.pdf"), units = "in")
+}
+
