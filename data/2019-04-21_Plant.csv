@@ -1380,18 +1380,18 @@ ID,SiteFK,Circle,Orientation,Code,Species
 2080,61,4,D,CAZ,N/A
 2081,61,4,E,CBA,N/A
 1146,158,4,A,ARB,N/A
-1144,158,3,D,AQZ,N/A
-1143,158,3,C,AQY,N/A
-1141,158,3,A,AQW,N/A
+1144,158,3,D,AQZ,"Water oak"
+1143,158,3,C,AQY,"Water oak"
+1141,158,3,A,AQW,"Southern magnolia"
 1131,158,1,A,AQM,N/A
 1132,158,1,B,AQN,N/A
 1133,158,1,C,AQO,N/A
 1134,158,1,D,AQP,N/A
 1135,158,1,E,AQQ,N/A
-1136,158,2,A,AQR,N/A
-1137,158,2,B,AQS,N/A
-1138,158,2,C,AQT,N/A
-1139,158,2,D,AQU,N/A
+1136,158,2,A,AQR,"Japanese zelkova"
+1137,158,2,B,AQS,"Southern magnolia"
+1138,158,2,C,AQT,"Trident maple"
+1139,158,2,D,AQU,"Japanese zelkova"
 1130,154,3,E,AQL,N/A
 1129,154,3,D,AQK,N/A
 1128,154,3,C,AQJ,N/A
@@ -1448,7 +1448,7 @@ ID,SiteFK,Circle,Orientation,Code,Species
 2147,60,23,A,CDO,"Nutmeg hickory"
 2148,60,23,B,CDP,"Basswood spp."
 2149,60,23,C,CDQ,Spicebush
-2150,60,23,D,CDR,"Pin oak"
+2150,60,-23,D,CBG,"Pin oak"
 2151,60,23,E,CDS,"Persian ironwood"
 2152,60,24,A,CDT,"Dogwood spp."
 2153,60,24,B,CDU,"Osage orange"
@@ -1460,8 +1460,8 @@ ID,SiteFK,Circle,Orientation,Code,Species
 2159,55,-5,C,BCE,"Mockernut hickory"
 2160,55,-5,D,BCF,"Pignut hickory"
 2161,55,-5,E,BCG,"Mockernut hickory"
-1145,158,3,E,ARA,N/A
-1142,158,3,B,AQX,N/A
+1145,158,3,E,ARA,Sweetgum
+1142,158,3,B,AQX,"Water oak"
 1140,158,2,E,AQV,N/A
 2834,80,2,B,DDZ,Ironwood
 2833,80,2,A,DDY,"Red maple"
@@ -1964,36 +1964,36 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1308,165,1,C,AXH,"Ohio buckeye"
 1307,165,1,B,AXG,"Box elder (acer negundo)"
 1306,165,1,A,AXF,"Ohio buckeye"
-1305,164,2,E,AXE,N/A
-1304,164,2,D,AXD,N/A
-1303,164,2,C,AXC,N/A
-1302,164,2,B,AXB,N/A
-1301,164,2,A,AXA,N/A
+1305,164,2,E,AXE,"Eastern redbud"
+1304,164,2,D,AXD,"Common ninebark"
+1303,164,2,C,AXC,"Stiff dogwood"
+1302,164,2,B,AXB,"American holly"
+1301,164,2,A,AXA,"Ozark witch hazel"
 1300,164,1,E,AWZ,N/A
 1299,164,1,D,AWY,N/A
 1298,164,1,C,AWX,N/A
 1297,164,1,B,AWW,N/A
 1296,164,1,A,AWV,N/A
-1295,163,4,E,AWU,N/A
-1294,163,4,D,AWT,N/A
-1293,163,4,C,AWS,N/A
-1292,163,4,B,AWR,N/A
-1291,163,4,A,AWQ,N/A
-1290,163,3,E,AWP,N/A
-1289,163,3,D,AWO,N/A
-1288,163,3,C,AWN,N/A
-1287,163,3,B,AWM,N/A
-1286,163,3,A,AWL,N/A
-1285,163,2,E,AWK,N/A
-1284,163,2,D,AWJ,N/A
-1283,163,2,C,AWI,N/A
-1282,163,2,B,AWH,N/A
-1281,163,2,A,AWG,N/A
-1280,163,1,E,AWF,N/A
-1279,163,1,D,AWE,N/A
-1278,163,1,C,AWD,N/A
-1277,163,1,B,AWC,N/A
-1276,163,1,A,AWB,N/A
+1295,163,4,E,AWU,"Oak spp."
+1294,163,4,D,AWT,"Wax myrtle"
+1293,163,4,C,AWS,"Eastern redbud"
+1292,163,4,B,AWR,"Oak spp."
+1291,163,4,A,AWQ,Sweetgum
+1290,163,3,E,AWP,"Eastern redbud"
+1289,163,3,D,AWO,"Maple spp."
+1288,163,3,C,AWN,Sweetgum
+1287,163,3,B,AWM,"Oak spp."
+1286,163,3,A,AWL,Sassafras
+1285,163,2,E,AWK,"Dogwood spp."
+1284,163,2,D,AWJ,"Black locust"
+1283,163,2,C,AWI,"Oak spp."
+1282,163,2,B,AWH,Tuliptree
+1281,163,2,A,AWG,"Oak spp."
+1280,163,1,E,AWF,"Dogwood spp."
+1279,163,1,D,AWE,"American holly"
+1278,163,1,C,AWD,"Black locust"
+1277,163,1,B,AWC,Sweetgum
+1276,163,1,A,AWB,"Oak spp."
 1275,162,6,E,AWA,N/A
 1274,162,6,D,AVZ,N/A
 1273,162,6,C,AVY,N/A
@@ -2074,11 +2074,11 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1198,160,2,C,ATB,"Elm spp."
 1197,160,2,B,ATA,"Elm spp."
 1196,160,2,A,ASZ,"American holly"
-1195,160,1,E,ASY,"Green ash"
+1195,160,1,E,ASY,Wisteria
 1194,160,1,D,ASX,"Elm spp."
 1193,160,1,C,ASW,Hydrangea
-1192,160,1,B,ASV,"Green ash"
-1191,160,1,A,ASU,"Green ash"
+1192,160,1,B,ASV,Wisteria
+1191,160,1,A,ASU,Wisteria
 1190,159,6,E,AST,N/A
 1189,159,6,D,ASS,N/A
 1188,159,6,C,ASR,N/A
@@ -2114,15 +2114,15 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1158,158,6,C,ARN,N/A
 1157,158,6,B,ARM,N/A
 1156,158,6,A,ARL,N/A
-1155,158,5,E,ARK,N/A
-1154,158,5,D,ARJ,N/A
-1153,158,5,C,ARI,N/A
+1155,158,5,E,ARK,"Wax myrtle"
+1154,158,5,D,ARJ,Sweetgum
+1153,158,5,C,ARI,"Water oak"
 1152,158,5,B,ARH,N/A
-1151,158,5,A,ARG,N/A
-1150,158,4,E,ARF,N/A
+1151,158,5,A,ARG,"Wax myrtle"
+1150,158,4,E,ARF,"Water oak"
 1149,158,4,D,ARE,N/A
-1148,158,4,C,ARD,N/A
-1147,158,4,B,ARC,N/A
+1148,158,4,C,ARD,"Willow oak"
+1147,158,4,B,ARC,"Water oak"
 1115,153,6,E,APW,N/A
 1114,153,6,D,APV,N/A
 1113,153,6,C,APU,N/A
@@ -3303,15 +3303,15 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1420,55,2,C,BSM,"American beech"
 1421,55,2,D,BSN,"American holly"
 1422,55,2,E,BSO,"Red maple"
-1423,55,3,A,BSP,"Black cherry"
+1423,55,3,A,BSP,"Common serviceberry"
 1424,55,3,B,BSQ,"Black cherry"
 1425,55,3,C,BSR,"Mockernut hickory"
 1426,55,3,D,BSS,"Viburnum dentatum"
 1427,55,3,E,BST,Sweetgum
-1428,55,4,A,BSU,"Mockernut hickory"
+1428,55,4,A,BSU,"Chestnut oak"
 1429,55,4,B,BSV,"Red maple"
-1430,55,4,C,BSW,"Viburnum acerfolium"
-1431,55,4,D,BSX,N/A
+1430,55,4,C,BSW,"Common serviceberry"
+1431,55,4,D,BSX,"Mapleleaf viburnum"
 1432,55,4,E,BSY,"White oak"
 1433,55,5,A,CDY,Sweetgum
 1434,55,5,B,CDZ,"Northern red oak"
@@ -3323,24 +3323,24 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1440,55,6,C,DEP,"American beech"
 1441,55,6,D,DEQ,"American hornbeam"
 1442,55,6,E,DER,"American hornbeam"
-1443,55,7,A,DES,"Red maple"
-1444,55,7,B,DET,"Eastern hophornbeam"
+1443,55,7,A,DES,"Florida maple"
+1444,55,7,B,DET,"American hornbeam"
 1445,55,7,C,DEU,"Lindera benzoin"
 1446,55,7,D,DEV,Pawpaw
 1447,55,7,E,DEW,Pawpaw
 1448,55,8,A,DFM,"American hornbeam"
-1449,55,8,B,DFN,"American hornbeam"
-1450,55,8,C,DFO,"Umbrella magnolia"
-1451,55,8,D,DFP,"American hornbeam"
+1449,55,8,B,DFN,Itea
+1450,55,8,C,DFO,"Eastern redbud"
+1451,55,8,D,DFP,"Umbrella magnolia"
 1452,55,8,E,DFQ,"American holly"
 1453,55,9,A,DFR,"American holly"
 1454,55,9,B,DFS,"American hornbeam"
-1455,55,9,C,DFT,"American hornbeam"
-1456,55,9,D,DFU,"Black cherry"
-1457,55,9,E,DFV,"American hornbeam"
+1455,55,9,C,DFT,"Florida maple"
+1456,55,9,D,DFU,"American beech"
+1457,55,9,E,DFV,"Florida maple"
 1458,55,10,A,DFW,"American beech"
 1459,55,10,B,DFX,"American beech"
-1460,55,10,C,DFY,"American beech"
+1460,55,10,C,DFY,"Red maple"
 1461,55,10,D,DFZ,"American beech"
 1462,55,10,E,DGA,Sourwood
 1463,170,1,A,BDG,N/A
@@ -3363,3 +3363,84 @@ ID,SiteFK,Circle,Orientation,Code,Species
 1480,171,2,C,BDX,N/A
 1511,171,2,D,BFC,N/A
 1512,171,2,E,BFD,N/A
+1513,172,1,A,BFE,N/A
+1514,172,1,B,BFF,N/A
+1515,172,1,C,BFG,N/A
+1516,172,1,D,BFH,N/A
+1517,172,1,E,BFI,N/A
+1518,172,2,A,BFJ,N/A
+1519,172,2,B,BFK,N/A
+1520,172,2,C,BFL,N/A
+1521,172,2,D,BFM,N/A
+1522,172,2,E,BFN,N/A
+1523,172,3,A,BFO,N/A
+1524,172,3,B,BFP,N/A
+1525,172,3,C,BFQ,N/A
+1526,172,3,D,BFR,N/A
+1527,172,3,E,BFS,N/A
+1528,172,4,A,BFT,N/A
+1529,172,4,B,BFU,N/A
+1530,172,4,C,BFV,N/A
+1531,172,4,D,BFW,N/A
+1532,172,4,E,BFX,N/A
+1533,172,5,A,BFY,N/A
+1534,172,5,B,BFZ,N/A
+1535,172,5,C,BGA,N/A
+1536,172,5,D,BGB,N/A
+1537,172,5,E,BGC,N/A
+1538,172,6,A,BGD,N/A
+1539,172,6,B,BGE,N/A
+1540,172,6,C,BGF,N/A
+1627,172,6,D,BJO,N/A
+1651,172,6,E,BKM,N/A
+1652,173,1,A,BKN,N/A
+1653,173,1,B,BKO,N/A
+1654,173,1,C,BKP,N/A
+1655,173,1,D,BKQ,N/A
+1656,173,1,E,BKR,N/A
+1657,173,2,A,BKS,N/A
+1658,173,2,B,BKT,N/A
+1659,173,2,C,BKU,N/A
+1660,173,2,D,BKV,N/A
+1661,173,2,E,BKW,N/A
+1662,173,3,A,BKX,N/A
+1663,173,3,B,BKY,N/A
+1664,173,3,C,BKZ,N/A
+1665,173,3,D,BLA,N/A
+1666,173,3,E,BLB,N/A
+1667,173,4,A,BLC,N/A
+1668,173,4,B,BLD,N/A
+1669,173,4,C,BLE,N/A
+1670,173,4,D,BLF,N/A
+1671,173,4,E,BLG,N/A
+1672,173,5,A,BLH,N/A
+1673,173,5,B,BLI,N/A
+1674,173,5,C,BLJ,N/A
+1675,173,5,D,BLK,N/A
+1826,173,5,E,BRF,N/A
+1827,173,6,A,BRG,N/A
+1828,173,6,B,BRH,N/A
+1829,173,6,C,BRI,N/A
+1830,173,6,D,BRJ,N/A
+1831,173,6,E,BRK,N/A
+1932,173,7,A,BVH,N/A
+1933,173,7,B,BVI,N/A
+1934,173,7,C,BVJ,N/A
+1935,173,7,D,BVK,N/A
+1936,173,7,E,BVL,N/A
+1937,173,8,A,BVM,N/A
+1938,173,8,B,BVN,N/A
+1939,173,8,C,BVO,N/A
+1940,173,8,D,BVP,N/A
+1941,173,8,E,BVQ,N/A
+2057,174,1,A,CAC,N/A
+2058,174,1,B,CAD,N/A
+2059,174,1,C,CAE,N/A
+2060,174,1,D,CAF,N/A
+2061,174,1,E,CAG,N/A
+2082,174,2,A,CBB,N/A
+2083,174,2,B,CBC,N/A
+2084,174,2,C,CBD,N/A
+2085,174,2,D,CBE,N/A
+2086,174,2,E,CBF,N/A
+2087,60,23,D,CDR,"Hawthorn spp."
