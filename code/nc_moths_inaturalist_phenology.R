@@ -243,13 +243,30 @@ bins$group <- row.names(bins)
 inat_combined_ids <- inat_combined_gather %>%
   left_join(bins, by = c("lat_bin", "lon_bin", "year"))
 
+# 10% accumulation
+
+accum_date <- inat_combined_ids %>%
+  replace_na(list(nObs = 0)) %>%
+  group_by(lat_bin, lon_bin, year, life_stage) %>%
+  arrange(jd_wk) %>%
+  mutate(total = sum(nObs, na.rm = T), ten_percent = 0.1*total, accum = cumsum(nObs)) %>%
+  group_by(lat_bin, lon_bin, year, life_stage) %>%
+  filter(accum >= ten_percent) %>%
+  filter(jd_wk == min(jd_wk)) %>%
+  rename(accum_wk = jd_wk)
+
+inat_combined_accum <- inat_combined_ids %>%
+  left_join(dplyr::select(accum_date, lat_bin, lon_bin, year, life_stage, accum_wk),
+            by = c("lat_bin", "lon_bin", "year", "life_stage"))
+
 # Raw correlations of phenology
 for(yr in c(2015:2018)) {
-  ggplot(filter(inat_combined_gather, year == yr), aes(x = jd_wk, y = nObs, col = life_stage)) +
+  ggplot(dplyr::filter(inat_combined_accum, year == yr, !is.na(nObs)), aes(x = jd_wk, y = nObs, col = life_stage)) +
     geom_line(cex = 1) + 
     scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
                        labels = c("caterpillars" = "Caterpillars", "moths" = "Moths")) +
     scale_y_log10() +
+    geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, show.legend = F) +
     facet_grid(forcats::fct_reorder(factor(lat_bin), desc(lat_bin))~lon_bin) +
     scale_x_continuous(breaks = jds, labels = dates) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
@@ -260,14 +277,14 @@ for(yr in c(2015:2018)) {
   ggsave(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_", yr, ".pdf"), units = "in", height = 20, width = 30)
   
   bins_yr <- bins %>%
-    filter(year == yr)
+    dplyr::filter(year == yr)
   
   pdf(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_pages_", yr, ".pdf"), height = 5, width = 8)
   for(i in bins_yr$group) {
-    df <- inat_combined_ids %>%
-      filter(year == yr) %>%
-      filter(group == i) %>%
-      group_by(lat_bin, lon_bin, life_stage) %>%
+    df <- inat_combined_accum %>%
+      dplyr::filter(year == yr) %>%
+      dplyr::filter(group == i, !is.na(nObs)) %>%
+      group_by(lat_bin, lon_bin, life_stage, accum_wk) %>%
       mutate(n = sum(nObs, na.rm = T))
     nmoths <- unique(df$n)[[1]]
     ncats <- unique(df$n)[[2]]
@@ -278,6 +295,7 @@ for(yr in c(2015:2018)) {
                          labels = c("caterpillars" = "Caterpillars", "moths" = "Moths")) +
       scale_y_log10() +
       scale_x_continuous(breaks = jds, labels = dates) +
+      geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, show.legend = F) +
       labs(x = "", y = "Number of observations", col = "Life stage") +
       theme(legend.text = element_text(size = 15), 
             legend.title = element_text(size = 15), 
@@ -294,10 +312,15 @@ for(yr in c(2015:2018)) {
   
 }
 
-# 10% accumulation
-
 # two models: catdate ~ mothdate*lat + year
 # catdate - mothdate ~ lat + year
 
-# Cross correlations
-# funs: library(timeseries), adf.test() for stationarity, acf() timelag plot, ccf() compare two time series - which lags highest correlation
+mod_dates <- accum_date %>%
+  dplyr::select(lat_bin, lon_bin, group, year, accum_wk, life_stage) %>%
+  spread(key = life_stage, value = accum_wk)
+
+cat_date <- lm(caterpillars ~ moths*lat_bin + year, data = mod_dates)
+summary(cat_date)
+
+diff_date <- lm(caterpillars - moths ~ lat_bin + year, data = mod_dates)
+summary(diff_date)
