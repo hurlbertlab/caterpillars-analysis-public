@@ -5,6 +5,7 @@ library(cowplot)
 library(tmap)
 library(lubridate)
 library(sf)
+library(zoo)
 
 # iNaturalist, four families, combine
 # Filter out caterpillar records 
@@ -312,15 +313,99 @@ for(yr in c(2015:2018)) {
   
 }
 
+## Fit GAM, obtain inflection point from model fit
+
 # two models: catdate ~ mothdate*lat + year
 # catdate - mothdate ~ lat + year
 
 mod_dates <- accum_date %>%
   dplyr::select(lat_bin, lon_bin, group, year, accum_wk, life_stage) %>%
-  spread(key = life_stage, value = accum_wk)
+  spread(key = life_stage, value = accum_wk) %>%
+  mutate(diff = (caterpillars - moths)/7)
 
 cat_date <- lm(caterpillars ~ moths*lat_bin + year, data = mod_dates)
 summary(cat_date)
 
 diff_date <- lm(caterpillars - moths ~ lat_bin + year, data = mod_dates)
 summary(diff_date)
+
+### Cross-correlation analysis
+
+# write function for cross-correlations
+
+cross_cor <- function(time_series) {
+  moths <- data.frame(jd_wk = time_series$jd_wk, moths = time_series$moths)
+  cats <- data.frame(jd_wk = time_series$jd_wk, cats = time_series$caterpillars)
+  results <- data.frame(lag = c(0:8), r = c(NA), nobs = c(NA))
+  for(lag in results$lag) {
+    cats$jd_wk <- cats$jd_wk - lag*7
+    lag_series <- moths %>%
+      left_join(cats, by = "jd_wk") %>%
+      na.omit()
+    results[results$lag == lag, 2] <- cor(lag_series$moths, lag_series$cats)
+    results[results$lag == lag, 3] <- nrow(lag_series)/(38-lag)
+  }
+  return(results)
+}
+
+inat_cross <- inat_combined %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  filter(sum(caterpillars, na.rm = T) > 50) %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  arrange(jd_wk) %>%
+  nest() %>%
+  mutate(interp = map(data, ~{
+    df <- .
+    int <- na.approx(df$caterpillars, maxgap = 1)
+    diff <- nrow(df) - length(int)
+    data.frame(jd_wk = df$jd_wk, moths = df$moths, caterpillars = c(rep(NA, diff), int))
+  })) %>%
+  mutate(cross_corr = map(data, ~{
+    cross_cor(.)
+  })) %>%
+  mutate(interpolated = map(interp, ~{
+    cross_cor(.)
+  })) %>%
+  dplyr::select(-data, -interp) %>%
+  gather(method, output, cross_corr:interpolated) %>%
+  unnest() 
+
+# best lag distances for each bin
+
+inat_lags <- inat_cross %>%
+  group_by(lat_bin, lon_bin, year, method) %>%
+  filter(r == max(r, na.rm = T)) %>%
+  filter(nobs > 0.2)  %>%
+  left_join(dplyr::select(mod_dates, lat_bin, lon_bin, year, diff), by = c("lat_bin", "lon_bin", "year"))
+
+inat_lags_spread <- inat_lags %>%
+  dplyr::select(lat_bin, lon_bin, year, method, lag) %>%
+  spread(method, lag)
+
+ggplot(inat_lags_spread, aes(x = cross_corr, y = interpolated, col = lat_bin)) +
+  geom_point(size = 2, position = "jitter") + geom_abline(intercept = 0, slope = 1, lty = 2) +
+  facet_wrap(~year) +
+  labs(x = "Raw data", y = "Interpolated", color = "Latitude")
+ggsave("figs/inaturalist/interpolated_vs_non_lags.pdf")
+
+ggplot(inat_lags, aes(x = diff, y = lag, color = lat_bin)) + 
+  geom_point() + geom_abline(intercept = 0, slope = 1, lty = 2) +
+  labs(x = "Difference in 10% accum dates", y = "Best fit lag", col = "Latitude") +
+  facet_wrap(~method) + theme_bw()
+ggsave("figs/inaturalist/lags_vs_accum.pdf")
+
+ggplot(inat_lags, aes(x = lat_bin, y = lag, color = factor(lon_bin))) + geom_point() + facet_grid(method~year) + theme_bw() + 
+  labs(x = "Latitude", y = "Best fit lag (weeks)", color = "Longitude")
+ggsave("figs/inaturalist/best_lags.pdf")
+
+inat_lags_means <- inat_cross %>%
+  group_by(lat_bin, lon_bin, year, method) %>%
+  filter(r == max(r, na.rm = T)) %>%
+  filter(nobs > 0.2) %>%
+  group_by(lat_bin, year, method) %>%
+  summarize(meanLag = mean(lag))
+
+ggplot(inat_lags_means, aes(x = lat_bin, y = meanLag)) + geom_point() + facet_grid(method~year) + theme_bw() + 
+  labs(x = "Latitude", y = "Mean best fit lag (weeks)", color = "Longitude")
+ggsave("figs/inaturalist/mean_best_lags.pdf")
+
