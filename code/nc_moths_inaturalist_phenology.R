@@ -329,6 +329,19 @@ summary(cat_date)
 diff_date <- lm(caterpillars - moths ~ lat_bin + year, data = mod_dates)
 summary(diff_date)
 
+mod_dates$predict_cat <- predict(cat_date)
+mod_dates$predict_diff <- predict(diff_date)
+
+ggplot(mod_dates, aes(x = moths, y = predict_cat, group = lat_bin, col = factor(lat_bin))) + geom_line(cex = 1) +
+  facet_wrap(~year) + labs(x = "Moth date", y = "Predicted caterpillar date", col = "Latitude") + theme_bw() +
+  theme(axis.text = element_text(size = 12), legend.text = element_text(size = 12), 
+        legend.title = element_text(size = 12), axis.title = element_text(size = 12), strip.text = element_text(size = 12))
+ggsave("figs/inaturalist/cat_date_model_predict.pdf")
+
+ggplot(mod_dates, aes(x = lat_bin, y = predict_diff, group = year, col = factor(year))) + geom_line(cex = 1) +
+  labs(x = "Latitude", y = "Predicted difference (caterpillar date - moth date)", col = "Year")
+ggsave("figs/inaturalist/diff_date_model_predict.pdf")
+
 ### Cross-correlation analysis
 
 # write function for cross-correlations
