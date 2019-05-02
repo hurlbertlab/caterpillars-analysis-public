@@ -6,6 +6,7 @@ library(tmap)
 library(lubridate)
 library(sf)
 library(zoo)
+library(mgcv)
 
 # iNaturalist, four families, combine
 # Filter out caterpillar records 
@@ -314,6 +315,58 @@ for(yr in c(2015:2018)) {
 }
 
 ## Fit GAM, obtain inflection point from model fit
+
+inat_gams <- inat_combined %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  nest() %>%
+  mutate(n_cat = map_dbl(data, ~{
+    df <- .
+    length(na.omit(df$caterpillars))
+  }), n_moth = map_dbl(data, ~{
+    df <- .
+    length(na.omit(df$moths))
+  })) %>%
+  filter(n_cat > 0, n_moth > 0) %>%
+  mutate(gam_cat = map(data, ~{
+    df <- .
+    gam(caterpillars ~ jd_wk, data = df)
+  }), gam_moth = map(data, ~{
+    df <- .
+    gam(moths ~ jd_wk, data = df)
+  })) %>%
+  mutate(cat_predict = map(gam_cat, ~{
+    predict(.)
+  }), moth_predict = map(gam_moth, ~{
+    predict(.)
+  })) %>%
+  dplyr::select(-n_cat, -n_moth, -gam_cat, -gam_moth) %>%
+  mutate(cat_dates = map(data, ~{
+    df <- .
+    cats <- df[, -2]
+    na.omit(cats)
+  }),
+  moth_dates = map(data, ~{
+    df <- .
+    moths <- df[, -3]
+    na.omit(moths)
+  }))
+
+cat_gams <- inat_gams %>%
+  dplyr::select(lat_bin, lon_bin, year, cat_predict, cat_dates) %>%
+  unnest()
+
+moth_gams <- inat_gams %>%
+  dplyr::select(lat_bin, lon_bin, year, moth_predict, moth_dates) %>%
+  unnest()
+
+gams_all <- full_join(cat_gams, moth_gams)
+
+bins_gams <- gams_all %>%
+  distinct(lat_bin, lon_bin)
+bins_gams$group <- row.names(bins)
+
+gams_ids <- gams_all %>%
+  left_join(bins_gams, by = c("lat_bin", "lon_bin"))
 
 # two models: catdate ~ mothdate*lat + year
 # catdate - mothdate ~ lat + year
