@@ -25,8 +25,6 @@ daymet_raster <- brick("daymet/tmin_monavg_2017_ncss.nc")
 
 daymet_spring <- daymet_raster[[3:5]]
 
-daymet_points <- st_to_sf
-
 # Need to convert 2018 to monthly averages
 
 #nc <- nc_open("daymet/daymet_v3_tmin_2018_na.nc4")
@@ -53,7 +51,7 @@ daymet_points <- st_to_sf
 #names(spring18_eNA) <- c("march2018", "april2018", "may2018")
 #writeRaster(spring18_eNA, "daymet/tmin_spring_2018")
 
-spring18_eNA <- stack("daymet/tmin_spring_2018")
+spring18_eNA <- brick("daymet/tmin_spring_2018")
 
 spring18_eNA_coarse <- aggregate(spring18_eNA, fact = 3)
 daymet_spring_coarse <- aggregate(daymet_spring, fact = 3)

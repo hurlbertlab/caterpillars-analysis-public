@@ -329,10 +329,10 @@ inat_gams <- inat_combined %>%
   filter(n_cat > 0, n_moth > 0) %>%
   mutate(gam_cat = map(data, ~{
     df <- .
-    gam(caterpillars ~ jd_wk, data = df)
+    gam(caterpillars ~ s(jd_wk), data = df)
   }), gam_moth = map(data, ~{
     df <- .
-    gam(moths ~ jd_wk, data = df)
+    gam(moths ~ s(jd_wk), data = df)
   })) %>%
   mutate(cat_predict = map(gam_cat, ~{
     predict(.)
@@ -362,11 +362,74 @@ moth_gams <- inat_gams %>%
 gams_all <- full_join(cat_gams, moth_gams)
 
 bins_gams <- gams_all %>%
-  distinct(lat_bin, lon_bin)
-bins_gams$group <- row.names(bins)
+  distinct(lat_bin, lon_bin, year)
+bins_gams$group <- row.names(bins_gams)
 
 gams_ids <- gams_all %>%
-  left_join(bins_gams, by = c("lat_bin", "lon_bin"))
+  left_join(bins_gams, by = c("lat_bin", "lon_bin", "year"))
+
+gams_gather <- gams_ids %>%
+  gather(life_stage, nObs, "caterpillars", "moths") %>%
+  gather(gam, predict, "cat_predict", "moth_predict") %>%
+  left_join(dplyr::select(accum_date, lat_bin, lon_bin, year, accum_wk, life_stage)) %>%
+  filter(!(is.na(accum_wk)))
+
+# GAMs phenology plots
+for(yr in c(2015:2018)) {
+  ggplot(dplyr::filter(gams_gather, year == yr, !is.na(nObs)), aes(x = jd_wk)) +
+    geom_line(aes(y = nObs, col = life_stage), cex = 1) + 
+    scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
+                       labels = c("caterpillars" = "Caterpillars",  
+                                  "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
+    scale_y_log10() +
+    geom_line(aes(y = predict, col = gam), cex = 1) +
+    geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, cex = 1, show.legend = F) +
+    facet_grid(forcats::fct_reorder(factor(lat_bin), desc(lat_bin))~lon_bin) +
+    scale_x_continuous(breaks = jds, labels = dates) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+          strip.text = element_text(size = 20), legend.text = element_text(size = 20),
+          legend.title = element_text(size = 20), axis.title = element_text(size = 20),
+          axis.text = element_text(size = 20)) +
+    labs(x = "", y = "Number of observations", col = "Life stage")
+  ggsave(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_gams_", yr, ".pdf"), units = "in", height = 20, width = 30)
+  
+  bins_yr <- bins_gams %>%
+    filter(year == yr, group %in% gams_gather$group)
+  
+  pdf(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_pages_gams_", yr, ".pdf"), height = 5, width = 8)
+  for(i in bins_yr$group) {
+    df <- gams_gather %>%
+      dplyr::filter(year == yr) %>%
+      dplyr::filter(group == i, !is.na(nObs)) %>%
+      group_by(lat_bin, lon_bin, life_stage, accum_wk) %>%
+      mutate(n = sum(nObs, na.rm = T))
+    nmoths <- unique(df$n)[[1]]
+    ncats <- unique(df$n)[[2]]
+    location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
+    plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
+      geom_line(cex = 1) + 
+      scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
+                         labels = c("caterpillars" = "Caterpillars",  
+                                    "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
+      geom_line(aes(y = predict, col = gam), cex = 1) +
+      scale_y_log10() +
+      scale_x_continuous(breaks = jds, labels = dates) +
+      geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, show.legend = F) +
+      labs(x = "", y = "Number of observations", col = "Life stage") +
+      theme(legend.text = element_text(size = 15), 
+            legend.title = element_text(size = 15), 
+            axis.title = element_text(size = 15),
+            axis.text = element_text(size = 15)) +
+      ggtitle(location)
+    plot2 <- plot_grid(plot, labels = c(paste0("Caterpillars = ", as.character(ncats))),
+                       label_x = c(0.69), label_y = c(0.3))
+    plot3 <- plot_grid(plot2, labels = c(paste0("Moths = ", as.character(nmoths))),
+                       label_x = c(0.72), label_y = c(0.25))
+    print(plot3) # fix dimensions
+  }
+  dev.off()
+  
+}
 
 # two models: catdate ~ mothdate*lat + year
 # catdate - mothdate ~ lat + year
