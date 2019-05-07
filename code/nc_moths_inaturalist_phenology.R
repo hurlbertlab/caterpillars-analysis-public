@@ -517,14 +517,14 @@ ggplot(inat_lags_spread, aes(x = cross_corr, y = interpolated, col = lat_bin)) +
   labs(x = "Raw data", y = "Interpolated", color = "Latitude")
 ggsave("figs/inaturalist/interpolated_vs_non_lags.pdf")
 
-ggplot(inat_lags, aes(x = diff, y = lag, color = lat_bin)) + 
+ggplot(inat_lags, aes(x = diff, y = lag, color = r, size = r)) + 
   geom_point() + geom_abline(intercept = 0, slope = 1, lty = 2) +
   labs(x = "Difference in 10% accum dates", y = "Best fit lag", col = "Latitude") +
   facet_wrap(~method) + theme_bw()
 ggsave("figs/inaturalist/lags_vs_accum.pdf")
 
-ggplot(inat_lags, aes(x = lat_bin, y = lag, color = factor(lon_bin))) + geom_point() + facet_grid(method~year) + theme_bw() + 
-  labs(x = "Latitude", y = "Best fit lag (weeks)", color = "Longitude")
+ggplot(inat_lags, aes(x = lat_bin, y = lag, color = r, size = r)) + geom_point() + facet_grid(method~year) + theme_bw() + 
+  labs(x = "Latitude", y = "Best fit lag (weeks)", color = "r")
 ggsave("figs/inaturalist/best_lags.pdf")
 
 inat_lags_means <- inat_cross %>%
