@@ -139,6 +139,17 @@ binned_latitude <- two_deg%>%
   mutate(total = sum(n))%>%
   mutate(proportion = (n/total)*100)
   
+# Create a text string showing the number of records of undefended, defended caterpillars per grid cell
+nRecs_by_latitude1 = binned_latitude %>%
+  distinct(lat_bin, total, defended) %>%
+  mutate(x = ifelse(defended == "N", 75, 200),
+         y = 32)
+
+nRecs_by_latitude = binned_latitude %>%
+  distinct(lat_bin, total, defended) %>%
+  group_by(lat_bin) %>%
+  mutate(text = paste(total[defended == "N"], ", ", total[defended == "Y"], sep = "")) %>%
+  distinct(lat_bin, text)
 
 
 #### df for linear model ####
@@ -175,6 +186,10 @@ LessBins_lat_year <- two_deg_year%>%
   filter(lat_bin != 29, lat_bin != 33, lat_bin != 37, lat_bin != 41, lat_bin != 45, lat_bin != 49)
  
   
+nRecs_by_lat_year = LessBins_lat_year %>%
+  distinct(lat_bin, year, total, defended) %>%
+  mutate(x = ifelse(defended == "N", 75, 200),
+         y = .45)
 
 
   
@@ -219,15 +234,19 @@ ggplot(binned_latitude, aes(x= jd_wk, y = proportion, color = defended))+
   ggtitle("Percent of Defended and Undefended Caterpillars Over Time")+
   ylab("Percent of Caterpillars")+
   xlab("Julian Week")+
-  facet_wrap(~lat_bin)
+  facet_wrap(~lat_bin)+
+  geom_text(data = nRecs_by_latitude1, 
+            mapping = aes(x = x, y = y, label = total))
 
 
 ggplot(LessBins_lat_year, aes(x = jd_wk, y= proportion, color = defended))+
   geom_line()+
   xlab("Julian Day")+
   ylab("Proportion of Caterpillars")+
-  ggtitle("Seasonal Changes in Proportion of Defended and Undefeded Caterpillars \n Over Latitude and Between Years \n 2015-2018")+
-  facet_grid(lat_bin~year)
+  ggtitle("Seasonal Changes in Proportion of Defended and Undefended Caterpillars \n Over Latitude and Between Years \n 2015-2018")+
+  facet_grid(lat_bin~year)+
+  geom_text(data = nRecs_by_lat_year, 
+            mapping = aes(x = x, y = y, label = total))
 
 ggplot(families, aes(x = family, y = n, color = defended, fill = defended))+
   geom_bar(stat = "identity")+
