@@ -235,7 +235,22 @@ inat_combined <- adult_moths %>%
 inat_combined_gather <- inat_combined %>%
   group_by(lat_bin, lon_bin, year) %>%
   filter(sum(caterpillars, na.rm = T) > 50) %>%
-  gather(key = 'life_stage', value = "nObs", moths, caterpillars) # filter, no more thank 1 wk gaps Apr-Jun
+  gather(key = 'life_stage', value = "nObs", moths, caterpillars) 
+
+# filter, no more thank 1 wk gaps Apr-Jun
+missing_data <- inat_combined %>%
+  arrange(lat_bin, lon_bin, year, jd_wk) %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  nest() %>%
+  mutate(cats_inter = map(data, ~{na.approx(.$caterpillars, maxgap = 1, na.rm = F)}),
+         moths_inter = map(data, ~{na.approx(.$moths, maxgap = 1, na.rm = F)})) %>%
+  unnest() %>%
+  filter(jd_wk >= 91, jd_wk <= 181) %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  summarize(sumCats = sum(cats_inter),
+            sumMoths = sum(moths_inter)) %>%
+  group_by(year) %>%
+  summarize(nBins = sum(!is.na(sumCats))) ### 16 in 2018, 8 in 2017
 
 # Plot of geographic extent of data
 box <- c(xmin = -105, xmax = -65, ymin = 25, ymax = 50)
@@ -372,40 +387,59 @@ inat_gams <- inat_combined %>%
     length(na.omit(df$moths))
   })) %>%
   filter(n_cat > 0, n_moth > 0) %>%
-  mutate(gam_cat = map(data, ~{
+  mutate(cat_interp = map(data, ~{
     df <- .
     df$caterpillars <- na.approx(df$caterpillars, maxgap = 1, na.rm = F)
+    df
+  }), moth_interp = map(data, ~{
+    df <- .
+    df$moths <- na.approx(df$moths, maxgap = 1, na.rm = F)
+    df
+  })) %>%  
+  mutate(gam_cat = map(cat_interp, ~{
+    df <- .
     gam(caterpillars ~ s(jd_wk), data = df)
-  }), gam_moth = map(data, ~{
+  }), gam_moth = map(moth_interp, ~{
     df <- .
     gam(moths ~ s(jd_wk), data = df)
-  })) %>% # R2 for each gam
+  })) %>%
+  mutate(cat_r2 = map_dbl(gam_cat, ~{
+  df <- summary(.)
+  df$r.sq
+  }), moth_r2 = map_dbl(gam_moth, ~{
+  df <- summary(.)
+  df$r.sq
+  })) %>% 
   mutate(cat_predict = map(gam_cat, ~{
-    predict(.)
+    predict(., na.action = na.exclude())
   }), moth_predict = map(gam_moth, ~{
-    predict(.)
+    predict(., na.action = na.exclude())
   })) %>%
   dplyr::select(-n_cat, -n_moth, -gam_cat, -gam_moth) %>%
-  mutate(cat_dates = map(data, ~{
+  mutate(cat_dates = map(cat_interp, ~{
     df <- .
     cats <- df[, -2]
     na.omit(cats)
   }),
-  moth_dates = map(data, ~{
+  moth_dates = map(moth_interp, ~{
     df <- .
     moths <- df[, -3]
     na.omit(moths)
   }))
 
 cat_gams <- inat_gams %>%
-  dplyr::select(lat_bin, lon_bin, year, cat_predict, cat_dates) %>%
-  unnest()
+  dplyr::select(lat_bin, lon_bin, year, cat_r2, cat_predict, cat_dates) %>%
+  unnest() %>%
+  rename("r2" = "cat_r2", "predict" = "cat_predict", "nObs" = "caterpillars") %>%
+  mutate(life_stage = "caterpillars")
 
 moth_gams <- inat_gams %>%
-  dplyr::select(lat_bin, lon_bin, year, moth_predict, moth_dates) %>%
-  unnest()
+  dplyr::select(lat_bin, lon_bin, year, moth_r2, moth_predict, moth_dates) %>%
+  unnest() %>%
+  rename("r2" = "moth_r2", "predict" = "moth_predict", "nObs" = "moths") %>%
+  mutate(life_stage = "moths")
 
-gams_all <- full_join(cat_gams, moth_gams)
+gams_all <- bind_rows(cat_gams, moth_gams)
 
 bins_gams <- gams_all %>%
   distinct(lat_bin, lon_bin, year)
@@ -414,15 +448,14 @@ bins_gams$group <- row.names(bins_gams)
 gams_ids <- gams_all %>%
   left_join(bins_gams, by = c("lat_bin", "lon_bin", "year"))
 
+# This gather is broken - things are getting duplicated
 gams_gather <- gams_ids %>%
-  gather(life_stage, nObs, "caterpillars", "moths") %>%
-  gather(gam, predict, "cat_predict", "moth_predict") %>%
   left_join(dplyr::select(accum_date, lat_bin, lon_bin, year, accum_wk, life_stage)) %>%
   filter(!(is.na(accum_wk)))
   
 gams_accum <- gams_gather %>%  
   group_by(lat_bin, lon_bin, year, life_stage) %>%
-  arrange(jd_wk) %>%
+  arrange(lat_bin, lon_bin, year, life_stage, jd_wk) %>%
   mutate(total_gam = sum(predict, na.rm = T), 
          ten_percent_gam = 0.1*total_gam, 
          accum = cumsum(ifelse(is.na(predict), 0, predict))) %>%
@@ -565,23 +598,32 @@ for(yr in c(2015:2018)) {
     df <- pheno_metrics %>%
       dplyr::filter(year == yr) %>%
       dplyr::filter(group == i, !is.na(nObs)) %>%
-      group_by(lat_bin, lon_bin, life_stage, accum_wk, accum_gam, lag, r) %>%
-      mutate(n = sum(nObs, na.rm = T))
+      group_by(lat_bin, lon_bin, life_stage, r2, accum_wk, accum_gam, lag, r) %>%
+      mutate(n = sum(nObs, na.rm = T)) %>%
+      mutate(gam = paste0("GAM ", life_stage))
     nmoths <- unique(df$n)[[1]]
     ncats <- unique(df$n)[[2]]
+    diffs <- df %>%
+      ungroup() %>%
+      dplyr::select(life_stage, accum_wk, accum_gam) %>%
+      distinct()
+    accum_lag <- (diffs$accum_wk[1] - diffs$accum_wk[2])/7
+    gam_lag <- (diffs$accum_gam[1] - diffs$accum_gam[2])/7
+    moth_r2 <- df %>% filter(life_stage == "moths") %>% distinct(r2)
+    cat_r2 <- df %>% filter(life_stage == "caterpillars") %>% distinct(r2)
     ## Add in calculation of diff 10% and diff gam
     location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
     plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
       geom_line(cex = 1) + 
       scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
                          labels = c("caterpillars" = "Caterpillars",  
-                                    "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
+                                    "GAM caterpillars" = "GAM Cats", "moths" = "Moths", "GAM moths" = "GAM Moths")) +
       geom_line(aes(y = predict, col = gam), cex = 1) +
       scale_y_log10() +
       scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
-      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.75, yend = 0, col = life_stage),
+      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.5, yend = 0, col = life_stage),
                    size = 1, arrow = arrow(), show.legend = F) +
-      geom_segment(aes(x = accum_gam, xend = accum_gam, y = 0.75, yend = 0, col = gam),
+      geom_segment(aes(x = accum_gam, xend = accum_gam, y = 0.5, yend = 0, col = gam),
                    size = 1, arrow = arrow(), show.legend = F) +
       labs(x = "", y = "Number of observations", col = "Life stage") +
       theme(legend.text = element_text(size = 15), 
@@ -589,11 +631,13 @@ for(yr in c(2015:2018)) {
             axis.title = element_text(size = 15),
             axis.text = element_text(size = 15)) +
       ggtitle(location) +
-      annotate("text", x = 14, y = max(df$nObs), 
+      annotate("text", x = 21, y = max(df$nObs) - 0.6*max(df$nObs), 
                label = paste0("Cor. lag = ", unique(df$lag), 
                               "\n", "r = ", round(unique(df$r), 2),
-                              "\n", "10% lag = ")
-               ) # add in labels for diff 10% and diff gam
+                              "\n", "10% lag = ", accum_lag,
+                              "\n", "  10% GAM lag = ", gam_lag,
+                              "\n", "    GAM R2 Moth = ", round(moth_r2$r2, 2),
+                              "\n", "    GAM R2 Cat = ", round(cat_r2$r2, 2)))
     plot2 <- plot_grid(plot, labels = c(paste0("Caterpillars = ", as.character(ncats))),
                        label_x = c(0.69), label_y = c(0.3))
     plot3 <- plot_grid(plot2, labels = c(paste0("Moths = ", as.character(nmoths))),
