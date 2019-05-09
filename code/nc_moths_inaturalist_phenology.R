@@ -7,6 +7,7 @@ library(lubridate)
 library(sf)
 library(zoo)
 library(mgcv)
+library(raster)
 
 # iNaturalist, four families, combine
 # Filter out caterpillar records 
@@ -234,7 +235,52 @@ inat_combined <- adult_moths %>%
 inat_combined_gather <- inat_combined %>%
   group_by(lat_bin, lon_bin, year) %>%
   filter(sum(caterpillars, na.rm = T) > 50) %>%
-  gather(key = 'life_stage', value = "nObs", moths, caterpillars)
+  gather(key = 'life_stage', value = "nObs", moths, caterpillars) # filter, no more thank 1 wk gaps Apr-Jun
+
+# Plot of geographic extent of data
+box <- c(xmin = -105, xmax = -65, ymin = 25, ymax = 50)
+
+northAM <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp")
+
+eNA <- st_crop(northAM, box)
+
+raster_iNat <- function(yr, lifestage) {
+  inat_to_raster <- inat_combined_gather %>%
+    group_by(lat_bin, lon_bin, year, life_stage) %>%
+    summarize(obs = sum(nObs, na.rm = T)) %>%
+    filter(year == yr, life_stage == lifestage) %>%
+    ungroup() %>%
+    dplyr::select(lon_bin, lat_bin, obs, -year, -life_stage)
+  rasterFromXYZ(inat_to_raster, crs = crs(eNA))
+}
+
+cat18_raster <- raster_iNat(2018, "caterpillars")
+cat17_raster <- raster_iNat(2017, "caterpillars")
+moth18_raster <- raster_iNat(2018, "moths")
+moth17_raster <- raster_iNat(2017, "moths")
+
+cat18_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(cat18_raster) + 
+  tm_raster(palette = "BuPu", title = "Caterpillar obs") + 
+  tm_shape(eNA) + tm_borders() +
+  tm_layout(title = "2018", legend.position = c("right", "bottom"))
+
+cat17_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(cat17_raster) + 
+  tm_raster(palette = "BuPu", legend.show = F) + 
+  tm_shape(eNA) + tm_borders() +
+  tm_layout(title = "2017")
+
+moth18_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(moth18_raster) + 
+  tm_raster(palette = "BuGn", title = "Moth obs") + 
+  tm_shape(eNA) + tm_borders() +
+  tm_layout(title = "2018", legend.position = c("right", "bottom"))
+
+moth17_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(moth18_raster) + 
+  tm_raster(palette = "BuGn", legend.show = F) + 
+  tm_shape(eNA) + tm_borders() +
+  tm_layout(title = "2017")
+
+inat_maps <- tmap_arrange(cat17_map, cat18_map, moth17_map, moth18_map, nrow = 2)
+#tmap_save(inat_maps, "figs/inaturalist/data_map.pdf", units = "in", height = 6, width = 10)
 
 # Phenology curves, group by 2 degree lat lon bins
 
@@ -268,7 +314,6 @@ for(yr in c(2015:2018)) {
     scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
                        labels = c("caterpillars" = "Caterpillars", "moths" = "Moths")) +
     scale_y_log10() +
-    geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, show.legend = F) +
     facet_grid(forcats::fct_reorder(factor(lat_bin), desc(lat_bin))~lon_bin) +
     scale_x_continuous(breaks = jds, labels = dates) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
@@ -308,7 +353,7 @@ for(yr in c(2015:2018)) {
                        label_x = c(0.69), label_y = c(0.3))
     plot3 <- plot_grid(plot2, labels = c(paste0("Moths = ", as.character(nmoths))),
                        label_x = c(0.72), label_y = c(0.25))
-    print(plot3) # fix dimensions
+    print(plot3)
   }
   dev.off()
   
@@ -329,11 +374,12 @@ inat_gams <- inat_combined %>%
   filter(n_cat > 0, n_moth > 0) %>%
   mutate(gam_cat = map(data, ~{
     df <- .
+    df$caterpillars <- na.approx(df$caterpillars, maxgap = 1, na.rm = F)
     gam(caterpillars ~ s(jd_wk), data = df)
   }), gam_moth = map(data, ~{
     df <- .
     gam(moths ~ s(jd_wk), data = df)
-  })) %>%
+  })) %>% # R2 for each gam
   mutate(cat_predict = map(gam_cat, ~{
     predict(.)
   }), moth_predict = map(gam_moth, ~{
@@ -373,63 +419,21 @@ gams_gather <- gams_ids %>%
   gather(gam, predict, "cat_predict", "moth_predict") %>%
   left_join(dplyr::select(accum_date, lat_bin, lon_bin, year, accum_wk, life_stage)) %>%
   filter(!(is.na(accum_wk)))
+  
+gams_accum <- gams_gather %>%  
+  group_by(lat_bin, lon_bin, year, life_stage) %>%
+  arrange(jd_wk) %>%
+  mutate(total_gam = sum(predict, na.rm = T), 
+         ten_percent_gam = 0.1*total_gam, 
+         accum = cumsum(ifelse(is.na(predict), 0, predict))) %>%
+  group_by(lat_bin, lon_bin, year, life_stage) %>%
+  filter(accum >= ten_percent_gam) %>%
+  filter(jd_wk == min(jd_wk)) %>%
+  rename(accum_gam = jd_wk) %>%
+  dplyr::select(lat_bin, lon_bin, year, accum_gam, life_stage)
 
-# GAMs phenology plots
-for(yr in c(2015:2018)) {
-  ggplot(dplyr::filter(gams_gather, year == yr, !is.na(nObs)), aes(x = jd_wk)) +
-    geom_line(aes(y = nObs, col = life_stage), cex = 1) + 
-    scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
-                       labels = c("caterpillars" = "Caterpillars",  
-                                  "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
-    scale_y_log10() +
-    geom_line(aes(y = predict, col = gam), cex = 1) +
-    geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, cex = 1, show.legend = F) +
-    facet_grid(forcats::fct_reorder(factor(lat_bin), desc(lat_bin))~lon_bin) +
-    scale_x_continuous(breaks = jds, labels = dates) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
-          strip.text = element_text(size = 20), legend.text = element_text(size = 20),
-          legend.title = element_text(size = 20), axis.title = element_text(size = 20),
-          axis.text = element_text(size = 20)) +
-    labs(x = "", y = "Number of observations", col = "Life stage")
-  ggsave(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_gams_", yr, ".pdf"), units = "in", height = 20, width = 30)
-  
-  bins_yr <- bins_gams %>%
-    filter(year == yr, group %in% gams_gather$group)
-  
-  pdf(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_pages_gams_", yr, ".pdf"), height = 5, width = 8)
-  for(i in bins_yr$group) {
-    df <- gams_gather %>%
-      dplyr::filter(year == yr) %>%
-      dplyr::filter(group == i, !is.na(nObs)) %>%
-      group_by(lat_bin, lon_bin, life_stage, accum_wk) %>%
-      mutate(n = sum(nObs, na.rm = T))
-    nmoths <- unique(df$n)[[1]]
-    ncats <- unique(df$n)[[2]]
-    location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
-    plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
-      geom_line(cex = 1) + 
-      scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
-                         labels = c("caterpillars" = "Caterpillars",  
-                                    "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
-      geom_line(aes(y = predict, col = gam), cex = 1) +
-      scale_y_log10() +
-      scale_x_continuous(breaks = jds, labels = dates) +
-      geom_vline(aes(xintercept = accum_wk, col = life_stage), lty = 2, show.legend = F) +
-      labs(x = "", y = "Number of observations", col = "Life stage") +
-      theme(legend.text = element_text(size = 15), 
-            legend.title = element_text(size = 15), 
-            axis.title = element_text(size = 15),
-            axis.text = element_text(size = 15)) +
-      ggtitle(location)
-    plot2 <- plot_grid(plot, labels = c(paste0("Caterpillars = ", as.character(ncats))),
-                       label_x = c(0.69), label_y = c(0.3))
-    plot3 <- plot_grid(plot2, labels = c(paste0("Moths = ", as.character(nmoths))),
-                       label_x = c(0.72), label_y = c(0.25))
-    print(plot3) # fix dimensions
-  }
-  dev.off()
-  
-}
+gams_gather_accum <- gams_gather %>%
+  left_join(gams_accum, by = c("lat_bin", "lon_bin", "year", "life_stage"))
 
 # two models: catdate ~ mothdate*lat + year
 # catdate - mothdate ~ lat + year
@@ -452,11 +456,11 @@ ggplot(mod_dates, aes(x = moths, y = predict_cat, group = lat_bin, col = factor(
   facet_wrap(~year) + labs(x = "Moth date", y = "Predicted caterpillar date", col = "Latitude") + theme_bw() +
   theme(axis.text = element_text(size = 12), legend.text = element_text(size = 12), 
         legend.title = element_text(size = 12), axis.title = element_text(size = 12), strip.text = element_text(size = 12))
-ggsave("figs/inaturalist/cat_date_model_predict.pdf")
+#ggsave("figs/inaturalist/cat_date_model_predict.pdf")
 
 ggplot(mod_dates, aes(x = lat_bin, y = predict_diff, group = year, col = factor(year))) + geom_line(cex = 1) +
   labs(x = "Latitude", y = "Predicted difference (caterpillar date - moth date)", col = "Year")
-ggsave("figs/inaturalist/diff_date_model_predict.pdf")
+#ggsave("figs/inaturalist/diff_date_model_predict.pdf")
 
 ### Cross-correlation analysis
 
@@ -511,21 +515,24 @@ inat_lags_spread <- inat_lags %>%
   dplyr::select(lat_bin, lon_bin, year, method, lag) %>%
   spread(method, lag)
 
+
+# Cross-correlation plots 
+
 ggplot(inat_lags_spread, aes(x = cross_corr, y = interpolated, col = lat_bin)) +
   geom_point(size = 2, position = "jitter") + geom_abline(intercept = 0, slope = 1, lty = 2) +
   facet_wrap(~year) +
   labs(x = "Raw data", y = "Interpolated", color = "Latitude")
-ggsave("figs/inaturalist/interpolated_vs_non_lags.pdf")
+#ggsave("figs/inaturalist/interpolated_vs_non_lags.pdf")
 
 ggplot(inat_lags, aes(x = diff, y = lag, color = lat_bin)) + 
   geom_point() + geom_abline(intercept = 0, slope = 1, lty = 2) +
   labs(x = "Difference in 10% accum dates", y = "Best fit lag", col = "Latitude") +
   facet_wrap(~method) + theme_bw()
-ggsave("figs/inaturalist/lags_vs_accum.pdf")
+#ggsave("figs/inaturalist/lags_vs_accum.pdf")
 
 ggplot(inat_lags, aes(x = lat_bin, y = lag, color = factor(lon_bin))) + geom_point() + facet_grid(method~year) + theme_bw() + 
   labs(x = "Latitude", y = "Best fit lag (weeks)", color = "Longitude")
-ggsave("figs/inaturalist/best_lags.pdf")
+#ggsave("figs/inaturalist/best_lags.pdf")
 
 inat_lags_means <- inat_cross %>%
   group_by(lat_bin, lon_bin, year, method) %>%
@@ -536,5 +543,65 @@ inat_lags_means <- inat_cross %>%
 
 ggplot(inat_lags_means, aes(x = lat_bin, y = meanLag)) + geom_point() + facet_grid(method~year) + theme_bw() + 
   labs(x = "Latitude", y = "Mean best fit lag (weeks)", color = "Longitude")
-ggsave("figs/inaturalist/mean_best_lags.pdf")
+#ggsave("figs/inaturalist/mean_best_lags.pdf")
+
+# Combine multiple pheno metrics
+
+cross_corr_lags <- inat_lags %>%
+  filter(method == "cross_corr") %>%
+  dplyr::select(-method, -nobs, -diff)
+
+pheno_metrics <- gams_gather_accum %>%
+  left_join(cross_corr_lags, by = c("lat_bin", "lon_bin", "year"))
+
+# Multiple pheno metrics plots
+
+for(yr in c(2015:2018)) {
+  bins_yr <- bins_gams %>%
+    filter(year == yr, group %in% pheno_metrics$group)
+  
+  pdf(paste0("figs/inaturalist/phenocurves_iNat_mothsAndCaterpillars_pages_phenometrics_", yr, ".pdf"), height = 5, width = 8)
+  for(i in bins_yr$group) {
+    df <- pheno_metrics %>%
+      dplyr::filter(year == yr) %>%
+      dplyr::filter(group == i, !is.na(nObs)) %>%
+      group_by(lat_bin, lon_bin, life_stage, accum_wk, accum_gam, lag, r) %>%
+      mutate(n = sum(nObs, na.rm = T))
+    nmoths <- unique(df$n)[[1]]
+    ncats <- unique(df$n)[[2]]
+    ## Add in calculation of diff 10% and diff gam
+    location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
+    plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
+      geom_line(cex = 1) + 
+      scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
+                         labels = c("caterpillars" = "Caterpillars",  
+                                    "cat_predict" = "GAM Cats", "moths" = "Moths", "moth_predict" = "GAM Moths")) +
+      geom_line(aes(y = predict, col = gam), cex = 1) +
+      scale_y_log10() +
+      scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
+      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.75, yend = 0, col = life_stage),
+                   size = 1, arrow = arrow(), show.legend = F) +
+      geom_segment(aes(x = accum_gam, xend = accum_gam, y = 0.75, yend = 0, col = gam),
+                   size = 1, arrow = arrow(), show.legend = F) +
+      labs(x = "", y = "Number of observations", col = "Life stage") +
+      theme(legend.text = element_text(size = 15), 
+            legend.title = element_text(size = 15), 
+            axis.title = element_text(size = 15),
+            axis.text = element_text(size = 15)) +
+      ggtitle(location) +
+      annotate("text", x = 14, y = max(df$nObs), 
+               label = paste0("Cor. lag = ", unique(df$lag), 
+                              "\n", "r = ", round(unique(df$r), 2),
+                              "\n", "10% lag = ")
+               ) # add in labels for diff 10% and diff gam
+    plot2 <- plot_grid(plot, labels = c(paste0("Caterpillars = ", as.character(ncats))),
+                       label_x = c(0.69), label_y = c(0.3))
+    plot3 <- plot_grid(plot2, labels = c(paste0("Moths = ", as.character(nmoths))),
+                       label_x = c(0.72), label_y = c(0.25))
+    print(plot3) # fix dimensions
+  }
+  dev.off()
+  
+}
+
 
