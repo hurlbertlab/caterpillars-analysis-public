@@ -323,7 +323,7 @@ inat_combined_accum <- inat_combined_ids %>%
             by = c("lat_bin", "lon_bin", "year", "life_stage"))
 
 # Raw correlations of phenology
-for(yr in c(2015:2018)) {
+#for(yr in c(2015:2018)) {
   ggplot(dplyr::filter(inat_combined_accum, year == yr, !is.na(nObs)), aes(x = jd_wk, y = nObs, col = life_stage)) +
     geom_line(cex = 1) + 
     scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
@@ -502,13 +502,12 @@ ggplot(mod_dates, aes(x = lat_bin, y = predict_diff, group = year, col = factor(
 cross_cor <- function(time_series) {
   moths <- data.frame(jd_wk = time_series$jd_wk, moths = time_series$moths)
   cats <- data.frame(jd_wk = time_series$jd_wk, cats = time_series$caterpillars)
-  results <- data.frame(lag = c(0:8), r = c(NA), nobs = c(NA))
+  results <- data.frame(lag = c(0:10), r = c(NA), nobs = c(NA))
   for(lag in results$lag) {
     cats$jd_wk <- cats$jd_wk - lag*7
     lag_series <- moths %>%
-      left_join(cats, by = "jd_wk") %>%
-      na.omit()
-    results[results$lag == lag, 2] <- cor(lag_series$moths, lag_series$cats)
+      left_join(cats, by = "jd_wk")
+    results[results$lag == lag, 2] <- cor(lag_series$moths, lag_series$cats, use = "pairwise.complete.obs")
     results[results$lag == lag, 3] <- nrow(lag_series)/(38-lag)
   }
   return(results)
@@ -601,8 +600,8 @@ for(yr in c(2015:2018)) {
       group_by(lat_bin, lon_bin, life_stage, r2, accum_wk, accum_gam, lag, r) %>%
       mutate(n = sum(nObs, na.rm = T)) %>%
       mutate(gam = paste0("GAM ", life_stage))
-    nmoths <- unique(df$n)[[1]]
-    ncats <- unique(df$n)[[2]]
+    nmoths <- unique(df$n)[[1]] # This is wrong - fix
+    ncats <- unique(df$n)[[2]] # This is wrong - fix
     diffs <- df %>%
       ungroup() %>%
       dplyr::select(life_stage, accum_wk, accum_gam) %>%
@@ -611,20 +610,21 @@ for(yr in c(2015:2018)) {
     gam_lag <- (diffs$accum_gam[1] - diffs$accum_gam[2])/7
     moth_r2 <- df %>% filter(life_stage == "moths") %>% distinct(r2)
     cat_r2 <- df %>% filter(life_stage == "caterpillars") %>% distinct(r2)
-    ## Add in calculation of diff 10% and diff gam
     location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
     plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
       geom_line(cex = 1) + 
-      scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
-                         labels = c("caterpillars" = "Caterpillars",  
-                                    "GAM caterpillars" = "GAM Cats", "moths" = "Moths", "GAM moths" = "GAM Moths")) +
+      scale_color_manual(values=c("deepskyblue3", "skyblue1", "palegreen1", "springgreen3"), 
+                         labels = c("caterpillars" = "Caterpillars", # Check order here of how this plots
+                                    "moths" = "Moths",                                     
+                                    "GAM caterpillars" = "GAM Cats", 
+                                    "GAM moths" = "GAM Moths")) +
       geom_line(aes(y = predict, col = gam), cex = 1) +
-      scale_y_log10() +
       scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
-      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.5, yend = 0, col = life_stage),
+      scale_y_log10() + 
+      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.75, yend = 0, col = life_stage),
                    size = 1, arrow = arrow(), show.legend = F) +
       geom_segment(aes(x = accum_gam, xend = accum_gam, y = 0.5, yend = 0, col = gam),
-                   size = 1, arrow = arrow(), show.legend = F) +
+                   size = 0.5, arrow = arrow(), show.legend = F) + # This made it skinner not smaller
       labs(x = "", y = "Number of observations", col = "Life stage") +
       theme(legend.text = element_text(size = 15), 
             legend.title = element_text(size = 15), 
@@ -648,4 +648,5 @@ for(yr in c(2015:2018)) {
   
 }
 
+# Add plots with untransformed data, split axes for moths and cats
 

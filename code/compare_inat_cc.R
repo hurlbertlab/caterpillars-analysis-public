@@ -147,6 +147,7 @@ minNumRecords = 267
 minNumDates = 4
 
 # Filter and merge data
+# For each CC site from top ~12, get iNaturalist around that site 
 
 siteList = fullDataset %>%
   filter(Year == 2018) %>%
@@ -186,6 +187,8 @@ ggplot(sitedata) +
 ggsave("figs/CaterpillarPhenology_withiNat_2018.pdf", width = 12, height = 8, units = "in")
 
 ### Different bin sizes, only MA, DC, NC sites
+# Bin CC sites together by lat-lon bin and iNaturalist obs in that bin
+# Which sites are in the CC bins, how many
 
 bins <- c(0.5, 1, 2)
 
