@@ -512,6 +512,22 @@ cross_cor <- function(time_series) {
   return(results)
 }
 
+gams_cross_cor <- gams_all %>%
+  dplyr::select(-nObs, -r2) %>%
+  spread(life_stage, predict) %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  arrange(jd_wk) %>%
+  nest() %>%
+  mutate(cross_corr_gam = map(data, ~{
+    cross_cor(.)
+  })) %>%
+  dplyr::select(-data) %>%
+  unnest()  %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  filter(r == max(r, na.rm = T)) %>%
+  filter(nobs > 0.2) %>%
+  rename("lag_gam" = "lag", "r_gam" = "r", "nobs_gam" = "nobs")
+
 inat_cross <- inat_combined %>%
   group_by(lat_bin, lon_bin, year) %>%
   filter(sum(caterpillars, na.rm = T) > 50) %>%
@@ -565,14 +581,15 @@ ggsave("figs/inaturalist/mean_best_lags.pdf")
 # Combine multiple pheno metrics
 
 cross_corr_lags <- inat_lags %>%
-  dplyr::select(-nobs, -diff)
+  dplyr::select(-nobs, -diff) %>%
+  left_join(gams_cross_cor) %>%
+  dplyr::select(-nobs_gam)
 
 pheno_metrics <- gams_gather_accum %>%
   left_join(cross_corr_lags, by = c("lat_bin", "lon_bin", "year"))
 
 # Multiple pheno metrics plots
 ## Things to add: cross_correlation on gams
-## Double axes to remove log transf.
 
 for(yr in c(2015:2018)) {
   bins_yr <- bins_gams %>%
@@ -586,8 +603,8 @@ for(yr in c(2015:2018)) {
       group_by(lat_bin, lon_bin, life_stage, r2, accum_wk, accum_gam, lag, r) %>%
       mutate(n = sum(round(nObs), na.rm = T)) %>%
       mutate(gam = paste0("GAM ", life_stage))
-    nmoths <- unique(df$n)[[1]]
-    ncats <- unique(df$n)[[2]]
+    nmoths <- unique(df$n)[[2]]
+    ncats <- unique(df$n)[[1]]
     diffs <- df %>%
       ungroup() %>%
       dplyr::select(life_stage, accum_wk, accum_gam) %>%
@@ -617,9 +634,11 @@ for(yr in c(2015:2018)) {
             axis.title = element_text(size = 15),
             axis.text = element_text(size = 15)) +
       ggtitle(location) +
-      annotate("text", x = 21, y = max(df$nObs) - 0.6*max(df$nObs), 
+      annotate("text", x = 21, y = max(df$nObs) - 0.75*max(df$nObs), 
                label = paste0("Cor. lag = ", unique(df$lag), 
                               "\n", "r = ", round(unique(df$r), 2),
+                              "\n", "Cor. lag GAM = ", min(unique(df$lag_gam)),
+                              "\n", "r GAM = ", round(unique(df$r_gam), 2),
                               "\n", "10% lag = ", accum_lag,
                               "\n", "  10% GAM lag = ", gam_lag,
                               "\n", "    GAM R2 Moth = ", round(moth_r2$r2, 2),
@@ -633,6 +652,3 @@ for(yr in c(2015:2018)) {
   dev.off()
   
 }
-
-# Add plots with untransformed data, split axes for moths and cats
-
