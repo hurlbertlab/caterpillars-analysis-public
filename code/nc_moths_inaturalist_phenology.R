@@ -448,7 +448,6 @@ bins_gams$group <- row.names(bins_gams)
 gams_ids <- gams_all %>%
   left_join(bins_gams, by = c("lat_bin", "lon_bin", "year"))
 
-# This gather is broken - things are getting duplicated
 gams_gather <- gams_ids %>%
   left_join(dplyr::select(accum_date, lat_bin, lon_bin, year, accum_wk, life_stage)) %>%
   filter(!(is.na(accum_wk)))
@@ -502,17 +501,32 @@ ggplot(mod_dates, aes(x = lat_bin, y = predict_diff, group = year, col = factor(
 cross_cor <- function(time_series) {
   moths <- data.frame(jd_wk = time_series$jd_wk, moths = time_series$moths)
   cats <- data.frame(jd_wk = time_series$jd_wk, cats = time_series$caterpillars)
-  results <- data.frame(lag = c(0:8), r = c(NA), nobs = c(NA))
+  results <- data.frame(lag = c(0:10), r = c(NA), nobs = c(NA))
   for(lag in results$lag) {
     cats$jd_wk <- cats$jd_wk - lag*7
     lag_series <- moths %>%
-      left_join(cats, by = "jd_wk") %>%
-      na.omit()
-    results[results$lag == lag, 2] <- cor(lag_series$moths, lag_series$cats)
+      left_join(cats, by = "jd_wk")
+    results[results$lag == lag, 2] <- cor(lag_series$moths, lag_series$cats, use = "pairwise.complete.obs")
     results[results$lag == lag, 3] <- nrow(lag_series)/(38-lag)
   }
   return(results)
 }
+
+gams_cross_cor <- gams_all %>%
+  dplyr::select(-nObs, -r2) %>%
+  spread(life_stage, predict) %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  arrange(jd_wk) %>%
+  nest() %>%
+  mutate(cross_corr_gam = map(data, ~{
+    cross_cor(.)
+  })) %>%
+  dplyr::select(-data) %>%
+  unnest()  %>%
+  group_by(lat_bin, lon_bin, year) %>%
+  filter(r == max(r, na.rm = T)) %>%
+  filter(nobs > 0.2) %>%
+  rename("lag_gam" = "lag", "r_gam" = "r", "nobs_gam" = "nobs")
 
 inat_cross <- inat_combined %>%
   group_by(lat_bin, lon_bin, year) %>%
@@ -522,72 +536,60 @@ inat_cross <- inat_combined %>%
   nest() %>%
   mutate(interp = map(data, ~{
     df <- .
+    moth <- na.approx(df$moths, maxgap = 1)
+    diff_moth <- nrow(df) - length(moth)
     int <- na.approx(df$caterpillars, maxgap = 1)
     diff <- nrow(df) - length(int)
-    data.frame(jd_wk = df$jd_wk, moths = df$moths, caterpillars = c(rep(NA, diff), int))
+    data.frame(jd_wk = df$jd_wk, moths = c(rep(NA, diff_moth), moth), caterpillars = c(rep(NA, diff), int))
   })) %>%
-  mutate(cross_corr = map(data, ~{
-    cross_cor(.)
-  })) %>%
-  mutate(interpolated = map(interp, ~{
+  mutate(cross_corr = map(interp, ~{
     cross_cor(.)
   })) %>%
   dplyr::select(-data, -interp) %>%
-  gather(method, output, cross_corr:interpolated) %>%
   unnest() 
 
 # best lag distances for each bin
 
 inat_lags <- inat_cross %>%
-  group_by(lat_bin, lon_bin, year, method) %>%
+  group_by(lat_bin, lon_bin, year) %>%
   filter(r == max(r, na.rm = T)) %>%
   filter(nobs > 0.2)  %>%
   left_join(dplyr::select(mod_dates, lat_bin, lon_bin, year, diff), by = c("lat_bin", "lon_bin", "year"))
 
-inat_lags_spread <- inat_lags %>%
-  dplyr::select(lat_bin, lon_bin, year, method, lag) %>%
-  spread(method, lag)
-
-
 # Cross-correlation plots 
-
-ggplot(inat_lags_spread, aes(x = cross_corr, y = interpolated, col = lat_bin)) +
-  geom_point(size = 2, position = "jitter") + geom_abline(intercept = 0, slope = 1, lty = 2) +
-  facet_wrap(~year) +
-  labs(x = "Raw data", y = "Interpolated", color = "Latitude")
-#ggsave("figs/inaturalist/interpolated_vs_non_lags.pdf")
 
 ggplot(inat_lags, aes(x = diff, y = lag, color = lat_bin)) + 
   geom_point() + geom_abline(intercept = 0, slope = 1, lty = 2) +
-  labs(x = "Difference in 10% accum dates", y = "Best fit lag", col = "Latitude") +
-  facet_wrap(~method) + theme_bw()
-#ggsave("figs/inaturalist/lags_vs_accum.pdf")
+  labs(x = "Difference in 10% accum dates", y = "Best fit lag", col = "Latitude")
+ggsave("figs/inaturalist/lags_vs_accum.pdf")
 
-ggplot(inat_lags, aes(x = lat_bin, y = lag, color = factor(lon_bin))) + geom_point() + facet_grid(method~year) + theme_bw() + 
+ggplot(inat_lags, aes(x = lat_bin, y = lag, color = factor(lon_bin))) + geom_point() + facet_wrap(~year) + 
   labs(x = "Latitude", y = "Best fit lag (weeks)", color = "Longitude")
-#ggsave("figs/inaturalist/best_lags.pdf")
+ggsave("figs/inaturalist/best_lags.pdf")
 
 inat_lags_means <- inat_cross %>%
-  group_by(lat_bin, lon_bin, year, method) %>%
+  group_by(lat_bin, lon_bin, year) %>%
   filter(r == max(r, na.rm = T)) %>%
   filter(nobs > 0.2) %>%
-  group_by(lat_bin, year, method) %>%
+  group_by(lat_bin, year) %>%
   summarize(meanLag = mean(lag))
 
-ggplot(inat_lags_means, aes(x = lat_bin, y = meanLag)) + geom_point() + facet_grid(method~year) + theme_bw() + 
+ggplot(inat_lags_means, aes(x = lat_bin, y = meanLag)) + geom_point() + facet_wrap(~year) + theme_bw() + 
   labs(x = "Latitude", y = "Mean best fit lag (weeks)", color = "Longitude")
-#ggsave("figs/inaturalist/mean_best_lags.pdf")
+ggsave("figs/inaturalist/mean_best_lags.pdf")
 
 # Combine multiple pheno metrics
 
 cross_corr_lags <- inat_lags %>%
-  filter(method == "cross_corr") %>%
-  dplyr::select(-method, -nobs, -diff)
+  dplyr::select(-nobs, -diff) %>%
+  left_join(gams_cross_cor) %>%
+  dplyr::select(-nobs_gam)
 
 pheno_metrics <- gams_gather_accum %>%
   left_join(cross_corr_lags, by = c("lat_bin", "lon_bin", "year"))
 
 # Multiple pheno metrics plots
+## Things to add: cross_correlation on gams
 
 for(yr in c(2015:2018)) {
   bins_yr <- bins_gams %>%
@@ -599,10 +601,10 @@ for(yr in c(2015:2018)) {
       dplyr::filter(year == yr) %>%
       dplyr::filter(group == i, !is.na(nObs)) %>%
       group_by(lat_bin, lon_bin, life_stage, r2, accum_wk, accum_gam, lag, r) %>%
-      mutate(n = sum(nObs, na.rm = T)) %>%
+      mutate(n = sum(round(nObs), na.rm = T)) %>%
       mutate(gam = paste0("GAM ", life_stage))
-    nmoths <- unique(df$n)[[1]]
-    ncats <- unique(df$n)[[2]]
+    nmoths <- unique(df$n)[[2]]
+    ncats <- unique(df$n)[[1]]
     diffs <- df %>%
       ungroup() %>%
       dplyr::select(life_stage, accum_wk, accum_gam) %>%
@@ -611,29 +613,32 @@ for(yr in c(2015:2018)) {
     gam_lag <- (diffs$accum_gam[1] - diffs$accum_gam[2])/7
     moth_r2 <- df %>% filter(life_stage == "moths") %>% distinct(r2)
     cat_r2 <- df %>% filter(life_stage == "caterpillars") %>% distinct(r2)
-    ## Add in calculation of diff 10% and diff gam
     location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
     plot <- ggplot(df, aes(x = jd_wk, y = nObs, col = life_stage)) +
       geom_line(cex = 1) + 
-      scale_color_manual(values=c("deepskyblue3", "skyblue1", "springgreen3", "palegreen1"), 
-                         labels = c("caterpillars" = "Caterpillars",  
-                                    "GAM caterpillars" = "GAM Cats", "moths" = "Moths", "GAM moths" = "GAM Moths")) +
+      scale_color_manual(values=c("deepskyblue3", "skyblue1", "palegreen1", "springgreen3"), 
+                         labels = c("caterpillars" = "Caterpillars", 
+                                    "moths" = "Moths",                                     
+                                    "GAM caterpillars" = "GAM Cats", 
+                                    "GAM moths" = "GAM Moths")) +
       geom_line(aes(y = predict, col = gam), cex = 1) +
-      scale_y_log10() +
       scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
-      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.5, yend = 0, col = life_stage),
+      scale_y_log10() + 
+      geom_segment(aes(x = accum_wk, xend = accum_wk, y = 0.75, yend = 0, col = life_stage),
                    size = 1, arrow = arrow(), show.legend = F) +
       geom_segment(aes(x = accum_gam, xend = accum_gam, y = 0.5, yend = 0, col = gam),
-                   size = 1, arrow = arrow(), show.legend = F) +
+                   size = 1, lty = 2, arrow = arrow(), show.legend = F) + 
       labs(x = "", y = "Number of observations", col = "Life stage") +
       theme(legend.text = element_text(size = 15), 
             legend.title = element_text(size = 15), 
             axis.title = element_text(size = 15),
             axis.text = element_text(size = 15)) +
       ggtitle(location) +
-      annotate("text", x = 21, y = max(df$nObs) - 0.6*max(df$nObs), 
+      annotate("text", x = 21, y = max(df$nObs) - 0.75*max(df$nObs), 
                label = paste0("Cor. lag = ", unique(df$lag), 
                               "\n", "r = ", round(unique(df$r), 2),
+                              "\n", "Cor. lag GAM = ", min(unique(df$lag_gam)),
+                              "\n", "r GAM = ", round(unique(df$r_gam), 2),
                               "\n", "10% lag = ", accum_lag,
                               "\n", "  10% GAM lag = ", gam_lag,
                               "\n", "    GAM R2 Moth = ", round(moth_r2$r2, 2),
@@ -647,5 +652,3 @@ for(yr in c(2015:2018)) {
   dev.off()
   
 }
-
-
