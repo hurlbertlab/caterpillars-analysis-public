@@ -1,7 +1,7 @@
 # Project Summary Statistics
 
 summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
-  source(list.files('code')[grep('reading_datafiles', list.files('code'))]
+  source(list.files('code')[grep('reading_datafiles', list.files('code'))])
   
   stats = list(
     numSurveysTotal = nrow(fullDataset),
