@@ -1,31 +1,36 @@
 # Project Summary Statistics
 
 summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
-  source(list.files('code')[grep('reading_datafiles', list.files('code'))])
+  if (!exists("fullDataset")) {
+    source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))]), sep = '')
+  }
+  
+  dataset = fullDataset %>%
+    filter(!grepl("BBS", Name))
   
   stats = list(
-    numSurveysTotal = nrow(fullDataset),
+    numSurveysTotal = nrow(dataset),
     
-    numSurveysThisYear = fullDataset %>% filter(Year == reportYear) %>% nrow(),
+    numSurveysThisYear = dataset %>% filter(Year == reportYear) %>% nrow(),
     
-    sumSitesTotal = fullDataset %>% summarize(n = n_distinct(SiteFK)),
+    sumSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)),
     
-    sumSitesThisYear = fullDataset %>% filter(Year == reportYear) %>% summarize(n = n_distinct(SiteFK)),
+    sumSitesThisYear = dataset %>% filter(Year == reportYear) %>% summarize(n = n_distinct(SiteFK)),
     
-    numUsers = fullDataset %>% summarize(n = n_distinct(UserFKOfObserver)), 
+    numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)), 
     
-    numUsersThisYear = fullDataset %>% filter(Year == reportYear) %>% 
+    numUsersThisYear = dataset %>% filter(Year == reportYear) %>% 
       summarize(n = n_distinct(UserFKOfObserver)),
     
-    arthTot = fullDataset %>% summarize(n = sum(Quantity, na.rm = TRUE)),
+    arthTot = dataset %>% summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    arthTotThisYear = fullDataset %>% filter(Year == reportYear) %>% 
+    arthTotThisYear = dataset %>% filter(Year == reportYear) %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    caterpillarTot = fullDataset %>% filter(Group == "caterpillar") %>% 
+    caterpillarTot = dataset %>% filter(Group == "caterpillar") %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    caterpillarTotThisYear = fullDataset %>% 
+    caterpillarTotThisYear = dataset %>% 
       filter(Year == reportYear, Group == "caterpillar") %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
@@ -34,7 +39,7 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
       summarize(median = median(n)) %>%
       data.frame(),
     
-    medianNumDatesPerSiteThisYear = fullDataset %>%
+    medianNumDatesPerSiteThisYear = dataset %>%
       filter(Year == reportYear) %>%
       distinct(Name, LocalDate) %>%
       count(Name) %>%
