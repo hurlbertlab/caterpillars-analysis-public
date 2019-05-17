@@ -151,6 +151,16 @@ nRecs_by_latitude = binned_latitude %>%
   mutate(text = paste(total[defended == "N"], ", ", total[defended == "Y"], sep = "")) %>%
   distinct(lat_bin, text)
 
+cor_by_lat = binned_latitude %>%
+  select(lat_bin, jd_wk, defended, proportion) %>%
+  spread(defended, proportion) %>%
+  mutate(N0 = ifelse(is.na(N), 0, N),
+         Y0 = ifelse(is.na(Y), 0, Y)) %>%
+  group_by(lat_bin) %>%
+  summarize(r = round(cor(N, Y, use = "na.or.complete"), 2),
+            r0 = round(cor(N0, Y0, use = "na.or.complete"), 2)) %>%
+  mutate(x = 145, y = 30)
+
 
 #### df for linear model ####
 jd_wk_model <- recsByBin(inat_traits, 2)%>%
@@ -183,7 +193,7 @@ LessBins_lat_year <- two_deg_year%>%
   mutate(total = sum(n))%>%
   mutate(proportion = n/total)%>%
   filter(year >= 2015)%>%
-  filter(lat_bin != 29, lat_bin != 33, lat_bin != 37, lat_bin != 41, lat_bin != 45, lat_bin != 49)
+  filter(!lat_bin %in% c(29, 33, 37, 41, 47, 49))
  
   
 nRecs_by_lat_year = LessBins_lat_year %>%
@@ -191,6 +201,18 @@ nRecs_by_lat_year = LessBins_lat_year %>%
   mutate(x = ifelse(defended == "N", 75, 200),
          y = .45)
 
+cor_by_lat_year = binned_lat_year %>%
+  select(year, lat_bin, jd_wk, defended, proportion) %>%
+  spread(defended, proportion) %>%
+  mutate(N0 = ifelse(is.na(N), 0, N),
+         Y0 = ifelse(is.na(Y), 0, Y)) %>%
+  group_by(year, lat_bin) %>%
+  summarize(r = round(cor(N, Y, use = "na.or.complete"), 2),
+            r0 = round(cor(N0, Y0, use = "na.or.complete"), 2)) %>%
+  mutate(x = 145, y = 0.45)
+  
+cor_by_lat_year_lessbins = cor_by_lat_year %>%
+  filter(!lat_bin %in% c(29, 33, 37, 41, 47, 49))
 
   
 #### df for bar charts ####
@@ -229,24 +251,30 @@ ggplot(defended_by_year, aes(x=jd_wk, y=n, color = defended, fill = defended)) +
   facet_wrap(~year)
 ggsave("figs/iNat_Defended_Caterpillars_2015-2018.pdf", width = 12, height = 8, units = "in")
   
-ggplot(binned_latitude, aes(x= jd_wk, y = proportion, color = defended))+
-  geom_line()+
+ggplot(binned_latitude, aes(x= jd_wk, y = proportion))+
+  geom_line(aes(color = defended))+
   ggtitle("Percent of Defended and Undefended Caterpillars Over Time")+
   ylab("Percent of Caterpillars")+
   xlab("Julian Week")+
   facet_wrap(~lat_bin)+
   geom_text(data = nRecs_by_latitude1, 
-            mapping = aes(x = x, y = y, label = total))
+            mapping = aes(x = x, y = y, label = total, color = defended))+
+  geom_text(data = cor_by_lat,
+            mapping = aes(x = x, y = y, label = paste("r =", r)),
+            color = "black", size = 4)
 
 
-ggplot(LessBins_lat_year, aes(x = jd_wk, y= proportion, color = defended))+
-  geom_line()+
+ggplot(LessBins_lat_year, aes(x = jd_wk, y= proportion))+
+  geom_line(aes(color = defended))+
   xlab("Julian Day")+
   ylab("Proportion of Caterpillars")+
   ggtitle("Seasonal Changes in Proportion of Defended and Undefended Caterpillars \n Over Latitude and Between Years \n 2015-2018")+
   facet_grid(lat_bin~year)+
   geom_text(data = nRecs_by_lat_year, 
-            mapping = aes(x = x, y = y, label = total))
+            mapping = aes(x = x, y = y, label = total, color = defended))+
+  geom_text(data = cor_by_lat_year_lessbins,
+            mapping = aes(x = x, y = y, label = paste("r =", r)),
+            color = "black", size = 4)
 
 ggplot(families, aes(x = family, y = n, color = defended, fill = defended))+
   geom_bar(stat = "identity")+
