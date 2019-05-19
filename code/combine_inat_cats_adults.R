@@ -24,7 +24,8 @@ cats <- inat_cats %>%
   filter(year >= 2015) %>%
   mutate(lat_bin = 2*floor(latitude/2) + 2/2,
          lon_bin = 2*floor(longitude/2) + 2/2,
-         jd_wk = 7*floor(jday/7))
+         jd_wk = 7*floor(jday/7)) %>%
+  mutate(life_stage = "caterpillar")
 
 inat_adults <- inat_moths %>%
   filter(!(id %in% inat_cats$id)) %>%
@@ -34,13 +35,15 @@ inat_adults <- inat_moths %>%
   filter(year >= 2015) %>%
   mutate(lat_bin = 2*floor(latitude/2) + 2/2,
          lon_bin = 2*floor(longitude/2) + 2/2,
-         jd_wk = 7*floor(jday/7))
+         jd_wk = 7*floor(jday/7)) %>%
+  mutate(life_stage = "adult")
 
 # Combine adult and caterpillar datasets
 
 all_inat <- cats %>%
   dplyr::select(id, observed_on, place_guess, latitude, longitude, scientific_name,
-                common_name, taxon_id, family, Date, year, jday, lat_bin, lon_bin, jd_wk) %>%
+                common_name, taxon_id, family, 
+                Date, year, jday, lat_bin, lon_bin, jd_wk, life_stage) %>%
   rename(taxon_family_name = "family") %>%
   bind_rows(dplyr::select(inat_adults, -place_county_name))
 write.csv(all_inat, "inat_adults_cats_ENA.csv", row.names = F)
