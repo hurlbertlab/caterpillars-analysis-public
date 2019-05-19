@@ -46,5 +46,14 @@ all_inat <- cats %>%
                 Date, year, jday, lat_bin, lon_bin, jd_wk, life_stage) %>%
   rename(taxon_family_name = "family") %>%
   bind_rows(dplyr::select(inat_adults, -place_county_name))
-write.csv(all_inat, "inat_adults_cats_ENA.csv", row.names = F)
+write.csv(all_inat, "data/inat_adults_cats_ENA.csv", row.names = F)
 
+# Group obs by cell, year, life_stage, species
+
+species_inat <- all_inat %>%
+  group_by(year, lat_bin, lon_bin, life_stage) %>%
+  filter(n_distinct(id) >= 50) %>%
+  group_by(year, lat_bin, lon_bin, life_stage, scientific_name) %>%
+  count() %>%
+  filter(n >= 10, year >= 2017, lat_bin >  24)
+write.csv(species_inat, "data/inat_adults_cats_ENA_spp_counts.csv", row.names = F)
