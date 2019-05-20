@@ -17,6 +17,8 @@ inat_cats <- read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
 inat_species <- read.csv("data/inat_caterpillar_species_traits.txt", sep = "\t")
 
+weekly_effort <- read.csv("data/inat_buts_effort_week_grid.csv", header = T)
+
 cats <- inat_cats %>%
   left_join(inat_species, by = "scientific_name") %>%
   filter(family %in% c("Erebidae", "Geometridae", "Noctuidae", "Notodontidae")) %>%
@@ -128,7 +130,7 @@ ggplot(filter(inat_families, year == 2018), aes(x = life_stage, y = pct, fill = 
   labs(x = "", fill = "Family", y = "Proportion of observations", title = "iNaturalist 2-deg cells 2018") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-## Phenology curves with moth/cat species in common - % of total
+## Phenology curves with moth/cat species in common - corrected by effort
 
 inat_common <- all_inat %>%
   filter(year >= 2017, lat_bin >= 24, lat_bin <= 50) %>%
@@ -155,14 +157,16 @@ inat_common <- all_inat %>%
   unnest() %>%
   group_by(year, lat_bin, lon_bin, life_stage, jd_wk) %>%
   summarize(nObs = n_distinct(id)) %>%
+  left_join(weekly_effort) %>%
+  mutate(corrected = nObs/day_count) %>%
   group_by(year, lat_bin, lon_bin, life_stage) %>%
-  mutate(total = sum(nObs),
-         accum = nObs/total)
+  mutate(total = sum(corrected, na.rm = T),
+         accum = corrected/total)
 
 jds = c(1, 91, 213, 335)
 dates = c("Jan", "Apr", "Aug", "Dec")
 
-ggplot(filter(inat_common, year == 2018), aes(x = jd_wk, y = accum, col = life_stage)) + 
+ggplot(filter(inat_common, year == 2018), aes(x = jd_wk, y = corrected, col = life_stage)) + 
   geom_line() + 
   geom_smooth(method = "loess", se = F, alpha = 0.5) +
   facet_grid(desc(lat_bin) ~ lon_bin) +
@@ -187,14 +191,12 @@ for(i in bins$group) {
   df <- inat_common %>%
     dplyr::filter(year == 2018) %>%
     left_join(bins) %>%
-    dplyr::filter(group == i, !is.na(nObs)) %>%
+    dplyr::filter(group == i, !is.na(corrected)) %>%
     group_by(lat_bin, lon_bin, life_stage) %>%
-    mutate(n = sum(round(nObs), na.rm = T))
-  nmoths <- unique(df$n)[[2]]
-  ncats <- unique(df$n)[[1]]
-
+    mutate(n = sum(round(corrected), na.rm = T))
+  
   location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
-  plot <- ggplot(df, aes(x = jd_wk, y = accum, col = life_stage)) +
+  plot <- ggplot(df, aes(x = jd_wk, y = corrected, col = life_stage)) +
     geom_line(cex = 1, alpha = 0.5) + 
     scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
                        labels = c("caterpillars" = "Caterpillars", 
@@ -207,13 +209,77 @@ for(i in bins$group) {
           axis.title = element_text(size = 15),
           axis.text = element_text(size = 15)) +
     ggtitle(location)
-  plot2 <- plot_grid(plot, labels = c(paste0("Caterpillars = ", as.character(ncats))),
-                     label_x = c(0.69), label_y = c(0.3))
-  plot3 <- plot_grid(plot2, labels = c(paste0("Adults = ", as.character(nmoths))),
-                     label_x = c(0.72), label_y = c(0.25))
-  print(plot3) 
+print(plot)
 }
 dev.off()
+
+
+## Phenology curves with moth/cat all species - corrected by effort
+
+inat_allspp <- all_inat %>%
+  filter(year >= 2017, lat_bin >= 24, lat_bin <= 50) %>%
+  group_by(year, lat_bin, lon_bin, life_stage) %>%
+  filter(n_distinct(id) >= 50) %>%
+  group_by(year, lat_bin, lon_bin) %>%
+  filter(n_distinct(life_stage) == 2) %>%
+  group_by(year, lat_bin, lon_bin, life_stage, jd_wk) %>%
+  summarize(nObs = n_distinct(id)) %>%
+  left_join(weekly_effort) %>%
+  mutate(corrected = nObs/day_count) %>%
+  group_by(year, lat_bin, lon_bin, life_stage) %>%
+  mutate(total = sum(corrected, na.rm = T),
+         accum = corrected/total)
+
+jds = c(1, 91, 213, 335)
+dates = c("Jan", "Apr", "Aug", "Dec")
+
+ggplot(filter(inat_allspp, year == 2018), aes(x = jd_wk, y = corrected, col = life_stage)) + 
+  geom_line() + 
+  geom_smooth(method = "loess", se = F, alpha = 0.5) +
+  facet_grid(desc(lat_bin) ~ lon_bin) +
+  scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
+                     labels = c("caterpillars" = "Caterpillars", 
+                                "adults" = "Adults")) +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "")
+
+bins <- inat_allspp %>%
+  filter(year == 2018) %>%
+  ungroup() %>%
+  distinct(lat_bin, lon_bin) 
+bins$group <- row.names(bins)
+
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+pdf(paste0("figs/inaturalist/phenocurves_iNat_allSpp_pages_phenometrics_2018.pdf"), height = 5, width = 8)
+for(i in bins$group) {
+  df <- inat_allspp %>%
+    dplyr::filter(year == 2018) %>%
+    left_join(bins) %>%
+    dplyr::filter(group == i, !is.na(corrected)) %>%
+    group_by(lat_bin, lon_bin, life_stage) %>%
+    mutate(n = sum(round(corrected), na.rm = T))
+  
+  location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
+  plot <- ggplot(df, aes(x = jd_wk, y = corrected, col = life_stage)) +
+    geom_line(cex = 1, alpha = 0.5) + 
+    scale_color_manual(values=c("deepskyblue3", "springgreen3"), 
+                       labels = c("caterpillars" = "Caterpillars", 
+                                  "adults" = "Adults")) +
+    geom_smooth(method = "loess", se = F) +
+    scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 365)) +
+    labs(x = "", col = "Life stage") +
+    theme(legend.text = element_text(size = 15), 
+          legend.title = element_text(size = 15), 
+          axis.title = element_text(size = 15),
+          axis.text = element_text(size = 15)) +
+    ggtitle(location)
+  print(plot)
+}
+dev.off()
+
 
 
 
