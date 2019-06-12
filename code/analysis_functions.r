@@ -16,7 +16,7 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
                             jdRange = c(1,365),
                             outlierCount = 10000,
                             plot = F,
-                            plotVar = 'meanDensity', # 'meanDensity' or 'fracSurveys' or 'meanBiomass'
+                            plotVar = 'fracSurveys', # 'meanDensity' or 'fracSurveys' or 'meanBiomass'
                             new = T,
                             color = 'black',
                             ...)                  
