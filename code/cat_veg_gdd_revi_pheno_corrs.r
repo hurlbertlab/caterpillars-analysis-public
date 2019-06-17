@@ -7,7 +7,7 @@ library(purrr)
 
 
 source('code/analysis_functions.r')
-source('code/CCrawdata2masterdataframe.r')
+source('code/reading_datafiles_without_users.r')
 
 # Read in sites
 phenosites = read.table('data/sites_gdd_veg_bird_phenology.txt', header = T, sep = '\t', quote = '\"') 

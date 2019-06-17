@@ -20,7 +20,7 @@ NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 inat_species = read.table("data/inat_species.txt", header = T, sep = "\t")
 
 source('code/analysis_functions.r')
-source('code/CCrawdata2masterdataframe.r')
+source('code/reading_datafiles_without_users.r')
 
 # Criteria for inclusion (records refers to survey events)
 minNumRecords = 40

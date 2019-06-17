@@ -11,7 +11,7 @@ inat = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 inat_species = read.table("data/inat_species.txt", header = T, sep = "\t",quote = "", fill = FALSE)
 
 source('code/analysis_functions.r')
-source('code/CCrawdata2masterdataframe.r')
+source('code/reading_datafiles_without_users.r')
 
 # Aggregate iNat data by day, week, year
 inat$observed_on = as.Date(inat$observed_on, format = "%Y-%m-%d")
