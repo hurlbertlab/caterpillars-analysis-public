@@ -51,7 +51,7 @@ write.csv(obs_effort_2018, "data/inaturalist_observer_days_2018.csv", row.names 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
 dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
-ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col() + theme_classic() +
+ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
   theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14)) +
   scale_x_continuous(breaks = jds, labels = dates)
