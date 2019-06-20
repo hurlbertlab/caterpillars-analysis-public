@@ -80,6 +80,32 @@ ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
   facet_wrap(~year)
 ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
 
+## Percent single observer-days per week
+
+single_obsdays <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7)) %>%
+  filter(year >= 2015, year < 2019) %>%
+  group_by(year, jd_wk) %>%
+  count(Date, user_login) %>%
+  count(n) %>%
+  group_by(year, jd_wk) %>%
+  summarize(single_obsdays = nn[n == 1]/sum(nn)) %>%
+  left_join(cnc, by = "year")
+
+ggplot(single_obsdays, aes(x = jd_wk, y = single_obsdays)) + geom_col(col = "white") + theme_classic() +
+  theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
+        axis.title.y = element_text(size = 14), strip.text = element_text(size = 14)) +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  labs(y = "Proportion single observer-days") +
+  geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
+  geom_label(aes(x = cnc_date, y = 0.9, label = "City Nature Challenge")) +
+  facet_wrap(~year)
+ggsave("figs/inaturalist/single-observer-days-by-year.pdf", units = "in", height = 6, width = 10)
+
+
 ## Observer-days by week for 2017, 2018, by lat-lon bin
 obs_effort_geog <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
