@@ -57,6 +57,37 @@ ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
   scale_x_continuous(breaks = jds, labels = dates)
 ggsave("figs/inaturalist/observer-days-2018.pdf")
 
+## Add 2015, 2016, 2017
+obs_effort_year <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7)) %>%
+  filter(year >= 2015, year < 2019) %>%
+  group_by(year, jd_wk) %>%
+  summarize(obs_days = n_distinct(Date, user_login)) 
+
+ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
+  theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
+        axis.title.y = element_text(size = 14), strip.text = element_text(size = 14)) +
+  scale_x_continuous(breaks = jds, labels = dates) +
+  labs(y = "Observer-days") +
+  facet_wrap(~year)
+ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
+
+## Observer-days by week for 2017, 2018, by lat-lon bin
+obs_effort_geog <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7),
+         lat_bin = 2*floor(latitude/2) + 2/2,
+         lon_bin = 2*floor(longitude/2) + 2/2) %>%
+  filter(year >= 2017, year < 2019) %>%
+  group_by(lat_bin, lon_bin, year, jd_wk) %>%
+  summarize(obs_days = n_distinct(Date, user_login)) 
+write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
+
 ## Observer-hours
 obs_hours <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d")) %>%
@@ -74,3 +105,43 @@ ggplot(obs_hours, aes(x = obs_hours, y = count)) + geom_col(width = 0.1) + theme
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14))
 ggsave("figs/inaturalist/observer-hours.pdf")
+
+### Moving-window parameter estimates of observations vs. observer-days
+
+raw_obs_effort <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7)) %>%
+  filter(year == 2018 | year == 2017) %>%
+  group_by(year, jd_wk) %>%
+  summarize(obs_days = n_distinct(Date, user_login),
+            observations = n()) 
+
+lm_rolling <- rollapply(raw_obs_effort, 
+                        width = 8,
+                        FUN = function(z) summary(lm(observations ~ obs_days, data = as.data.frame(z)))$coefficients[-1, ],
+                        by.column = F, align = "right")
+
+rolling_df <- data.frame(lm_rolling) %>%
+  mutate(ci = 1.96*Std..Error,
+         window = as.numeric(row.names(.)))
+
+theme_set(theme_classic())
+ggplot(rolling_df, aes(x = window, y = Estimate)) +
+  geom_errorbar(aes(ymin = Estimate - ci, ymax = Estimate + ci), width = 0, col = "gray") +
+  geom_point() + 
+  labs(x = "Time Window") +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 14)) +
+  geom_vline(xintercept = 1, lty = 2) +
+  geom_vline(xintercept = 25, lty = 2) +
+  geom_vline(xintercept = 50, lty = 2) +
+  geom_vline(xintercept = 75, lty = 2) +
+  geom_vline(xintercept = 99, lty = 2) +
+  annotate(geom = "label", x = 99, y = -1, label = "Dec 2018") +
+  annotate(geom = "label", x = 75, y = -1, label = "June 2018") +
+  annotate(geom = "label", x = 50, y = -1, label = "Dec 2017 - Jan 2018") +
+  annotate(geom = "label", x = 25, y = -1, label = "June 2017") +
+  annotate(geom = "label", x = 1, y = -1, label = "Jan 2017")
+ggsave("figs/inaturalist/moving_window_obs_effort_slopes.pdf")
