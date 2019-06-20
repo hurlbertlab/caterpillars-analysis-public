@@ -129,8 +129,6 @@ rolling_df <- data.frame(lm_rolling) %>%
 
 theme_set(theme_classic())
 ggplot(rolling_df, aes(x = window, y = Estimate)) +
-  geom_errorbar(aes(ymin = Estimate - ci, ymax = Estimate + ci), width = 0, col = "gray") +
-  geom_point() + 
   labs(x = "Time Window") +
   theme(axis.title = element_text(size = 14),
         axis.text = element_text(size = 14)) +
@@ -143,5 +141,11 @@ ggplot(rolling_df, aes(x = window, y = Estimate)) +
   annotate(geom = "label", x = 75, y = -1, label = "June 2018") +
   annotate(geom = "label", x = 50, y = -1, label = "Dec 2017 - Jan 2018") +
   annotate(geom = "label", x = 25, y = -1, label = "June 2017") +
-  annotate(geom = "label", x = 1, y = -1, label = "Jan 2017")
+  annotate(geom = "label", x = 1, y = -1, label = "Jan 2017") +
+  geom_errorbar(aes(ymin = Estimate - ci, ymax = Estimate + ci), width = 0, col = "gray") +
+  geom_point()
 ggsave("figs/inaturalist/moving_window_obs_effort_slopes.pdf")
+
+### Add city nature challenge line to moving window plot and observer-days bar chart
+
+### Do moving window of caterpillar obs vs. observer days
