@@ -58,6 +58,8 @@ ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
 ggsave("figs/inaturalist/observer-days-2018.pdf")
 
 ## Add 2015, 2016, 2017
+cnc <- data.frame(year = c(2015:2018), cnc_date = c(NA, 103, 108, 119))
+
 obs_effort_year <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
@@ -65,13 +67,16 @@ obs_effort_year <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
          jd_wk = 7*floor(jday/7)) %>%
   filter(year >= 2015, year < 2019) %>%
   group_by(year, jd_wk) %>%
-  summarize(obs_days = n_distinct(Date, user_login)) 
+  summarize(obs_days = n_distinct(Date, user_login)) %>%
+  left_join(cnc, by = "year")
 
 ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
   theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14), strip.text = element_text(size = 14)) +
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(y = "Observer-days") +
+  geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
+  geom_label(aes(x = cnc_date, y = 6000, label = "City Nature Challenge")) +
   facet_wrap(~year)
 ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
 
@@ -123,6 +128,13 @@ lm_rolling <- rollapply(raw_obs_effort,
                         FUN = function(z) summary(lm(observations ~ obs_days, data = as.data.frame(z)))$coefficients[-1, ],
                         by.column = F, align = "right")
 
+rolling_windows <- rollapply(raw_obs_effort, 
+                             width = 8,
+                             FUN = function(z) c(min = as.data.frame(z)$jd_wk[1], max = as.data.frame(z)$jd_wk[8]),
+                             by.column = F, align = "right")
+
+# City nature challenge - jday 119 in 2018, 112 in 2017
+
 rolling_df <- data.frame(lm_rolling) %>%
   mutate(ci = 1.96*Std..Error,
          window = as.numeric(row.names(.)))
@@ -133,19 +145,68 @@ ggplot(rolling_df, aes(x = window, y = Estimate)) +
   theme(axis.title = element_text(size = 14),
         axis.text = element_text(size = 14)) +
   geom_vline(xintercept = 1, lty = 2) +
+  geom_vline(xintercept = 13, lty = 2, col = "red") +
   geom_vline(xintercept = 25, lty = 2) +
   geom_vline(xintercept = 50, lty = 2) +
+  geom_vline(xintercept = 67, lty = 2, col = "red") +
   geom_vline(xintercept = 75, lty = 2) +
   geom_vline(xintercept = 99, lty = 2) +
   annotate(geom = "label", x = 99, y = -1, label = "Dec 2018") +
   annotate(geom = "label", x = 75, y = -1, label = "June 2018") +
   annotate(geom = "label", x = 50, y = -1, label = "Dec 2017 - Jan 2018") +
   annotate(geom = "label", x = 25, y = -1, label = "June 2017") +
+  annotate(geom = "label", x = 13, y = 4.3, label = "City Nature Challenge") +
+  annotate(geom = "label", x = 67, y = 4.3, label = "City Nature Challenge") +
   annotate(geom = "label", x = 1, y = -1, label = "Jan 2017") +
   geom_errorbar(aes(ymin = Estimate - ci, ymax = Estimate + ci), width = 0, col = "gray") +
   geom_point()
 ggsave("figs/inaturalist/moving_window_obs_effort_slopes.pdf")
 
-### Add city nature challenge line to moving window plot and observer-days bar chart
+### Moving window analysis of caterpillar obs vs. observer days
 
-### Do moving window of caterpillar obs vs. observer days
+cat_obs <- inatcat %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7)) %>%
+  filter(year == 2018 | year == 2017) %>%
+  group_by(year, jd_wk) %>%
+  summarize(observations = n()) 
+
+cat_obs_effort <- raw_obs_effort %>%
+  dplyr::select(-observations) %>%
+  left_join(cat_obs, by = c("year", "jd_wk"))
+
+lm_rolling_cat <- rollapply(cat_obs_effort, 
+                        width = 8,
+                        FUN = function(z) summary(lm(observations ~ obs_days, data = as.data.frame(z)))$coefficients[-1, ],
+                        by.column = F, align = "right")
+
+# City nature challenge - jday 119 in 2018, 112 in 2017
+
+rolling_cat_df <- data.frame(lm_rolling_cat) %>%
+  mutate(ci = 1.96*Std..Error,
+         window = as.numeric(row.names(.)))
+
+theme_set(theme_classic())
+ggplot(rolling_cat_df, aes(x = window, y = Estimate)) +
+  labs(x = "Time Window") +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 14)) +
+  geom_vline(xintercept = 1, lty = 2) +
+  geom_vline(xintercept = 13, lty = 2, col = "red") +
+  geom_vline(xintercept = 25, lty = 2) +
+  geom_vline(xintercept = 50, lty = 2) +
+  geom_vline(xintercept = 67, lty = 2, col = "red") +
+  geom_vline(xintercept = 75, lty = 2) +
+  geom_vline(xintercept = 99, lty = 2) +
+  annotate(geom = "label", x = 99, y = -1, label = "Dec 2018") +
+  annotate(geom = "label", x = 75, y = -1, label = "June 2018") +
+  annotate(geom = "label", x = 50, y = -1, label = "Dec 2017 - Jan 2018") +
+  annotate(geom = "label", x = 25, y = -1, label = "June 2017") +
+  annotate(geom = "label", x = 13, y = 2, label = "City Nature Challenge") +
+  annotate(geom = "label", x = 67, y = 2, label = "City Nature Challenge") +
+  annotate(geom = "label", x = 1, y = -1, label = "Jan 2017") +
+  geom_errorbar(aes(ymin = Estimate - ci, ymax = Estimate + ci), width = 0, col = "gray") +
+  geom_point()
+ggsave("figs/inaturalist/moving_window_obs_effort_slopes_caterpillars.pdf")
