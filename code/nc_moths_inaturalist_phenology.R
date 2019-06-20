@@ -301,6 +301,41 @@ for(yr in c(2017:2018)) {
   
 }
 
+for(yr in c(2017:2018)) {
+  bins_yr <- bins_effort %>%
+    filter(year == yr)
+  
+  pdf(paste0("figs/inaturalist/phenocurves_iNat_Moths_pages_obs_effort_", yr, ".pdf"), height = 5, width = 8)
+  for(i in bins_yr$bin) {
+    df <- inat_obs_corrected %>%
+      dplyr::filter(year == yr) %>%
+      filter(life_stage == "moths") %>%
+      left_join(bins_effort, by = c("lat_bin", "lon_bin", "year")) %>%
+      dplyr::filter(bin == i, !is.na(nObs))
+    
+    location <- paste0(unique(df$lat_bin), ", ", unique(df$lon_bin))
+    
+    plot <- ggplot(df, aes(x = jd_wk)) +
+      geom_line(aes(y = obs_corrected, col = "Corrected"), cex = 1) + 
+      scale_y_log10()+
+      geom_line(aes(y = nObs/100, col = "Raw"), cex = 1) +
+      scale_color_manual(values = c("skyblue1", "deepskyblue3")) +
+      scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
+      labs(x = "", y = "Corrected observations", color = "Moths") +
+      theme(legend.text = element_text(size = 15), 
+            legend.title = element_text(size = 15), 
+            axis.title = element_text(size = 15),
+            axis.text = element_text(size = 15)) +
+      ggtitle(location)
+    
+    plot3 <- plot + scale_y_log10(sec.axis = sec_axis(~.*100, name = "Raw observations"))
+    
+    print(plot3) # fix dimensions
+  }
+  dev.off()
+  
+}
+
 # Plot of geographic extent of data
 box <- c(xmin = -105, xmax = -65, ymin = 25, ymax = 50)
 
