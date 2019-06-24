@@ -255,11 +255,17 @@ missing_data <- inat_combined %>%
 ## Plot foliage arthropod corrections - raw obs, obs/observer-days per week in 2018
 
 obs_effort <- read.csv("data/inaturalist_observer_days_by_latlon.csv")
+mean_obs_effort <- read.csv("data/inat_observer_days_rolling_means.csv")
+
+correction_denom <- mean_obs_effort %>%
+  left_join(obs_effort, by = c("year", "lat_bin", "lon_bin", "jd_wk")) %>%
+  mutate(correction = obs_days/mean_obs_days)
 
 inat_obs_corrected <- inat_combined_gather %>%
-  left_join(obs_effort, by = c("lat_bin", "lon_bin", "jd_wk", "year"))  %>%
+  left_join(correction_denom, by = c("lat_bin", "lon_bin", "jd_wk", "year"))  %>%
   filter(!is.na(obs_days)) %>%
-  mutate(obs_corrected = nObs/obs_days)
+  mutate(obs_corrected = nObs/obs_days,
+         obs_mean_corrected = nObs/correction)
 
 bins_effort <- inat_obs_corrected %>%
   ungroup() %>%
@@ -284,7 +290,8 @@ for(yr in c(2017:2018)) {
       geom_line(aes(y = obs_corrected, col = "Corrected"), cex = 1) + 
       scale_y_log10()+
       geom_line(aes(y = nObs/100, col = "Raw"), cex = 1) +
-      scale_color_manual(values = c("palegreen1", "springgreen3")) +
+      geom_line(aes(y = obs_mean_corrected/100, col = "Mean Corrected"), cex = 1) +
+      scale_color_manual(values = c("palegreen1", "springgreen3", "springgreen4")) +
       scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
       labs(x = "", y = "Corrected observations", color = "Caterpillars") +
       theme(legend.text = element_text(size = 15), 
@@ -293,7 +300,7 @@ for(yr in c(2017:2018)) {
             axis.text = element_text(size = 15)) +
       ggtitle(location)
 
-    plot3 <- plot + scale_y_log10(sec.axis = sec_axis(~.*100, name = "Raw observations"))
+    plot3 <- plot + scale_y_log10(sec.axis = sec_axis(~.*100, name = "Raw observations | Mean corrected observations"))
 
     print(plot3) # fix dimensions
   }
@@ -319,7 +326,8 @@ for(yr in c(2017:2018)) {
       geom_line(aes(y = obs_corrected, col = "Corrected"), cex = 1) + 
       scale_y_log10()+
       geom_line(aes(y = nObs/100, col = "Raw"), cex = 1) +
-      scale_color_manual(values = c("skyblue1", "deepskyblue3")) +
+      geom_line(aes(y = obs_mean_corrected/100, col = "Mean Corrected"), cex = 1) +
+      scale_color_manual(values = c("skyblue1", "deepskyblue3", "deepskyblue4")) +
       scale_x_continuous(breaks = jds, labels = dates, limits = c(0, 264)) +
       labs(x = "", y = "Corrected observations", color = "Moths") +
       theme(legend.text = element_text(size = 15), 

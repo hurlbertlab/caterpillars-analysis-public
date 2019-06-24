@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(lubridate)
+library(zoo)
 
 inatcat = read.csv('data/inat_caterpillars_easternNA.csv', header = T, quote = '\"', fill = TRUE, stringsAsFactors = FALSE)
 
@@ -28,12 +29,12 @@ obs_effort_arth <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   rename("obs_days" = n,
          "count" = nn)
 
-write.csv(obs_effort_arth,"data/inaturalist_observer_days.csv", row.names = F)
+#write.csv(obs_effort_arth,"data/inaturalist_observer_days.csv", row.names = F)
 
 ggplot(obs_effort_arth, aes(x = obs_days, y = count)) + geom_col(width = 0.1) + theme_classic() + scale_x_log10() +
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14))
-ggsave("figs/inaturalist/observer-days.pdf")
+#ggsave("figs/inaturalist/observer-days.pdf")
 
 # Observer-days by week for 2018
 
@@ -46,7 +47,7 @@ obs_effort_2018 <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   group_by(jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
 
-write.csv(obs_effort_2018, "data/inaturalist_observer_days_2018.csv", row.names = F)
+#write.csv(obs_effort_2018, "data/inaturalist_observer_days_2018.csv", row.names = F)
 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
 dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -55,7 +56,7 @@ ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
   theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14)) +
   scale_x_continuous(breaks = jds, labels = dates)
-ggsave("figs/inaturalist/observer-days-2018.pdf")
+#ggsave("figs/inaturalist/observer-days-2018.pdf")
 
 ## Add 2015, 2016, 2017
 cnc <- data.frame(year = c(2015:2018), cnc_date = c(NA, 103, 108, 119))
@@ -78,7 +79,7 @@ ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
   geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
   geom_label(aes(x = cnc_date, y = 6000, label = "City Nature Challenge")) +
   facet_wrap(~year)
-ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
+#ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
 
 ## Percent single observer-days per week
 
@@ -103,7 +104,7 @@ ggplot(single_obsdays, aes(x = jd_wk, y = single_obsdays)) + geom_col(col = "whi
   geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
   geom_label(aes(x = cnc_date, y = 0.9, label = "City Nature Challenge")) +
   facet_wrap(~year)
-ggsave("figs/inaturalist/single-observer-days-by-year.pdf", units = "in", height = 6, width = 10)
+#ggsave("figs/inaturalist/single-observer-days-by-year.pdf", units = "in", height = 6, width = 10)
 
 
 ## Observer-days by week for 2017, 2018, by lat-lon bin
@@ -117,7 +118,7 @@ obs_effort_geog <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   filter(year >= 2017, year < 2019) %>%
   group_by(lat_bin, lon_bin, year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
-write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
+#write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
 
 ## Observer-hours
 obs_hours <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
@@ -130,12 +131,12 @@ obs_hours <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   rename("obs_hours" = n,
          "count" = nn)
 
-write.csv(obs_hours, "data/inaturalist_observer_hours.csv", row.names = F)
+#write.csv(obs_hours, "data/inaturalist_observer_hours.csv", row.names = F)
 
 ggplot(obs_hours, aes(x = obs_hours, y = count)) + geom_col(width = 0.1) + theme_classic() + scale_x_log10() +
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14))
-ggsave("figs/inaturalist/observer-hours.pdf")
+#ggsave("figs/inaturalist/observer-hours.pdf")
 
 ### Moving-window parameter estimates of observations vs. observer-days
 
@@ -149,14 +150,77 @@ raw_obs_effort <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
   summarize(obs_days = n_distinct(Date, user_login),
             observations = n()) 
 
+means_rolling <- rollapply(raw_obs_effort, 
+                           width = 7, 
+                           FUN = function(z) c(mean_obs_days = mean(as.data.frame(z)$obs_days, na.rm = T), jd_wk = as.data.frame(z)$jd_wk[4], year = unique(as.data.frame(z)$year)),
+                           by.column = F, align = "right")
+
+rolling_means_obs_effort <- data.frame(means_rolling) %>%
+  dplyr::select(-year2) %>%
+  rename("year" = year1) %>%
+  left_join(raw_obs_effort, by = c("year", "jd_wk")) %>%
+  mutate(obs_correction = obs_days/mean_obs_days,
+         time_window = row.names(.))
+
+ggplot(rolling_means_obs_effort, aes(x = as.numeric(time_window), y = obs_correction)) +
+  geom_point() +geom_vline(xintercept = 1, lty = 2) +
+  geom_vline(xintercept = 13, lty = 2, col = "red") +
+  geom_vline(xintercept = 25, lty = 2) +
+  geom_vline(xintercept = 50, lty = 2) +
+  geom_vline(xintercept = 67, lty = 2, col = "red") +
+  geom_vline(xintercept = 75, lty = 2) +
+  geom_vline(xintercept = 99, lty = 2) +
+  annotate(geom = "label", x = 99, y = 0, label = "Dec 2018") +
+  annotate(geom = "label", x = 75, y = 0, label = "June 2018") +
+  annotate(geom = "label", x = 50, y = 0, label = "Dec 2017 - Jan 2018") +
+  annotate(geom = "label", x = 25, y = 0, label = "June 2017") +
+  annotate(geom = "label", x = 13, y = 2, label = "City Nature Challenge") +
+  annotate(geom = "label", x = 67, y = 2, label = "City Nature Challenge") +
+  annotate(geom = "label", x = 1, y = 0, label = "Jan 2017") +
+  ylim(0, 2) + 
+  labs(x = "Time Window", y = "Observer correction (obs-days/7-wk-mean)") +
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 14))
+ggsave("figs/inaturalist/observer-corrections-7-wk-mean.pdf")
+
+## Calculate mean obs effort correction by lat-lon bin
+
+mean_rolling_effort_bins <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
+         year = year(Date),
+         jday = yday(Date),
+         jd_wk = 7*floor(jday/7),
+         lat_bin = 2*floor(latitude/2) + 2/2,
+         lon_bin = 2*floor(longitude/2) + 2/2) %>%
+  filter(year == 2018 | year == 2017) %>%
+  group_by(year, jd_wk, lat_bin, lon_bin) %>%
+  summarize(obs_days = n_distinct(Date, user_login),
+            observations = n()) %>%
+  group_by(lat_bin, lon_bin) %>%
+  nest() %>%
+  mutate(means_rolling = map(data, ~{
+    df <- .
+    results <- rollapply(df, 
+              width = 7, 
+              FUN = function(z) c(mean_obs_days = mean(as.data.frame(z)$obs_days, na.rm = T), jd_wk = as.data.frame(z)$jd_wk[4], year = unique(as.data.frame(z)$year)),
+              by.column = F, align = "right")
+    data.frame(results)
+  })) %>%
+  dplyr::select(-data) %>%
+  unnest() %>%
+  dplyr::select(-year2, -results) %>%
+  rename("year" = year1)
+write.csv(mean_rolling_effort_bins, "data/inat_observer_days_rolling_means.csv", row.names = F)
+
+## Rolling regressions
 lm_rolling <- rollapply(raw_obs_effort, 
-                        width = 8,
+                        width = 7,
                         FUN = function(z) summary(lm(observations ~ obs_days, data = as.data.frame(z)))$coefficients[-1, ],
                         by.column = F, align = "right")
 
 rolling_windows <- rollapply(raw_obs_effort, 
-                             width = 8,
-                             FUN = function(z) c(min = as.data.frame(z)$jd_wk[1], max = as.data.frame(z)$jd_wk[8]),
+                             width = 7,
+                             FUN = function(z) c(min = as.data.frame(z)$jd_wk[1], max = as.data.frame(z)$jd_wk[7]),
                              by.column = F, align = "right")
 
 # City nature challenge - jday 119 in 2018, 112 in 2017
@@ -201,10 +265,11 @@ cat_obs <- inatcat %>%
 
 cat_obs_effort <- raw_obs_effort %>%
   dplyr::select(-observations) %>%
-  left_join(cat_obs, by = c("year", "jd_wk"))
+  left_join(cat_obs, by = c("year", "jd_wk")) %>%
+  na.omit()
 
 lm_rolling_cat <- rollapply(cat_obs_effort, 
-                        width = 8,
+                        width = 7,
                         FUN = function(z) summary(lm(observations ~ obs_days, data = as.data.frame(z)))$coefficients[-1, ],
                         by.column = F, align = "right")
 
