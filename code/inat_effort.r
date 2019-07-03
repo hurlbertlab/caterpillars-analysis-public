@@ -3,6 +3,7 @@
 library(tidyverse)
 library(lubridate)
 library(zoo)
+library(dggridR)
 
 inatcat = read.csv('data/inat_caterpillars_easternNA.csv', header = T, quote = '\"', fill = TRUE, stringsAsFactors = FALSE)
 
@@ -11,6 +12,17 @@ dat = inatcat %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d")) %>%
   count(Date, user_login) %>%
   count(n)
+
+# Hex grid
+
+hex_df <- dggridR::dgconstruct(res = 6)
+
+cell_centers <- read.csv("data/hex_grid_cell_centers.csv")
+cell_centers$cell <- as.factor(cell_centers$cell + 0.1)
+
+hex <- st_read("data/maps/hex_grid.shp") %>%
+  left_join(cell_centers, by = c("id" = "cell")) %>%
+  filter(!is.na(lat))
 
 #### Observer-days and observer-hours for Eastern North America - Hymenoptera, Hempitera, Araneae, Coleoptera, Orthoptera iNat obs
 
@@ -109,16 +121,21 @@ ggplot(single_obsdays, aes(x = jd_wk, y = single_obsdays)) + geom_col(col = "whi
 
 ## Observer-days by week for 2017, 2018, by lat-lon bin
 obs_effort_geog <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7),
-         lat_bin = 2*floor(latitude/2) + 2/2,
-         lon_bin = 2*floor(longitude/2) + 2/2) %>%
+         cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1) %>%
   filter(year >= 2017, year < 2019) %>%
-  group_by(lat_bin, lon_bin, year, jd_wk) %>%
+  group_by(cell, year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
-#write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
+write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
+
+filter(year >= 2015, !is.na(latitude), !is.na(longitude)) %>%
+  mutate(cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1, 
+         jd_wk = 7*floor(jday/7)) %>%
+  
 
 ## Observer-hours
 obs_hours <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
@@ -186,19 +203,19 @@ ggsave("figs/inaturalist/observer-corrections-7-wk-mean.pdf")
 ## Calculate mean obs effort correction by lat-lon bin
 
 mean_rolling_effort_bins <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7),
-         lat_bin = 2*floor(latitude/2) + 2/2,
-         lon_bin = 2*floor(longitude/2) + 2/2) %>%
+         cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1) %>%
   filter(year == 2018 | year == 2017) %>%
-  group_by(year, jd_wk, lat_bin, lon_bin) %>%
+  group_by(year, jd_wk, cell) %>%
   summarize(obs_days = n_distinct(Date, user_login),
             observations = n()) %>%
-  group_by(lat_bin, lon_bin) %>%
+  group_by(cell) %>%
   nest() %>%
-  mutate(means_rolling = map(data, ~{
+  mutate(means_rolling = purrr::map(data, ~{
     df <- .
     results <- rollapply(df, 
               width = 7, 
@@ -210,7 +227,7 @@ mean_rolling_effort_bins <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>
   unnest() %>%
   dplyr::select(-year2, -results) %>%
   rename("year" = year1)
-write.csv(mean_rolling_effort_bins, "data/inat_observer_days_rolling_means.csv", row.names = F)
+#write.csv(mean_rolling_effort_bins, "data/inat_observer_days_rolling_means.csv", row.names = F)
 
 ## Rolling regressions
 lm_rolling <- rollapply(raw_obs_effort, 
