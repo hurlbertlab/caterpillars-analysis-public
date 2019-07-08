@@ -8,6 +8,7 @@ library(sf)
 library(zoo)
 library(mgcv)
 library(raster)
+library(dggridR)
 
 # iNaturalist, four families, combine
 # Filter out caterpillar records 
