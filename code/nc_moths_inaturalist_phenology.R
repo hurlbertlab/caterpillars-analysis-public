@@ -35,7 +35,8 @@ cell_centers$cell <- as.factor(cell_centers$cell + 0.1)
   
 hex <- st_read("data/maps/hex_grid.shp") %>%
   left_join(cell_centers, by = c("id" = "cell")) %>%
-  filter(!is.na(lat))
+  filter(!is.na(lat)) %>%
+  st_transform("+proj=ortho +lon_0=-78 +lat_0=38")
 
 ###### Caterpillars: iNaturalist vs. Caterpillars Count
 
@@ -182,11 +183,12 @@ for(yr in c(2017:2018)) {
 }
 
 # Plot of geographic extent of data
-box <- c(xmin = -105, xmax = -65, ymin = 25, ymax = 50)
+box <- c(xmin = -105, xmax = -60, ymin = 25, ymax = 50)
 
 northAM <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp")
 
-eNA <- st_crop(northAM, box)
+eNA <- st_crop(northAM, box) %>%
+  st_transform("+proj=ortho +lon_0=-78 +lat_0=38")
 
 iNat_sf <- function(yr, lifestage) {
   inat_to_raster <- inat_combined_gather %>%
@@ -196,7 +198,7 @@ iNat_sf <- function(yr, lifestage) {
     ungroup() %>%
     dplyr::select(cell, obs, -year, -life_stage)
   
-  hex_sf %>%
+  hex %>%
     left_join(inat_to_raster, by = c("id" = "cell")) %>%
     filter(!is.na(obs))
 
