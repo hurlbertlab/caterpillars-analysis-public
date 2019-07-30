@@ -2,7 +2,8 @@
 
 summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   if (!exists("fullDataset")) {
-    source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))]), sep = '')
+    #source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))], sep = ''))
+    source("code/reading_datafiles_without_users.r")
   }
   
   dataset = fullDataset %>%
