@@ -14,14 +14,16 @@ source('code/reading_datafiles_without_users.r')
 minNumRecords = 40 
 minNumDates = 4
 
-siteList = function(dataset, year, write = TRUE) {
-  out = dataset %>%
+siteList = function(fullDataset, year, write = TRUE) {
+  out = fullDataset %>%
     filter(Year == year) %>%
     group_by(Name, Region, Latitude, Longitude) %>%
-    summarize(nRecs = n_distinct(ID),
-              nDates = n_distinct(LocalDate)) %>%
+    summarize(nSurvs = n_distinct(ID),
+              nDates = n_distinct(LocalDate),
+              nCat = sum(Group == 'caterpillar', na.rm = TRUE),
+              pctCat = round(nCat/nSurvs, 4)) %>%
     arrange(desc(Latitude)) %>%
-    filter(nRecs >= minNumRecords, nDates >= minNumDates, Name != "Example Site") %>%
+    filter(nSurvs >= minNumRecords, nDates >= minNumDates, Name != "Example Site") %>%
     mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
   
   if (write) {
