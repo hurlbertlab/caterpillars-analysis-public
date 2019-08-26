@@ -7,7 +7,7 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   }
   
   dataset = fullDataset %>%
-    filter(!grepl("BBS", Name))
+    filter(!grepl("BBS", Name), Name != "Example Site")
   
   stats = list(
     numSurveysTotal = nrow(dataset),
