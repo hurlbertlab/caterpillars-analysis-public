@@ -24,6 +24,7 @@ surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
 surveys$Year = format(surveys$LocalDate, "%Y")
 surveys$julianday = yday(surveys$LocalDate)
 
+arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,

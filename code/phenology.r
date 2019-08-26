@@ -21,7 +21,10 @@ siteList = function(fullDataset, year, write = TRUE) {
     summarize(nSurvs = n_distinct(ID),
               nDates = n_distinct(LocalDate),
               nCat = sum(Group == 'caterpillar', na.rm = TRUE),
-              pctCat = round(nCat/nSurvs, 4)) %>%
+              pctCat = round(nCat/nSurvs, 3),
+              nArth = sum(Quantity, na.rm = TRUE),
+              nPhoto = sum(Photo, na.rm = TRUE),
+              pctPhoto = round(nPhoto/nArth, 3)) %>%
     arrange(desc(Latitude)) %>%
     filter(nSurvs >= minNumRecords, nDates >= minNumDates, Name != "Example Site") %>%
     mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
