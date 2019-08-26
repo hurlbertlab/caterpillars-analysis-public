@@ -8,6 +8,22 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
   .data
 }
 
+
+# Function for calculating the mode of a series of values
+Mode = function(x){ 
+  ta = table(x)
+  tam = max(ta)
+  if (all(ta == tam))
+    mod = NA
+  else
+    if(is.numeric(x))
+      mod = as.numeric(names(ta)[ta == tam])
+  else
+    mod = names(ta)[ta == tam]
+  return(mod)
+}
+
+
 # Function for calculating and displaying arthropod phenology
 meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthropodSighting tables
                             ordersToInclude = 'All',       # which arthropod orders to calculate density for (codes)
@@ -43,6 +59,132 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
               numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
     right_join(effortByDay, by = 'julianday') %>%
     #next line replaces 3 fields with 0 if the totalCount is NA
+    mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
+    mutate(meanDensity = totalCount/n,
+           fracSurveys = 100*numSurveysGTzero/n) %>%
+    data.frame()
+  
+  if (plot & new) {
+    plot(arthCount$julianday, arthCount[, plotVar], type = 'l', 
+         col = color, las = 1, ...)
+    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
+  } else if (plot & new==F) {
+    points(arthCount$julianday, arthCount[, plotVar], type = 'l', col = color, ...)
+    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
+  }
+  return(arthCount)
+}
+
+
+
+# Function for calculating and displaying arthropod phenology by week
+meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthropodSighting tables for a single site
+                            ordersToInclude = 'All',       # which arthropod orders to calculate density for (codes)
+                            
+                            minLength = 0,         # minimum arthropod size to include 
+                            jdRange = c(1,365),
+                            outlierCount = 10000,
+                            plot = F,
+                            plotVar = 'fracSurveys', # 'meanDensity' or 'fracSurveys' or 'meanBiomass'
+                            minSurveyCoverage = 0.8, # minimum proportion of unique survey branches examined per week in order to include the week as a data point
+                            new = T,
+                            color = 'black',
+                            ...)                  
+  
+{
+  
+  if(length(ordersToInclude)==1 & ordersToInclude[1]=='All') {
+    ordersToInclude = unique(surveyData$Group)
+  }
+  
+  numUniqueBranches = length(unique(surveyData$PlantFK))
+  
+  firstFilter = surveyData %>%
+    filter(julianday >= jdRange[1], julianday <= jdRange[2]) %>%
+    mutate(julianweek = 7*floor(julianday/7) + 4)
+  
+  effortByWeek = firstFilter %>%
+    group_by(julianweek) %>%
+    summarize(nUniqueBranches = numUniqueBranches,
+              nSurveyBranches = n_distinct(PlantFK),
+              nSurveys = n_distinct(ID),
+              nSurveySets = nSurveys/nUniqueBranches,
+              okWeek = ifelse(nSurveyBranches >= minSurveyCoverage*numUniqueBranches & 
+                                (nSurveySets >= ceiling(nSurveySets)*minSurveyCoverage |
+                                   nSurveySets <= 1.2), 1, 0))
+  
+  arthCount = firstFilter %>%
+    filter(Length >= minLength, 
+           Quantity < outlierCount, 
+           Group %in% ordersToInclude) %>%
+    group_by(julianday) %>%
+    summarize(totalCount = sum(Quantity, na.rm = T),
+              numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
+    right_join(effortByDay, by = 'julianday') %>%
+    #next line replaces 3 fields with 0 if the totalCount is NA
+    mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
+    mutate(meanDensity = totalCount/n,
+           fracSurveys = 100*numSurveysGTzero/n) %>%
+    data.frame()
+  
+  if (plot & new) {
+    plot(arthCount$julianday, arthCount[, plotVar], type = 'l', 
+         col = color, las = 1, ...)
+    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
+  } else if (plot & new==F) {
+    points(arthCount$julianday, arthCount[, plotVar], type = 'l', col = color, ...)
+    points(arthCount$julianday, arthCount[, plotVar], pch = 16, col = color, ...)
+  }
+  return(arthCount)
+}
+
+
+# Function for calculating and displaying arthropod phenology by day,
+# or if surveys were split up over multiple days, then lumped by survey set
+meanDensityByDaySet = function(surveyData, # merged dataframe of Survey and arthropodSighting tables for a single site
+                             ordersToInclude = 'All',       # which arthropod orders to calculate density for (codes)
+                             
+                             minLength = 0,         # minimum arthropod size to include 
+                             jdRange = c(1,365),
+                             outlierCount = 10000,
+                             plot = F,
+                             plotVar = 'fracSurveys', # 'meanDensity' or 'fracSurveys' or 'meanBiomass'
+                             minSurveyCoverage = 0.8, # minimum proportion of unique survey branches examined per week in order to include the week as a data point
+                             new = T,
+                             color = 'black',
+                             ...)                  
+
+{
+  
+  if(length(ordersToInclude)==1 & ordersToInclude[1]=='All') {
+    ordersToInclude = unique(surveyData$Group)
+  }
+  
+  numUniqueBranches = length(unique(surveyData$PlantFK))
+  
+  firstFilter = surveyData %>%
+    filter(julianday >= jdRange[1], julianday <= jdRange[2])
+    
+  effortByDay = firstFilter %>%
+    group_by(julianday) %>%
+    summarize(nSurveyBranches = n_distinct(PlantFK),
+              nSurveys = n_distinct(ID)) %>%
+    mutate(modalBranchesSurveyed = Mode(5*ceiling(nSurveyBranches/5)),
+           nSurveySets = nSurveys/modalBranchesSurveyed,
+           modalSurveySets = Mode(round(nSurveySets)),
+           okWeek = ifelse(nSurveySets/modalSurveySets >= minSurveyCoverage & 
+                             (nSurveySets/modalSurveySets <= 1.2), 1, 0))
+  
+  arthCount = firstFilter %>%
+    filter(Length >= minLength, 
+           Quantity < outlierCount, 
+           Group %in% ordersToInclude) %>%
+    group_by(julianday) %>%
+    summarize(totalCount = sum(Quantity, na.rm = T),
+              numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
+    right_join(effortByDay, by = 'julianday') %>%
+    #next line replaces 3 fields with 0 if the totalCount is NA
+    filter(okWeek == 1) %>%
     mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
     mutate(meanDensity = totalCount/n,
            fracSurveys = 100*numSurveysGTzero/n) %>%

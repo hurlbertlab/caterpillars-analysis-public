@@ -11,10 +11,7 @@ source('code/reading_datafiles_without_users.r')
 
 
 # Criteria for inclusion (records refers to survey events)
-minNumRecords = 40 
-minNumDates = 4
-
-siteList = function(fullDataset, year, write = TRUE) {
+siteList = function(fullDataset, year, minNumRecords = 40, minNumDates = 4, write = TRUE) {
   out = fullDataset %>%
     filter(Year == year) %>%
     group_by(Name, Region, Latitude, Longitude) %>%
