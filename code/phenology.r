@@ -20,6 +20,10 @@ siteList = function(fullDataset, year, minNumRecords = 40, minNumDates = 4, writ
               nCat = sum(Group == 'caterpillar', na.rm = TRUE),
               pctCat = round(nCat/nSurvs, 3),
               nArth = sum(Quantity, na.rm = TRUE),
+              nLgArth = sum(Quantity[Length >= 10], na.rm = TRUE),
+              nArthsPerSurvey = nArth/nSurvs,
+              nLgArthsPerSurvey = nLgArth/nSurvs,
+              pctSurvsLgArths = round(sum(Length >= 10, na.rm = TRUE)/nSurvs, 3),
               nPhoto = sum(Photo, na.rm = TRUE),
               pctPhoto = round(nPhoto/nArth, 3)) %>%
     arrange(desc(Latitude)) %>%
