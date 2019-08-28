@@ -1,6 +1,6 @@
 # Examining caterpillar phenology with iNaturalist data
 
-# iNaturalist data requested in October 2018
+# iNaturalist data requested in August 2019
 
 #### Libraries ####
 library(tidyverse)
