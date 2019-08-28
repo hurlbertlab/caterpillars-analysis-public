@@ -10,17 +10,15 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
 
 
 # Function for calculating the mode of a series of values
+# --in this particular use case, if there multiple modes, we want the largest value
 Mode = function(x){ 
+  if (!is.numeric(x)) {
+    stop("values must be numeric for mode calculation")
+  }
   ta = table(x)
   tam = max(ta)
-  if (all(ta == tam))
-    mod = NA
-  else
-    if(is.numeric(x))
-      mod = as.numeric(names(ta)[ta == tam])
-  else
-    mod = names(ta)[ta == tam]
-  return(mod)
+  mod = as.numeric(names(ta)[ta == tam])
+  return(max(mod))
 }
 
 
