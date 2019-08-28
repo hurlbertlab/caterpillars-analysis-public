@@ -4,6 +4,7 @@ library(tidyverse)
 library(lubridate)
 library(zoo)
 library(dggridR)
+library(sf)
 
 inatcat = read.csv('data/inat_caterpillars_easternNA.csv', header = T, quote = '\"', fill = TRUE, stringsAsFactors = FALSE)
 
@@ -27,15 +28,21 @@ hex <- st_read("data/maps/hex_grid.shp") %>%
 #### Observer-days and observer-hours for Eastern North America - Hymenoptera, Hempitera, Araneae, Coleoptera, Orthoptera iNat obs
 
 # Read in data
-inat_1 <- read.csv("C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/observations-56952.csv")
-inat_2 <- read.csv("C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/observations-56953.csv")
-inat_3 <- read.csv("C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/observations-56954.csv")
-inat_4 <- read.csv("C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/observations-56955.csv")
-inat_5 <- read.csv("C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/observations-56956.csv")
+
+dir <- "C:/Users/gdicecco/Desktop/data/iNaturalist_arthropods/"
+inat_files <- list.files(dir)
+
+inat_df <- data.frame()
+
+for(file in inat_files) {
+  tmp <- read_csv(paste0(dir,file))
+  inat_df <- bind_rows(inat_df, tmp)
+}
 
 ## Observer-days
-obs_effort_arth <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+obs_effort_arth <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d")) %>%
+  distinct(Date, user_login, id) %>%
   count(Date, user_login) %>%
   count(n) %>%
   rename("obs_days" = n,
@@ -48,40 +55,45 @@ ggplot(obs_effort_arth, aes(x = obs_days, y = count)) + geom_col(width = 0.1) + 
         axis.title.y = element_text(size = 14))
 #ggsave("figs/inaturalist/observer-days.pdf")
 
-# Observer-days by week for 2018
+# Observer-days by week for 2018-2019
 
-obs_effort_2018 <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+obs_effort_2018_19 <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7)) %>%
-  filter(year == 2018) %>%
-  group_by(jd_wk) %>%
+  distinct(Date, year, jday, jd_wk, user_login, id) %>%
+  filter(year >= 2018) %>%
+  group_by(year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
 
-#write.csv(obs_effort_2018, "data/inaturalist_observer_days_2018.csv", row.names = F)
+#write.csv(obs_effort_2018_19, "data/inaturalist_observer_days_2018_2019.csv", row.names = F)
 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
 dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
-ggplot(obs_effort_2018, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
+ggplot(obs_effort_2018_19, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
   theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
         axis.title.y = element_text(size = 14)) +
-  scale_x_continuous(breaks = jds, labels = dates)
-#ggsave("figs/inaturalist/observer-days-2018.pdf")
+  scale_x_continuous(breaks = jds, labels = dates) +
+  facet_wrap(~year, scales = "free")
+#ggsave("figs/inaturalist/observer-days-2018_2019.pdf")
 
 ## Add 2015, 2016, 2017
-cnc <- data.frame(year = c(2015:2018), cnc_date = c(NA, 103, 108, 119))
+cnc <- data.frame(year = c(2015:2019), cnc_date = c(NA, 103, 108, 119, 116))
 
-obs_effort_year <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+obs_effort_year <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7)) %>%
-  filter(year >= 2015, year < 2019) %>%
+  filter(year >= 2015) %>%
+  distinct(Date, year, jday, jd_wk, user_login, id) %>%
   group_by(year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) %>%
-  left_join(cnc, by = "year")
+  left_join(cnc, by = "year") %>%
+  group_by(year) %>%
+  mutate(max_days = max(obs_days, na.rm = T))
 
 ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") + theme_classic() +
   theme(axis.title.x = element_blank(), axis.text = element_text(size = 14), 
@@ -89,18 +101,19 @@ ggplot(obs_effort_year, aes(x = jd_wk, y = obs_days)) + geom_col(col = "white") 
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(y = "Observer-days") +
   geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
-  geom_label(aes(x = cnc_date, y = 6000, label = "City Nature Challenge")) +
-  facet_wrap(~year)
-#ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 6, width = 10)
+  geom_label(aes(x = cnc_date, y = max_days, label = "City Nature Challenge")) +
+  facet_wrap(~year, scales = "free")
+#ggsave("figs/inaturalist/observer-days-by-year.pdf", units = "in", height = 9, width = 10)
 
 ## Percent single observer-days per week
 
-single_obsdays <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+single_obsdays <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7)) %>%
-  filter(year >= 2015, year < 2019) %>%
+  filter(year >= 2015) %>%
+  distinct(Date, year, jday, jd_wk, user_login, id) %>%
   group_by(year, jd_wk) %>%
   count(Date, user_login) %>%
   count(n) %>%
@@ -115,40 +128,37 @@ ggplot(single_obsdays, aes(x = jd_wk, y = single_obsdays)) + geom_col(col = "whi
   labs(y = "Proportion single observer-days") +
   geom_vline(aes(xintercept = cnc_date), lty = 2, color = "red") +
   geom_label(aes(x = cnc_date, y = 0.9, label = "City Nature Challenge")) +
-  facet_wrap(~year)
+  facet_wrap(~year, scales = "free")
 #ggsave("figs/inaturalist/single-observer-days-by-year.pdf", units = "in", height = 6, width = 10)
 
 
-## Observer-days by week for 2017, 2018, by lat-lon bin
-obs_effort_geog <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+## Observer-days by week for 2017, 2018, 2019, by lat-lon bin
+obs_effort_geog <- inat_df %>%
   filter(!is.na(latitude), !is.na(longitude)) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7),
          cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1) %>%
-  filter(year >= 2017, year < 2019) %>%
+  filter(year >= 2017) %>%
+  distinct(Date, year, jday, jd_wk, cell, user_login, id) %>%
   group_by(cell, year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
 write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
-
-filter(year >= 2015, !is.na(latitude), !is.na(longitude)) %>%
-  mutate(cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1, 
-         jd_wk = 7*floor(jday/7)) %>%
   
-
 ## Observer-hours
-obs_hours <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+obs_hours <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d")) %>%
   mutate(time = word(time_observed_at, 2),
          hour = word(time, 1, sep = ":")) %>%
+  distinct(Date, time, hour, user_login, id) %>%
   distinct(Date, hour, user_login) %>%
   count(Date, user_login) %>%
   count(n) %>%
   rename("obs_hours" = n,
          "count" = nn)
 
-#write.csv(obs_hours, "data/inaturalist_observer_hours.csv", row.names = F)
+write.csv(obs_hours, "data/inaturalist_observer_hours.csv", row.names = F)
 
 ggplot(obs_hours, aes(x = obs_hours, y = count)) + geom_col(width = 0.1) + theme_classic() + scale_x_log10() +
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
@@ -157,12 +167,13 @@ ggplot(obs_hours, aes(x = obs_hours, y = count)) + geom_col(width = 0.1) + theme
 
 ### Moving-window parameter estimates of observations vs. observer-days
 
-raw_obs_effort <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+raw_obs_effort <- inat_df %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7)) %>%
-  filter(year == 2018 | year == 2017) %>%
+  filter(year >= 2017) %>%
+  distinct(Date, year, jday, jd_wk, user_login, id) %>%
   group_by(year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login),
             observations = n()) 
@@ -179,6 +190,7 @@ rolling_means_obs_effort <- data.frame(means_rolling) %>%
   mutate(obs_correction = obs_days/mean_obs_days,
          time_window = row.names(.))
 
+theme_set(theme_classic())
 ggplot(rolling_means_obs_effort, aes(x = as.numeric(time_window), y = obs_correction)) +
   geom_point() +geom_vline(xintercept = 1, lty = 2) +
   geom_vline(xintercept = 13, lty = 2, col = "red") +
@@ -187,6 +199,8 @@ ggplot(rolling_means_obs_effort, aes(x = as.numeric(time_window), y = obs_correc
   geom_vline(xintercept = 67, lty = 2, col = "red") +
   geom_vline(xintercept = 75, lty = 2) +
   geom_vline(xintercept = 99, lty = 2) +
+  geom_vline(xintercept = 125, lty = 2) +
+  geom_vline(xintercept = 120, lty = 2, col = "red") +
   annotate(geom = "label", x = 99, y = 0, label = "Dec 2018") +
   annotate(geom = "label", x = 75, y = 0, label = "June 2018") +
   annotate(geom = "label", x = 50, y = 0, label = "Dec 2017 - Jan 2018") +
@@ -194,6 +208,8 @@ ggplot(rolling_means_obs_effort, aes(x = as.numeric(time_window), y = obs_correc
   annotate(geom = "label", x = 13, y = 2, label = "City Nature Challenge") +
   annotate(geom = "label", x = 67, y = 2, label = "City Nature Challenge") +
   annotate(geom = "label", x = 1, y = 0, label = "Jan 2017") +
+  annotate(geom = "label", x = 125, y = 0, label = "June 2019") +
+  annotate(geom = "label", x = 120, y = 2, label = "City Nature Challenge") +
   ylim(0, 2) + 
   labs(x = "Time Window", y = "Observer correction (obs-days/7-wk-mean)") +
   theme(axis.title = element_text(size = 14),
@@ -202,14 +218,15 @@ ggsave("figs/inaturalist/observer-corrections-7-wk-mean.pdf")
 
 ## Calculate mean obs effort correction by lat-lon bin
 
-mean_rolling_effort_bins <- bind_rows(inat_1, inat_2, inat_3, inat_4, inat_5) %>%
+mean_rolling_effort_bins <- inat_df %>%
   filter(!is.na(latitude), !is.na(longitude)) %>%
   mutate(Date = as.Date(observed_on, format = "%Y-%m-%d"),
          year = year(Date),
          jday = yday(Date),
          jd_wk = 7*floor(jday/7),
          cell = dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1) %>%
-  filter(year == 2018 | year == 2017) %>%
+  filter(year >= 2017) %>%
+  distinct(year, Date, jday, jd_wk, cell, user_login, id) %>%
   group_by(year, jd_wk, cell) %>%
   summarize(obs_days = n_distinct(Date, user_login),
             observations = n()) %>%
