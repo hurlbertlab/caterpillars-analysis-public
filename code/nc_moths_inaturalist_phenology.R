@@ -21,7 +21,8 @@ inat_species <- read.table("data/inat_caterpillar_species_traits.txt", header = 
 
 # Remove caterpillar observations
 inat_adults <- inat_moths %>%
-  filter(!(id %in% inat_cats$id))
+  filter(!(id %in% inat_cats$id)) %>%
+  distinct()
 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
 dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -49,7 +50,7 @@ end <- 264
 minNumWks <- 10
 
 adult_moths <- inat_adults %>%
-  mutate(Date = as.Date(observed_on, format = "%m/%d/%Y")) %>%
+  mutate(Date = as.Date(observed_on, format = "%Y-%m-%d")) %>%
   mutate(year = year(Date), 
          jday = yday(Date)) %>%
   filter(year >= 2015, !is.na(latitude), !is.na(longitude)) %>%
@@ -110,7 +111,7 @@ bins_effort <- inat_obs_corrected %>%
   mutate(bin = row.names(.))
 
 # Phenology plots of correction methods
-for(yr in c(2017:2018)) {
+for(yr in c(2017:2019)) {
   bins_yr <- bins_effort %>%
     filter(year == yr)
   
@@ -146,7 +147,7 @@ for(yr in c(2017:2018)) {
   
 }
 
-for(yr in c(2017:2018)) {
+for(yr in c(2017:2019)) {
   bins_yr <- bins_effort %>%
     filter(year == yr)
   
@@ -206,8 +207,10 @@ iNat_sf <- function(yr, lifestage) {
 
 cat18_sf <- iNat_sf(2018, "caterpillars")
 cat17_sf <- iNat_sf(2017, "caterpillars")
+cat19_sf <- iNat_sf(2019, "caterpillars")
 moth18_sf <- iNat_sf(2018, "moths")
 moth17_sf <- iNat_sf(2017, "moths")
+moth19_sf <- iNat_sf(2019, "moths")
 
 cat18_map <- tm_shape(eNA) + tm_polygons(fill = "gray") +
   tm_shape(cat18_sf) +
@@ -219,6 +222,11 @@ cat17_map <- tm_shape(eNA) + tm_polygons(fill = "gray") +
   tm_polygons(col = "obs", palette = "BuPu", title = "Caterpillar obs", alpha = 0.8) +
   tm_layout(title = "2017")
 
+cat19_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + 
+  tm_shape(cat17_sf) + 
+  tm_polygons(col = "obs", palette = "BuPu", title = "Caterpillar obs", alpha = 0.8) +
+  tm_layout(title = "2019")
+
 moth18_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + 
   tm_shape(moth18_sf) + 
   tm_polygons(col = "obs", palette = "BuGn", title = "Moth obs", alpha = 0.8) + 
@@ -228,8 +236,12 @@ moth17_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(moth17_sf) +
   tm_polygons(col = "obs", palette = "BuGn",  title = "Moth obs", alpha = 0.8) + 
   tm_layout(title = "2017", legend.position = c("right", "bottom"))
 
-inat_maps <- tmap_arrange(cat17_map, cat18_map, moth17_map, moth18_map, nrow = 2)
-#tmap_save(inat_maps, "figs/inaturalist/data_map.pdf", units = "in", height = 6, width = 10)
+moth19_map <- tm_shape(eNA) + tm_polygons(fill = "gray") + tm_shape(moth17_sf) + 
+  tm_polygons(col = "obs", palette = "BuGn",  title = "Moth obs", alpha = 0.8) + 
+  tm_layout(title = "2019", legend.position = c("right", "bottom"))
+
+inat_maps <- tmap_arrange(cat17_map, cat18_map, cat19_map, moth17_map, moth18_map, moth19_map, ncol = 3)
+#tmap_save(inat_maps, "figs/inaturalist/data_map.pdf", units = "in", height = 6, width = 15)
 
 # Phenology curves, group by 2 degree lat lon bins
 
@@ -279,6 +291,7 @@ inat_gams <- inat_obs_corrected %>%
     df$moths <- na.approx(df$moths, maxgap = 1, na.rm = F)
     df
   })) %>%  
+  filter(n_cat > 10) %>%
   mutate(gam_cat = purrr::map(cat_interp, ~{
     df <- .
     gam(caterpillars ~ s(jd_wk), data = df)
@@ -368,14 +381,14 @@ mod_dates$predict_cat <- predict(cat_date)
 mod_dates$predict_diff <- predict(diff_date)
 
 ggplot(mod_dates, aes(x = moths, y = predict_cat, col = lat)) + geom_point(size = 2) +
-  facet_wrap(~year) + labs(x = "Moth date", y = "Predicted caterpillar date", col = "Latitude") + theme_bw() +
+  facet_wrap(~year, scales = "free") + labs(x = "Moth date", y = "Predicted caterpillar date", col = "Latitude") + theme_bw() +
   theme(axis.text = element_text(size = 12), legend.text = element_text(size = 12), 
         legend.title = element_text(size = 12), axis.title = element_text(size = 12), strip.text = element_text(size = 12))
-#ggsave("figs/inaturalist/cat_date_model_predict.pdf")
+ggsave("figs/inaturalist/cat_date_model_predict.pdf", width = 12, height = 5)
 
 ggplot(mod_dates, aes(x = lat, y = predict_diff, group = year, col = factor(year))) + geom_line(cex = 1) +
   labs(x = "Latitude", y = "Predicted difference (caterpillar date - moth date)", col = "Year")
-#ggsave("figs/inaturalist/diff_date_model_predict.pdf")
+ggsave("figs/inaturalist/diff_date_model_predict.pdf")
 
 ### Cross-correlation analysis
 
@@ -468,7 +481,7 @@ pheno_metrics <- gams_gather_accum %>%
 # Multiple pheno metrics plots
 ## Things to add: cross_correlation on gams
 
-for(yr in c(2017:2018)) {
+for(yr in c(2017:2019)) {
   bins_yr <- bins_gams %>%
     filter(year == yr, group %in% pheno_metrics$group)
   

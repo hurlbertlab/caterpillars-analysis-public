@@ -39,7 +39,7 @@ minNumRecords = 40
 minNumDates = 4
 
 siteList = fullDataset %>%
-  filter(Year == 2018) %>%
+  filter(Year >= 2018) %>%
   group_by(Name, Region, Latitude, Longitude) %>%
   summarize(nRecs = n_distinct(ID),
             nDates = n_distinct(LocalDate)) %>%
@@ -61,6 +61,7 @@ jdEnd = 240
 inat_noCC <- inat %>%
   filter(user_login != "caterpillarscount", year > 2014, jday >= jdBeg, jday <= jdEnd) %>%
   filter(!is.na(latitude), !is.na(longitude)) %>%
+  distinct() %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1)) %>%
   group_by(year, cell, jd_wk) %>%
   summarize(n_inat = n())
@@ -89,7 +90,7 @@ US_map <- tm_shape(NA_sf, bbox = easternUS) + tm_borders(col = "grey80") + tm_fi
 
 obs_sf <- hex %>%
   left_join(inat_cc_bins, by = c("id" = "cell")) %>%
-  filter(!is.na(sum_inat), Year < 2019)
+  filter(!is.na(sum_inat), Year > 2014)
 
 
 map <- US_map + tm_shape(obs_sf) + 
@@ -98,7 +99,7 @@ map <- US_map + tm_shape(obs_sf) +
              palette = "GnBu", perceptual = T, 
              breaks = seq(1, 400, by = 50), scale = 4, alpha = 0.75) +
   tm_text(text = "sum_inat") +
-  tm_facets(by = "Year", nrow = 2)
+  tm_facets(by = "Year", nrow = 3)
 tmap_save(map, paste('figs/iNat_caterpillar_nearCC_phenomap_byYear_hex_jd_', jdBeg, '-', jdEnd, '.pdf', sep = ''),
           height = 6, width = 12, units = "in")
 
@@ -121,11 +122,10 @@ sites_top <- siteList %>%
 # For each CC site from top ~12, get iNaturalist around that site 
 
 cc_top <- fullDataset %>%
-  filter(Name %in% sites_top$Name, Year == 2018) %>%
+  filter(Name %in% sites_top$Name, Year >= 2018) %>%
   filter(!is.na(Latitude), !is.na(Longitude)) %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, Longitude, Latitude)$seqnum + 0.1),
          jd_wk = 7*floor(julianday/7) + 4) %>%
-  filter(Year == 2018) %>%
   group_by(cell, jd_wk) %>%
   mutate(n = n()) %>%
   group_by(cell, jd_wk) %>%
@@ -134,7 +134,7 @@ cc_top <- fullDataset %>%
             fracSurveys = 100*numSurveysGTzero/mean(n))
 
 sitedata <- cc_top %>%
-  left_join(filter(inat_noCC, year == 2018), by = c("cell", "jd_wk")) %>%
+  left_join(filter(inat_noCC, year >= 2018), by = c("cell", "jd_wk")) %>%
   left_join(cell_centers) %>%
   mutate(cell_labs = paste0(round(lon, 2), " , ", round(lat, 2)))
 
@@ -144,8 +144,10 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 
 theme_set(theme_bw())
 
-phenoplot <- ggplot(sitedata, aes(x = jd_wk)) + 
-  facet_wrap(~fct_reorder(cell_labs, lat, .desc = T), nrow = 3) +
+for(yr in c(2018:2019)){
+  tmp <- filter(sitedata, year == yr)
+phenoplot <- ggplot(tmp, aes(x = jd_wk)) + 
+  facet_wrap(~fct_reorder(cell_labs, lat, .desc = T), scales = "free", nrow = 3) +
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(x = "", y = "Fraction of surveys with caterpillars") +
   scale_y_continuous(sec.axis = dup_axis(name = "Number of iNaturalist observations"))
@@ -156,8 +158,8 @@ phenoplot +
   scale_color_manual(values = c("Caterpillars Count" = "firebrick", 
                                 "iNaturalist" = "dodgerblue")) +
   theme(legend.position = "bottom", legend.title = element_blank())
-ggsave("figs/CaterpillarPhenology_withiNat_2018.pdf", width = 12, height = 8, units = "in")
-
+ggsave(paste0("figs/CaterpillarPhenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
+}
 
 #### Determine/plot widespread families ####
 ## Common/widespread families from iNat
@@ -252,7 +254,7 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 theme_set(theme_classic())
 ggplot(inat_CC_dates, aes(x = jd_wk, y = pctID)) + geom_col() +
   scale_x_continuous(breaks = jds, labels = dates) +
-  labs(x = "", y = "% Identified") + facet_grid(~year)
+  labs(x = "", y = "% Identified") + facet_grid(~year, scales = "free")
 ggsave("figs/percent_CC_obs_identified_byweek.pdf", units = "in", height = 6, width = 14)
 
 ## Subset iNat by CC sites
@@ -337,7 +339,7 @@ inat_noCC_families <- inat %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1)) %>%
   group_by(year, cell, jd_wk) %>%
   summarize(n_inat = n()) %>%
-  filter(year == 2018)
+  filter(year >= 2018)
 
 family_surveys <- cc_top %>%
   left_join(inat_noCC_families, by = c("cell", "jd_wk")) %>%
@@ -350,8 +352,11 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 
 theme_set(theme_bw())
 
-phenoplot <- ggplot(family_surveys, aes(x = jd_wk)) + 
-  facet_wrap(~fct_reorder(cell_labs, lat, .desc = T), nrow = 3) +
+for(yr in c(2018:2019)){
+  tmp <- filter(family_surveys, year == yr)
+  
+phenoplot <- ggplot(tmp, aes(x = jd_wk)) + 
+  facet_wrap(~fct_reorder(cell_labs, lat, .desc = T), scales = "free", nrow = 3) +
   scale_x_continuous(breaks = jds, labels = dates) +
   labs(x = "", y = "Fraction of surveys with caterpillars") +
   scale_y_continuous(sec.axis = dup_axis(name = "Number of iNaturalist observations"))
@@ -362,4 +367,5 @@ phenoplot +
   scale_color_manual(values = c("Caterpillars Count" = "firebrick", 
                                 "iNaturalist" = "dodgerblue")) +
   theme(legend.position = "bottom", legend.title = element_blank())
-ggsave("figs/FourCatFamilies_Phenology_withiNat_2018.pdf", width = 12, height = 8, units = "in")
+ggsave(paste0("figs/FourCatFamilies_Phenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
+}
