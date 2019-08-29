@@ -48,10 +48,11 @@ multiSitePhenoPlot = function(fullDataset,
                                                  # If NULL, xlim will vary by site based on when surveys were conducted
                               REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
                                                  # (requires manual addition of REVI columns to siteList)
+                              filename,
                               ...) {
 
   if (write) {
-    pdf(paste('figs/caterpillarPhenologyAllSites', year, '.pdf', sep = ''), height = 8.5, width = 11)
+    pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
   }
   par(mfrow = c(4, 6), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
   
@@ -95,7 +96,7 @@ multiSitePhenoPlot = function(fullDataset,
     caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
                                             ylab = 'Percent of surveys', col = 'red', lwd = 3, 
-                                            xaxt = 'n', cex.lab = 1.5, cex.axis = 1.3,
+                                            xaxt = 'n', xaxs = 'i', cex.lab = 1.5, cex.axis = 1.3,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
                                             main = siteLabel, cex.main = .9, ...)
@@ -104,13 +105,16 @@ multiSitePhenoPlot = function(fullDataset,
            bty = 'n')
     legend("topleft", legend = paste(siteList$nSurvs[siteList$Name == site], "surveys"), 
            bty = 'n', text.col = 'blue', cex = .9)
-    axis(1, at = jds[minPos:maxPos], labels = F, tck = -.03)
-    axis(1, at = jds[minPos:maxPos] + 14, labels = F, tck = -.02)
+    #axis(1, at = jds[minPos:maxPos], labels = F, tck = -.03)
+    #axis(1, at = jds[minPos:maxPos] + 14, labels = F, tck = -.02)
     
-    monthLabs = minPos:(maxPos-1)
-    rect(jds[monthLabs[monthLabs%%2 == 0]], rep(-10, length(monthLabs[monthLabs%%2 == 0])), 
-         jds[monthLabs[monthLabs%%2 == 0] + 1]-1, rep(110, length(monthLabs[monthLabs%%2 == 0])), 
-         col = rgb(.1, .1, .1, .1), border = NA)
+    abline(v = jds)
+    mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
+    
+    #monthLabs = minPos:(maxPos-1)
+    #rect(jds[monthLabs[monthLabs%%2 == 0]], rep(-10, length(monthLabs[monthLabs%%2 == 0])), 
+    #     jds[monthLabs[monthLabs%%2 == 0] + 1]-1, rep(110, length(monthLabs[monthLabs%%2 == 0])), 
+    #     col = rgb(.1, .1, .1, .1), border = NA)
     
     if (REVI) {
       bird = siteList %>%
@@ -120,9 +124,9 @@ multiSitePhenoPlot = function(fullDataset,
              arrival = round((preArrival + peakArrival)/2),
              hatching = arrival + 35,
              fledging = hatching + 11)
-      rect(-5, bird$hatching, 110, bird$fledging, col = rgb(.1, 0, 0, .1), border = NA)
+      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(1, 0, 0, .1), border = NA)
     }
-    mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
+    
   }
   mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
   mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
