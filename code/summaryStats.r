@@ -9,42 +9,71 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   dataset = fullDataset %>%
     filter(!grepl("BBS", Name), Name != "Example Site")
   
+  datasetThisYear = dataset %>%
+    filter(Year == reportYear)
+  
+  sitesThisYear = unique(datasetThisYear$SiteFK)
+  
   stats = list(
     numSurveysTotal = nrow(dataset),
     
-    numSurveysThisYear = dataset %>% filter(Year == reportYear) %>% nrow(),
+    numSurveysThisYear = datasetThisYear %>% nrow(),
     
-    sumSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)),
+    numSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)),
     
-    sumSitesThisYear = dataset %>% filter(Year == reportYear) %>% summarize(n = n_distinct(SiteFK)),
+    numSitesThisYear = datasetThisYear %>% summarize(n = length(sitesThisYear)),
     
     numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)), 
     
-    numUsersThisYear = dataset %>% filter(Year == reportYear) %>% 
+    numUsersThisYear = datasetThisYear %>% 
       summarize(n = n_distinct(UserFKOfObserver)),
     
     arthTot = dataset %>% summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    arthTotThisYear = dataset %>% filter(Year == reportYear) %>% 
+    arthTotThisYear = datasetThisYear %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
     caterpillarTot = dataset %>% filter(Group == "caterpillar") %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    caterpillarTotThisYear = dataset %>% 
-      filter(Year == reportYear, Group == "caterpillar") %>% 
+    caterpillarTotThisYear = datasetThisYear %>% 
+      filter(Group == "caterpillar") %>% 
       summarize(n = sum(Quantity, na.rm = TRUE)),
     
-    medianNumSurveysPerSite = plants %>%
+    medianNumBranchesPerSite = plants %>%
+      filter(Circle > 0) %>% #old branch codes that were moved or destroyed are negative
       count(SiteFK) %>%
-      summarize(median = median(n)) %>%
+      summarize(n = median(n)) %>%
       data.frame(),
     
-    medianNumDatesPerSiteThisYear = dataset %>%
-      filter(Year == reportYear) %>%
+    medianNumBranchesPerSiteThisYear = plants %>%
+      filter(SiteFK %in% sitesThisYear, Circle > 0) %>%
+      count(SiteFK) %>%
+      summarize(n = median(n)) %>%
+      data.frame(),
+    
+    medianNumSurveysPerSite = dataset %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(ID)) %>%
+      summarize(n = median(totSurvs)) %>%
+      data.frame(),
+    
+    medianNumSurveysPerSiteThisYear = datasetThisYear %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(ID)) %>%
+      summarize(n = median(totSurvs)) %>%
+      data.frame(),
+    
+    medianNumDatesPerSite = dataset %>%
       distinct(Name, LocalDate) %>%
       count(Name) %>%
-      summarize(median = median(n)) %>%
+      summarize(n = median(n)) %>%
+      data.frame(),
+    
+    medianNumDatesPerSiteThisYear = datasetThisYear %>%
+      distinct(Name, LocalDate) %>%
+      count(Name) %>%
+      summarize(n = median(n)) %>%
       data.frame()
   )
   return(stats)
