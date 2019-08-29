@@ -46,6 +46,8 @@ multiSitePhenoPlot = function(fullDataset,
                               monthRange = NULL, # 2-value vector with beginning and ending months for plotting;
                                                  # e.g., start of May - end of August would be c(5,8).
                                                  # If NULL, xlim will vary by site based on when surveys were conducted
+                              REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
+                                                 # (requires manual addition of REVI columns to siteList)
                               ...) {
 
   if (write) {
@@ -109,6 +111,17 @@ multiSitePhenoPlot = function(fullDataset,
     rect(jds[monthLabs[monthLabs%%2 == 0]], rep(-10, length(monthLabs[monthLabs%%2 == 0])), 
          jds[monthLabs[monthLabs%%2 == 0] + 1]-1, rep(110, length(monthLabs[monthLabs%%2 == 0])), 
          col = rgb(.1, .1, .1, .1), border = NA)
+    
+    if (REVI) {
+      bird = siteList %>%
+        filter(Name == site) %>%
+        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
+             peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
+             arrival = round((preArrival + peakArrival)/2),
+             hatching = arrival + 35,
+             fledging = hatching + 11)
+      rect(-5, bird$hatching, 110, bird$fledging, col = rgb(.1, 0, 0, .1), border = NA)
+    }
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
   }
   mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
