@@ -49,14 +49,20 @@ multiSitePhenoPlot = function(fullDataset,
                               REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
                                                  # (requires manual addition of REVI columns to siteList)
                               filename,
+                              panelRows = 4,
+                              panelCols = 6,
                               ...) {
 
   if (write) {
     pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
   }
-  par(mfrow = c(4, 6), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
+  par(mfrow = c(panelRows, panelCols), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
+  
+  counter = 0
   
   for (site in siteList$Name) {
+    
+    counter = counter + 1
     sitedata = fullDataset %>%
       filter(Name == site, Year == year)
     
@@ -108,7 +114,7 @@ multiSitePhenoPlot = function(fullDataset,
     #axis(1, at = jds[minPos:maxPos], labels = F, tck = -.03)
     #axis(1, at = jds[minPos:maxPos] + 14, labels = F, tck = -.02)
     
-    abline(v = jds)
+    abline(v = jds, col = 'gray50')
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
     
     #monthLabs = minPos:(maxPos-1)
@@ -127,9 +133,11 @@ multiSitePhenoPlot = function(fullDataset,
       rect(bird$hatching, -5, bird$fledging, 110, col = rgb(1, 0, 0, .1), border = NA)
     }
     
-  }
-  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+    if (counter %% panelRows*panelCols == 0 | counter == length(siteList$Name)) {
+      mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+      mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+    }  
+  } #end site
 
   if (write) {
     dev.off()
