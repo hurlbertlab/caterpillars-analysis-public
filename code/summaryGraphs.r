@@ -29,3 +29,10 @@ text(2018, 50, "Total sites", cex = 2, col = 'turquoise')
 text(2018.6, 20, "High effort\nsites", cex = 2, col = 'orangered')
 
 
+sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
+
+sites19_select12 = filter(sites19, Name %in% c('Sault College', 'Acadia NP - Alder', 'RVCC', 'Stage Nature Center', "Mass Audubon's Boston Nature Center",
+                                            "Museum of American Bird Art", "Oregon Ridge Nature Center", "Walker Nature Center", 
+                                            "Site A", "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
+
+multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REVI = TRUE, filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4)
