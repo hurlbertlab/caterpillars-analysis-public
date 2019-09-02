@@ -89,7 +89,7 @@ inat_combined_gather <- inat_combined %>%
   filter(sum(caterpillars, na.rm = T) > 50) %>%
   gather(key = 'life_stage', value = "nObs", moths, caterpillars) 
 
-## Plot foliage arthropod corrections - raw obs, obs/observer-days per week in 2018
+## Plot foliage arthropod corrections - raw obs, obs/observer-days per week
 
 obs_effort <- read.csv("data/inaturalist_observer_days_by_latlon.csv")
 mean_obs_effort <- read.csv("data/inat_observer_days_rolling_means.csv")
