@@ -53,7 +53,7 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
                          month=lubridate::month(LocalDate),
                          day=lubridate::day(LocalDate))%>%
           right_join(iNatphotos,by="arthID")
-          dupset$url<-paste("https://www.inaturalist.org/observations?field:Site%20Name=", dupset$Name, "&field:Plant%20Code=", dupset$code, "&day=",dupset$day, "&month=", dupset$month,"&year=",dupset$year,sep = "")
+          dupset$url<-paste("https://www.inaturalist.org/observations?field:Site%20Name=", dupset$Name, "&field:Plant%20Code=", dupset$Code, "&day=",dupset$day, "&month=", dupset$month,"&year=",dupset$year,sep = "")
           
           write.csv(dupset,'dupset.csv')
 
