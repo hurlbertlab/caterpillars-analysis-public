@@ -18,13 +18,13 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
   .data
 }
   
-  sites = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-16_Site.csv', list.files('data')[grep('2019-06-12_Site.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+  sites = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-28_Site.csv', list.files('data')[grep('2019-06-12_Site.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
   
-  surveys = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-16_Survey.csv', list.files('data')[grep('2019-06-12_Survey.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+  surveys = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-28_Survey.csv', list.files('data')[grep('2019-06-12_Survey.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
   
-  arths = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-16_ArthropodSighting.csv', list.files('data')[grep('2019-06-12_ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+  arths = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-28_ArthropodSighting.csv', list.files('data')[grep('2019-06-12_ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
   
-  plants = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-16_Plant.csv', list.files('data')[grep('2019-06-12_Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+  plants = read.csv(paste('C:/git/caterpillars-analysis-public/data/2019-08-28_Plant.csv', list.files('data')[grep('2019-06-12_Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
   
   surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
   surveys$Year = format(surveys$LocalDate, "%Y")
@@ -36,21 +36,31 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
     left_join(plants, by = c('PlantFK' = 'ID')) %>%
     left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region')], by = c('SiteFK' = 'ID')) %>% 
     mutate_cond(is.na(Quantity), Quantity = 0, Group)%>%
-    rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
+    dplyr::rename(arthID=ID.y)
   
   
  
   iNatphotos<-read.csv(paste('C:/git/caterpillars-analysis-public/data/iNat Duplicate log.csv',list.files('data')[grep('iNat Duplicate log.csv',list.files('data'))],sep=''),header=TRUE,stringsAsFactors=FALSE)
            
    ArthID<-substr(iNatphotos$Address, 53, nchar(iNatphotos$Address)-5)
-   iNatphotos$ArthID<-ArthID
+   iNatphotos$arthID<-as.numeric(ArthID)
+
+
            
    dupset<-fullDataset%>%
-          select(ID.y,Group,PhotoURL,LocalDate,SiteFK,Latitude,Longitude,Name)%>%
+          select(arthID,PhotoURL,LocalDate,SiteFK,Name,Code)%>%
                   mutate(year=lubridate::year(LocalDate),
                          month=lubridate::month(LocalDate),
-                         day=lubridate::day(LocalDate))
-           
+                         day=lubridate::day(LocalDate))%>%
+          right_join(iNatphotos,by="arthID")
+          dupset$url<-paste("https://www.inaturalist.org/observations?field:Site%20Name=", dupset$Name, "&field:Plant%20Code=", dupset$code, "&day=",dupset$day, "&month=", dupset$month,"&year=",dupset$year,sep = "")
+          
+          write.csv(dupset,'dupset.csv')
+
+   
+   
+   
+   
   jdBeg = 50
   jdEnd = 211 
 
