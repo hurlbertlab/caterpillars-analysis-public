@@ -57,6 +57,18 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
       summarize(n = median(n)) %>% 
       pull(n),
     
+    medianNumBranchesSurveyedPerSite = dataset %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(Code)) %>%
+      summarize(n = median(totSurvs)) %>%
+      pull(n),
+    
+    medianNumBranchesSurveyedPerSiteThisYear = datasetThisYear %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(Code)) %>%
+      summarize(n = median(totSurvs)) %>%
+      pull(n),
+    
     medianNumSurveysPerSite = dataset %>%
       group_by(SiteFK) %>%
       summarize(totSurvs = n_distinct(ID)) %>%
