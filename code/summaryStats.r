@@ -19,6 +19,14 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
     
     numSurveysThisYear = datasetThisYear %>% nrow(),
     
+    numVisualSurveysTotal = filter(dataset, ObservationMethod == "Visual") %>% nrow(),
+    
+    numVisualSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Visual") %>% nrow(),
+    
+    numBeatSurveysTotal = filter(dataset, ObservationMethod == "Beat sheet") %>% nrow(),
+    
+    numBeatSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Beat sheet") %>% nrow(),
+    
     numSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
     numSitesThisYear = datasetThisYear %>% summarize(n = length(sitesThisYear)) %>% pull(n),
