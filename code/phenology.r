@@ -36,7 +36,27 @@ siteList = function(fullDataset, year, minNumRecords = 40, minNumDates = 4, writ
   return(out)
 }
 
+# If a sitename string is too long, find the best space position for breaking into
+# two separate lines. If it is not too long return NA.
+breakPosition = function(string, maxCharsPerLine = 25) {
+  
+  if (nchar(string) <= maxCharsPerLine) {
+    lineBreak = NA
+  } else {
+    breaks = gregexpr(" ", string)
+    lineBreak = min(breaks[[1]][breaks[[1]] >= nchar(string)/2])
+  }
+  return(lineBreak)
+}
 
+siteNameForPlotting = function(sitename, maxCharsPerLine = 25) {
+  breakPos = breakPosition(sitename, maxCharsPerLine)
+  
+  newname = ifelse(is.na(breakPos), sitename, 
+                   paste(substr(sitename, 1, breakPos - 1), "\n", 
+                         substr(sitename, breakPos + 1, nchar(sitename)), sep = ""))
+  return(newname)
+}
 
 
 multiSitePhenoPlot = function(fullDataset, 
@@ -52,12 +72,24 @@ multiSitePhenoPlot = function(fullDataset,
                               panelRows = 4,
                               panelCols = 6,
                               colRGB = c(0, 115/255, 11/255), #vector of R, G, and B color values
+                              cex.main = .9,
+                              cex.lab = 1,
+                              cex.axis = 1.3,
+                              cex.text = .9,
                               ...) {
 
   if (write) {
     pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
   }
-  par(mfrow = c(panelRows, panelCols), mar = c(2, 2, 2, 1), oma = c(5, 5, 0, 0))
+  
+  # Concatenate region name to the end of site name (if it's not already there)
+  siteList$siteNameRegion = apply(siteList, 1, function(x) 
+    ifelse(substr(x[1], nchar(x[1])-3, nchar(x[1])) == paste(", ", x[2], sep = ""),
+           x[1], paste(x[1], ", ", x[2], sep = "")))
+  
+  
+  
+  par(mfrow = c(panelRows, panelCols), mar = c(3, 2, 3, 1), oma = c(5, 5, 0, 0))
   
   counter = 0
   
@@ -67,12 +99,7 @@ multiSitePhenoPlot = function(fullDataset,
     sitedata = fullDataset %>%
       filter(Name == site, Year == year)
     
-    if (nchar(site) > 26) {
-      siteLabel = paste(substr(site, 1, 21), "\n", substr(site, 22, nchar(site)), 
-                        ", ", siteList$Region[siteList$Name == site], sep = "")
-    } else {
-      siteLabel = paste(site, ", ", siteList$Region[siteList$Name == site], sep = "")
-    }
+    siteLabel = siteNameForPlotting(siteList$siteNameRegion[siteList$Name == site], maxCharsPerLine = 23)
     
     
     # x-axis labels
@@ -103,26 +130,19 @@ multiSitePhenoPlot = function(fullDataset,
     caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
                                             ylab = 'Percent of surveys', lwd = 3, 
-                                            xaxt = 'n', xaxs = 'i', cex.lab = 1.5, cex.axis = 1.3,
+                                            xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
-                                            main = siteLabel, cex.main = .9, 
+                                            main = siteLabel, cex.main = cex.main,
                                             col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
     
-    legend("topright", legend = paste(round(siteList$Latitude[siteList$Name == site], 1), "°N", sep = ""), 
-           bty = 'n')
-    legend("topleft", legend = paste(siteList$nSurvs[siteList$Name == site], "surveys"), 
-           bty = 'n', text.col = 'blue', cex = .9)
-    #axis(1, at = jds[minPos:maxPos], labels = F, tck = -.03)
-    #axis(1, at = jds[minPos:maxPos] + 14, labels = F, tck = -.02)
+    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteList$nSurvs[siteList$Name == site], "surveys"),
+         col = 'blue', cex = cex.text, adj = 0)
+    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteList$Latitude[siteList$Name == site], 1), "°N", sep = ""),
+         col = 'red', cex = cex.text, adj = 1)
     
     abline(v = jds, col = 'gray50')
-    mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = .7, line = .25)
-    
-    #monthLabs = minPos:(maxPos-1)
-    #rect(jds[monthLabs[monthLabs%%2 == 0]], rep(-10, length(monthLabs[monthLabs%%2 == 0])), 
-    #     jds[monthLabs[monthLabs%%2 == 0] + 1]-1, rep(110, length(monthLabs[monthLabs%%2 == 0])), 
-    #     col = rgb(.1, .1, .1, .1), border = NA)
+    mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
     
     if (REVI) {
       bird = siteList %>%
