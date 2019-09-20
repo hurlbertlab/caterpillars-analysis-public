@@ -51,6 +51,7 @@ multiSitePhenoPlot = function(fullDataset,
                               filename,
                               panelRows = 4,
                               panelCols = 6,
+                              colRGB = c(0, 115/255, 11/255), #vector of R, G, and B color values
                               ...) {
 
   if (write) {
@@ -92,7 +93,7 @@ multiSitePhenoPlot = function(fullDataset,
       minPos = monthRange[1]
       maxPos = monthRange[2]+1
     }
-    
+    monthLabs = minPos:(maxPos-1)
     
     # Caterpillar phenology
     caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
@@ -101,11 +102,12 @@ multiSitePhenoPlot = function(fullDataset,
     
     caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
-                                            ylab = 'Percent of surveys', col = 'red', lwd = 3, 
+                                            ylab = 'Percent of surveys', lwd = 3, 
                                             xaxt = 'n', xaxs = 'i', cex.lab = 1.5, cex.axis = 1.3,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
-                                            main = siteLabel, cex.main = .9, ...)
+                                            main = siteLabel, cex.main = .9, 
+                                            col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
     
     legend("topright", legend = paste(round(siteList$Latitude[siteList$Name == site], 1), "°N", sep = ""), 
            bty = 'n')
@@ -130,7 +132,7 @@ multiSitePhenoPlot = function(fullDataset,
              arrival = round((preArrival + peakArrival)/2),
              hatching = arrival + 35,
              fledging = hatching + 11)
-      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(1, 0, 0, .1), border = NA)
+      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB[1], colRGB[2], colRGB[3], .1), border = NA)
     }
     
     if (counter %% panelRows*panelCols == 0 | counter == length(siteList$Name)) {
