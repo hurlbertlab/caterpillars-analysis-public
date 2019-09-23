@@ -71,7 +71,7 @@ multiSitePhenoPlot = function(fullDataset,
                               filename,
                               panelRows = 4,
                               panelCols = 6,
-                              colRGB = c(0, 115/255, 11/255), #vector of R, G, and B color values
+                              colRGB = c(0, .5, 0), #vector of R, G, and B color values
                               cex.main = .9,
                               cex.lab = 1,
                               cex.axis = 1.3,
