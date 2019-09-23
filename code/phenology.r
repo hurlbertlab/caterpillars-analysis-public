@@ -72,10 +72,10 @@ multiSitePhenoPlot = function(fullDataset,
                               panelRows = 4,
                               panelCols = 6,
                               colRGB = c(0, .5, 0), #vector of R, G, and B color values
-                              cex.main = .9,
+                              cex.main = 1.5,
                               cex.lab = 1,
-                              cex.axis = 1.3,
-                              cex.text = .9,
+                              cex.axis = 1,
+                              cex.text = 1.5,
                               ...) {
 
   if (write) {
@@ -100,6 +100,9 @@ multiSitePhenoPlot = function(fullDataset,
       filter(Name == site, Year == year)
     
     siteLabel = siteNameForPlotting(siteList$siteNameRegion[siteList$Name == site], maxCharsPerLine = 23)
+    
+    # goofy temporary correction for long name
+    siteLabel[siteLabel == "Litzsinger Road Ecology Center\nWoodland Site A, MO"] = "Litzsinger Road Ecology\nCenter Site A, MO"
     
     
     # x-axis labels
@@ -155,11 +158,14 @@ multiSitePhenoPlot = function(fullDataset,
       rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB[1], colRGB[2], colRGB[3], .1), border = NA)
     }
     
-    if (counter %% panelRows*panelCols == 0 | counter == length(siteList$Name)) {
-      mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-      mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
-    }  
+    #if (counter %% panelRows*panelCols == 0 | counter == nrow(siteList)) {
+    #  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+    #  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+    #}  
   } #end site
+
+  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
 
   if (write) {
     dev.off()

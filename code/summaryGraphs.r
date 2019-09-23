@@ -33,6 +33,8 @@ sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t
 
 sites19_select12 = filter(sites19, Name %in% c('Sault College', 'Acadia NP - Alder', 'RVCC', 'Stage Nature Center', "Mass Audubon's Boston Nature Center",
                                             "Museum of American Bird Art", "Oregon Ridge Nature Center", "Walker Nature Center", 
-                                            "Site A", "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
+                                            "Litzsinger Road Ecology Center Woodland Site A", "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
 
-multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REVI = TRUE, filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4)
+multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REVI = TRUE, 
+                   filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3)
