@@ -21,7 +21,7 @@ arths = read.csv(paste('data/', list.files('data')[grep('ArthropodSighting.csv',
 plants = read.csv(paste('data/', list.files('data')[grep('Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
 surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
-surveys$Year = format(surveys$LocalDate, "%Y")
+surveys$Year = as.numeric(format(surveys$LocalDate, "%Y"))
 surveys$julianday = yday(surveys$LocalDate)
 
 arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
