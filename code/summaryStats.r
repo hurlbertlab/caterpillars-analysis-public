@@ -15,21 +15,21 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   sitesThisYear = unique(datasetThisYear$SiteFK)
   
   stats = list(
-    numSurveysTotal = nrow(dataset),
+    numSurveysTotal = dataset %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numSurveysThisYear = datasetThisYear %>% nrow(),
+    numSurveysThisYear = datasetThisYear %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numVisualSurveysTotal = filter(dataset, ObservationMethod == "Visual") %>% nrow(),
+    numVisualSurveysTotal = filter(dataset, ObservationMethod == "Visual") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numVisualSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Visual") %>% nrow(),
+    numVisualSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Visual") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numBeatSurveysTotal = filter(dataset, ObservationMethod == "Beat sheet") %>% nrow(),
+    numBeatSurveysTotal = filter(dataset, ObservationMethod == "Beat sheet") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numBeatSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Beat sheet") %>% nrow(),
+    numBeatSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Beat sheet") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
     numSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
-    numSitesThisYear = datasetThisYear %>% summarize(n = length(sitesThisYear)) %>% pull(n),
+    numSitesThisYear = datasetThisYear %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
     numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)) %>% pull(n), 
     
