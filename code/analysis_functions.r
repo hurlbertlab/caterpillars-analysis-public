@@ -192,3 +192,39 @@ latlong2county <- function(pointsDF) {
   countyNames <- sapply(counties_sp@polygons, function(x) x@ID)
   countyNames[indices]
 }
+
+
+
+# Function for calculating summary stats about survey effort at individual sites
+siteSummary = function(fullDataset, 
+                       year = format(Sys.Date(), "%Y"), 
+                       surveyThreshold = 0.8,            # proprortion of surveys conducted to be considered a good sampling day
+                       minJulianWeek = 102,              # beginning of seasonal window for tabulating # of good weeks
+                       maxJulianWeek = 214)              # end of seasonal window for tabulating # of good weeks
+  {
+  
+  summary = filter(fullDataset, Year == year) %>%
+    mutate(julianweek = 7*floor(julianday/7) + 4) %>%
+    group_by(Name, julianweek) %>%
+    summarize(nSurveysPerWeek = n_distinct(ID),
+              ) %>%
+    group_by(Name) %>%
+    summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
+              surveysPerWeek = round(median(nSurveysPerWeek, na.rm = T), 1),
+              nWeeks = n_distinct(julianweek),
+              nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*surveysPerWeek]),
+              medianEffortDeviation = median(abs(nSurveysPerWeek - surveysPerWeek)),
+              firstDate = min(julianweek),
+              lastDate = max(julianweek),
+              firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*surveysPerWeek]),
+              lastGoodDate = max(julianweek[nSurveysPerWeek > surveyThreshold*surveysPerWeek]))
+  
+  return(summary)
+}
+
+highEffortSites = filter(ss, 
+                         nSurveys >= 80,
+                         nGoodWeeks >= 5,
+                         firstGoodDate <=150,
+                         lastGoodDate >= 180,
+                         medianEffortDeviation <= 10)
