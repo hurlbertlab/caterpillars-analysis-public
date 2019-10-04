@@ -1,5 +1,6 @@
 # Functions for working with and analyzing Caterpillars Count! data
 
+###################################
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition
 mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
@@ -24,7 +25,7 @@ Mode = function(x){
 
 
 
-
+####################################
 # Function for calculating and displaying arthropod phenology by week
 meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthropodSighting tables for a single site
                             ordersToInclude = 'All',       # which arthropod orders to calculate density for (codes)
@@ -101,7 +102,7 @@ meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthro
 
 
 
-
+####################################
 # Function for calculating and displaying arthropod phenology by day,
 # or if surveys were split up over multiple days, then lumped by survey set
 meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthropodSighting tables for a single site
@@ -178,12 +179,8 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
 
 
 
-
-### Get county name from lat-longs
-library(sp)
-library(maps)
-library(maptools)
-
+#########################################
+# Get county name from lat-longs
 # From https://stackoverflow.com/questions/13316185/r-convert-zipcode-or-lat-long-to-county
 # Note: had to remove proj4string references
 
@@ -194,6 +191,10 @@ library(maptools)
 latlong2county <- function(pointsDF) {
   # Prepare SpatialPolygons object with one SpatialPolygon
   # per county
+  require(sp)
+  require(maps)
+  require(maptools)
+  
   counties <- map('county', fill=TRUE, col="transparent", plot=FALSE)
   IDs <- sapply(strsplit(counties$names, ":"), function(x) x[1])
   counties_sp <- map2SpatialPolygons(counties, IDs=IDs)
@@ -210,7 +211,7 @@ latlong2county <- function(pointsDF) {
 }
 
 
-
+############################################
 # Function for calculating summary stats about survey effort at individual sites
 siteSummary = function(fullDataset, 
                        year = format(Sys.Date(), "%Y"), 
@@ -239,8 +240,37 @@ siteSummary = function(fullDataset,
 }
 
 
+########################################
+# Criteria for inclusion (records refers to survey events)
+siteList = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
+  out = fullDataset %>%
+    filter(Year == year) %>%
+    group_by(Name, Region, Latitude, Longitude) %>%
+    summarize(nSurvs = n_distinct(ID),
+              nWeeks = n_distinct(julianweek),
+              nCat = sum(Group == 'caterpillar', na.rm = TRUE),
+              pctCat = round(nCat/nSurvs, 3),
+              nArth = sum(Quantity, na.rm = TRUE),
+              nLgArth = sum(Quantity[Length >= 10], na.rm = TRUE),
+              nArthsPerSurvey = nArth/nSurvs,
+              nLgArthsPerSurvey = nLgArth/nSurvs,
+              pctSurvsLgArths = round(sum(Length >= 10, na.rm = TRUE)/nSurvs, 3),
+              nPhoto = sum(Photo, na.rm = TRUE),
+              pctPhoto = round(nPhoto/nArth, 3)) %>%
+    arrange(desc(Latitude)) %>%
+    filter(nSurvs >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site") %>%
+    mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
+  
+  if (write) {
+    write.table(out, paste('data/sitelist', year, '.txt', sep = ''), sep = '\t', row.names = F)
+  }
+  return(out)
+}
 
 
+
+
+#########################################
 # Create a site x julianweek matrix filled with number of surveys in that site-week
 siteSurveysPerWeek = function(fullDataset, 
                        year = format(Sys.Date(), "%Y"))
@@ -258,7 +288,7 @@ siteSurveysPerWeek = function(fullDataset,
 
 
 
-
+##########################################
 # Plot weekly phenology for an aggregation of sites compared to the weekly
 # phenology of each individual site
 aggregateComponentPlot = function(dataset, ...) {
@@ -275,6 +305,224 @@ aggregateComponentPlot = function(dataset, ...) {
                       plot = TRUE, new = FALSE, col = colors[i], allDates = FALSE, ...)
   }
   legend("topleft", legend = sites, lwd = 2, col = colors, bty = 'n')
+  
+}
+
+
+######################################
+# If a sitename string is too long, find the best space position for breaking into
+# two separate lines. If it is not too long return NA.
+
+breakPosition = function(string, maxCharsPerLine = 25) {
+  
+  if (nchar(string) <= maxCharsPerLine) {
+    lineBreak = NA
+  } else {
+    breaks = gregexpr(" ", string)
+    lineBreak = min(breaks[[1]][breaks[[1]] >= nchar(string)/2])
+  }
+  return(lineBreak)
+}
+
+
+
+###########################################
+# Split up long site names across two lines by introducing \n in the middle at a space break
+
+siteNameForPlotting = function(sitename, maxCharsPerLine = 25) {
+  breakPos = breakPosition(sitename, maxCharsPerLine)
+  
+  newname = ifelse(is.na(breakPos), sitename, 
+                   paste(substr(sitename, 1, breakPos - 1), "\n", 
+                         substr(sitename, breakPos + 1, nchar(sitename)), sep = ""))
+  return(newname)
+}
+
+
+
+###########################################
+# Create multi-panel phenology plot for a set of sites
+
+multiSitePhenoPlot = function(fullDataset, 
+                              year, 
+                              siteList, 
+                              write = TRUE, 
+                              monthRange = NULL, # 2-value vector with beginning and ending months for plotting;
+                              # e.g., start of May - end of August would be c(5,8).
+                              # If NULL, xlim will vary by site based on when surveys were conducted
+                              REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
+                              # (requires manual addition of REVI columns to siteList)
+                              filename,
+                              panelRows = 4,
+                              panelCols = 6,
+                              colRGB = c(0, .5, 0), #vector of R, G, and B color values
+                              cex.main = 1.5,
+                              cex.lab = 1,
+                              cex.axis = 1,
+                              cex.text = 1.5,
+                              ...) {
+  
+  if (write) {
+    pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
+  }
+  
+  # Concatenate region name to the end of site name (if it's not already there)
+  siteList$siteNameRegion = apply(siteList, 1, function(x) 
+    ifelse(substr(x[1], nchar(x[1])-3, nchar(x[1])) == paste(", ", x[2], sep = ""),
+           x[1], paste(x[1], ", ", x[2], sep = "")))
+  
+  
+  
+  par(mfrow = c(panelRows, panelCols), mar = c(3, 2, 3, 1), oma = c(5, 5, 0, 0))
+  
+  counter = 0
+  
+  for (site in siteList$Name) {
+    
+    counter = counter + 1
+    sitedata = fullDataset %>%
+      filter(Name == site, Year == year)
+    
+    siteLabel = siteNameForPlotting(siteList$siteNameRegion[siteList$Name == site], maxCharsPerLine = 23)
+    
+    # goofy temporary correction for long name
+    siteLabel[siteLabel == "Litzsinger Road Ecology Center\nWoodland Site A, MO"] = "Litzsinger Road Ecology\nCenter Site A, MO"
+    
+    
+    # x-axis labels
+    jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+    dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    
+    # x-axis range
+    if (is.null(monthRange)) {
+      # make sure xlim endpoints coincide with month labels
+      if(length(unique(sitedata$julianday)) == 1) {
+        minPos = which(jds == max(jds[jds <= min(sitedata$julianday)]))
+        maxPos = which(jds == min(jds[jds >= max(sitedata$julianday)]))
+      } else {
+        minPos = max(which(jds == min(jds[jds >= min(sitedata$julianday)])) - 1, 1)    
+        maxPos = min(which(jds == max(jds[jds <= max(sitedata$julianday)])) + 1, 12)
+      }
+    } else {
+      minPos = monthRange[1]
+      maxPos = monthRange[2]+1
+    }
+    monthLabs = minPos:(maxPos-1)
+    
+    # Caterpillar phenology
+    caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
+                                            plot = FALSE, plotVar = 'fracSurveys', allDates = FALSE, ...)
+    
+    
+    caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
+                                            plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
+                                            ylab = 'Percent of surveys', lwd = 3, 
+                                            xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
+                                            xlim = c(jds[minPos], jds[maxPos]),
+                                            ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
+                                            main = siteLabel, cex.main = cex.main,
+                                            col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
+    
+    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteList$nSurvs[siteList$Name == site], "surveys"),
+         col = 'blue', cex = cex.text, adj = 0)
+    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteList$Latitude[siteList$Name == site], 1), "°N", sep = ""),
+         col = 'red', cex = cex.text, adj = 1)
+    
+    abline(v = jds, col = 'gray50')
+    mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
+    
+    if (REVI) {
+      bird = siteList %>%
+        filter(Name == site) %>%
+        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
+               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
+               arrival = round((preArrival + peakArrival)/2),
+               hatching = arrival + 35,
+               fledging = hatching + 11)
+      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB[1], colRGB[2], colRGB[3], .1), border = NA)
+    }
+    
+    #if (counter %% panelRows*panelCols == 0 | counter == nrow(siteList)) {
+    #  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+    #  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+    #}  
+  } #end site
+  
+  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+  
+  if (write) {
+    dev.off()
+  }
+}  
+
+
+
+
+
+
+############################################################
+# Interpolate phenology values on a daily basis for the purpose
+# of color coding line segements over time
+
+interpolatePhenoByDay = function(phenodata, var = 'fracSurveys') {
+  # phenodata is object created by meanDensityByDay()
+  # var can be either 'fracSurveys' or 'meanDensity'
+  
+  days = data.frame(julianday = min(phenodata$julianday):max(phenodata$julianday))
+  
+  phenodat = phenodata[, c('julianday', var)]
+  names(phenodat)[2] = 'x'
+  
+  pheno = days %>% 
+    left_join(phenodat, by = 'julianday')
+  
+  # Find interior NAs
+  intNAs = which(sapply(1:nrow(pheno), function(row) is.na(pheno$x[row]) &
+                          sum(pheno$x[1:(row-1)], na.rm = TRUE) >= 0 &
+                          sum(pheno$x[(row+1):nrow(pheno)], na.rm = TRUE) >= 0))
+  
+  if (length(intNAs) > 0) {
+    for (i in intNAs) {
+      preValPos = max(which(!is.na(pheno$x[1:(i-1)])))
+      postValPos = min(which(!is.na(pheno$x[(i+1):nrow(pheno)]))) + i
+      
+      slope = (pheno$x[postValPos] - pheno$x[preValPos])/(pheno$julianday[postValPos] - pheno$julianday[preValPos])
+      
+      pheno$x[i] = pheno$x[preValPos] + slope*(pheno$julianday[i] - pheno$julianday[preValPos])
+    }
+  }
+  return(pheno)
+}
+
+
+
+
+# Take an interpolated pheno object as returned by interpolatePheno()
+# and plot phenocurve with line rainbow-colored by date
+rainbowPhenoPlot = function(phenodata, minJD = 95, maxJD = 221, ...) {
+  
+  colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
+             '#EFF121', '#F5952D', '#E93131', '#D70131')
+  col.ramp = colorRampPalette(colors)
+  cols = data.frame(julianday = minJD:maxJD, 
+                    col = col.ramp(length(minJD:maxJD)))
+  
+  phenocol = cols %>%
+    left_join(phenodata, by = 'julianday')
+  phenocol$col = as.character(phenocol$col)
+  
+  x = phenocol$julianday
+  y = phenocol$x
+  
+  par(bg = NA)
+  plot(x, y, xaxt = "n", yaxt = "n", xlab = "", ylab = "", type = 'n', bty = 'n')
+  
+  # Plot the colored line segments  
+  sapply(1:(nrow(phenocol) - 1), function(jd) 
+    segments(x0 = x[jd], y0 = y[jd], x1 = x[jd + 1], y1 = y[jd + 1], col = phenocol$col[jd], ...))
+  
+  # Plot month bar along the bottom
   
 }
 
