@@ -38,6 +38,7 @@ meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthro
                             allDates = TRUE,
                             new = TRUE,
                             color = 'black',
+                            allCats = TRUE,
                             ...)                  
   
 {
@@ -65,7 +66,14 @@ meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthro
     effortByWeek$okWeek = 1
   }
   
-  arthCount = firstFilter %>%
+  if (!allCats) {
+    secondFilter = firstFilter %>%
+      filter(Hairy != 1, Tented != 1, Rolled != 1)
+  } else {
+    secondFilter = firstFilter
+  }
+  
+  arthCount = secondFilter %>%
     filter(Length >= minLength, 
            Group %in% ordersToInclude) %>%
     mutate(Quantity2 = ifelse(Quantity > outlierCount, 1, Quantity)) %>% #outlier counts replaced with 1
@@ -108,6 +116,7 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
                              allDates = TRUE,         # plot data for all dates for which any survey data exist; if FALSE, only dates where # surveys==# unique branches +/- 20%
                              new = TRUE,
                              color = 'black',
+                             allCats = TRUE,
                              ...)                  
 
 {
@@ -133,8 +142,15 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
   if (allDates) {
     effortByDay$okDay = 1
   }
+
+  if (!allCats) {
+    secondFilter = firstFilter %>%
+      filter(Hairy != 1, Tented != 1, Rolled != 1)
+  } else {
+    secondFilter = firstFilter
+  }
   
-  arthCount = firstFilter %>%
+  arthCount = secondFilter %>%
     filter(Length >= minLength, 
            Group %in% ordersToInclude) %>%
     mutate(Quantity2 = ifelse(Quantity > outlierCount, 1, Quantity)) %>% #outlier counts replaced with 1
@@ -222,9 +238,43 @@ siteSummary = function(fullDataset,
   return(summary)
 }
 
-highEffortSites = filter(ss, 
-                         nSurveys >= 80,
-                         nGoodWeeks >= 5,
-                         firstGoodDate <=150,
-                         lastGoodDate >= 180,
-                         medianEffortDeviation <= 10)
+
+
+
+# Create a site x julianweek matrix filled with number of surveys in that site-week
+siteSurveysPerWeek = function(fullDataset, 
+                       year = format(Sys.Date(), "%Y"))
+{
+  
+  weekMatrix = filter(fullDataset, Year == year, Name != "Example Site") %>%
+    mutate(julianweek = 7*floor(julianday/7) + 4) %>%
+    distinct(Name, julianweek, ID) %>%
+    count(Name, julianweek) %>%
+    spread(key = julianweek, value = n)
+    
+  weekMatrix[is.na(weekMatrix)] = 0
+  return(weekMatrix)
+}
+
+
+
+
+# Plot weekly phenology for an aggregation of sites compared to the weekly
+# phenology of each individual site
+aggregateComponentPlot = function(dataset, ...) {
+  
+  meanDensityByWeek(dataset, ordersToInclude='caterpillar', plot = TRUE, new = TRUE, allDates = FALSE,
+                    lwd = 4, xlab = "Julian day", ylab = "% of surveys", ...)
+  
+  sites = unique(dataset$Name)
+  colors = rainbow(length(sites))
+  i = 0
+  for (s in sites) {
+    i = i+1
+    meanDensityByWeek(dataset[dataset$Name == s, ], ordersToInclude = 'caterpillar', 
+                      plot = TRUE, new = FALSE, col = colors[i], allDates = FALSE, ...)
+  }
+  legend("topleft", legend = sites, lwd = 2, col = colors, bty = 'n')
+  
+}
+
