@@ -23,6 +23,7 @@ plants = read.csv(paste('data/', list.files('data')[grep('Plant.csv', list.files
 surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
 surveys$Year = as.numeric(format(surveys$LocalDate, "%Y"))
 surveys$julianday = yday(surveys$LocalDate)
+surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
 arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 
