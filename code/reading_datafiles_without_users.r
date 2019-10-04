@@ -28,7 +28,7 @@ surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 
 fullDataset = surveys %>%
-  dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
+  dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
