@@ -1,6 +1,7 @@
 # Reading in Caterpillars Count! database files
 library(dplyr)
 library(lubridate)
+library(raster)
 
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition
@@ -27,11 +28,17 @@ surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
 arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 
+# Median green up date for 2001-2017 based on MODIS MCD12Q2 v006
+# downloaded from USANPN.org gridded products
+greenup = raster("data/env/inca_midgup_median_nad83_02deg.tif")
+
+sites$medianGreenup = round(extract(greenup, sites[, c('Longitude', 'Latitude')]))
+
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
-  left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region')], by = c('SiteFK' = 'ID')) %>% 
+  left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region', 'medianGreenup')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
