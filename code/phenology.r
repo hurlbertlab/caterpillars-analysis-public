@@ -10,10 +10,6 @@ source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
 
 
-
-
-
-
 #########################
 # Map and rainbow phenocurves
 
@@ -40,53 +36,6 @@ for (s in siteList$Name) {
   mtext(s, 3, cex = 3)
   dev.off()
 }
-
-rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
-  colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
-             '#EFF121', '#F5952D', '#E93131', '#D70131')
-  col.ramp = colorRampPalette(colors)
-  cols = data.frame(julianday = minJD:maxJD, 
-                    col = col.ramp(length(minJD:maxJD)))
-
-  # labels
-  monthLabels = data.frame(jd = c(1, 15, 32, 46, 60, 74, 91, 105, 121, 135, 152, 166, 
-                                  182, 196, 213, 227, 244, 258, 274, 288, 305, 319, 335, 349),
-                           
-                           date = c("Jan 1", "Jan 15", "Feb 1", "Feb 15", "Mar 1", 
-                                    "Mar 15", "Apr 1", "Apr 15", "May 1", "May 15", 
-                                    "Jun 1", "Jun 15", "Jul 1", "Jul 15", "Aug 1", 
-                                    "Aug 15", "Sep 1", "Sep 15", "Oct 1", "Oct 15", 
-                                    "Nov 1", "Nov 15", "Dec 1", "Dec 15"))
-  
-  bar = left_join(cols, monthLabels, by = c('julianday' = 'jd'))
-  bar$col = as.character(bar$col)
-  
-  barlabs = bar[!is.na(bar$date), ]
-  
-  if (plot) {
-    png('figs/rainbow_scale.png', height = 600, width = 150, bg = NA)
-    par(mar = c(0,0,0,0))
-    plot(rep(1, nrow(bar)), -bar$julianday, pch = 15, cex = 4, col = bar$col,
-         xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', xlim = c(.9, 3.5))
-    text(rep(1.4, nrow(barlabs)), -barlabs$julianday, barlabs$date, adj = 0, cex = 3)
-    dev.off()
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

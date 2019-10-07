@@ -213,7 +213,7 @@ latlong2county <- function(pointsDF) {
 
 ############################################
 # Function for calculating summary stats about survey effort at individual sites
-siteSummary = function(fullDataset, 
+siteEffortSummary = function(fullDataset, 
                        year = format(Sys.Date(), "%Y"), 
                        surveyThreshold = 0.8,            # proprortion of surveys conducted to be considered a good sampling day
                        minJulianWeek = 102,              # beginning of seasonal window for tabulating # of good weeks
@@ -222,19 +222,20 @@ siteSummary = function(fullDataset,
   
   summary = filter(fullDataset, Year == year) %>%
     mutate(julianweek = 7*floor(julianday/7) + 4) %>%
-    group_by(Name, julianweek) %>%
-    summarize(nSurveysPerWeek = n_distinct(ID),
-              ) %>%
-    group_by(Name) %>%
+    group_by(Name, julianweek, medianGreenup) %>%
+    summarize(nSurveysPerWeek = n_distinct(ID)) %>%
+    group_by(Name, medianGreenup) %>%
     summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
-              surveysPerWeek = round(median(nSurveysPerWeek, na.rm = T), 1),
+              medianSurveysPerWeek = round(median(nSurveysPerWeek, na.rm = T), 1),
               nWeeks = n_distinct(julianweek),
-              nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*surveysPerWeek]),
-              medianEffortDeviation = median(abs(nSurveysPerWeek - surveysPerWeek)),
+              nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
+              medianEffortDeviation = median(abs(nSurveysPerWeek - medianSurveysPerWeek)),
               firstDate = min(julianweek),
               lastDate = max(julianweek),
-              firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*surveysPerWeek]),
-              lastGoodDate = max(julianweek[nSurveysPerWeek > surveyThreshold*surveysPerWeek]))
+              firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
+              lastGoodDate = max(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
+              firstGDateAfterGreenup = firstGoodDate - medianGreenup[1],
+              lastGDateAfterGreenup = lastGoodDate - medianGreenup[1])
   
   return(summary)
 }
@@ -242,27 +243,28 @@ siteSummary = function(fullDataset,
 
 ########################################
 # Criteria for inclusion (records refers to survey events)
-siteList = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
+siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
   out = fullDataset %>%
     filter(Year == year) %>%
     group_by(Name, Region, Latitude, Longitude) %>%
     summarize(nSurvs = n_distinct(ID),
+              nDates = n_distinct(LocalDate),
               nWeeks = n_distinct(julianweek),
               nCat = sum(Group == 'caterpillar', na.rm = TRUE),
-              pctCat = round(nCat/nSurvs, 3),
+              pctCat = round(sum(Quantity[Group == 'caterpillar'] > 0)/nSurvs, 3),
               nArth = sum(Quantity, na.rm = TRUE),
               nLgArth = sum(Quantity[Length >= 10], na.rm = TRUE),
               nArthsPerSurvey = nArth/nSurvs,
               nLgArthsPerSurvey = nLgArth/nSurvs,
               pctSurvsLgArths = round(sum(Length >= 10, na.rm = TRUE)/nSurvs, 3),
               nPhoto = sum(Photo, na.rm = TRUE),
-              pctPhoto = round(nPhoto/nArth, 3)) %>%
+              pctPhoto = round(nPhoto/n_distinct(arthID), 3)) %>%
     arrange(desc(Latitude)) %>%
     filter(nSurvs >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site") %>%
     mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
   
   if (write) {
-    write.table(out, paste('data/sitelist', year, '.txt', sep = ''), sep = '\t', row.names = F)
+    write.table(out, paste('data/siteSummary', year, '.txt', sep = ''), sep = '\t', row.names = F)
   }
   return(out)
 }
@@ -273,15 +275,23 @@ siteList = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, writ
 #########################################
 # Create a site x julianweek matrix filled with number of surveys in that site-week
 siteSurveysPerWeek = function(fullDataset, 
-                       year = format(Sys.Date(), "%Y"))
+                       year = format(Sys.Date(), "%Y"),
+                       relativeToGreenup = FALSE)
 {
   
-  weekMatrix = filter(fullDataset, Year == year, Name != "Example Site") %>%
-    mutate(julianweek = 7*floor(julianday/7) + 4) %>%
-    distinct(Name, julianweek, ID) %>%
-    count(Name, julianweek) %>%
-    spread(key = julianweek, value = n)
-    
+  if (relativeToGreenup) {
+    weekMatrix = filter(fullDataset, Year == year, Name != "Example Site") %>%
+      mutate(julianweekGreenup = 7*floor((julianday - medianGreenup)/7) + 4) %>%
+      distinct(Name, julianweekGreenup, ID) %>%
+      count(Name, julianweekGreenup) %>%
+      spread(key = julianweekGreenup, value = n)
+  } else {
+    weekMatrix = filter(fullDataset, Year == year, Name != "Example Site") %>%
+      distinct(Name, julianweek, ID) %>%
+      count(Name, julianweek) %>%
+      spread(key = julianweek, value = n)
+  }
+
   weekMatrix[is.na(weekMatrix)] = 0
   return(weekMatrix)
 }
@@ -524,5 +534,40 @@ rainbowPhenoPlot = function(phenodata, minJD = 95, maxJD = 221, ...) {
   
   # Plot month bar along the bottom
   
+}
+
+
+#####################################
+# Plotting a rainbow color scale bar
+rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
+  colors = c('#2F2C62', '#42399B', '#4A52A7', '#59AFEA', '#7BCEB8', '#A7DA64',
+             '#EFF121', '#F5952D', '#E93131', '#D70131')
+  col.ramp = colorRampPalette(colors)
+  cols = data.frame(julianday = minJD:maxJD, 
+                    col = col.ramp(length(minJD:maxJD)))
+  
+  # labels
+  monthLabels = data.frame(jd = c(1, 15, 32, 46, 60, 74, 91, 105, 121, 135, 152, 166, 
+                                  182, 196, 213, 227, 244, 258, 274, 288, 305, 319, 335, 349),
+                           
+                           date = c("Jan 1", "Jan 15", "Feb 1", "Feb 15", "Mar 1", 
+                                    "Mar 15", "Apr 1", "Apr 15", "May 1", "May 15", 
+                                    "Jun 1", "Jun 15", "Jul 1", "Jul 15", "Aug 1", 
+                                    "Aug 15", "Sep 1", "Sep 15", "Oct 1", "Oct 15", 
+                                    "Nov 1", "Nov 15", "Dec 1", "Dec 15"))
+  
+  bar = left_join(cols, monthLabels, by = c('julianday' = 'jd'))
+  bar$col = as.character(bar$col)
+  
+  barlabs = bar[!is.na(bar$date), ]
+  
+  if (plot) {
+    png('figs/rainbow_scale.png', height = 600, width = 150, bg = NA)
+    par(mar = c(0,0,0,0))
+    plot(rep(1, nrow(bar)), -bar$julianday, pch = 15, cex = 4, col = bar$col,
+         xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', xlim = c(.9, 3.5))
+    text(rep(1.4, nrow(barlabs)), -barlabs$julianday, barlabs$date, adj = 0, cex = 3)
+    dev.off()
+  }
 }
 

@@ -31,8 +31,11 @@ arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 # Median green up date for 2001-2017 based on MODIS MCD12Q2 v006
 # downloaded from USANPN.org gridded products
 greenup = raster("data/env/inca_midgup_median_nad83_02deg.tif")
-
 sites$medianGreenup = round(extract(greenup, sites[, c('Longitude', 'Latitude')]))
+
+# One of the Acadia NP sites falls just off the raster coverage, assign it same value as its neighbor:
+sites$medianGreenup[sites$Name == "Acadia NP - Alder"] = sites$medianGreenup[sites$Name == "Acadia NP - Sundew"]
+# Note there are still a few sites with no greenup data (esp Canadian sites)
 
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
