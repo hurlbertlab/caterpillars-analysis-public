@@ -47,7 +47,8 @@ mtext(substr(sspwgu$Name, 1, 40), 2, at = 1:nrow(sspwgu), las = 1, line = 1, cex
 # Plotting range of "good dates" relative to median green up date
 ses = siteEffortSummary(fullDataset, 2019)
 ses2 = ses[!is.na(ses$medianGreenup),]
-plot(c(min(ses$firstGDateAfterGreenup, na.rm = T), max(ses$lastGDateAfterGreenup, na.rm = T)), c(1,49), yaxt = "n", xlab = "Days after greenup", ylab = "", type = 'n')
+par(mar = c(4, 15, 1, 1))
+plot(c(min(ses$firstGDateAfterGreenup, na.rm = T), max(ses$lastGDateAfterGreenup, na.rm = T)), c(1,nrow(ses2)), yaxt = "n", xlab = "Days after greenup", ylab = "", type = 'n')
 sapply(1:nrow(ses2), function(x) segments(ses2$firstGDateAfterGreenup[x], x, ses2$lastGDateAfterGreenup[x], x))
 mtext(substr(ses2$Name, 1, 40), 2, at = 1:nrow(ses2), las = 1, line = 1, cex = .8)
 abline(v = c(40, 95), col = 'red')

@@ -33,9 +33,22 @@ arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 greenup = raster("data/env/inca_midgup_median_nad83_02deg.tif")
 sites$medianGreenup = round(extract(greenup, sites[, c('Longitude', 'Latitude')]))
 
+# Manually get median green up for Currituck Banks and Sault College which fall just outside of raster cells
+sites$medianGreenup[sites$Name == "Currituck Banks Reserve"] = 
+  round(mean(unlist(extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Currituck Banks Reserve"], 
+                                                latitude = sites$Latitude[sites$Name == "Currituck Banks Reserve"]),
+                            buffer = 3000)), na.rm = TRUE))
+
+sites$medianGreenup[sites$Name == "Sault College"] = 
+  round(mean(unlist(extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Sault College"], 
+                                                latitude = sites$Latitude[sites$Name == "Sault College"]),
+                            buffer = 7000)), na.rm = TRUE))
+
 # One of the Acadia NP sites falls just off the raster coverage, assign it same value as its neighbor:
 sites$medianGreenup[sites$Name == "Acadia NP - Alder"] = sites$medianGreenup[sites$Name == "Acadia NP - Sundew"]
-# Note there are still a few sites with no greenup data (esp Canadian sites)
+
+# Note there are still a few sites with no greenup data including 
+#   RVCC, Beare Swamp in Rouge Park, and Wye Marsh Wildlife Centre
 
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,

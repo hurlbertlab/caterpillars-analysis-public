@@ -1,5 +1,6 @@
 
 source('code/summaryStats.r')
+source('code/analysis_functions.r')
 # source('code/phenology.r') #need siteList function
 
 
@@ -38,3 +39,12 @@ sites19_select12 = filter(sites19, Name %in% c('Sault College', 'Acadia NP - Ald
 multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REVI = TRUE, 
                    filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3)
+
+ses = siteEffortSummary(fullDataset, 2019)
+ses2 = ses[!is.na(ses$medianGreenup),]
+highEffortSites = filter(ses2, 
+                         nSurveys >= 80,
+                         nGoodWeeks >= 5,
+                         firstGDateAfterGreenup <=50,
+                         lastGDateAfterGreenup >= 90,
+                         medianEffortDeviation <= 10)
