@@ -222,9 +222,9 @@ siteEffortSummary = function(fullDataset,
   
   summary = filter(fullDataset, Year == year) %>%
     mutate(julianweek = 7*floor(julianday/7) + 4) %>%
-    group_by(Name, julianweek, medianGreenup) %>%
+    group_by(Name, Region, Latitude, Longitude, julianweek, medianGreenup) %>%
     summarize(nSurveysPerWeek = n_distinct(ID)) %>%
-    group_by(Name, medianGreenup) %>%
+    group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
     summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
               medianSurveysPerWeek = round(median(nSurveysPerWeek, na.rm = T), 1),
               nWeeks = n_distinct(julianweek),
@@ -361,27 +361,44 @@ multiSitePhenoPlot = function(fullDataset,
                               # e.g., start of May - end of August would be c(5,8).
                               # If NULL, xlim will vary by site based on when surveys were conducted
                               REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
-                              # (requires manual addition of REVI columns to siteSummary)
+                                                 # (requires manual addition of REVI columns to siteSummary)
+                              greenup = FALSE,   # add median green up date as vertical line for that location
                               filename,
                               panelRows = 4,
                               panelCols = 6,
-                              colRGB = c(0, .5, 0), #vector of R, G, and B color values
+                              colRGB1 = c(0.5, .15, 0.8), #vector of R, G, and B color values (for 1st/only line)
+                              colRGB2 = c(1, 0, 1), #vector of R, G, and B color values (for 2nd line)
                               cex.main = 1.5,
                               cex.lab = 1,
                               cex.axis = 1,
                               cex.text = 1.5,
+                              whichCatLines = 'all',  # 'all' = plot caterpillar phenology for all caterpillars,
+                                                      # 'good' = plot caterpillar phenology only for 'good' caterpillars
+                                                      # 'both' = plot phenologies on each panel with different colors
                               ...) {
   
   if (write) {
     pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
   }
   
+  if (whichCatLines == 'all') {
+    firstPlotAllCats = TRUE
+    secondPlot = FALSE
+  } else if (whichCatLines == 'good') {
+    firstPlotAllCats = FALSE
+    secondPlot = FALSE
+  } else if (whichCatLines == 'both') {
+    firstPlotAllCats = TRUE
+    secondPlot = TRUE
+  }
+  
+  
   # Concatenate region name to the end of site name (if it's not already there)
   siteSummary$siteNameRegion = apply(siteSummary, 1, function(x) 
     ifelse(substr(x[1], nchar(x[1])-3, nchar(x[1])) == paste(", ", x[2], sep = ""),
            x[1], paste(x[1], ", ", x[2], sep = "")))
   
-  
+  siteSummary = arrange(siteSummary, desc(Latitude))
   
   par(mfrow = c(panelRows, panelCols), mar = c(3, 2, 3, 1), oma = c(5, 5, 0, 0))
   
@@ -431,7 +448,21 @@ multiSitePhenoPlot = function(fullDataset,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
                                             main = siteLabel, cex.main = cex.main,
-                                            col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
+                                            col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
+                                            allCats = firstPlotAllCats, ...)
+    
+    if (secondPlot) {
+      caterpillarPhenology2 = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
+                                               plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
+                                               ylab = 'Percent of surveys', lwd = 3, 
+                                               xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
+                                               xlim = c(jds[minPos], jds[maxPos]),
+                                               ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
+                                               main = siteLabel, cex.main = cex.main,
+                                               col = rgb(colRGB2[1], colRGB2[2], colRGB2[3]), 
+                                               allCats = FALSE, new = FALSE, ...)
+      
+    }
     
     text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
          col = 'blue', cex = cex.text, adj = 0)
@@ -449,17 +480,26 @@ multiSitePhenoPlot = function(fullDataset,
                arrival = round((preArrival + peakArrival)/2),
                hatching = arrival + 35,
                fledging = hatching + 11)
-      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB[1], colRGB[2], colRGB[3], .1), border = NA)
+      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB1[1], colRGB1[2], colRGB1[3], .1), border = NA)
     }
     
-    #if (counter %% panelRows*panelCols == 0 | counter == nrow(siteSummary)) {
-    #  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-    #  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
-    #}  
+    
+    if (greenup) {
+      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*max(caterpillarPhenology$fracSurveys),
+             siteSummary$medianGreenup[siteSummary$Name == site], 0, lwd = 2, col = 'limegreen', length = .15)
+    }
+    
+    
+    if (counter %% (panelRows*panelCols) == 0 | counter == nrow(siteSummary)) {
+      mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+      mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+    }  
+    
+    
   } #end site
   
-  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+#  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
+#  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
   
   if (write) {
     dev.off()
