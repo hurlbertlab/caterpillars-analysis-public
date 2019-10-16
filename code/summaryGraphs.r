@@ -1,6 +1,7 @@
 
 source('code/summaryStats.r')
 source('code/analysis_functions.r')
+source('code/reading_datafiles_without_users.r')
 # source('code/phenology.r') #need siteList function
 
 
@@ -29,7 +30,7 @@ points(summ$year, summ$numGoodSites, type = 'l', lwd = 5, col = 'orangered')
 text(2018, 50, "Total sites", cex = 2, col = 'turquoise')
 text(2018.6, 20, "High effort\nsites", cex = 2, col = 'orangered')
 
-
+sites18 = read.table('data/revi/sitelist2018_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
 sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
 
 sites19_select12 = filter(sites19, Name %in% c('Sault College', 'Acadia NP - Alder', 'RVCC', 'Stage Nature Center', "Mass Audubon's Boston Nature Center",
@@ -40,11 +41,41 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REV
                    filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3)
 
-ses = siteEffortSummary(fullDataset, 2019)
-ses2 = ses[!is.na(ses$medianGreenup),]
-highEffortSites = filter(ses2, 
-                         nSurveys >= 80,
-                         nGoodWeeks >= 5,
-                         firstGDateAfterGreenup <=50,
-                         lastGDateAfterGreenup >= 90,
-                         medianEffortDeviation <= 10)
+highEffortSites19 = siteEffortSummary(fullDataset, 2019) %>%
+  filter(!is.na(medianGreenup),
+         nSurveys >= 80,
+         nGoodWeeks >= 5,
+         #firstGDateAfterGreenup <=50,
+         #lastGDateAfterGreenup >= 90,
+         medianSurveysPerWeek > 10,
+         medianEffortDeviation <= 10) %>%
+  left_join(sites19[, c('Name', 'LatestWeekWithFreq0', 'WeekOfPeakFreq')], by = 'Name')
+
+highEffortSites18 = siteEffortSummary(fullDataset, 2018) %>%
+  filter(!is.na(medianGreenup),
+         nSurveys >= 80,
+         nGoodWeeks >= 5,
+         #firstGDateAfterGreenup <=50,
+         #lastGDateAfterGreenup >= 90,
+         medianSurveysPerWeek > 10,
+         medianEffortDeviation <= 10) %>%
+  left_join(sites18[, c('Name', 'LatestWeekWithFreq0', 'WeekOfPeakFreq')], by = 'Name')
+
+
+
+# Caterpillar Phenology of High Effort Sites (all caterpillars)
+multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, minLength = 10,
+                   filename = 'caterpillarPhenology_highEffortSites_2019_allCats_10+mm', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, minLength = 10, 
+                   filename = 'caterpillarPhenology_highEffortSites_2019_bothCats_10+mm', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'both', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), REVI = FALSE, minLength = 10,
+                   filename = 'caterpillarPhenology_highEffortSites_2018_bothCats_10+mm', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'both', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), REVI = FALSE, minLength = 10,
+                   filename = 'caterpillarPhenology_highEffortSites_2018_allCats_10+mm', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
