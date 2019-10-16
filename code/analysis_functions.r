@@ -247,20 +247,20 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
   out = fullDataset %>%
     filter(Year == year) %>%
     group_by(Name, Region, Latitude, Longitude) %>%
-    summarize(nSurvs = n_distinct(ID),
+    summarize(nSurveys = n_distinct(ID),
               nDates = n_distinct(LocalDate),
               nWeeks = n_distinct(julianweek),
               nCat = sum(Group == 'caterpillar', na.rm = TRUE),
-              pctCat = round(sum(Quantity[Group == 'caterpillar'] > 0)/nSurvs, 3),
+              pctCat = round(sum(Quantity[Group == 'caterpillar'] > 0)/nSurveys, 3),
               nArth = sum(Quantity, na.rm = TRUE),
               nLgArth = sum(Quantity[Length >= 10], na.rm = TRUE),
-              nArthsPerSurvey = nArth/nSurvs,
-              nLgArthsPerSurvey = nLgArth/nSurvs,
-              pctSurvsLgArths = round(sum(Length >= 10, na.rm = TRUE)/nSurvs, 3),
+              nArthsPerSurvey = nArth/nSurveys,
+              nLgArthsPerSurvey = nLgArth/nSurveys,
+              pctSurvsLgArths = round(sum(Length >= 10, na.rm = TRUE)/nSurveys, 3),
               nPhoto = sum(Photo, na.rm = TRUE),
               pctPhoto = round(nPhoto/n_distinct(arthID), 3)) %>%
     arrange(desc(Latitude)) %>%
-    filter(nSurvs >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site") %>%
+    filter(nSurveys >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site") %>%
     mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
   
   if (write) {
@@ -433,7 +433,7 @@ multiSitePhenoPlot = function(fullDataset,
                                             main = siteLabel, cex.main = cex.main,
                                             col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
     
-    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteSummary$nSurvs[siteSummary$Name == site], "surveys"),
+    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
          col = 'blue', cex = cex.text, adj = 0)
     text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
