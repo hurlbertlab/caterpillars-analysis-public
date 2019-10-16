@@ -420,11 +420,11 @@ multiSitePhenoPlot = function(fullDataset,
     monthLabs = minPos:(maxPos-1)
     
     # Caterpillar phenology
-    caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
+    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
                                             plot = FALSE, plotVar = 'fracSurveys', allDates = FALSE, ...)
     
     
-    caterpillarPhenology = meanDensityByDay(sitedata, ordersToInclude = 'caterpillar', 
+    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
                                             ylab = 'Percent of surveys', lwd = 3, 
                                             xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
