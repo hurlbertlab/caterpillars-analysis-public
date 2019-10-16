@@ -221,7 +221,6 @@ siteEffortSummary = function(fullDataset,
   {
   
   summary = filter(fullDataset, Year == year) %>%
-    mutate(julianweek = 7*floor(julianday/7) + 4) %>%
     group_by(Name, Region, Latitude, Longitude, julianweek, medianGreenup) %>%
     summarize(nSurveysPerWeek = n_distinct(ID)) %>%
     group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
@@ -246,7 +245,7 @@ siteEffortSummary = function(fullDataset,
 siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
   out = fullDataset %>%
     filter(Year == year) %>%
-    group_by(Name, Region, Latitude, Longitude) %>%
+    group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
     summarize(nSurveys = n_distinct(ID),
               nDates = n_distinct(LocalDate),
               nWeeks = n_distinct(julianweek),
@@ -270,6 +269,12 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
 }
 
 
+
+#########################################
+# Function for extracting %, density, and biomass during different specified windows
+#   (July, certain window past greenup, peak period)
+
+# Would run meanDensityByWeek for each metric, extract output from those
 
 
 #########################################
@@ -451,6 +456,13 @@ multiSitePhenoPlot = function(fullDataset,
                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                             allCats = firstPlotAllCats, ...)
     
+    abline(v = jds, col = 'gray80')
+    
+    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', new = FALSE,
+                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, lwd = 3, 
+                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
+                                             allCats = firstPlotAllCats, ...)
+    
     if (secondPlot) {
       caterpillarPhenology2 = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
                                                plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
@@ -469,7 +481,6 @@ multiSitePhenoPlot = function(fullDataset,
     text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
     
-    abline(v = jds, col = 'gray50')
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
     
     if (REVI) {
@@ -487,6 +498,12 @@ multiSitePhenoPlot = function(fullDataset,
     if (greenup) {
       arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*max(caterpillarPhenology$fracSurveys),
              siteSummary$medianGreenup[siteSummary$Name == site], 0, lwd = 2, col = 'limegreen', length = .15)
+      
+      if (counter %% (panelRows*panelCols) == 1) {
+        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.65*max(caterpillarPhenology$fracSurveys), 
+             'median\ngreenup', col = 'limegreen', cex = 1.5)
+      }
+      
     }
     
     
