@@ -355,13 +355,13 @@ siteNameForPlotting = function(sitename, maxCharsPerLine = 25) {
 
 multiSitePhenoPlot = function(fullDataset, 
                               year, 
-                              siteList, 
+                              siteSummary, 
                               write = TRUE, 
                               monthRange = NULL, # 2-value vector with beginning and ending months for plotting;
                               # e.g., start of May - end of August would be c(5,8).
                               # If NULL, xlim will vary by site based on when surveys were conducted
                               REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
-                              # (requires manual addition of REVI columns to siteList)
+                              # (requires manual addition of REVI columns to siteSummary)
                               filename,
                               panelRows = 4,
                               panelCols = 6,
@@ -377,7 +377,7 @@ multiSitePhenoPlot = function(fullDataset,
   }
   
   # Concatenate region name to the end of site name (if it's not already there)
-  siteList$siteNameRegion = apply(siteList, 1, function(x) 
+  siteSummary$siteNameRegion = apply(siteSummary, 1, function(x) 
     ifelse(substr(x[1], nchar(x[1])-3, nchar(x[1])) == paste(", ", x[2], sep = ""),
            x[1], paste(x[1], ", ", x[2], sep = "")))
   
@@ -387,13 +387,13 @@ multiSitePhenoPlot = function(fullDataset,
   
   counter = 0
   
-  for (site in siteList$Name) {
+  for (site in siteSummary$Name) {
     
     counter = counter + 1
     sitedata = fullDataset %>%
       filter(Name == site, Year == year)
     
-    siteLabel = siteNameForPlotting(siteList$siteNameRegion[siteList$Name == site], maxCharsPerLine = 23)
+    siteLabel = siteNameForPlotting(siteSummary$siteNameRegion[siteSummary$Name == site], maxCharsPerLine = 23)
     
     # goofy temporary correction for long name
     siteLabel[siteLabel == "Litzsinger Road Ecology Center\nWoodland Site A, MO"] = "Litzsinger Road Ecology\nCenter Site A, MO"
@@ -433,16 +433,16 @@ multiSitePhenoPlot = function(fullDataset,
                                             main = siteLabel, cex.main = cex.main,
                                             col = rgb(colRGB[1], colRGB[2], colRGB[3]), ...)
     
-    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteList$nSurvs[siteList$Name == site], "surveys"),
+    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteSummary$nSurvs[siteSummary$Name == site], "surveys"),
          col = 'blue', cex = cex.text, adj = 0)
-    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteList$Latitude[siteList$Name == site], 1), "°N", sep = ""),
+    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
     
     abline(v = jds, col = 'gray50')
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
     
     if (REVI) {
-      bird = siteList %>%
+      bird = siteSummary %>%
         filter(Name == site) %>%
         mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
                peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
@@ -452,7 +452,7 @@ multiSitePhenoPlot = function(fullDataset,
       rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB[1], colRGB[2], colRGB[3], .1), border = NA)
     }
     
-    #if (counter %% panelRows*panelCols == 0 | counter == nrow(siteList)) {
+    #if (counter %% panelRows*panelCols == 0 | counter == nrow(siteSummary)) {
     #  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
     #  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
     #}  
