@@ -276,7 +276,14 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
 # Function for extracting %, density, and biomass during different specified windows
 #   (July, certain window past greenup, peak period)
 
-phenoSummary = function(fullDataset, year) {}
+phenoSummary = function(siteYearFilteredDataset, ...) {
+  
+  pheno = meanDensityByWeek(siteYearFilteredDataset, allDates = FALSE, plot = FALSE, ...)
+  
+  pctJuly = mean(pheno$fracSurveys %>%
+    filter(julianweek >= 182, julianweek <= 213) %>%
+    
+}
   
   
   
