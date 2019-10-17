@@ -7,45 +7,99 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   }
   
   dataset = fullDataset %>%
-    filter(!grepl("BBS", Name), Name != "Example Site")
+    filter(!grepl("BBS", Name), !grepl("Coweeta", Name), Name != "Example Site")
+  
+  datasetThisYear = dataset %>%
+    filter(Year == reportYear)
+  
+  sitesThisYear = unique(datasetThisYear$SiteFK)
   
   stats = list(
-    numSurveysTotal = nrow(dataset),
+    numSurveysTotal = dataset %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numSurveysThisYear = dataset %>% filter(Year == reportYear) %>% nrow(),
+    numSurveysThisYear = datasetThisYear %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    sumSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)),
+    numVisualSurveysTotal = filter(dataset, ObservationMethod == "Visual") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    sumSitesThisYear = dataset %>% filter(Year == reportYear) %>% summarize(n = n_distinct(SiteFK)),
+    numVisualSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Visual") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)), 
+    numBeatSurveysTotal = filter(dataset, ObservationMethod == "Beat sheet") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    numUsersThisYear = dataset %>% filter(Year == reportYear) %>% 
-      summarize(n = n_distinct(UserFKOfObserver)),
+    numBeatSurveysThisYear = filter(datasetThisYear, ObservationMethod == "Beat sheet") %>% summarize(n = n_distinct(ID)) %>% pull(n),
     
-    arthTot = dataset %>% summarize(n = sum(Quantity, na.rm = TRUE)),
+    numSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
-    arthTotThisYear = dataset %>% filter(Year == reportYear) %>% 
-      summarize(n = sum(Quantity, na.rm = TRUE)),
+    numSitesThisYear = datasetThisYear %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
+    
+    numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)) %>% pull(n), 
+    
+    numUsersThisYear = datasetThisYear %>% 
+      summarize(n = n_distinct(UserFKOfObserver)) %>% 
+      pull(n),
+    
+    arthTot = dataset %>% summarize(n = sum(Quantity, na.rm = TRUE)) %>% 
+      pull(n),
+    
+    arthTotThisYear = datasetThisYear %>% 
+      summarize(n = sum(Quantity, na.rm = TRUE)) %>% 
+      pull(n),
     
     caterpillarTot = dataset %>% filter(Group == "caterpillar") %>% 
-      summarize(n = sum(Quantity, na.rm = TRUE)),
+      summarize(n = sum(Quantity, na.rm = TRUE)) %>% 
+      pull(n),
     
-    caterpillarTotThisYear = dataset %>% 
-      filter(Year == reportYear, Group == "caterpillar") %>% 
-      summarize(n = sum(Quantity, na.rm = TRUE)),
+    caterpillarTotThisYear = datasetThisYear %>% 
+      filter(Group == "caterpillar") %>% 
+      summarize(n = sum(Quantity, na.rm = TRUE)) %>% 
+      pull(n),
     
-    medianNumSurveysPerSite = plants %>%
+    medianNumBranchesPerSite = plants %>%
+      filter(Circle > 0) %>% #old branch codes that were moved or destroyed are negative
       count(SiteFK) %>%
-      summarize(median = median(n)) %>%
-      data.frame(),
+      summarize(n = median(n)) %>% 
+      pull(n),
     
-    medianNumDatesPerSiteThisYear = dataset %>%
-      filter(Year == reportYear) %>%
+    medianNumBranchesPerSiteThisYear = plants %>%
+      filter(SiteFK %in% sitesThisYear, Circle > 0) %>%
+      count(SiteFK) %>%
+      summarize(n = median(n)) %>% 
+      pull(n),
+    
+    medianNumBranchesSurveyedPerSite = dataset %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(Code)) %>%
+      summarize(n = median(totSurvs)) %>%
+      pull(n),
+    
+    medianNumBranchesSurveyedPerSiteThisYear = datasetThisYear %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(Code)) %>%
+      summarize(n = median(totSurvs)) %>%
+      pull(n),
+    
+    medianNumSurveysPerSite = dataset %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(ID)) %>%
+      summarize(n = median(totSurvs)) %>%
+      pull(n),
+    
+    medianNumSurveysPerSiteThisYear = datasetThisYear %>%
+      group_by(SiteFK) %>%
+      summarize(totSurvs = n_distinct(ID)) %>%
+      summarize(n = median(totSurvs)) %>% 
+      pull(n),
+    
+    medianNumDatesPerSite = dataset %>%
       distinct(Name, LocalDate) %>%
       count(Name) %>%
-      summarize(median = median(n)) %>%
-      data.frame()
+      summarize(n = median(n)) %>% 
+      pull(n),
+    
+    medianNumDatesPerSiteThisYear = datasetThisYear %>%
+      distinct(Name, LocalDate) %>%
+      count(Name) %>%
+      summarize(n = median(n)) %>% 
+      pull(n)
   )
   return(stats)
 }

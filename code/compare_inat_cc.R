@@ -18,10 +18,20 @@ inat = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
 NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
-inat_species = read.table("data/inat_species.txt", header = T, sep = "\t")
+inat_species = read.table("data/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
 
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
+
+# Observer correction for iNat
+
+obs_effort <- read.csv("data/inaturalist_observer_days_by_latlon.csv")
+mean_obs_effort <- read.csv("data/inat_observer_days_rolling_means.csv")
+
+correction_denom <- mean_obs_effort %>%
+  left_join(obs_effort, by = c("year", "cell", "jd_wk")) %>%
+  mutate(correction = obs_days/mean_obs_days,
+         cell = as.character(cell))
 
 # hex grid and lat/lon coords of cell centers
 
@@ -51,10 +61,10 @@ siteList = fullDataset %>%
 inat$observed_on = as.Date(inat$observed_on, format = "%Y-%m-%d")
 inat$year = format(inat$observed_on, format = "%Y")
 inat$jday = yday(inat$observed_on)
-inat$jd_wk = 7*floor(inat$jday/7) + 4    # week 1 = jd 4, week 2 = jd 11, etc
+inat$jd_wk = 7*floor(inat$jday/7)   # week 1 = jd 4, week 2 = jd 11, etc
 
 #### Filter data ####
-## Subset iNat by CC sites
+## Subset iNat by CC sites, correct iNat data for observer effort
 jdBeg = 91
 jdEnd = 240
 
@@ -64,16 +74,25 @@ inat_noCC <- inat %>%
   distinct() %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1)) %>%
   group_by(year, cell, jd_wk) %>%
-  summarize(n_inat = n())
+  summarize(n_inat = n()) %>%
+  ungroup() %>%
+  mutate(year = as.numeric(year)) %>%
+  left_join(correction_denom, by = c("cell", "jd_wk", "year"))  %>%
+  filter(!is.na(obs_days)) %>%
+  mutate(obs_mean_corrected = n_inat/correction) %>%
+  dplyr::select(-n_inat, -year3) %>%
+  rename(n_inat = obs_mean_corrected)
 
 cc_recent <- fullDataset %>%
   filter(Name %in% siteList$Name, Year > 2014) %>%
   filter(!is.na(Latitude), !is.na(Longitude)) %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, Longitude, Latitude)$seqnum + 0.1),
-         jd_wk = 7*floor(julianday/7) + 4) %>%
+         jd_wk = 7*floor(julianday/7)) %>%
   filter(Group == "caterpillar") %>%
   group_by(cell, Year, jd_wk) %>%
-  summarize(n_CC = sum(Quantity))
+  summarize(n_CC = sum(Quantity)) %>%
+  ungroup() %>%
+  mutate(Year = as.numeric(Year))
 
 inat_cc_bins <- cc_recent %>%
   left_join(inat_noCC, by = c("cell", "Year" = "year", "jd_wk")) %>%
@@ -90,7 +109,8 @@ US_map <- tm_shape(NA_sf, bbox = easternUS) + tm_borders(col = "grey80") + tm_fi
 
 obs_sf <- hex %>%
   left_join(inat_cc_bins, by = c("id" = "cell")) %>%
-  filter(!is.na(sum_inat), Year > 2014)
+  filter(!is.na(sum_inat), Year > 2016) %>%
+  mutate(sum_inat = round(sum_inat))
 
 
 map <- US_map + tm_shape(obs_sf) + 
@@ -100,8 +120,8 @@ map <- US_map + tm_shape(obs_sf) +
              breaks = seq(1, 400, by = 50), scale = 4, alpha = 0.75) +
   tm_text(text = "sum_inat") +
   tm_facets(by = "Year", nrow = 3)
-tmap_save(map, paste('figs/iNat_caterpillar_nearCC_phenomap_byYear_hex_jd_', jdBeg, '-', jdEnd, '.pdf', sep = ''),
-          height = 6, width = 12, units = "in")
+tmap_save(map, paste('figs/cross-comparisons/iNat_caterpillar_nearCC_phenomap_byYear_hex_jd_', jdBeg, '-', jdEnd, '.pdf', sep = ''),
+          height = 10, width = 8, units = "in")
 
 
 ##### Plot iNat phenology ####
@@ -125,7 +145,7 @@ cc_top <- fullDataset %>%
   filter(Name %in% sites_top$Name, Year >= 2018) %>%
   filter(!is.na(Latitude), !is.na(Longitude)) %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, Longitude, Latitude)$seqnum + 0.1),
-         jd_wk = 7*floor(julianday/7) + 4) %>%
+         jd_wk = 7*floor(julianday/7)) %>%
   group_by(cell, jd_wk) %>%
   mutate(n = n()) %>%
   group_by(cell, jd_wk) %>%
@@ -158,13 +178,16 @@ phenoplot +
   scale_color_manual(values = c("Caterpillars Count" = "firebrick", 
                                 "iNaturalist" = "dodgerblue")) +
   theme(legend.position = "bottom", legend.title = element_blank())
-ggsave(paste0("figs/CaterpillarPhenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
+ggsave(paste0("figs/cross-comparisons/CaterpillarPhenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
 }
 
 #### Determine/plot widespread families ####
 ## Common/widespread families from iNat
 
-inat_families <- inat_noCC %>%
+inat_families <- inat %>%
+  filter(user_login != "caterpillarscount", year > 2014, jday >= jdBeg, jday <= jdEnd) %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  distinct() %>%
   left_join(inat_species, by = "scientific_name")
 
 # Phenology of families (make abundance curves on map plot for each family)
@@ -339,6 +362,13 @@ inat_noCC_families <- inat %>%
   mutate(cell = as.character(dgGEO_to_SEQNUM(hex_df, longitude, latitude)$seqnum + 0.1)) %>%
   group_by(year, cell, jd_wk) %>%
   summarize(n_inat = n()) %>%
+  ungroup() %>%
+  mutate(year = as.numeric(year)) %>%
+  left_join(correction_denom, by = c("cell", "jd_wk", "year"))  %>%
+  filter(!is.na(obs_days)) %>%
+  mutate(obs_mean_corrected = n_inat/correction) %>%
+  dplyr::select(-n_inat, -year3) %>%
+  rename(n_inat = obs_mean_corrected)
   filter(year >= 2018)
 
 family_surveys <- cc_top %>%
@@ -367,5 +397,5 @@ phenoplot +
   scale_color_manual(values = c("Caterpillars Count" = "firebrick", 
                                 "iNaturalist" = "dodgerblue")) +
   theme(legend.position = "bottom", legend.title = element_blank())
-ggsave(paste0("figs/FourCatFamilies_Phenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
+ggsave(paste0("figs/cross-comparisons/FourCatFamilies_Phenology_withiNat_", yr, ".pdf"), width = 12, height = 8, units = "in")
 }
