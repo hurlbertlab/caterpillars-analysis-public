@@ -79,14 +79,16 @@ meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthro
            Group %in% ordersToInclude) %>%
     mutate(Quantity2 = ifelse(Quantity > outlierCount, 1, Quantity)) %>% #outlier counts replaced with 1
     group_by(julianweek) %>%
-    summarize(totalCount = sum(Quantity2, na.rm = T),
-              numSurveysGTzero = length(unique(ID[Quantity > 0]))) %>% 
+    summarize(totalCount = sum(Quantity2, na.rm = TRUE),
+              numSurveysGTzero = length(unique(ID[Quantity > 0])),
+              totalBiomass = sum(Biomass_mg, na.rm = TRUE)) %>% 
     right_join(effortByWeek, by = 'julianweek') %>%
     #next line replaces 3 fields with 0 if the totalCount is NA
     filter(okWeek == 1) %>%
     mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0) %>%
     mutate(meanDensity = totalCount/nSurveys,
-           fracSurveys = 100*numSurveysGTzero/nSurveys) %>%
+           fracSurveys = 100*numSurveysGTzero/nSurveys,
+           meanBiomass = totalBiomass/nSurveys) %>%
     data.frame()
   
   if (plot & new) {
@@ -274,8 +276,12 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
 # Function for extracting %, density, and biomass during different specified windows
 #   (July, certain window past greenup, peak period)
 
-# Would run meanDensityByWeek for each metric, extract output from those
-
+phenoSummary = function(fullDataset, year) {}
+  
+  
+  
+  
+  
 
 #########################################
 # Create a site x julianweek matrix filled with number of surveys in that site-week

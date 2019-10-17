@@ -11,22 +11,30 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
   .data
 }
 
+# Slope and intercept parameters for power function length-weight regressions for different arthropod groups
+massregs = read.csv('data/arthropod_length_weight_regressions.csv', header = TRUE, stringsAsFactors = FALSE)
+
+
 
 # Read in data files
 sites = read.csv(paste('data/', list.files('data')[grep('Site.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
 surveys = read.csv(paste('data/', list.files('data')[grep('Survey.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
-arths = read.csv(paste('data/', list.files('data')[grep('ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
-
 plants = read.csv(paste('data/', list.files('data')[grep('Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+
+arths = read.csv(paste('data/', list.files('data')[grep('ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE) %>%
+  left_join(massregs, by = 'Group') %>%
+  mutate(Biomass_mg = Quantity*a_constant*Length^b_exponent, 
+         Photo = ifelse(PhotoURL == "", 0, 1)) %>%
+  dplyr::select(ID:BeetleLarva, Biomass_mg, Photo)
+           
 
 surveys$LocalDate = as.Date(surveys$LocalDate, format = "%Y-%m-%d")
 surveys$Year = as.numeric(format(surveys$LocalDate, "%Y"))
 surveys$julianday = yday(surveys$LocalDate)
 surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
-arths$Photo = ifelse(arths$PhotoURL == "", 0, 1)
 
 # Median green up date for 2001-2017 based on MODIS MCD12Q2 v006
 # downloaded from USANPN.org gridded products
@@ -53,8 +61,9 @@ sites$medianGreenup[sites$Name == "Acadia NP - Alder"] = sites$medianGreenup[sit
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
-  left_join(arths[, !names(arths) %in% "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
+  left_join(arths[, names(arths) != "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
   left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region', 'medianGreenup')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
+  mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
   rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
