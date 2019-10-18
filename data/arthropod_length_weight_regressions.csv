@@ -1,0 +1,15 @@
+Source,Taxon,Group,a_constant,b_exponent,r2,region
+"Sabo, Bastow and Power 2002",Araneae,spider,0.05,2.74,0.98,California
+Hurlbert and Lynch 2012 (unpublished),Auchenorrhyncha,leafhopper,0.012,3.13,0.94,Southern Appalachians
+Sample et al. 1993,Coleoptera,beetle,0.039,2.492,0.74,West Virginia
+Sample et al. 1993,Diptera,fly,0.041,2.213,0.72,West Virginia
+Sample et al. 1993,Formicidae,ant,0.009,2.919,0.86,West Virginia
+Sample et al. 1993,Heteroptera,truebugs,0.008,3.075,0.86,West Virginia
+Sample et al. 1993,Hymenoptera,bee,0.014,2.696,0.79,West Virginia
+Sample et al. 1993,Insecta,unidentified,0.027,2.494,0.77,West Virginia
+Sample et al. 1993,Lepidoptera adult,moths,0.006,3.122,0.86,West Virginia
+Sample et al. 1993,Lepidoptera larvae,caterpillar,0.003,2.959,0.86,West Virginia
+Hurlbert and Lynch 2012 (unpublished),Opiliones,daddylonglegs,0.162,2.17,0.94,Southern Appalachians
+Hurlbert and Lynch 2012 (unpublished),Orthoptera,grasshopper,0.023,2.27,0.88,Southern Appalachians
+Gruner 2003,Sternorrhyncha,aphid,0.0175,2.629,0.839,Hawaii
+Sample et al. 1993,Insecta,other,0.027,2.494,0.77,West Virginia
