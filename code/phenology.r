@@ -40,7 +40,7 @@ for (s in siteList$Name) {
 
 ###############################
 # Phenology summaries
-fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75)
+fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75, minNumWeeks = 5)
 
 
 
