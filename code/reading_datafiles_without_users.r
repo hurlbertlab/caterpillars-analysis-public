@@ -66,4 +66,5 @@ fullDataset = surveys %>%
   left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region', 'medianGreenup')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
-  rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y)
+  rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y) %>%
+  filter(Name != "Example Site")
