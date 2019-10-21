@@ -282,7 +282,7 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
 #   (30-day window starting from solstice, certain window past greenup, peak period)
 
 phenoSummary = function(fullDataset, # fullDataset format
-                        postGreenupBeg = 30,     # number of days post-greenup marking the beginning of the time window
+                        postGreenupBeg = 40,     # number of days post-greenup marking the beginning of the time window
                         postGreenupEnd = 75,     # number of days post-greenup marking the end of the time window
                         minNumWeeks = 5,         # minimum number of weeks of survey data to calculate pheno summaries
                         ...) {
@@ -461,6 +461,8 @@ multiSitePhenoPlot = function(fullDataset,
                               whichCatLines = 'all',  # 'all' = plot caterpillar phenology for all caterpillars,
                                                       # 'good' = plot caterpillar phenology only for 'good' caterpillars
                                                       # 'both' = plot phenologies on each panel with different colors
+                              plotVar = 'fracSurveys', 
+                              ordersToInclude = 'caterpillar', 
                               ...) {
   
   if (write) {
@@ -523,43 +525,54 @@ multiSitePhenoPlot = function(fullDataset,
     monthLabs = minPos:(maxPos-1)
     
     # Caterpillar phenology
-    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
-                                            plot = FALSE, plotVar = 'fracSurveys', allDates = FALSE, ...)
+    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar, 
+                                            plot = FALSE, allDates = FALSE, ...)
+    
+    if (plotVar == 'fracSurveys') {
+      yLabel = 'Percent of surveys'
+      minY = 0
+    } else if (plotVar == 'meanDensity') {
+      yLabel = 'Density (# / survey)' 
+      minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
+    } else if (plotVar == 'meanBiomass') {
+      yLabel = 'Biomass (mg / survey)'
+      minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
+    }
     
     
-    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
-                                            plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
-                                            ylab = 'Percent of surveys', lwd = 3, 
+    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
+                                            plot = TRUE, allDates = FALSE, xlab = 'Date',
+                                            ylab = yLabel, lwd = 3, 
                                             xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
                                             xlim = c(jds[minPos], jds[maxPos]),
-                                            ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
+                                            ylim = c(minY, max(1, 1.3*max(caterpillarPhenology[, plotVar]))), 
                                             main = siteLabel, cex.main = cex.main,
                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                             allCats = firstPlotAllCats, ...)
     
     abline(v = jds, col = 'gray80')
     
-    caterpillarPhenology = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', new = FALSE,
-                                             plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, lwd = 3, 
+    caterpillarPhenology = meanDensityByWeek(sitedata, new = FALSE, plotVar = plotVar,
+                                             plot = TRUE, allDates = FALSE, lwd = 3, 
                                              col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                              allCats = firstPlotAllCats, ...)
     
     if (secondPlot) {
-      caterpillarPhenology2 = meanDensityByWeek(sitedata, ordersToInclude = 'caterpillar', 
-                                               plot = TRUE, plotVar = 'fracSurveys', allDates = FALSE, xlab = 'Date',
+      caterpillarPhenology2 = meanDensityByWeek(sitedata, plotVar = plotVar,
+                                               plot = TRUE, allDates = FALSE, xlab = 'Date',
                                                ylab = 'Percent of surveys', lwd = 3, 
                                                xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
                                                xlim = c(jds[minPos], jds[maxPos]),
-                                               ylim = c(0, max(1, 1.3*max(caterpillarPhenology$fracSurveys))), 
+                                               ylim = c(0, max(1, 1.3*max(caterpillarPhenology[, plotVar]))), 
                                                main = siteLabel, cex.main = cex.main,
                                                col = rgb(colRGB2[1], colRGB2[2], colRGB2[3]), 
                                                allCats = FALSE, new = FALSE, ...)
       
     }
     
-    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology$fracSurveys), paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
+    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology[, plotVar]), paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
          col = 'blue', cex = cex.text, adj = 0)
-    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology$fracSurveys), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
+    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology[, plotVar]), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
     
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
@@ -577,11 +590,11 @@ multiSitePhenoPlot = function(fullDataset,
     
     
     if (greenup) {
-      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*max(caterpillarPhenology$fracSurveys),
-             siteSummary$medianGreenup[siteSummary$Name == site], 0, lwd = 2, col = 'limegreen', length = .15)
+      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(max(caterpillarPhenology[, plotVar] - minY)) + minY,
+             siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
       
       if (counter %% (panelRows*panelCols) == 1) {
-        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.65*max(caterpillarPhenology$fracSurveys), 
+        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.65*max(caterpillarPhenology[, plotVar]), 
              'median\ngreenup', col = 'limegreen', cex = 1.5)
       }
       
@@ -590,15 +603,13 @@ multiSitePhenoPlot = function(fullDataset,
     
     if (counter %% (panelRows*panelCols) == 0 | counter == nrow(siteSummary)) {
       mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-      mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
+      mtext(yLabel, 2, outer = TRUE, line = 1, cex = 1.5)
     }  
     
     
   } #end site
   
-#  mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
-#  mtext("Percent of surveys with caterpillars", 2, outer = TRUE, line = 1, cex = 1.5)
-  
+
   if (write) {
     dev.off()
   }
