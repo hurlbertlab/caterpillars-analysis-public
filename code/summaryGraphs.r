@@ -61,6 +61,17 @@ highEffortSites18 = siteEffortSummary(fullDataset, 2018) %>%
          medianEffortDeviation <= 10) %>%
   left_join(sites18[, c('Name', 'LatestWeekWithFreq0', 'WeekOfPeakFreq')], by = 'Name')
 
+siteEffort17 = siteEffortSummary(fullDataset, 2017)
+
+highEffortSites17 = siteEffort17 %>%
+  filter(!is.na(medianGreenup),
+         nSurveys >= 80,
+         nGoodWeeks >= 5,
+         #firstGDateAfterGreenup <=50,
+         #lastGDateAfterGreenup >= 90,
+         medianSurveysPerWeek > 10,
+         medianEffortDeviation <= 10) 
+
 
 
 # Caterpillar Phenology of High Effort Sites (all caterpillars)

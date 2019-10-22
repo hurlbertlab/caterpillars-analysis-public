@@ -2,7 +2,7 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
-
+library(tidyr)
 
 
 ###################################
@@ -538,6 +538,7 @@ multiSitePhenoPlot = function(fullDataset,
       yLabel = 'Biomass (mg / survey)'
       minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
     }
+    maxY = max(1, 1.3*max(caterpillarPhenology[, plotVar]))
     
     
     caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
@@ -545,7 +546,7 @@ multiSitePhenoPlot = function(fullDataset,
                                             ylab = yLabel, lwd = 3, 
                                             xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
                                             xlim = c(jds[minPos], jds[maxPos]),
-                                            ylim = c(minY, max(1, 1.3*max(caterpillarPhenology[, plotVar]))), 
+                                            ylim = c(minY, maxY), 
                                             main = siteLabel, cex.main = cex.main,
                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                             allCats = firstPlotAllCats, ...)
@@ -563,16 +564,16 @@ multiSitePhenoPlot = function(fullDataset,
                                                ylab = 'Percent of surveys', lwd = 3, 
                                                xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
                                                xlim = c(jds[minPos], jds[maxPos]),
-                                               ylim = c(0, max(1, 1.3*max(caterpillarPhenology[, plotVar]))), 
+                                               ylim = c(minY, maxY), 
                                                main = siteLabel, cex.main = cex.main,
                                                col = rgb(colRGB2[1], colRGB2[2], colRGB2[3]), 
                                                allCats = FALSE, new = FALSE, ...)
       
     }
     
-    text(jds[minPos] + 5, 1.2*max(caterpillarPhenology[, plotVar]), paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
+    text(jds[minPos] + 5, .9*maxY, paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
          col = 'blue', cex = cex.text, adj = 0)
-    text(jds[maxPos] - 2, 1.2*max(caterpillarPhenology[, plotVar]), paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
+    text(jds[maxPos] - 2, .9*maxY, paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
     
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
@@ -590,11 +591,11 @@ multiSitePhenoPlot = function(fullDataset,
     
     
     if (greenup) {
-      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(max(caterpillarPhenology[, plotVar] - minY)) + minY,
+      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
              siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
       
       if (counter %% (panelRows*panelCols) == 1) {
-        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.65*max(caterpillarPhenology[, plotVar]), 
+        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(maxY - minY) + minY, 
              'median\ngreenup', col = 'limegreen', cex = 1.5)
       }
       
