@@ -1,6 +1,7 @@
 # Reading in Caterpillars Count! database files
 library(dplyr)
 library(lubridate)
+library(rgdal)
 library(raster)
 
 # Function for substituting values based on a condition using dplyr::mutate
