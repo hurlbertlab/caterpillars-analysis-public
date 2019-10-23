@@ -1,4 +1,3 @@
-
 source('code/summaryStats.r')
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
@@ -34,8 +33,8 @@ sites18 = read.table('data/revi/sitelist2018_revi.txt', header = TRUE, sep = '\t
 sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
 
 sites19_select12 = filter(sites19, Name %in% c('Sault College', 'Acadia NP - Alder', 'RVCC', 'Stage Nature Center', "Mass Audubon's Boston Nature Center",
-                                            "Museum of American Bird Art", "Oregon Ridge Nature Center", "Walker Nature Center", 
-                                            "Litzsinger Road Ecology Center Woodland Site A", "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
+                                               "Museum of American Bird Art", "Oregon Ridge Nature Center", "Walker Nature Center", 
+                                               "Litzsinger Road Ecology Center Woodland Site A", "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
 
 multiSitePhenoPlot(fullDataset, 2019, sites19_select12, monthRange = c(5,8), REVI = TRUE, 
                    filename = 'caterpillarPhenology_12sites_2019', panelRows = 3, panelCols = 4,
@@ -69,8 +68,8 @@ highEffortSites17 = siteEffort17 %>%
          nGoodWeeks >= 5,
          #firstGDateAfterGreenup <=50,
          #lastGDateAfterGreenup >= 90,
-         medianSurveysPerWeek > 10,
-         medianEffortDeviation <= 10) 
+         #medianEffortDeviation <= 10,
+         medianSurveysPerWeek > 10) 
 
 
 
@@ -89,4 +88,8 @@ multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), RE
 
 multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), REVI = FALSE, minLength = 10,
                    filename = 'caterpillarPhenology_highEffortSites_2018_allCats_10+mm', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2017, highEffortSites17, monthRange = c(4,8), REVI = FALSE, minLength = 10, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2017_allCats_biomass', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
