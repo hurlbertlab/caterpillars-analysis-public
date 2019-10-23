@@ -90,4 +90,13 @@ for (s in catSiteList) {
 }
 dev.off()
 
+# Map of mean biomass
+pheno = phenoSummary(fullDataset)
+
+pheno19 = filter(pheno, Year == 2019)
+
+pdf('figs/easternNAmap.pdf', height = 8, width = 8)
+map('world', ylim = c(25, 50), xlim = c(-95, -60), fill = TRUE, col = 'gray90')
+map('state', add = TRUE)
+dev.off()
 

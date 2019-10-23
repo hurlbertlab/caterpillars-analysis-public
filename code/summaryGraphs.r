@@ -88,10 +88,6 @@ multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), RE
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
 
 multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
-                   filename = 'caterpillarPhenology_highEffortSites_2019_bothCats_biomass', panelRows = 3, panelCols = 4,
-                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'both', greenup = TRUE)
-
-multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_highEffortSites_2019_allCats_biomass', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
 
