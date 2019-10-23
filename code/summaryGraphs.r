@@ -46,8 +46,7 @@ highEffortSites19 = siteEffortSummary(fullDataset, 2019) %>%
          nGoodWeeks >= 5,
          #firstGDateAfterGreenup <=50,
          #lastGDateAfterGreenup >= 90,
-         medianSurveysPerWeek > 10,
-         medianEffortDeviation <= 10) %>%
+         medianSurveysPerWeek > 10) %>%
   left_join(sites19[, c('Name', 'LatestWeekWithFreq0', 'WeekOfPeakFreq')], by = 'Name')
 
 highEffortSites18 = siteEffortSummary(fullDataset, 2018) %>%
@@ -56,8 +55,7 @@ highEffortSites18 = siteEffortSummary(fullDataset, 2018) %>%
          nGoodWeeks >= 5,
          #firstGDateAfterGreenup <=50,
          #lastGDateAfterGreenup >= 90,
-         medianSurveysPerWeek > 10,
-         medianEffortDeviation <= 10) %>%
+         medianSurveysPerWeek > 10) %>%
   left_join(sites18[, c('Name', 'LatestWeekWithFreq0', 'WeekOfPeakFreq')], by = 'Name')
 
 siteEffort17 = siteEffortSummary(fullDataset, 2017)
@@ -68,7 +66,6 @@ highEffortSites17 = siteEffort17 %>%
          nGoodWeeks >= 5,
          #firstGDateAfterGreenup <=50,
          #lastGDateAfterGreenup >= 90,
-         #medianEffortDeviation <= 10,
          medianSurveysPerWeek > 10) 
 
 
@@ -90,6 +87,27 @@ multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), RE
                    filename = 'caterpillarPhenology_highEffortSites_2018_allCats_10+mm', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
 
-multiSitePhenoPlot(fullDataset, 2017, highEffortSites17, monthRange = c(4,8), REVI = FALSE, minLength = 10, plotVar = 'meanBiomass',
+multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2019_bothCats_biomass', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'both', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2019, highEffortSites19, monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2019_allCats_biomass', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2018, highEffortSites18, monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2018_allCats_biomass', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2017, siteEffortSummary(fullDataset, 2017), monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_highEffortSites_2017_allCats_biomass', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2016, siteEffortSummary(fullDataset, 2016), monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2016_allCats_biomass', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+
+multiSitePhenoPlot(fullDataset, 2015, siteEffortSummary(fullDataset, 2015), monthRange = c(4,8), REVI = FALSE, plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_highEffortSites_2015_allCats_biomass', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, whichCatLines = 'all', greenup = TRUE)
+

@@ -232,10 +232,11 @@ siteEffortSummary = function(fullDataset,
     summarize(nSurveysPerWeek = n_distinct(ID)) %>%
     group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
     summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
-              medianSurveysPerWeek = round(median(nSurveysPerWeek, na.rm = T), 1),
+              modalSurveyCirclesPerWeek = Mode(ceiling(nSurveysPerWeek/5)),
+              medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T), 
               nWeeks = n_distinct(julianweek),
               nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
-              medianEffortDeviation = median(abs(nSurveysPerWeek - medianSurveysPerWeek)),
+              medianEffortDeviation = median(abs(nSurveysPerWeek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek] - 5*modalSurveyCirclesPerWeek)),
               firstDate = min(julianweek),
               lastDate = max(julianweek),
               firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
