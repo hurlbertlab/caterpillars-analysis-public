@@ -468,8 +468,8 @@ multiSitePhenoPlot = function(fullDataset,
                               filename,
                               panelRows = 4,
                               panelCols = 6,
-                              colRGB1 = c(0.5, .15, 0.8), #vector of R, G, and B color values (for 1st/only line)
-                              colRGB2 = c(1, 0, 1), #vector of R, G, and B color values (for 2nd line)
+                              col1 = 'purple3', # line color (for 1st/only line)
+                              col2 = 'magenta',    # color (for 2nd line)
                               colREVI = 'plum1',
                               cex.main = 1.5,
                               cex.lab = 1,
@@ -542,7 +542,7 @@ multiSitePhenoPlot = function(fullDataset,
     monthLabs = minPos:(maxPos-1)
     
     # Caterpillar phenology
-    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar, 
+    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar, ordersToInclude = ordersToInclude,
                                             plot = FALSE, allDates = FALSE, ...)
     
     if (plotVar == 'fracSurveys') {
@@ -555,7 +555,7 @@ multiSitePhenoPlot = function(fullDataset,
       yLabel = 'Biomass (mg / survey)'
       minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
     }
-    maxY = max(1, 1.3*max(caterpillarPhenology[, plotVar]))
+    maxY = 1.3*max(caterpillarPhenology[, plotVar])
     
     # Set up plot frame
     caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
@@ -565,8 +565,8 @@ multiSitePhenoPlot = function(fullDataset,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(minY, maxY), 
                                             main = siteLabel, cex.main = cex.main,
-                                            col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
-                                            allCats = firstPlotAllCats, ...)
+                                            allCats = firstPlotAllCats, 
+                                            ordersToInclude = ordersToInclude, ...)
     
     # Plot REVI window
     if (REVI) {
@@ -586,19 +586,14 @@ multiSitePhenoPlot = function(fullDataset,
     # Plot caterpillar phenology line
     caterpillarPhenology = meanDensityByWeek(sitedata, new = FALSE, plotVar = plotVar,
                                              plot = TRUE, allDates = FALSE, lwd = 3, 
-                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
+                                             col = col1,  ordersToInclude = ordersToInclude,
                                              allCats = firstPlotAllCats, ...)
     
     # If plotting a second line (i.e. all vs good cats)
     if (secondPlot) {
       caterpillarPhenology2 = meanDensityByWeek(sitedata, plotVar = plotVar,
                                                plot = TRUE, allDates = FALSE, xlab = 'Date',
-                                               ylab = 'Percent of surveys', lwd = 3, 
-                                               xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
-                                               xlim = c(jds[minPos], jds[maxPos]),
-                                               ylim = c(minY, maxY), 
-                                               main = siteLabel, cex.main = cex.main,
-                                               col = rgb(colRGB2[1], colRGB2[2], colRGB2[3]), 
+                                               lwd = 3, col = col2, ordersToInclude = ordersToInclude,
                                                allCats = FALSE, new = FALSE, ...)
       
     }
