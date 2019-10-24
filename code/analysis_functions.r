@@ -470,6 +470,7 @@ multiSitePhenoPlot = function(fullDataset,
                               panelCols = 6,
                               colRGB1 = c(0.5, .15, 0.8), #vector of R, G, and B color values (for 1st/only line)
                               colRGB2 = c(1, 0, 1), #vector of R, G, and B color values (for 2nd line)
+                              colREVI = 'plum1',
                               cex.main = 1.5,
                               cex.lab = 1,
                               cex.axis = 1,
@@ -556,7 +557,7 @@ multiSitePhenoPlot = function(fullDataset,
     }
     maxY = max(1, 1.3*max(caterpillarPhenology[, plotVar]))
     
-    
+    # Set up plot frame
     caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
                                             plot = TRUE, allDates = FALSE, xlab = 'Date',
                                             ylab = yLabel, lwd = 3, 
@@ -567,13 +568,28 @@ multiSitePhenoPlot = function(fullDataset,
                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                             allCats = firstPlotAllCats, ...)
     
+    # Plot REVI window
+    if (REVI) {
+      bird = siteSummary %>%
+        filter(Name == site) %>%
+        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
+               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
+               arrival = round((preArrival + peakArrival)/2),
+               hatching = arrival + 35,
+               fledging = hatching + 11)
+      rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
+    }
+    
+    # Month lines
     abline(v = jds, col = 'gray80')
     
+    # Plot caterpillar phenology line
     caterpillarPhenology = meanDensityByWeek(sitedata, new = FALSE, plotVar = plotVar,
                                              plot = TRUE, allDates = FALSE, lwd = 3, 
                                              col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
                                              allCats = firstPlotAllCats, ...)
     
+    # If plotting a second line (i.e. all vs good cats)
     if (secondPlot) {
       caterpillarPhenology2 = meanDensityByWeek(sitedata, plotVar = plotVar,
                                                plot = TRUE, allDates = FALSE, xlab = 'Date',
@@ -593,18 +609,6 @@ multiSitePhenoPlot = function(fullDataset,
          col = 'red', cex = cex.text, adj = 1)
     
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
-    
-    if (REVI) {
-      bird = siteSummary %>%
-        filter(Name == site) %>%
-        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
-               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
-               arrival = round((preArrival + peakArrival)/2),
-               hatching = arrival + 35,
-               fledging = hatching + 11)
-      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB1[1], colRGB1[2], colRGB1[3], .1), border = NA)
-    }
-    
     
     if (greenup) {
       arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
