@@ -289,7 +289,9 @@ phenoSummary = function(fullDataset, # fullDataset format
                         ...) {
   
   years = unique(fullDataset$Year)
-  output = data.frame(Name = NA, Year = NA, medianGreenup = NA, pctSolstice = NA, densSolstice = NA, massSolstice= NA, pctPostGU = NA, densPostGU = NA, massPostGU = NA,
+  output = data.frame(Name = NA, Year = NA, medianGreenup = NA, minJulianWeek = NA, maxJulianWeek = NA, totalSurveys = NA,
+                      numGoodWeeks = NA, numWeeksPostSolsticeWindow = NA, numWeeksPostGreenupWindow = NA, 
+                      pctSolstice = NA, densSolstice = NA, massSolstice= NA, pctPostGU = NA, densPostGU = NA, massPostGU = NA,
                       pctPeakDate = NA, densPeakDate = NA, massPeakDate = NA, pctPeakDateWindow = NA, densPeakDateWindow = NA,
                       massPeakDateWindow = NA, pctRollingPeakDateWindow = NA, densRollingPeakDateWindow = NA, massRollingPeakDateWindow = NA)
   
@@ -315,13 +317,25 @@ phenoSummary = function(fullDataset, # fullDataset format
             Name = site,
             Year = y,
             medianGreenup = greenup,
-            pctSolstice = mean(fracSurveys[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
-            densSolstice = mean(meanDensity[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
-            massSolstice = mean(meanBiomass[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
+            minJulianWeek = min(julianweek),
+            maxJulianWeek = max(julianweek),
+            totalSurveys = sum(nSurveys),
+            numGoodWeeks = sum(okWeek == 1),
+            numWeeksPostSolsticeWindow = sum(okWeek[julianweek >= 172 & julianweek <= 202] == 1),
+            numWeeksPostGreenupWindow = sum(okWeek[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)] == 1),
+            pctSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                 mean(fracSurveys[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
+            densSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                  mean(meanDensity[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
+            massSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                  mean(meanBiomass[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
             # mean for the post-greenup window specified
-            pctPostGU = mean(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
-            densPostGU = mean(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
-            massPostGU = mean(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
+            pctPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                               mean(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
+            densPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                                mean(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
+            massPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                                mean(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
             # peak date of the time-series unconstrained
             pctPeakDate = ifelse(sum(totalCount) == 0, NA, 
                                  julianweek[fracSurveys == max(fracSurveys, na.rm = TRUE)][1]),
@@ -349,7 +363,8 @@ phenoSummary = function(fullDataset, # fullDataset format
       }
     } # end site
   } # end year
-  
+  out = output[-1, ]
+  out[is.na(out)] = NA # converts NaN's to NA's
   return(output[-1, ])
               
 }

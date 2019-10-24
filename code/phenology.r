@@ -42,6 +42,30 @@ for (s in siteList$Name) {
 # Phenology summaries
 fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75, minNumWeeks = 5)
 
+pheno19 = filter(fullPhenoSummary, Year == 2019, 
+                 numWeeksPostSolsticeWindow >= 3,
+                 numWeeksPostGreenupWindow >= 3) %>%
+  left_join(sites[, c('Name', 'Longitude', 'Latitude')], by = 'Name')
+
+# Function for rescaling 
+rescale = function(vec, newMin, newMax) {
+  maxVec = max(vec, na.rm = T)
+  minVec = min(vec[vec != -Inf], na.rm = T)
+  newVec = newMin + (newMax - newMin)*(vec - minVec)/(maxVec - minVec)
+  newVec[newVec == -Inf] = NA
+  return(newVec)
+}
+
+colorScale = function(vec) {
+  scaledVec = vec
+}
+
+NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
+pdf('figs/biomass_map_easternNA.pdf', height = 12, width = 16)
+plot(NAmap, xlim = c(-90, -70), ylim = c(28, 48), border = 'gray80', col = 'gray90')
+points(pheno19$Longitude, pheno19$Latitude, pch = 16, col = 'limegreen', 
+       cex = rescale(log10(pheno19$massPostGU), 0.5, 3) )
+dev.off()
 
 
 # Top 12 sites without ECU, weighted mean fraction of surveys with caterpillars
