@@ -289,7 +289,9 @@ phenoSummary = function(fullDataset, # fullDataset format
                         ...) {
   
   years = unique(fullDataset$Year)
-  output = data.frame(Name = NA, Year = NA, medianGreenup = NA, pctSolstice = NA, densSolstice = NA, massSolstice= NA, pctPostGU = NA, densPostGU = NA, massPostGU = NA,
+  output = data.frame(Name = NA, Year = NA, medianGreenup = NA, minJulianWeek = NA, maxJulianWeek = NA, totalSurveys = NA,
+                      numGoodWeeks = NA, numWeeksPostSolsticeWindow = NA, numWeeksPostGreenupWindow = NA, 
+                      pctSolstice = NA, densSolstice = NA, massSolstice= NA, pctPostGU = NA, densPostGU = NA, massPostGU = NA,
                       pctPeakDate = NA, densPeakDate = NA, massPeakDate = NA, pctPeakDateWindow = NA, densPeakDateWindow = NA,
                       massPeakDateWindow = NA, pctRollingPeakDateWindow = NA, densRollingPeakDateWindow = NA, massRollingPeakDateWindow = NA)
   
@@ -315,13 +317,25 @@ phenoSummary = function(fullDataset, # fullDataset format
             Name = site,
             Year = y,
             medianGreenup = greenup,
-            pctSolstice = mean(fracSurveys[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
-            densSolstice = mean(meanDensity[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
-            massSolstice = mean(meanBiomass[julianweek >= 172 & julianweek <= 202], na.rm = TRUE),
+            minJulianWeek = min(julianweek),
+            maxJulianWeek = max(julianweek),
+            totalSurveys = sum(nSurveys),
+            numGoodWeeks = sum(okWeek == 1),
+            numWeeksPostSolsticeWindow = sum(okWeek[julianweek >= 172 & julianweek <= 202] == 1),
+            numWeeksPostGreenupWindow = sum(okWeek[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)] == 1),
+            pctSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                 mean(fracSurveys[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
+            densSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                  mean(meanDensity[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
+            massSolstice = ifelse(sum(julianweek >= 172 & julianweek <= 202) > 0, 
+                                  mean(meanBiomass[julianweek >= 172 & julianweek <= 202], na.rm = TRUE), NA),
             # mean for the post-greenup window specified
-            pctPostGU = mean(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
-            densPostGU = mean(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
-            massPostGU = mean(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE),
+            pctPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                               mean(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
+            densPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                                mean(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
+            massPostGU = ifelse(sum(julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)) > 0, 
+                                mean(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= (greenup + postGreenupEnd)], na.rm = TRUE), NA),
             # peak date of the time-series unconstrained
             pctPeakDate = ifelse(sum(totalCount) == 0, NA, 
                                  julianweek[fracSurveys == max(fracSurveys, na.rm = TRUE)][1]),
@@ -349,7 +363,8 @@ phenoSummary = function(fullDataset, # fullDataset format
       }
     } # end site
   } # end year
-  
+  out = output[-1, ]
+  out[is.na(out)] = NA # converts NaN's to NA's
   return(output[-1, ])
               
 }
@@ -453,8 +468,9 @@ multiSitePhenoPlot = function(fullDataset,
                               filename,
                               panelRows = 4,
                               panelCols = 6,
-                              colRGB1 = c(0.5, .15, 0.8), #vector of R, G, and B color values (for 1st/only line)
-                              colRGB2 = c(1, 0, 1), #vector of R, G, and B color values (for 2nd line)
+                              col1 = 'purple3', # line color (for 1st/only line)
+                              col2 = 'magenta',    # color (for 2nd line)
+                              colREVI = 'plum1',
                               cex.main = 1.5,
                               cex.lab = 1,
                               cex.axis = 1,
@@ -526,7 +542,7 @@ multiSitePhenoPlot = function(fullDataset,
     monthLabs = minPos:(maxPos-1)
     
     # Caterpillar phenology
-    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar, 
+    caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar, ordersToInclude = ordersToInclude,
                                             plot = FALSE, allDates = FALSE, ...)
     
     if (plotVar == 'fracSurveys') {
@@ -539,9 +555,9 @@ multiSitePhenoPlot = function(fullDataset,
       yLabel = 'Biomass (mg / survey)'
       minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
     }
-    maxY = max(1, 1.3*max(caterpillarPhenology[, plotVar]))
+    maxY = 1.3*max(caterpillarPhenology[, plotVar])
     
-    
+    # Set up plot frame
     caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
                                             plot = TRUE, allDates = FALSE, xlab = 'Date',
                                             ylab = yLabel, lwd = 3, 
@@ -549,25 +565,35 @@ multiSitePhenoPlot = function(fullDataset,
                                             xlim = c(jds[minPos], jds[maxPos]),
                                             ylim = c(minY, maxY), 
                                             main = siteLabel, cex.main = cex.main,
-                                            col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
-                                            allCats = firstPlotAllCats, ...)
+                                            allCats = firstPlotAllCats, 
+                                            ordersToInclude = ordersToInclude, ...)
     
+    # Plot REVI window
+    if (REVI) {
+      bird = siteSummary %>%
+        filter(Name == site) %>%
+        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
+               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
+               arrival = round((preArrival + peakArrival)/2),
+               hatching = arrival + 35,
+               fledging = hatching + 11)
+      rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
+    }
+    
+    # Month lines
     abline(v = jds, col = 'gray80')
     
+    # Plot caterpillar phenology line
     caterpillarPhenology = meanDensityByWeek(sitedata, new = FALSE, plotVar = plotVar,
                                              plot = TRUE, allDates = FALSE, lwd = 3, 
-                                             col = rgb(colRGB1[1], colRGB1[2], colRGB1[3]), 
+                                             col = col1,  ordersToInclude = ordersToInclude,
                                              allCats = firstPlotAllCats, ...)
     
+    # If plotting a second line (i.e. all vs good cats)
     if (secondPlot) {
       caterpillarPhenology2 = meanDensityByWeek(sitedata, plotVar = plotVar,
                                                plot = TRUE, allDates = FALSE, xlab = 'Date',
-                                               ylab = 'Percent of surveys', lwd = 3, 
-                                               xaxt = 'n', xaxs = 'i', cex.lab = cex.lab, cex.axis = cex.axis,
-                                               xlim = c(jds[minPos], jds[maxPos]),
-                                               ylim = c(minY, maxY), 
-                                               main = siteLabel, cex.main = cex.main,
-                                               col = rgb(colRGB2[1], colRGB2[2], colRGB2[3]), 
+                                               lwd = 3, col = col2, ordersToInclude = ordersToInclude,
                                                allCats = FALSE, new = FALSE, ...)
       
     }
@@ -578,18 +604,6 @@ multiSitePhenoPlot = function(fullDataset,
          col = 'red', cex = cex.text, adj = 1)
     
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
-    
-    if (REVI) {
-      bird = siteSummary %>%
-        filter(Name == site) %>%
-        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
-               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
-               arrival = round((preArrival + peakArrival)/2),
-               hatching = arrival + 35,
-               fledging = hatching + 11)
-      rect(bird$hatching, -5, bird$fledging, 110, col = rgb(colRGB1[1], colRGB1[2], colRGB1[3], .1), border = NA)
-    }
-    
     
     if (greenup) {
       arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,

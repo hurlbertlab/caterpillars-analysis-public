@@ -42,10 +42,150 @@ for (s in siteList$Name) {
 # Phenology summaries
 fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75, minNumWeeks = 5)
 
+pheno19 = filter(fullPhenoSummary, Year == 2019, 
+                 #numWeeksPostGreenupWindow >= 3,
+                 numWeeksPostSolsticeWindow >= 3) %>%
+  left_join(sites[, c('Name', 'Longitude', 'Latitude')], by = 'Name')
+
+# Function for rescaling 
+rescale = function(vec, newMin, newMax) {
+  maxVec = max(vec, na.rm = T)
+  minVec = min(vec[vec != -Inf], na.rm = T)
+  newVec = newMin + (newMax - newMin)*(vec - minVec)/(maxVec - minVec)
+  newVec[newVec == -Inf] = NA
+  return(newVec)
+}
+
+colorScale = function(vec) {
+  
+  vec[vec == -Inf] = NA
+  shades <- rainbow(130)[100:1]
+  percents <- as.integer(cut(vec, 100, 
+                             include.lowest = TRUE, ordered = TRUE))
+  fills <- shades[percents]
+  return(fills)
+}
+
+# Function for generating 5 evenly spaced values from min to max for a variable
+legendVals = function(vec) {
+  vec[vec == -Inf] = NA
+  maxvar = max(vec, na.rm = TRUE)
+  minvar = min(vec, na.rm = TRUE)
+  inc = (maxvar - minvar) / 4
+  legend.text = c(minvar, minvar + inc, minvar + 2 * inc, minvar + 3 * inc, maxvar)
+  return(legend.text)
+}
+
+
+# MAPS
+
+NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
+pdf('figs/biomassPostGU_map.pdf', height = 8, width = 8)
+plot(NAmap, xlim = c(-90, -70), ylim = c(28, 48), border = 'gray50', col = 'gray90')
+points(pheno19$Longitude, pheno19$Latitude, pch = 16, col = colorScale(log10(pheno19$massPostGU)), 
+       cex = 3 )
+
+legend_image <- as.raster(matrix(rainbow(130)[1:100], ncol=1))
+rasterImage(legend_image, -72, 30, -70, 36)
+text(-70, 38, "Biomass\n(mg / survey)", cex = 1.3)
+text(x = -68, y = seq(30, 36, length=5), labels = substr(10^legendVals(log10(pheno19$massPostGU)), 1, 5))
+dev.off()
+
+
+pdf('figs/biomassPostSolstice_map.pdf', height = 8, width = 8)
+plot(NAmap, xlim = c(-90, -70), ylim = c(28, 48), border = 'gray50', col = 'gray90')
+points(pheno19$Longitude, pheno19$Latitude, pch = 16, col = colorScale(log10(pheno19$massSolstice)), 
+       cex = 3)
+
+legend_image <- as.raster(matrix(rainbow(130)[1:100], ncol=1))
+rasterImage(legend_image, -72, 30, -70, 36)
+text(-70, 38, "Biomass\n(mg / survey)", cex = 1.3)
+text(x = -68, y = seq(30, 36, length=5), labels = substr(10^legendVals(log10(pheno19$massSolstice)), 1, 5))
+dev.off()
+
+
+# Two example sites, cat biomass by plant species
+
+#EwA at Fells and Prairie Ridge
+
+fellsSurveys = filter(fullDataset, Name == "EwA at the Fells") %>%
+  summarize(n = n_distinct(ID)) %>%
+  pull(n)
+  
+prSurveys = filter(fullDataset, Name == "Prairie Ridge Ecostation") %>%
+  summarize(n = n_distinct(ID)) %>%
+  pull(n)
+
+fellsCats = filter(fullDataset, Name == "EwA at the Fells", Group == 'caterpillar') %>%
+  group_by(PlantSpecies) %>%
+  summarize(totalBiomass = sum(Quantity*Biomass_mg),
+            meanBiomass = totalBiomass/fellsSurveys) %>%
+  arrange(desc(meanBiomass))
+
+prCats = filter(fullDataset, Name == "Prairie Ridge Ecostation", Group == 'caterpillar') %>%
+  group_by(PlantSpecies) %>%
+  summarize(totalBiomass = sum(Quantity*Biomass_mg),
+            meanBiomass = totalBiomass/prSurveys) %>%
+  arrange(desc(meanBiomass))
+
+pdf('figs/cats_by_treesp_examples.pdf', height = 8, width = 8)
+par(mar= c(8, 6, 1, 1), mgp = c(2.5, 1, 0), mfrow = c(2, 1))
+b1 = barplot(log10(fellsCats$meanBiomass)+1, yaxt = "n", ylim = c(0, 3), col = 'red')
+axis(2, at = seq(0, 3, by = 0.5), labels = round(10^(seq(-1, 2, by = 0.5)), 1), las = 1)
+text(b1, rep(-.1, 8), fellsCats$PlantSpecies, srt=45, adj = 1, xpd = TRUE, cex = 1.2)
+mtext("Biomass (mg / survey)", 2, cex = 1.5, line = 3.5)
+
+b2 = barplot(log10(prCats$meanBiomass[1:8])+1.25, yaxt = "n", ylim = c(0, 2.75), col = rgb(157/255, 1, 0))
+axis(2, at = seq(0.25, 2.75, by = 0.5), labels = round(10^(seq(-1, 1.5, by = 0.5)), 1), las = 1)
+text(b1, rep(-.1, 8), prCats$PlantSpecies[1:8], srt=45, adj = 1, xpd = TRUE, cex = 1.2)
+mtext("Biomass (mg / survey)", 2, cex = 1.5, line = 3.5)
+dev.off()
+
+
+monthRange = c(4,8)
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+# x-axis range
+if (is.null(monthRange)) {
+  # make sure xlim endpoints coincide with month labels
+  if(length(unique(sitedata$julianday)) == 1) {
+    minPos = which(jds == max(jds[jds <= min(sitedata$julianday)]))
+    maxPos = which(jds == min(jds[jds >= max(sitedata$julianday)]))
+  } else {
+    minPos = max(which(jds == min(jds[jds >= min(sitedata$julianday)])) - 1, 1)    
+    maxPos = min(which(jds == max(jds[jds <= max(sitedata$julianday)])) + 1, 12)
+  }
+} else {
+  minPos = monthRange[1]
+  maxPos = monthRange[2]+1
+}
+monthLabs = minPos:(maxPos-1)
+
+
+# Phenology at Prairie Ridge
+pr19 = filter(fullDataset, Year==2019, Name == "Prairie Ridge Ecostation")
+par(mar = c(4, 5, 1, 1))
+meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', 
+                  allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
+                  xaxt = 'n', xlab = '', ylab = 'Biomass (mg / survey)', xaxs = 'i',
+                  cex.lab = 1.5, cex.axis = 1.3)
+mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = 1.5, line = .4)
+abline(v = jds, col = 'gray80')
+meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', new = FALSE,
+                  allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
+                  xaxt = 'n', xlab = 'Julian day', ylab = 'Biomass')
+
+
+
+
+
+
+
 
 
 # Top 12 sites without ECU, weighted mean fraction of surveys with caterpillars
-## GD
+
 
 library(tidyr)
 library(purrr)
