@@ -169,8 +169,8 @@ ebird_wake_revi2019 = read.table('data/revi/ebird_US-NC-183_reevir1_2019_2019_1_
                                  skip = 16, header = F, sep = '\t')
 wake_revi2019 = data.frame(date = paste0(rep(2019, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
   mutate(julianday = yday(date),
-         occ = unlist(ebird_wake_revi2019[1, 2:49]))
-matedate = wake_revi2019$julianday[wake_revi2019$julianday == max(wake_revi2019$julianday[wake_revi2019$occ > .9*max(wake_revi2019$occ)])]
+         freq = unlist(ebird_wake_revi2019[1, 2:49]))
+matedate = wake_revi2019$julianday[wake_revi2019$julianday == max(wake_revi2019$julianday[wake_revi2019$freq > .9*max(wake_revi2019$freq)])]
 
 pr19 = filter(fullDataset, Year==2019, Name == "Prairie Ridge Ecostation")
 
@@ -187,18 +187,19 @@ meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass',
                   allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
                   xaxt = 'n', xlab = '', ylab = '', xaxs = 'i',
                   cex.lab = 1.5, cex.axis = 1.3, new = FALSE)
+abline(v = 91)
 dev.off()
 
 pdf('figs/PrairieRidge_2019_cat_biomass_REVIpheno.pdf', height = 5, width = 7)
 par(mar = c(4, 5, 1, 4))
-plot(wake_revi2019$julianday, wake_revi2019$occ, xaxt = "n", yaxt = "n", type = 'n',
+plot(wake_revi2019$julianday, wake_revi2019$freq, xaxt = "n", yaxt = "n", type = 'n',
      lwd = 2, col = 'salmon', xlab = '', ylab = '', xlim = c(91, 210), xaxs = 'i')
 mtext("Red-eyed Vireo frequency", 4, col = 'salmon', line = 1, cex = 1.5)
 mtext(dates[monthLabs[1:(length(monthLabs)-1)]], 1, at = jds[monthLabs[1:(length(monthLabs)-1)]]+14, cex = 1.5, line = .4)
 abline(v = jds, col = 'gray80')
 
 # REVI
-points(wake_revi2019$julianday, wake_revi2019$occ, type = 'l', lwd = 2, col = 'salmon')
+points(wake_revi2019$julianday, wake_revi2019$freq, type = 'l', lwd = 2, col = 'salmon')
 
 par(new = TRUE)
 
@@ -208,18 +209,18 @@ meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass',
                   cex.lab = 1.5, cex.axis = 1.3, new = TRUE)
 dev.off()
 
-pdf('figsPrairieRidge_2019_cat_biomass_REVInestlings.pdf', height = 5, width = 7)
+pdf('figs/PrairieRidge_2019_cat_biomass_REVInestlings.pdf', height = 5, width = 7)
 par(mar = c(4, 5, 1, 4))
-plot(wake_revi2019$julianday, wake_revi2019$occ, xaxt = "n", yaxt = "n", type = 'n',
+plot(wake_revi2019$julianday, wake_revi2019$freq, xaxt = "n", yaxt = "n", type = 'n',
      lwd = 2, col = 'salmon', xlab = '', ylab = '', xlim = c(91, 210), xaxs = 'i')
 mtext("Red-eyed Vireo frequency", 4, col = 'salmon', line = 1, cex = 1.5)
 mtext(dates[monthLabs[1:(length(monthLabs)-1)]], 1, at = jds[monthLabs[1:(length(monthLabs)-1)]]+14, cex = 1.5, line = .4)
 abline(v = jds, col = 'gray80')
 
-# Show estimated nestling period, 22-34 days post mate-finding (which is when singing is assumed to drop off)
-# -- 5d nest building + 4d laying + 13d incubation + 12d nestlings
-rect(matedate + 22, 0, matedate + 22 + 12, 1, col = 'mistyrose', border = NA)
-points(wake_revi2019$julianday, wake_revi2019$occ, type = 'l', lwd = 2, col = 'salmon')
+# Show estimated nestling period, 24-36 days post mate-finding (which is when singing is assumed to drop off)
+# -- 5d nest building + 2d pre-laying + 4d laying + 13d incubation + 12d nestlings
+rect(matedate + 24, 0, matedate + 24 + 12, 1, col = 'mistyrose', border = NA)
+points(wake_revi2019$julianday, wake_revi2019$freq, type = 'l', lwd = 2, col = 'salmon')
 
 par(new = TRUE)
 
@@ -228,6 +229,47 @@ meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass',
                   xaxt = 'n', xlab = '', ylab = 'Caterpillar biomass (mg / survey)', xaxs = 'i',
                   cex.lab = 1.5, cex.axis = 1.3, new = TRUE)
 dev.off()
+
+
+
+# Select 2019 sites
+sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
+
+sites19_select10 = filter(sites19, Name %in% c("RVCC", "Stage Nature Center", "Mass Audubon's Boston Nature Center",
+                                               "Walker Nature Center", "Potter Park Zoo", "Riverbend Park", "Georgetown",
+                                                "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
+
+multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = TRUE, ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_10sites_2019', panelRows = 2, panelCols = 5,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
+
+
+
+
+### Comparison of REVI phenology across sites
+revi_output = data.frame(Name = NA, matedate = NA)
+
+pdf('figs/REVI_phenology_2019_10sites.pdf', height = 11, width = 8.5)
+par(mfrow = c(5, 2), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
+for (s in sites19_select10$Name) {
+  temp = readEbirdBarchart('data/revi', countyCode = sites19_select10$ebirdCounty[sites19_select10$Name == s])
+  plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
+  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq) & temp$julianday < 200])]
+  abline(v = matedate)
+  revi_output = rbind(revi_output, data.frame(Name = s, matedate = matedate))
+}
+mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
+mtext('Julian day', 1, outer = TRUE, cex = 1.5)
+dev.off()
+
+
+
+
+
+
+
+
+
 
 
 

@@ -756,6 +756,7 @@ readEbirdBarchart = function(path,
   
   fileOut = data.frame(date = paste0(rep(yearEnd, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
     mutate(julianday = yday(date), 
-           freq = unlist(ebird_wake_revi2019[1, 2:49]))
+           freq = unlist(fileIn[1, 2:49]),
+           county = countyCode)
   return(fileOut)
 }
