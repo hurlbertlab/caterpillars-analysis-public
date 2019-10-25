@@ -249,14 +249,17 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REV
 ### Comparison of REVI phenology across sites
 revi_output = data.frame(Name = NA, matedate = NA)
 
-pdf('figs/REVI_phenology_2019_10sites.pdf', height = 11, width = 8.5)
-par(mfrow = c(5, 2), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
+pdf('figs/REVI_phenology_2019_10sites.pdf', height = 6, width = 12)
+par(mfrow = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
 for (s in sites19_select10$Name) {
   temp = readEbirdBarchart('data/revi', countyCode = sites19_select10$ebirdCounty[sites19_select10$Name == s])
   plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
   matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq) & temp$julianday < 200])]
   abline(v = matedate)
+  legend("topright", legend = paste0(round(sites19_select10$Latitude[sites19_select10$Name == s], 1), "°N"), bty = 'n')
+  
   revi_output = rbind(revi_output, data.frame(Name = s, matedate = matedate))
+  
 }
 mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
 mtext('Julian day', 1, outer = TRUE, cex = 1.5)
@@ -264,7 +267,8 @@ dev.off()
 
 
 
-
+## NEXT STEPS
+# Need to take REVI calculations out of the multiSitePhenoPlot(), and get it calculated and stored separately in some version of siteList file
 
 
 
