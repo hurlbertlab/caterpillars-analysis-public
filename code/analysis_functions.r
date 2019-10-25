@@ -480,10 +480,12 @@ multiSitePhenoPlot = function(fullDataset,
                                                       # 'both' = plot phenologies on each panel with different colors
                               plotVar = 'fracSurveys', 
                               ordersToInclude = 'caterpillar', 
+                              height = 8.5,
+                              width = 11,
                               ...) {
   
   if (write) {
-    pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
+    pdf(paste('figs/', filename, '.pdf', sep = ''), height = height, width = width)
   }
   
   if (whichCatLines == 'all') {
@@ -736,3 +738,24 @@ rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
   }
 }
 
+
+
+
+####################################################################################
+# Read eBird barchart data obtained by clicking 'Download Histogram Data' from single species line graph page
+
+readEbirdBarchart = function(path, 
+                             countyCode, 
+                             speciesCode = 'reevir1', 
+                             yearBeg = format(Sys.Date(), "%Y"), 
+                             yearEnd= format(Sys.Date(), "%Y")) {
+  filename = paste0('ebird_', countyCode, '_', speciesCode, '_', yearBeg, '_', yearEnd, '_1_12_barchart.txt')
+
+  if (substr(path, nchar(path), nchar(path)) != "/") path = paste0(path, "/")
+  fileIn = read.table(paste0(path, filename), skip = 16, header = F, sep = '\t')
+  
+  fileOut = data.frame(date = paste0(rep(yearEnd, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
+    mutate(julianday = yday(date), 
+           freq = unlist(ebird_wake_revi2019[1, 2:49]))
+  return(fileOut)
+}
