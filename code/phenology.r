@@ -164,23 +164,70 @@ monthLabs = minPos:(maxPos-1)
 
 
 # Phenology at Prairie Ridge
+#REVI phenology
+ebird_wake_revi2019 = read.table('data/revi/ebird_US-NC-183_reevir1_2019_2019_1_12_barchart.txt', 
+                                 skip = 16, header = F, sep = '\t')
+wake_revi2019 = data.frame(date = paste0(rep(2019, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
+  mutate(julianday = yday(date),
+         occ = unlist(ebird_wake_revi2019[1, 2:49]))
+matedate = wake_revi2019$julianday[wake_revi2019$julianday == max(wake_revi2019$julianday[wake_revi2019$occ > .9*max(wake_revi2019$occ)])]
+
 pr19 = filter(fullDataset, Year==2019, Name == "Prairie Ridge Ecostation")
-par(mar = c(4, 5, 1, 1))
+
+pdf('figs/PrairieRidge_2019_cat_biomass.pdf', height = 5, width = 7)
+par(mar = c(4, 5, 1, 4))
 meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', 
                   allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
-                  xaxt = 'n', xlab = '', ylab = 'Biomass (mg / survey)', xaxs = 'i',
-                  cex.lab = 1.5, cex.axis = 1.3)
-mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = 1.5, line = .4)
+                  xaxt = 'n', xlab = '', ylab = 'Caterpillar biomass (mg / survey)', xaxs = 'i',
+                  cex.lab = 1.5, cex.axis = 1.3, new = TRUE)
+mtext(dates[monthLabs[1:(length(monthLabs)-1)]], 1, at = jds[monthLabs[1:(length(monthLabs)-1)]]+14, cex = 1.5, line = .4)
 abline(v = jds, col = 'gray80')
-meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', new = FALSE,
+
+meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', 
                   allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
-                  xaxt = 'n', xlab = 'Julian day', ylab = 'Biomass')
+                  xaxt = 'n', xlab = '', ylab = '', xaxs = 'i',
+                  cex.lab = 1.5, cex.axis = 1.3, new = FALSE)
+dev.off()
 
+pdf('figs/PrairieRidge_2019_cat_biomass_REVIpheno.pdf', height = 5, width = 7)
+par(mar = c(4, 5, 1, 4))
+plot(wake_revi2019$julianday, wake_revi2019$occ, xaxt = "n", yaxt = "n", type = 'n',
+     lwd = 2, col = 'salmon', xlab = '', ylab = '', xlim = c(91, 210), xaxs = 'i')
+mtext("Red-eyed Vireo frequency", 4, col = 'salmon', line = 1, cex = 1.5)
+mtext(dates[monthLabs[1:(length(monthLabs)-1)]], 1, at = jds[monthLabs[1:(length(monthLabs)-1)]]+14, cex = 1.5, line = .4)
+abline(v = jds, col = 'gray80')
 
+# REVI
+points(wake_revi2019$julianday, wake_revi2019$occ, type = 'l', lwd = 2, col = 'salmon')
 
+par(new = TRUE)
 
+meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', 
+                  allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
+                  xaxt = 'n', xlab = '', ylab = 'Caterpillar biomass (mg / survey)', xaxs = 'i',
+                  cex.lab = 1.5, cex.axis = 1.3, new = TRUE)
+dev.off()
 
+pdf('figsPrairieRidge_2019_cat_biomass_REVInestlings.pdf', height = 5, width = 7)
+par(mar = c(4, 5, 1, 4))
+plot(wake_revi2019$julianday, wake_revi2019$occ, xaxt = "n", yaxt = "n", type = 'n',
+     lwd = 2, col = 'salmon', xlab = '', ylab = '', xlim = c(91, 210), xaxs = 'i')
+mtext("Red-eyed Vireo frequency", 4, col = 'salmon', line = 1, cex = 1.5)
+mtext(dates[monthLabs[1:(length(monthLabs)-1)]], 1, at = jds[monthLabs[1:(length(monthLabs)-1)]]+14, cex = 1.5, line = .4)
+abline(v = jds, col = 'gray80')
 
+# Show estimated nestling period, 22-34 days post mate-finding (which is when singing is assumed to drop off)
+# -- 5d nest building + 4d laying + 13d incubation + 12d nestlings
+rect(matedate + 22, 0, matedate + 22 + 12, 1, col = 'mistyrose', border = NA)
+points(wake_revi2019$julianday, wake_revi2019$occ, type = 'l', lwd = 2, col = 'salmon')
+
+par(new = TRUE)
+
+meanDensityByWeek(pr19, ordersToInclude ='caterpillar', plotVar = 'meanBiomass', 
+                  allDates = F, plot = TRUE, col = 'purple3', lwd = 4, xlim = c(91, 210), 
+                  xaxt = 'n', xlab = '', ylab = 'Caterpillar biomass (mg / survey)', xaxs = 'i',
+                  cex.lab = 1.5, cex.axis = 1.3, new = TRUE)
+dev.off()
 
 
 
