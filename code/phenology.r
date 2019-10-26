@@ -245,12 +245,22 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REV
 ### Comparison of REVI phenology across sites
 revi_output = data.frame(Name = NA, matedate = NA)
 
+# threshold date for calculating peak bird occurrence should vary with latitude
+# at 32 deg N, threshold should be 150, at 45 deg N threshold should be 210; 
+# threshold = 4.615*latitude + 2.308
+latitudeBasedJDthreshold = function(latitude) {
+  jd = 4.615*latitude + 2.308
+  return(jd)
+}
+
 pdf('figs/REVI_phenology_2019_allSites.pdf', height = 6, width = 12)
 par(mfrow = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
 for (s in sites19$Name) {
   temp = readEbirdBarchart('data/revi', countyCode = sites19$ebirdCounty[sites19$Name == s])
+  latitude = sites19$Latitude[sites19$Name == s]
   plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
-  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq[temp$julianday < 200]) & temp$julianday < 200])]
+  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq[temp$julianday < latitudeBasedJDthreshold(latitude)]) & 
+                                                                   temp$julianday < latitudeBasedJDthreshold(latitude)])]
   abline(v = matedate)
   legend("topright", legend = paste0(round(sites19$Latitude[sites19$Name == s], 1), "°N"), bty = 'n')
   
@@ -260,6 +270,12 @@ for (s in sites19$Name) {
 mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
 mtext('Julian day', 1, outer = TRUE, cex = 1.5)
 dev.off()
+
+write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
+
+sites19full = left_join(sites19, revi_output, by = 'Name')
+
+
 
 
 
