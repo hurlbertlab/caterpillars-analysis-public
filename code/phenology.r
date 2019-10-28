@@ -229,28 +229,41 @@ dev.off()
 
 
 # Select 2019 sites
-sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
+sites19 = read.csv('data/revi/sitelist2019_revi.csv', header = TRUE, quote='\"', stringsAsFactors = FALSE)
 
 sites19_select10 = filter(sites19, Name %in% c("RVCC", "Stage Nature Center", "Mass Audubon's Boston Nature Center",
                                                "Walker Nature Center", "Potter Park Zoo", "Riverbend Park", "Georgetown",
                                                 "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
 
-multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = TRUE, ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'arrivaldate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_10sites_2019', panelRows = 2, panelCols = 5,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
 
 
+multiSitePhenoPlot(fullDataset, 2019, sites19, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
 
 ### Comparison of REVI phenology across sites
 revi_output = data.frame(Name = NA, matedate = NA)
 
+# threshold date for calculating peak bird occurrence should vary with latitude
+# at 32 deg N, threshold should be 150, at 45 deg N threshold should be 210; 
+# threshold = 4.615*latitude + 2.308
+latitudeBasedJDthreshold = function(latitude) {
+  jd = 4.615*latitude + 2.308
+  return(jd)
+}
+
 pdf('figs/REVI_phenology_2019_allSites.pdf', height = 6, width = 12)
 par(mfrow = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
 for (s in sites19$Name) {
   temp = readEbirdBarchart('data/revi', countyCode = sites19$ebirdCounty[sites19$Name == s])
+  latitude = sites19$Latitude[sites19$Name == s]
   plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
-  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq[temp$julianday < 200]) & temp$julianday < 200])]
+  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq[temp$julianday < latitudeBasedJDthreshold(latitude)]) & 
+                                                                   temp$julianday < latitudeBasedJDthreshold(latitude)])]
   abline(v = matedate)
   legend("topright", legend = paste0(round(sites19$Latitude[sites19$Name == s], 1), "°N"), bty = 'n')
   
@@ -261,10 +274,17 @@ mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
 mtext('Julian day', 1, outer = TRUE, cex = 1.5)
 dev.off()
 
+write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
+
+sites19full = left_join(sites19, revi_output, by = 'Name') %>% 
+  filter(nSurvs > 80)
+
+multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                                       filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
+                                       cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
 
-## NEXT STEPS
-# Need to take REVI calculations out of the multiSitePhenoPlot(), and get it calculated and stored separately in some version of siteList file
+
 
 
 

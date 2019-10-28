@@ -462,8 +462,10 @@ multiSitePhenoPlot = function(fullDataset,
                               monthRange = NULL, # 2-value vector with beginning and ending months for plotting;
                               # e.g., start of May - end of August would be c(5,8).
                               # If NULL, xlim will vary by site based on when surveys were conducted
-                              REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
-                                                 # (requires manual addition of REVI columns to siteSummary)
+                              REVI = NULL,      # 'arrivaldate' = plot window of red-eyed vireo nestlings estimated from eBird arrival date;
+                                                # 'matedate' = plot window of REVI nestlings estimated from eBird matedate
+                                                #    (date just before REVI frequency drops steeply, presumably after pair formation);
+                                                # No plotting if NULL
                               greenup = FALSE,   # add median green up date as vertical line for that location
                               filename,
                               panelRows = 4,
@@ -571,16 +573,24 @@ multiSitePhenoPlot = function(fullDataset,
                                             ordersToInclude = ordersToInclude, ...)
     
     # Plot REVI window
-    if (REVI) {
+    if (REVI == 'arrivaldate') {
       bird = siteSummary %>%
         filter(Name == site) %>%
         mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
                peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
                arrival = round((preArrival + peakArrival)/2),
-               hatching = arrival + 35,
-               fledging = hatching + 11)
+               hatching = arrival + 35, # based on reproduction times from Birds of North America
+               fledging = hatching + 12) # nestling period
       rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
+    } else if (REVI == 'matedate') {
+      hatching = siteSummary$matedate[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
+      if (!is.null(hatching)) {
+        fledging = hatching + 12
+        rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+      }
     }
+    
+    
     
     # Month lines
     abline(v = jds, col = 'gray80')
@@ -608,17 +618,18 @@ multiSitePhenoPlot = function(fullDataset,
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
     
     if (greenup) {
-      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
-             siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
       
-      if (counter %% (panelRows*panelCols) == 1) {
-        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(maxY - minY) + minY, 
-             'median\ngreenup', col = 'limegreen', cex = 1.5)
+      if (!is.null(siteSummary$medianGreenup[siteSummary$Name == site])) {
+        arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
+               siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
+        
+        if (counter %% (panelRows*panelCols) == 1) {
+          text(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(maxY - minY) + minY, 
+               'median\ngreenup', col = 'limegreen', cex = 1.5)
+        }
       }
-      
     }
-    
-    
+
     if (counter %% (panelRows*panelCols) == 0 | counter == nrow(siteSummary)) {
       mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
       mtext(yLabel, 2, outer = TRUE, line = 1, cex = 1.5)
