@@ -229,17 +229,20 @@ dev.off()
 
 
 # Select 2019 sites
-sites19 = read.table('data/revi/sitelist2019_revi.txt', header = TRUE, sep = '\t', quote='\"', stringsAsFactors = FALSE)
+sites19 = read.csv('data/revi/sitelist2019_revi.csv', header = TRUE, quote='\"', stringsAsFactors = FALSE)
 
 sites19_select10 = filter(sites19, Name %in% c("RVCC", "Stage Nature Center", "Mass Audubon's Boston Nature Center",
                                                "Walker Nature Center", "Potter Park Zoo", "Riverbend Park", "Georgetown",
                                                 "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
 
-multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = TRUE, ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'arrivaldate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_10sites_2019', panelRows = 2, panelCols = 5,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
 
 
+multiSitePhenoPlot(fullDataset, 2019, sites19, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
 
 ### Comparison of REVI phenology across sites
@@ -273,14 +276,15 @@ dev.off()
 
 write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
 
-sites19full = left_join(sites19, revi_output, by = 'Name')
+sites19full = left_join(sites19, revi_output, by = 'Name') %>% 
+  filter(nSurvs > 80)
+
+multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                                       filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
+                                       cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
 
 
-
-
-## NEXT STEPS
-# Need to take REVI calculations out of the multiSitePhenoPlot(), and get it calculated and stored separately in some version of siteList file
 
 
 
