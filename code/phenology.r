@@ -104,6 +104,19 @@ text(x = -68, y = seq(30, 36, length=5), labels = substr(10^legendVals(log10(phe
 dev.off()
 
 
+pdf('figs/pctSurveysPostSolstice_map.pdf', height = 8, width = 8)
+plot(NAmap, xlim = c(-90, -70), ylim = c(28, 48), border = 'gray50', col = 'gray90')
+points(pheno19$Longitude, pheno19$Latitude, pch = 16, col = colorScale(pheno19$pctSolstice), 
+       cex = 3)
+
+legend_image <- as.raster(matrix(rainbow(130)[1:100], ncol=1))
+rasterImage(legend_image, -72, 30, -70, 36)
+text(-70, 38, "% of surveys\nw/ caterpillars", cex = 1.3)
+text(x = -69, y = seq(30, 36, length=5), labels = round(legendVals(pheno19$pctSolstice)))
+dev.off()
+
+
+#####################################################
 # Two example sites, cat biomass by plant species
 
 #EwA at Fells and Prairie Ridge
@@ -229,87 +242,104 @@ dev.off()
 
 
 # Select 2019 sites
-sites19 = read.csv('data/revi/sitelist2019_revi.csv', header = TRUE, quote='\"', stringsAsFactors = FALSE)
-
-sites19_select10 = filter(sites19, Name %in% c("RVCC", "Stage Nature Center", "Mass Audubon's Boston Nature Center",
-                                               "Walker Nature Center", "Potter Park Zoo", "Riverbend Park", "Georgetown",
-                                                "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
-
-multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'arrivaldate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
-                   filename = 'caterpillarPhenology_10sites_2019', panelRows = 2, panelCols = 5,
-                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
-
-
-multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
-                   filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
-                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
-
+sites19 = siteSummary(fullDataset, 2019, write = FALSE) 
 
 ### Comparison of REVI phenology across sites
-revi_output = data.frame(Name = NA, matedate = NA)
+year = 2019
 
-# threshold date for calculating peak bird occurrence should vary with latitude
-# at 32 deg N, threshold should be 150, at 45 deg N threshold should be 210; 
-# threshold = 4.615*latitude + 2.308
-latitudeBasedJDthreshold = function(latitude) {
-  jd = 4.615*latitude + 2.308
-  return(jd)
-}
-
-# Calculates the last date within a seasonal window that varies by latitude 
-# (according to the latitudeBasedJDthreshold; later window at higher latitudes)
-# for which the observed bird frequency is within 0.9 (or other specified proportion)
-# of the maximum frequency in that window. Thus, dips in frequency are ignored if
-# frequency comes back up close to the max. This date really captures the period
-# during which there is a pretty steep drop off in frequency.
-
-matedateCalc1 = function(birdFreqDataframe, latitude, proportionOfPeak = 0.9) {
-  matedate = birdFreqDataframe$julianday[birdFreqDataframe$julianday == 
-                          max(birdFreqDataframe$julianday[birdFreqDataframe$freq > .proportionOfPeak*max(birdFreqDataframe$freq[birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)]) & 
-                                                        birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)])]
-  return(matedate)
-}
-
-# Calculates the first date at which observed bird frequency drops by more than 0.1
-# (or other specified proportion) times the maximum frequency. Frequency might rebound
-# back up to close to the maximum value before dropping off steeply, but it is assumed that
-# the first "big" dip is the period we want to characterize.
-matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
-  freqDiff = diff(birdFreqDataframe$freq)
-  diffRelativeToMax = freqDiff/max(birdFreqDataframe$freq, na.rm = TRUE)
-  firstIndex = min(which(diffRelativeToMax < -dipFromPeak))
-  return(birdFreqDataframe$julianday[firstIndex])
-}
+revi_output = data.frame(Name = NA, Year = year, matedate1 = NA, matedate2 = NA)
 
 
-pdf('figs/REVI_phenology_2019_allSites_matedate2.pdf', height = 6, width = 12)
+pdf('figs/REVI_phenology_2019_allSites_matedate1.pdf', height = 6, width = 12)
 par(mfrow = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
 for (s in sites19$Name) {
-  temp = readEbirdBarchart('data/revi', countyCode = sites19$ebirdCounty[sites19$Name == s])
+  temp = readEbirdBarchart('data/revi', countyCode = sites19$ebirdCounty[sites19$Name == s],
+                           yearBeg = year, yearEnd = year)
   latitude = sites19$Latitude[sites19$Name == s]
   plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
-  matedate = matedateCalc2(temp, dipFromPeak = .1)
-  abline(v = matedate)
+  matedate1 = matedateCalc1(temp, latitude, proportionOfPeak = .9)
+  matedate2 = matedateCalc2(temp, dipFromPeak = .1)
+  abline(v = matedate1)
   legend("topright", legend = paste0(round(sites19$Latitude[sites19$Name == s], 1), "°N"), bty = 'n')
   
-  revi_output = rbind(revi_output, data.frame(Name = s, matedate = matedate))
+  revi_output = rbind(revi_output, data.frame(Name = s, Year = year, matedate1 = matedate1, matedate2 = matedate2))
   
 }
 mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
 mtext('Julian day', 1, outer = TRUE, cex = 1.5)
 dev.off()
 
+revi_output = revi_output[-1,]
+
 write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
 
-sites19md = read.csv('data/revi/revi_matedate_2019_allsites.csv', header = T)
+revi_output = read.csv('data/revi/revi_matedate_2019_allsites.csv', header = T)
 
-sites19full = left_join(sites19, revi_output, by = 'Name') %>% 
-  filter(nSurvs > 80)
+sites19full = sites19 %>%
+  left_join(revi_output, by = 'Name') %>%
+  filter(nSurveys > 80)
 
-multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
-                                       filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
+sites19_select10 = filter(sites19full, Name %in% c("RVCC", "Stage Nature Center", "Mass Audubon's Boston Nature Center",
+                                               "Walker Nature Center", "Potter Park Zoo", "Riverbend Park", "Georgetown",
+                                               "NC Botanical Garden", "Prairie Ridge Ecostation", "Fernbank Forest"))
+
+multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate2', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                                       filename = 'caterpillarPhenology_allSites_2019_REVImatedate2_greenup', panelRows = 3, panelCols = 4, greenup = T,
                                        cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
+# Select sites, new dimensions
+multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'matedate2', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_selectSites_2019_REVImatedate2_greenup', panelRows = 2, panelCols = 5, greenup = T,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
+
+
+multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'matedate2', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+                   filename = 'caterpillarPhenology_selectSites_2019_REVImatedate2', panelRows = 2, panelCols = 5, greenup = F,
+                   cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
+
+
+############################################
+# Exploring caterpillar phenometrics
+
+pheno19 = fullPhenoSummary %>%
+  filter(Year == 2019, 
+         numWeeksPostSolsticeWindow >= 3) %>%
+  left_join(revi_output, by = c('Name', 'Year')) %>%
+  left_join(sites[, c('Name', 'Longitude', 'Latitude')], by = 'Name')
+
+# Get raster data of tmin
+tmin = getData('worldclim', var = 'tmin', res = 2.5)
+pheno19$Mar_MayTmin_normal = apply(extract(tmin, pheno19[, c('Longitude', 'Latitude')])[, 3:5], 1, mean)/10
+
+
+# Linear model predicting peak mass date with greenup date and tmin
+
+massModel1 = lm(massPeakDateWindow ~ medianGreenup + Mar_MayTmin_normal, data = pheno19)
+massModel2 = lm(massPeakDate ~ medianGreenup + Mar_MayTmin_normal, data = pheno19)
+
+
+
+
+pdf('figs/caterpillarPhenology_metrics_allSites_2019.pdf', height = 8.5, width = 11)
+par(mfrow = c(3, 4), mar = c( 4, 4, 3, 1))
+for (s in pheno19$Name) {
+  tmp = filter(fullDataset, Name == s, Year == 2019)
+  meanDensityByWeek(tmp, ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', plot = TRUE,
+                    xlim = c(91, 211), col = 'purple3', lwd = 4, xlab = '', ylab = 'Mean Biomass',
+                    main = siteNameForPlotting(s))
+  abline(v = pheno19$massPeakDate[pheno19$Name == s], col = 'red', lwd = 6)
+  abline(v = pheno19$massPeakDateWindow[pheno19$Name == s], col = 'blue', lwd = 3)
+  abline(v = pheno19$pctRollingPeakDateWindow[pheno19$Name == s], col= 'green', lwd = 1)
+  
+  if (s == pheno19$Name[1]) {
+    legend("topleft", legend = c('peak', 'peakWindow', 'rollingPeak'), lwd = c(6,3,1), 
+           col = c('red', 'blue', 'green', lty = 'solid'), bty = 'n')
+  }
+}
+dev.off()
+
+# scatterplot
+plot(pheno19$medianGreenup, pheno19$massPeakDateWindow)
 
 
 
@@ -320,9 +350,8 @@ multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = '
 
 
 
+# Grace's analysis
 # Top 12 sites without ECU, weighted mean fraction of surveys with caterpillars
-
-
 library(tidyr)
 library(purrr)
 library(ggplot2)
