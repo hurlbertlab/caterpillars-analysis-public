@@ -240,7 +240,7 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REV
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
 
 
-multiSitePhenoPlot(fullDataset, 2019, sites19, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
+multiSitePhenoPlot(fullDataset, 2019, sites19full, monthRange = c(4,8), REVI = 'matedate', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_allSites_2019_REVImatedate_greenup', panelRows = 3, panelCols = 4,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =8.5, width = 11, colREVI = rgb(1, 228/255, 225/255))
 
@@ -256,14 +256,39 @@ latitudeBasedJDthreshold = function(latitude) {
   return(jd)
 }
 
-pdf('figs/REVI_phenology_2019_allSites.pdf', height = 6, width = 12)
+# Calculates the last date within a seasonal window that varies by latitude 
+# (according to the latitudeBasedJDthreshold; later window at higher latitudes)
+# for which the observed bird frequency is within 0.9 (or other specified proportion)
+# of the maximum frequency in that window. Thus, dips in frequency are ignored if
+# frequency comes back up close to the max. This date really captures the period
+# during which there is a pretty steep drop off in frequency.
+
+matedateCalc1 = function(birdFreqDataframe, latitude, proportionOfPeak = 0.9) {
+  matedate = birdFreqDataframe$julianday[birdFreqDataframe$julianday == 
+                          max(birdFreqDataframe$julianday[birdFreqDataframe$freq > .proportionOfPeak*max(birdFreqDataframe$freq[birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)]) & 
+                                                        birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)])]
+  return(matedate)
+}
+
+# Calculates the first date at which observed bird frequency drops by more than 0.1
+# (or other specified proportion) times the maximum frequency. Frequency might rebound
+# back up to close to the maximum value before dropping off steeply, but it is assumed that
+# the first "big" dip is the period we want to characterize.
+matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
+  freqDiff = diff(birdFreqDataframe$freq)
+  diffRelativeToMax = freqDiff/max(birdFreqDataframe$freq, na.rm = TRUE)
+  firstIndex = min(which(diffRelativeToMax < -dipFromPeak))
+  return(birdFreqDataframe$julianday[firstIndex])
+}
+
+
+pdf('figs/REVI_phenology_2019_allSites_matedate2.pdf', height = 6, width = 12)
 par(mfrow = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
 for (s in sites19$Name) {
   temp = readEbirdBarchart('data/revi', countyCode = sites19$ebirdCounty[sites19$Name == s])
   latitude = sites19$Latitude[sites19$Name == s]
   plot(temp$julianday, temp$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', main = s)
-  matedate = temp$julianday[temp$julianday == max(temp$julianday[temp$freq > .9*max(temp$freq[temp$julianday < latitudeBasedJDthreshold(latitude)]) & 
-                                                                   temp$julianday < latitudeBasedJDthreshold(latitude)])]
+  matedate = matedateCalc2(temp, dipFromPeak = .1)
   abline(v = matedate)
   legend("topright", legend = paste0(round(sites19$Latitude[sites19$Name == s], 1), "°N"), bty = 'n')
   
@@ -275,6 +300,8 @@ mtext('Julian day', 1, outer = TRUE, cex = 1.5)
 dev.off()
 
 write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
+
+sites19md = read.csv('data/revi/revi_matedate_2019_allsites.csv', header = T)
 
 sites19full = left_join(sites19, revi_output, by = 'Name') %>% 
   filter(nSurvs > 80)
