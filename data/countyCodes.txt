@@ -1,0 +1,33 @@
+county	ebirdCounty
+"ontario,algoma"	CA-ON-AL
+"maine,hancock"	US-ME-009
+"ontario,toronto"	CA-ON-TO
+"iowa,dickinson"	US-IA-059
+"michigan,ingham"	US-MI-065
+"michigan,oakland"	US-MI-125
+"massachusetts,middlesex"	US-MA-017
+"michigan,kalamazoo"	US-MI-077
+"massachusetts,suffolk"	US-MA-025
+"massachusetts,norfolk"	US-MA-021
+"massachusetts,nantucket"	US-MA-019
+"pennsylvania,allegheny"	US-PA-003
+"pennsylvania,montgomery"	US-PA-091
+"pennsylvania,philadelphia"	US-PA-101
+"maryland,baltimore"	US-MD-005
+"virginia,fairfax"	US-VA-059
+"district of columbia,washington"	US-DC-001
+"missouri,st louis"	US-MO-189
+"virginia,king george"	US-VA-099
+"california,marin"	US-CA-041
+"north carolina,currituck"	US-NC-053
+"north carolina,watauga"	US-NC-189
+"tennessee,knox"	US-TN-093
+"north carolina,orange"	US-NC-135
+"tennessee,rutherford"	US-TN-149
+"north carolina,wake"	US-NC-183
+"tennessee,blount"	US-TN-009
+"north carolina,pitt"	US-NC-147
+"north carolina,buncombe"	US-NC-021
+"south carolina,richland"	US-SC-079
+"georgia,de kalb"	US-GA-089
+"georgia,muscogee"	US-GA-215
