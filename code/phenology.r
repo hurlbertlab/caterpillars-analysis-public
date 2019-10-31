@@ -273,7 +273,7 @@ revi_output = revi_output[-1,]
 
 write.csv(revi_output, 'data/revi/revi_matedate_2019_allsites.csv', row.names = F)
 
-revi_output = read.csv('data/revi/revi_matedate_2019_allsites.csv', header = T)
+revi_output = read.csv('data/revi/revi_matedate_2019_allsites.csv', header = T, stringsAsFactors = F)
 
 sites19full = sites19 %>%
   left_join(revi_output, by = 'Name') %>%
@@ -329,7 +329,7 @@ for (s in pheno19$Name) {
                     main = siteNameForPlotting(s))
   abline(v = pheno19$massPeakDate[pheno19$Name == s], col = 'red', lwd = 6)
   abline(v = pheno19$massPeakDateWindow[pheno19$Name == s], col = 'blue', lwd = 3)
-  abline(v = pheno19$pctRollingPeakDateWindow[pheno19$Name == s], col= 'green', lwd = 1)
+  abline(v = pheno19$massRollingPeakDateWindow[pheno19$Name == s], col= 'green', lwd = 1)
   
   if (s == pheno19$Name[1]) {
     legend("topleft", legend = c('peak', 'peakWindow', 'rollingPeak'), lwd = c(6,3,1), 
