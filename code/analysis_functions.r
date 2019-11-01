@@ -780,6 +780,21 @@ readEbirdBarchart = function(path,
   return(fileOut)
 }
 
+# As above, but reading directly from 
+getEbirdBarchartData = function(countyCode, speciesCode = 'reevir1', year) {
+  require(data.table)
+  url = paste0('https://ebird.org/barchartData?r=', countyCode, 
+               '&bmo1&emo=12&byr=', year, '&eyr=', year, '&spp=', speciesCode, '&fmt=tsv')
+  fileIn = fread(url, skip = 16, header = F)
+  
+  fileOut = data.frame(date = paste0(rep(year, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
+    mutate(Year = year,
+           julianday = yday(date), 
+           freq = unlist(fileIn[1, 2:49]),
+           county = countyCode)
+  return(fileOut)
+}
+
 
 # threshold date for calculating peak bird occurrence should vary with latitude
 # at 32 deg N, threshold should be 150, at 45 deg N threshold should be 210; 
