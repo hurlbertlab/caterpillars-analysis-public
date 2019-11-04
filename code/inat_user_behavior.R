@@ -3,6 +3,9 @@
 
 library(tidyverse)
 library(dbplyr)
+library(forcats)
+library(cowplot)
+library(geonames)
 
 setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
@@ -28,14 +31,14 @@ obs_days_df <- obs_days_db %>%
   collect()
 
 obs_days_plot <- obs_days_df %>%
-  filter(year < 2018) %>%
+  filter(year > 2008 & year < 2018) %>%
   group_by(year) %>%
   mutate(total_obs_days = sum(count))
 
 pdf("figs/inaturalist/observer-days-per-year.pdf")
 for(y in unique(obs_days_plot$year)) {
   df <- filter(obs_days_plot, year == y)
-  plot <- ggplot(df, aes(x = obs_days, y = count)) + geom_col() + scale_y_log10() + 
+  plot <- ggplot(df, aes(x = obs_days, y = count + 1)) + geom_col(width = 0.05) + scale_y_log10() + scale_x_log10() +
     labs(x = "Observer-days", y = "Count", title = y) +
     annotate(geom = "text", x = max(df$obs_days)-0.2*max(df$obs_days), y = max(df$count), label = paste0("Total obs-days \n", unique(df$total_obs_days)))
   print(plot)
@@ -61,7 +64,7 @@ obs_effort_df <- obs_effort_db %>%
 
 obs_effort_plot <- obs_effort_df %>%
   na.omit() %>%
-  filter(year < 2018) %>%
+  filter(year > 2008 & year < 2018) %>%
   group_by(year) %>%
   mutate(jd_wk = jd_wk - min(jd_wk))
 
@@ -85,6 +88,30 @@ for(y in unique(obs_effort_plot$year)) {
 }
 dev.off()
 
+# Yearly growth
+
+obs_year_db <- tbl(con, "inat") %>%
+  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  mutate(jday = julianday(observed_on),
+         jd_wk = 7*floor(jday/7)) %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  distinct(year, jd_wk, observed_on, user_login, id) %>%
+  group_by(year) %>%
+  summarize(n_obs = n_distinct(id),
+            n_users = n_distinct(user_login))
+
+obs_year_df <- obs_year_db %>%
+  collect()
+
+ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_obs)) + geom_point(size = 2) +
+  labs(x = "Year", y = "Number of observations")
+ggsave("figs/inaturalist/obs-per-year.pdf")
+
+ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_users)) + geom_point(size = 2) +
+  labs(x = "Year", y = "Number of users")
+ggsave("figs/inaturalist/users-per-year.pdf")
+
 # Observations per day per observer
 
 obs_freq_db <- tbl(con, "inat") %>%
@@ -98,16 +125,9 @@ obs_freq_db <- tbl(con, "inat") %>%
 obs_freq_df <- obs_freq_db %>%
   collect()
 
-# Users under 1000 obs
-ggplot(filter(obs_freq_df, n_obs < 1000), aes(x = n_obs)) + geom_histogram(bins = 100) + scale_y_log10() +
-  labs(x = "Number of observations per day per observer", y = "Count", title = "Under 1000 observations per day")
+ggplot(obs_freq_df, aes(x = n_obs + 1)) + geom_histogram(bins = 100) + scale_y_log10() + scale_x_log10() +
+  labs(x = "Number of observations per day per observer", y = "Count")
 ggsave("figs/inaturalist/obs-per-day-per-user.pdf")
-
-# Users over 1000 obs
-ggplot(filter(obs_freq_df, n_obs >= 1000), aes(x = n_obs)) + 
-  geom_histogram(bins = 100) + scale_y_continuous(breaks = c(0,2,4,6,8)) +
-  labs(x = "Number of observations per day per observer", y = "Count", title = "Over 1000 observations per day")
-ggsave("figs/inaturalist/obs-per-day-per-user-super.pdf")
 
 # Observations per month per observer
 
@@ -115,16 +135,9 @@ obs_freq_month <- obs_freq_df %>%
   group_by(year, month, user_login) %>%
   summarize(n_obs = sum(n_obs))
 
-# Users under 1000 obs
-ggplot(filter(obs_freq_month, n_obs < 1000), aes(x = n_obs)) + geom_histogram(bins = 100) +
+ggplot(obs_freq_month, aes(x = n_obs + 1)) + geom_histogram(bins = 100) + scale_y_log10() + scale_x_log10() +
   labs(x = "Number of observations per month per observer", y = "Count", title = "Under 1000 observations per month")
 ggsave("figs/inaturalist/obs-per-month-per-user.pdf")
-
-# Users over 1000 obs
-ggplot(filter(obs_freq_month, n_obs >= 1000), aes(x = n_obs)) + 
-  geom_histogram(bins = 100) + 
-  labs(x = "Number of observations per month per observer", y = "Count", title = "Over 1000 observations per month")
-ggsave("figs/inaturalist/obs-per-month-per-user-super.pdf")
 
 # Taxonomic breadth of observations, all time
 # PCA for users - iconic_taxon_name
@@ -135,6 +148,7 @@ icon_taxa_db <- tbl(con, "inat") %>%
 
 icon_taxa_df <- icon_taxa_db %>%
   collect()
+#516623 users
 
 icon_taxa_clean <- icon_taxa_df %>%
   filter(user_login != "", iconic_taxon_name != "") %>%
@@ -158,16 +172,25 @@ ggplot(taxa_obs, aes(x = iconic_taxon_name, y = total_users)) + geom_col() +
 ggsave("figs/inaturalist/taxa_total_users.pdf")
 
 # restructure long to wide
+# Proportions of observations instead of raw numbers
 icon_taxa_wide <- icon_taxa_clean %>%
   select(user_login, iconic_taxon_name, n) %>%
-  spread(key = iconic_taxon_name, value = n) 
+  group_by(user_login) %>%
+  mutate(total_obs = sum(n)) %>%
+  filter(total_obs > 20) %>%
+  mutate(prop_obs = n/total_obs) %>%
+  select(user_login, iconic_taxon_name, prop_obs) %>%
+  spread(key = iconic_taxon_name, value = prop_obs)
+#71881 users
 
 icon_taxa_wide[is.na(icon_taxa_wide)] <- 0
 
 # PCA
 taxa_pca <- prcomp(icon_taxa_wide[, -1], center = T, scale = T)
+# PC1 - 15.7 %, PC2 - 12.5 %
+# First 4 axes - 49% of variance
 
-tiff("figs/inaturalist/taxa_pca_biplot.tiff", height = 6, width = 9)
+png("figs/inaturalist/taxa_pca_biplot.png", height = 6, width = 9, units = "in", res = 72)
 biplot(taxa_pca)
 dev.off()
 
@@ -178,34 +201,172 @@ animalia_db <- tbl(con, "inat") %>%
 animalia_df <- animalia_db %>%
   collect()
 
+# Super users: broken down by taxa
+
+icon_taxa_super<- icon_taxa_clean %>%
+  select(user_login, iconic_taxon_name, n) %>%
+  group_by(user_login) %>%
+  mutate(total_obs = sum(n)) %>%
+  filter(total_obs > 10000)
+
+super_users <- icon_taxa_super %>%
+  ungroup() %>%
+  select(user_login, total_obs) %>%
+  distinct() %>%
+  arrange(desc(total_obs)) %>%
+  slice(1:30)
+# all > 25,900 observations, max = 115000
+
+super_users_plot <- icon_taxa_super %>%
+  filter(user_login %in% super_users$user_login) %>%
+  mutate(prop_obs = n/total_obs) %>%
+  mutate(arrange = prop_obs[iconic_taxon_name == "Aves"])
+
+super_users_plot$taxon <- fct_collapse(super_users_plot$iconic_taxon_name, 
+                                       Other = c("Reptilia", "Amphibia", "Chromista", "Arachnida", "Mammalia", "Mollusca", "Protozoa", "Animalia"))
+
+ggplot(super_users_plot, aes(x = forcats::fct_reorder(user_login, arrange), y = prop_obs, fill = taxon)) +
+  geom_col(position = "stack") +
+  scale_fill_viridis_d() +
+  labs(y = "Proportion of observations", fill = "Iconic taxon name") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        axis.title.x = element_blank())
+ggsave("figs/inaturalist/super_users_taxa.pdf")
+
+# insect super users: geographic scope & temporal scope
+
+add_group_summaries <- function(d, groupingVars, ...) {
+  # convert char vector into quosure vector
+  # worked out after reading http://dplyr.tidyverse.org/articles/programming.html
+  # no idea if this will be stable across rlang/tidyeval versions
+  groupingQuos <- lapply(groupingVars, 
+                         function(si) { quo(!!as.name(si)) })
+  # print(groupingQuos)
+  dg <- group_by(d, !!!groupingQuos)
+  ds <- summarize(dg, ...)
+  # Work around: https://github.com/tidyverse/dplyr/issues/2963
+  ds <- ungroup(ds)
+  left_join(d, ds, by= groupingVars)
+}
+
+super_users_db <- tbl(con, "inat") %>%
+  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id, scientific_name) %>%
+  filter(iconic_taxon_name == "Arachnida" | iconic_taxon_name == "Insecta") %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  add_group_summaries("user_login", 
+                      total_obs = n_distinct(id)) %>%
+  filter(total_obs > 1000)
+
+super_users_df <- super_users_db %>%
+  collect()
+# 725 users
+
+super_users_time <- super_users_df %>%
+  group_by(user_login) %>%
+  summarize(beg = min(as.numeric(year)),
+            end = max(as.numeric(year)),
+            length = max(as.numeric(year)) - min(as.numeric(year)))
+
+beg <- ggplot(super_users_time, aes(x = beg)) + geom_histogram() +
+  labs(x = "First year of observations", y = "Count")
+
+end <- ggplot(super_users_time, aes(x = end)) + geom_histogram() +
+  labs(x = "Last year of observations", y = "Count")
+
+time <- ggplot(super_users_time, aes(x = length)) + geom_histogram() +
+  labs(x = "Years active", y = "Count")
+
+plot_grid(beg, end, time, nrow = 2)
+ggsave("figs/inaturalist/insect_super_users_temporal.pdf")
+
+data(wrld_simpl)
+world <-  wrld_simpl %>% 
+  st_as_sf()
+
+super_users_space <- super_users_df %>%
+  group_by(user_login) %>%
+  distinct(latitude, longitude) %>%
+  na.omit() %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs("+proj=longlat +datum=WGS84 +no_defs") %>%
+  st_intersection(world)
+
+super_users_country <- super_users_space %>%
+  group_by(user_login, NAME) %>%
+  count()
+
+country_obs <- super_users_country %>%
+  group_by(NAME) %>%
+  summarize(sum_obs = sum(n)) %>%
+  st_set_geometry(NULL)
+
+world_plot <- world %>%
+  left_join(country_obs) %>%
+  mutate(log_sum = log10(sum_obs))
+
+super_obs_map <- tm_shape(world_plot) + tm_polygons(col = "log_sum", palette = "YlGnBu", title = "Log10(Observations)") + 
+  tm_layout(legend.text.size = 1, legend.title.size = 1.25)
+tmap_save(super_obs_map, "figs/inaturalist/insect_super_obs_map.pdf")
+
 # Tendency to submit repeat observations of the same species in a day, month, year
+# Case study: Eastern Tiger Swallowtail
+# All users, users who have submitted at least 20 observations
 
 taxa_freq_db <- tbl(con, "inat") %>%
   select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id, scientific_name) %>%
+  filter(scientific_name == "Papilio glaucus") %>%
   mutate(year = substr(observed_on, 1, 4),
          month = substr(observed_on, 6, 7)) %>%
-  group_by(year, month, observed_on, user_login, scientific_name) %>%
+  group_by(year, month, observed_on, user_login) %>%
   summarize(n_obs = n_distinct(id))
 
 taxa_freq_df <- taxa_freq_db %>%
   collect()
+# 10046 observations
 
-quantile(taxa_freq_df$n_obs)
-# 0 - 1, 25 - 1, 50 - 1, 75 - 1, 100 - 1520
+all_daily <- ggplot(taxa_freq_df, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Daily")
 
-# same month repeat observations of species
 taxa_freq_month <- taxa_freq_df %>%
-  group_by(year, month, user_login, scientific_name) %>%
-  summarize(n_observations = sum(n_obs))
+  group_by(year, month, user_login) %>%
+  summarize(n_obs = sum(n_obs))
 
-quantile(taxa_freq_month$n_observations)
-# 0 - 1, 25 - 1, 50 - 1, 75 - 1, 100 - 7220
+all_monthly <- ggplot(taxa_freq_month, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Monthly")
 
-# same year repeat observations of species
 taxa_freq_year <- taxa_freq_df %>%
-  group_by(year, user_login, scientific_name) %>%
-  summarize(n_observations = sum(n_obs))
+  group_by(year, user_login) %>%
+  summarize(n_obs = sum(n_obs))
 
-quantile(taxa_freq_year$n_observations)
-# 0 - 1, 25 - 1, 50 - 1, 75 - 1, 100 - 8820
+all_yearly <- ggplot(taxa_freq_year, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Yearly")
 
+plot_grid(all_daily, all_monthly, all_yearly, nrow = 1)
+ggsave("figs/inaturalist/rep_swallowtail_obs_all_users.pdf", height = 3, width = 9, units = "in")
+
+taxa_freq_users <- taxa_freq_df %>%
+  group_by(user_login) %>%
+  filter(sum(n_obs) > 20)
+# 1058 observations
+
+freq_daily <- ggplot(taxa_freq_users, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Daily")
+
+users_freq_month <- taxa_freq_users %>%
+  group_by(year, month, user_login) %>%
+  summarize(n_obs = sum(n_obs))
+
+freq_monthly <- ggplot(users_freq_month, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Monthly")
+
+users_freq_year <- taxa_freq_users %>%
+  group_by(year, user_login) %>%
+  summarize(n_obs = sum(n_obs))
+
+freq_yearly <- ggplot(users_freq_year, aes(n_obs)) + stat_ecdf(geom= "step", cex = 1) +
+  labs(x = "P. glaucus observations", y = "ECDF", title = "Yearly")
+
+plot_grid(freq_daily, freq_monthly, freq_yearly, nrow = 1)
+ggsave("figs/inaturalist/rep_swallowtail_obs_freq_users.pdf", height = 3, width = 9, units = "in")
+  
