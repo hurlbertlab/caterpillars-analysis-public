@@ -29,3 +29,17 @@ for (s in unique(fullDataset$Name)) {
 climatedata = climatedata[-1, ]
 climatedata$date = as.Date(climatedata$yday, origin = paste0(climatedata$year-1, "-12-31"))
 write.csv(climatedata, 'data/env/daymet_climate.csv', row.names = F)
+
+gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+  
+  tmean_minus_base = temperatureData$tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  
+  gdd = cumsum(tmean_minus_base)[asOfJD]
+  return(gdd)
+}
+
+
+daymetGDD = climatedata %>%
+  group_by(Name, year) %>%
+  summarize(daymetGDD_May1 = gddCalc(cbind.data.frame(tmean, yday), base = 0, asOfJD = 121))
