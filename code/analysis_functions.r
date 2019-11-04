@@ -788,10 +788,12 @@ getEbirdBarchartData = function(countyCode, speciesCode = 'reevir1', year) {
   fileIn = fread(url, skip = 16, header = F)
   
   fileOut = data.frame(date = paste0(rep(year, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
-    mutate(Year = year,
+    mutate(speciesCode = speciesCode,
+           county = countyCode,
+           Year = year,
            julianday = yday(date), 
-           freq = unlist(fileIn[1, 2:49]),
-           county = countyCode)
+           freq = unlist(fileIn[1, 2:49])) %>%
+    select(-date)
   return(fileOut)
 }
 
