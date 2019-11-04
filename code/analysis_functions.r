@@ -2,7 +2,8 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
-library(tidyr)
+library(RcppRoll)
+#library(tidyr)
 
 
 ###################################
@@ -253,7 +254,7 @@ siteEffortSummary = function(fullDataset,
 siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
   out = fullDataset %>%
     filter(Year == year) %>%
-    group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
+    group_by(Name, Region, Latitude, Longitude, medianGreenup, ebirdCounty) %>%
     summarize(nSurveys = n_distinct(ID),
               nDates = n_distinct(LocalDate),
               nWeeks = n_distinct(julianweek),
@@ -267,8 +268,7 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
               nPhoto = sum(Photo, na.rm = TRUE),
               pctPhoto = round(nPhoto/n_distinct(arthID), 3)) %>%
     arrange(desc(Latitude)) %>%
-    filter(nSurveys >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site") %>%
-    mutate(county = latlong2county(data.frame(lon = Longitude, lat = Latitude)))
+    filter(nSurveys >= minNumRecords, nWeeks >= minNumWeeks, Name != "Example Site")
   
   if (write) {
     write.table(out, paste('data/siteSummary', year, '.txt', sep = ''), sep = '\t', row.names = F)
@@ -462,8 +462,12 @@ multiSitePhenoPlot = function(fullDataset,
                               monthRange = NULL, # 2-value vector with beginning and ending months for plotting;
                               # e.g., start of May - end of August would be c(5,8).
                               # If NULL, xlim will vary by site based on when surveys were conducted
-                              REVI = FALSE,      # plot window of red-eyed vireo nestlings estimated from eBird
-                                                 # (requires manual addition of REVI columns to siteSummary)
+                              REVI = NULL,      # 'arrivaldate' = plot window of red-eyed vireo nestlings estimated from eBird arrival date;
+                                                # 'matedate1' = plot window of REVI nestlings estimated from eBird matedate1
+                                                #    (date just before REVI frequency drops below .9 of max, presumably after pair formation);
+                                                # 'matedate2' = plot window of REVI nestlings estimated from eBird matedate
+                                                #    (date just before REVI frequency drops by .1*max for the first time);
+                                                # No plotting if NULL
                               greenup = FALSE,   # add median green up date as vertical line for that location
                               filename,
                               panelRows = 4,
@@ -480,10 +484,12 @@ multiSitePhenoPlot = function(fullDataset,
                                                       # 'both' = plot phenologies on each panel with different colors
                               plotVar = 'fracSurveys', 
                               ordersToInclude = 'caterpillar', 
+                              height = 8.5,
+                              width = 11,
                               ...) {
   
   if (write) {
-    pdf(paste('figs/', filename, '.pdf', sep = ''), height = 8.5, width = 11)
+    pdf(paste('figs/', filename, '.pdf', sep = ''), height = height, width = width)
   }
   
   if (whichCatLines == 'all') {
@@ -553,9 +559,10 @@ multiSitePhenoPlot = function(fullDataset,
       minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
     } else if (plotVar == 'meanBiomass') {
       yLabel = 'Biomass (mg / survey)'
-      minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
+      #minY = min(caterpillarPhenology[, plotVar], na.rm = TRUE)
+      minY = 0
     }
-    maxY = 1.3*max(caterpillarPhenology[, plotVar])
+    maxY = max(1.3*max(caterpillarPhenology[, plotVar]), 1)
     
     # Set up plot frame
     caterpillarPhenology = meanDensityByWeek(sitedata, plotVar = plotVar,
@@ -569,16 +576,29 @@ multiSitePhenoPlot = function(fullDataset,
                                             ordersToInclude = ordersToInclude, ...)
     
     # Plot REVI window
-    if (REVI) {
+    if (REVI == 'arrivaldate') {
       bird = siteSummary %>%
         filter(Name == site) %>%
         mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
                peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
                arrival = round((preArrival + peakArrival)/2),
-               hatching = arrival + 35,
-               fledging = hatching + 11)
+               hatching = arrival + 35, # based on reproduction times from Birds of North America
+               fledging = hatching + 12) # nestling period
       rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
+    } else if (REVI == 'matedate1') {
+      hatching = siteSummary$matedate1[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
+      if (!is.null(hatching)) {
+        fledging = hatching + 12
+        rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+      } 
+    } else if (REVI == 'matedate2') {
+      hatching = siteSummary$matedate2[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
+      if (!is.null(hatching)) {
+        fledging = hatching + 12
+        rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+      }
     }
+    
     
     # Month lines
     abline(v = jds, col = 'gray80')
@@ -598,7 +618,7 @@ multiSitePhenoPlot = function(fullDataset,
       
     }
     
-    text(jds[minPos] + 5, .9*maxY, paste(siteSummary$nSurveys[siteSummary$Name == site], "surveys"),
+    text(jds[minPos] + 5, .9*maxY, siteSummary$nSurveys[siteSummary$Name == site],
          col = 'blue', cex = cex.text, adj = 0)
     text(jds[maxPos] - 2, .9*maxY, paste(round(siteSummary$Latitude[siteSummary$Name == site], 1), "°N", sep = ""),
          col = 'red', cex = cex.text, adj = 1)
@@ -606,17 +626,18 @@ multiSitePhenoPlot = function(fullDataset,
     mtext(dates[monthLabs], 1, at = jds[monthLabs]+14, cex = cex.axis, line = .25)
     
     if (greenup) {
-      arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
-             siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
       
-      if (counter %% (panelRows*panelCols) == 1) {
-        text(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(maxY - minY) + minY, 
-             'median\ngreenup', col = 'limegreen', cex = 1.5)
+      if (!is.null(siteSummary$medianGreenup[siteSummary$Name == site])) {
+        arrows(siteSummary$medianGreenup[siteSummary$Name == site], 0.35*(maxY - minY) + minY,
+               siteSummary$medianGreenup[siteSummary$Name == site], minY, lwd = 2, col = 'limegreen', length = .15)
+        
+        if (counter %% (panelRows*panelCols) == 1) {
+          text(siteSummary$medianGreenup[siteSummary$Name == site], 0.5*(maxY - minY) + minY, 
+               'median\ngreenup', col = 'limegreen', cex = 1.5)
+        }
       }
-      
     }
-    
-    
+
     if (counter %% (panelRows*panelCols) == 0 | counter == nrow(siteSummary)) {
       mtext("Date", 1, outer = TRUE, line = 1, cex = 1.5)
       mtext(yLabel, 2, outer = TRUE, line = 1, cex = 1.5)
@@ -736,3 +757,86 @@ rainbowScaleBar = function(minJD = 91, maxJD = 228, plot = TRUE) {
   }
 }
 
+
+
+
+####################################################################################
+# Read eBird barchart data obtained by clicking 'Download Histogram Data' from single species line graph page
+
+readEbirdBarchart = function(path, 
+                             countyCode, 
+                             speciesCode = 'reevir1', 
+                             yearBeg = format(Sys.Date(), "%Y"), 
+                             yearEnd= format(Sys.Date(), "%Y")) {
+  filename = paste0('ebird_', countyCode, '_', speciesCode, '_', yearBeg, '_', yearEnd, '_1_12_barchart.txt')
+
+  if (substr(path, nchar(path), nchar(path)) != "/") path = paste0(path, "/")
+  fileIn = read.table(paste0(path, filename), skip = 16, header = F, sep = '\t')
+  
+  fileOut = data.frame(date = paste0(rep(yearEnd, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
+    mutate(julianday = yday(date), 
+           freq = unlist(fileIn[1, 2:49]),
+           county = countyCode)
+  return(fileOut)
+}
+
+# As above, but reading directly from 
+getEbirdBarchartData = function(countyCode, speciesCode = 'reevir1', year) {
+  require(data.table)
+  url = paste0('https://ebird.org/barchartData?r=', countyCode, 
+               '&bmo1&emo=12&byr=', year, '&eyr=', year, '&spp=', speciesCode, '&fmt=tsv')
+  fileIn = fread(url, skip = 16, header = F)
+  
+  fileOut = data.frame(date = paste0(rep(year, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
+    mutate(speciesCode = speciesCode,
+           county = countyCode,
+           Year = year,
+           julianday = yday(date), 
+           freq = unlist(fileIn[1, 2:49])) %>%
+    select(-date)
+  return(fileOut)
+}
+
+
+# threshold date for calculating peak bird occurrence should vary with latitude
+# at 32 deg N, threshold should be 150, at 45 deg N threshold should be 210; 
+# threshold = 4.615*latitude + 2.308
+latitudeBasedJDthreshold = function(latitude) {
+  jd = 4.615*latitude + 2.308
+  return(jd)
+}
+
+# Calculates the last date within a seasonal window that varies by latitude 
+# (according to the latitudeBasedJDthreshold; later window at higher latitudes)
+# for which the observed bird frequency is within 0.9 (or other specified proportion)
+# of the maximum frequency in that window. Thus, dips in frequency are ignored if
+# frequency comes back up close to the max. This date really captures the period
+# during which there is a pretty steep drop off in frequency.
+
+matedateCalc1 = function(birdFreqDataframe, latitude, proportionOfPeak = 0.9) {
+  matedate = birdFreqDataframe$julianday[birdFreqDataframe$julianday == 
+                                           max(birdFreqDataframe$julianday[birdFreqDataframe$freq > proportionOfPeak*max(birdFreqDataframe$freq[birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)]) & 
+                                                                             birdFreqDataframe$julianday < latitudeBasedJDthreshold(latitude)])]
+  return(matedate)
+}
+
+# Calculates the first date at which observed bird frequency drops by more than 0.1
+# (or other specified proportion) times the maximum frequency. Frequency might rebound
+# back up to close to the maximum value before dropping off steeply, but it is assumed that
+# the first "big" dip is the period we want to characterize. Also check for a run of
+# consecutive smaller dips that on their own fall below the threshold, but as a run
+# exceed the threshold.
+require(RcppRoll)
+matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
+  freqDiff = diff(birdFreqDataframe$freq)
+  diffRelativeToMax = freqDiff/max(birdFreqDataframe$freq, na.rm = TRUE)
+  firstIndexRaw = min(which(diffRelativeToMax < -dipFromPeak))
+  
+  runs = rle(sign(diffRelativeToMax))
+  runIDs = rep(1:length(runs$lengths), runs$lengths)
+  runSum = sapply(1:length(runs$lengths), function(x) sum(diffRelativeToMax[runIDs == x]))
+  runIndex = min(which(runSum < -dipFromPeak))
+  runJDindex = min(which(runIDs == (runIndex)))
+  
+  return(birdFreqDataframe$julianday[min(firstIndexRaw, runJDindex)])
+}
