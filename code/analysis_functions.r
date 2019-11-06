@@ -838,3 +838,40 @@ matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
   
   return(birdFreqDataframe$julianday[min(firstIndexRaw, runJDindex)])
 }
+
+
+# Function for calculating degree of match between bird phenology and caterpillar biomass.
+# Within a 3-week window centered on the middle of the projected nestling window, calculate
+# average caterpillar biomass experienced. Find 3-week mean caterpillar biomass for all 
+# windows +/- 3 weeks around mid-nestling window. Calculate the ratio of observed caterpillar 
+# biomass to the maximum possible caterpillar biomass in the +/- 3 week windows.
+
+# When the ratio is 1, bird phenology is as well-matched as it could be, and if it is close
+# to 0 a bird could experience substantially more caterpillar biomass by shifting by up to 3
+# weeks in one direction or other.
+
+# Only calculate if there is caterpillar phenology data spanning the full range of windows.
+
+catOverlapRatio = function(hatchingDate, 
+                           caterpillarPhenology, 
+                           plotVar = 'meanBiomass',
+                           plusMinusWeekWindow = 3) {
+  
+  jdMinusHatching = abs(caterpillarPhenology$julianweek - hatchingDate - 6)
+  midNestlingDate = which(jdMinusHatching == min(jdMinusHatching))
+  
+  observedCaterpillars = mean(caterpillarPhenology[(midNestlingDate - 1):(midNestlingDate + 1), plotVar], na.rm = T)
+
+  if (midNestlingDate > plusMinusWeekWindow + 1 & midNestlingDate < nrow(caterpillarPhenology) - plusMinusWeekWindow) {
+    potentialCaterpillars = vector(length = 2*plusMinusWeekWindow)
+    for (i in 1:plusMinusWeekWindow) {
+      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[(midNestlingDate - 1-i):(midNestlingDate + 1-i), plotVar], na.rm = T)
+      potentialCaterpillars[2*i] = mean(caterpillarPhenology[(midNestlingDate - 1+i):(midNestlingDate + 1+i), plotVar], na.rm = T)
+    }
+    ratio = observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars))
+  } else {
+    warning("Caterpillar data is not available for the full range of windows specified.")
+    ratio = NA
+  }
+  return(ratio)  
+}
