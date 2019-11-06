@@ -2,7 +2,6 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
-library(RcppRoll)
 #library(tidyr)
 
 
@@ -654,7 +653,32 @@ multiSitePhenoPlot = function(fullDataset,
 
 
 
+#####################################
+# Function for adding a simple date axis and labels
 
+jdAxis = function(jdRange, biweekly = FALSE, ...) {
+  
+  if (biweekly) {
+    jds = c(1, 15, 32, 46, 60, 74, 91, 105, 121, 135, 152, 166, 
+            182, 196, 213, 227, 244, 258, 274, 288, 305, 319, 335, 349)
+    
+    jd_labels = c("Jan 1", "Jan 15", "Feb 1", "Feb 15", "Mar 1", 
+                  "Mar 15", "Apr 1", "Apr 15", "May 1", "May 15", 
+                  "Jun 1", "Jun 15", "Jul 1", "Jul 15", "Aug 1", 
+                  "Aug 15", "Sep 1", "Sep 15", "Oct 1", "Oct 15", 
+                  "Nov 1", "Nov 15", "Dec 1", "Dec 15")
+  } else {
+    jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+    jd_labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  }
+  
+  
+  # x-axis range
+  minPos = which(jds == max(jds[jds <= min(jdRange)]))
+  maxPos = which(jds == min(jds[jds >= max(jdRange)]))
+
+  axis(1, at = jds[minPos:maxPos], labels = jd_labels[minPos:maxPos], ...)
+}
 
 
 ############################################################
@@ -826,7 +850,7 @@ matedateCalc1 = function(birdFreqDataframe, latitude, proportionOfPeak = 0.9) {
 # the first "big" dip is the period we want to characterize. Also check for a run of
 # consecutive smaller dips that on their own fall below the threshold, but as a run
 # exceed the threshold.
-require(RcppRoll)
+
 matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
   freqDiff = diff(birdFreqDataframe$freq)
   diffRelativeToMax = freqDiff/max(birdFreqDataframe$freq, na.rm = TRUE)
@@ -839,4 +863,60 @@ matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
   runJDindex = min(which(runIDs == (runIndex)))
   
   return(birdFreqDataframe$julianday[min(firstIndexRaw, runJDindex)])
+}
+
+
+# Function for calculating degree of match between bird phenology and caterpillar biomass.
+# Within a 3-week window centered on the middle of the projected nestling window, calculate
+# average caterpillar biomass experienced. Find 3-week mean caterpillar biomass for all 
+# windows +/- 3 weeks around mid-nestling window. Calculate the ratio of observed caterpillar 
+# biomass to the maximum possible caterpillar biomass in the +/- 3 week windows.
+
+# When the ratio is 1, bird phenology is as well-matched as it could be, and if it is close
+# to 0 a bird could experience substantially more caterpillar biomass by shifting by up to 3
+# weeks in one direction or other.
+
+# Only calculate if there is caterpillar phenology data spanning the full range of windows.
+
+catOverlapRatio = function(hatchingDate, 
+                           caterpillarPhenology, 
+                           plotVar = 'meanBiomass',
+                           plusMinusWeekWindow = 3) {
+  
+  jdMinusHatching = abs(caterpillarPhenology$julianweek - hatchingDate - 6)
+  midNestlingDate = which(jdMinusHatching == min(jdMinusHatching))
+  
+  observedCaterpillars = mean(caterpillarPhenology[(midNestlingDate - 1):(midNestlingDate + 1), plotVar], na.rm = T)
+
+  if (midNestlingDate > plusMinusWeekWindow + 1 & midNestlingDate < nrow(caterpillarPhenology) - plusMinusWeekWindow) {
+    potentialCaterpillars = vector(length = 2*plusMinusWeekWindow)
+    for (i in 1:plusMinusWeekWindow) {
+      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[(midNestlingDate - 1-i):(midNestlingDate + 1-i), plotVar], na.rm = T)
+      potentialCaterpillars[2*i] = mean(caterpillarPhenology[(midNestlingDate - 1+i):(midNestlingDate + 1+i), plotVar], na.rm = T)
+    }
+    ratio = observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars))
+  } else {
+    warning("Caterpillar data is not available for the full range of windows specified.")
+    ratio = NA
+  }
+  return(ratio)  
+}
+
+
+################################################################
+# Calculation of the accumulation of growing degree days
+# exceeding a specified base threshold in degrees C (default 0 C)
+# up to a specified date.
+
+# temperatureData is a dataframe of daily temperature data with julian day 
+# and temperature ("tmean") columns.
+# The temperature data is assumed to be t_mean, the average of t_min and t_max
+
+gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+  
+  tmean_minus_base = temperatureData$tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  
+  gdd = cumsum(tmean_minus_base)[asOfJD]
+  return(gdd)
 }

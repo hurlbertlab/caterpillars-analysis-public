@@ -1,8 +1,8 @@
 # Use daymetr to get daily temperature data at lat-longs (up through year before present)
 library(daymetr)
 
-climatedata = data.frame(year = NA, yday = NA, dayl..s. = NA, prcp..mm.day. = NA, srad..W.m.2. = NA,
-                         swe..kg.m.2. = NA, tmax..deg.c. = NA, tmin..deg.c. = NA, vp..Pa. = NA)
+climatedata = data.frame(Name = NA, longitude = NA, latitude = NA, year = NA, yday = NA, prcp..mm.day. = NA, 
+                         tmax..deg.c. = NA, tmin..deg.c. = NA)
 for (s in unique(fullDataset$Name)) {
   minYear = min(fullDataset$Year[fullDataset$Name == s], na.rm = T)
   maxYear = max(fullDataset$Year[fullDataset$Name == s], na.rm = T)
@@ -18,8 +18,28 @@ for (s in unique(fullDataset$Name)) {
                  error = function(e) { tmp = NULL })
   
   if (!is.null(tmp)) {
-    climatedata = rbind(climatedata, tmp$data)
+    tmp$data$longitude = sites$Longitude[sites$Name == s]
+    tmp$data$latitude = sites$Latitude[sites$Name == s]
+    tmp$data$Name = s
+    tmp$data = tmp$data[, names(climatedata)]
+        climatedata = rbind(climatedata, tmp$data)
   }
 }
 
+climatedata = climatedata[-1, ]
+climatedata$date = as.Date(climatedata$yday, origin = paste0(climatedata$year-1, "-12-31"))
 write.csv(climatedata, 'data/env/daymet_climate.csv', row.names = F)
+
+gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+  
+  tmean_minus_base = temperatureData$tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  
+  gdd = cumsum(tmean_minus_base)[asOfJD]
+  return(gdd)
+}
+
+
+daymetGDD = climatedata %>%
+  group_by(Name, year) %>%
+  summarize(daymetGDD_May1 = gddCalc(cbind.data.frame(tmean, yday), base = 0, asOfJD = 121))
