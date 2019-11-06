@@ -298,6 +298,44 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REV
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
 
 
+
+
+### Comparison of REVI phenology across years at NCBG and PR
+
+pdf('figs/REVI_phenology_NCBG_PR_2015-2019.pdf', height = 6, width = 12)
+par(mfcol = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
+for (y in 2015:2019) {
+  tempBG = getEbirdBarchartData(countyCode = 'US-NC-135', year = y)
+  tempPR = getEbirdBarchartData(countyCode = 'US-NC-183', year = y)
+  
+  matedate2BG = matedateCalc2(tempBG, dipFromPeak = .1)
+  matedate2PR = matedateCalc2(tempPR, dipFromPeak = .1)
+  
+  plot(tempBG$julianday, tempBG$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', 
+       main = paste0(y, ", ", matedate2BG))
+  abline(v = matedate2BG)
+  if (y == 2015) {
+    legend("topright", "NCBG", bty = 'n', cex = 1.5)
+  }
+  
+  plot(tempPR$julianday, tempPR$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', 
+       main = paste0(y, ", ", matedate2PR))
+  abline(v = matedate2PR)
+  if (y == 2015) {
+    legend("topright", "PR", bty = 'n', cex = 1.5)
+  }
+  
+}
+mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
+mtext('Julian day', 1, outer = TRUE, cex = 1.5)
+dev.off()
+
+
+
+
+
+
+
 ############################################
 # Exploring caterpillar phenometrics
 

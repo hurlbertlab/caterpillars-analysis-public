@@ -30,7 +30,7 @@ for (r in 1:nrow(countyYears)) {
                                                             matedate2 = m2))
 }
 revi_phenology = revi_phenology[-1, ]
-revi_pheno_summary = revi_pheno_summary[-1, ]
+revi_pheno_summary = revi_pheno_summary[-1, ] %>% unique()
 
 write.table(revi_phenology, 'data/revi/revi_phenology_by_county_thru2019.txt', sep = '\t', row.names = F)
-write.table(revi_phenology, 'data/revi/revi_pheno_summary_by_county_thru2019.txt', sep = '\t', row.names = F)
+write.table(revi_pheno_summary, 'data/revi/revi_pheno_summary_by_county_thru2019.txt', sep = '\t', row.names = F)

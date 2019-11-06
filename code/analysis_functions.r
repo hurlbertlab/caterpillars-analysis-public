@@ -881,20 +881,33 @@ matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
 catOverlapRatio = function(hatchingDate, 
                            caterpillarPhenology, 
                            plotVar = 'meanBiomass',
-                           plusMinusWeekWindow = 3) {
+                           plusMinusWeekWindow = 2) {
   
-  jdMinusHatching = abs(caterpillarPhenology$julianweek - hatchingDate - 6)
-  midNestlingDate = which(jdMinusHatching == min(jdMinusHatching))
+  julianweeks = seq(4, 235, by = 7)
   
-  observedCaterpillars = mean(caterpillarPhenology[(midNestlingDate - 1):(midNestlingDate + 1), plotVar], na.rm = T)
-
-  if (midNestlingDate > plusMinusWeekWindow + 1 & midNestlingDate < nrow(caterpillarPhenology) - plusMinusWeekWindow) {
+  # hatchingDate + 6 is the mid-point of the 12d nestling period
+  midNestlingDate = julianweeks[abs(julianweeks - (hatchingDate + 6)) <= 3]
+  
+  # check that caterpillar data exist for at least 2 weeks in every 3-week window
+  enoughData = c()
+  for (i in 1:(2*plusMinusWeekWindow + 1)) {
+    jdwindow = seq(midNestlingDate - 7*(plusMinusWeekWindow + 2 -i), midNestlingDate - 7*(plusMinusWeekWindow -i), by = 7)
+    enough = length(caterpillarPhenology$julianweek[caterpillarPhenology$julianweek %in% jdwindow]) >= 2
+    enoughData = c(enoughData, enough)
+  }
+  
+  if (!FALSE %in% enoughData) {
+    observedCaterpillars = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% c(midNestlingDate - 7, midNestlingDate, midNestlingDate + 7), plotVar], na.rm = T)
+    
     potentialCaterpillars = vector(length = 2*plusMinusWeekWindow)
     for (i in 1:plusMinusWeekWindow) {
-      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[(midNestlingDate - 1-i):(midNestlingDate + 1-i), plotVar], na.rm = T)
-      potentialCaterpillars[2*i] = mean(caterpillarPhenology[(midNestlingDate - 1+i):(midNestlingDate + 1+i), plotVar], na.rm = T)
+      
+      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% (midNestlingDate - 7*(i + -1:1)), plotVar], na.rm = T)
+      potentialCaterpillars[2*i] = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% (midNestlingDate + 7*(i + -1:1)), plotVar], na.rm = T)
     }
-    ratio = observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars))
+
+    ratio = ifelse(max(potentialCaterpillars) > 0, observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars)), NA)
+
   } else {
     warning("Caterpillar data is not available for the full range of windows specified.")
     ratio = NA
