@@ -5,7 +5,10 @@ library(tidyverse)
 library(dbplyr)
 library(forcats)
 library(cowplot)
-library(geonames)
+library(tmap)
+library(sf)
+library(lubridate)
+library(maptools)
 
 setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
@@ -104,11 +107,13 @@ obs_year_db <- tbl(con, "inat") %>%
 obs_year_df <- obs_year_db %>%
   collect()
 
-ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_obs)) + geom_point(size = 2) +
+obs_year_df$group <- 1
+
+ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_obs, group  = group)) + geom_line(cex = 1) +
   labs(x = "Year", y = "Number of observations")
 ggsave("figs/inaturalist/obs-per-year.pdf")
 
-ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_users)) + geom_point(size = 2) +
+ggplot(filter(obs_year_df, year < 2019), aes(x = year, y = n_users, group = group)) + geom_line(cex = 1) +
   labs(x = "Year", y = "Number of users")
 ggsave("figs/inaturalist/users-per-year.pdf")
 
@@ -217,6 +222,10 @@ super_users <- icon_taxa_super %>%
   slice(1:30)
 # all > 25,900 observations, max = 115000
 
+ggplot(super_users, aes(x = total_obs)) + geom_histogram(col = "white", binwidth = 10000) +
+  labs(x = "Count", y = "Total observations")
+ggsave("figs/inaturalist/super_users_alltaxa_hist.pdf")
+
 super_users_plot <- icon_taxa_super %>%
   filter(user_login %in% super_users$user_login) %>%
   mutate(prop_obs = n/total_obs) %>%
@@ -262,11 +271,27 @@ super_users_df <- super_users_db %>%
   collect()
 # 725 users
 
+super_users_hist <- super_users_df %>%
+  ungroup() %>%
+  distinct(user_login, total_obs)
+
+ggplot(super_users_hist, aes(x = total_obs)) + geom_histogram(binwidth = 1000, col = "white") +
+  labs(x = "Total observations", y = "Count")
+ggsave("figs/inaturalist/super_users_insecta_hist.pdf")
+
 super_users_time <- super_users_df %>%
   group_by(user_login) %>%
   summarize(beg = min(as.numeric(year)),
             end = max(as.numeric(year)),
             length = max(as.numeric(year)) - min(as.numeric(year)))
+
+super_users_seasonal <- super_users_df %>%
+  filter(year == 2017) %>%
+  mutate(date = as.Date(observed_on, format = "%Y-%m-%d"),
+         jday = yday(date),
+         jd_wk = 7*floor(jday/7)) %>%
+  group_by(jd_wk) %>%
+  summarize(n_obs = n_distinct(id))
 
 beg <- ggplot(super_users_time, aes(x = beg)) + geom_histogram() +
   labs(x = "First year of observations", y = "Count")
@@ -277,7 +302,11 @@ end <- ggplot(super_users_time, aes(x = end)) + geom_histogram() +
 time <- ggplot(super_users_time, aes(x = length)) + geom_histogram() +
   labs(x = "Years active", y = "Count")
 
-plot_grid(beg, end, time, nrow = 2)
+season <- ggplot(super_users_seasonal, aes(x = jd_wk, y = n_obs)) + geom_col(col = "white") +
+  annotate(geom = "text", x = 15, y = max(super_users_seasonal$n_obs), label = "2017", size = 5) +
+  labs(y = "Observations", x = "Julian day")
+
+plot_grid(beg, end, time, season, nrow = 2)
 ggsave("figs/inaturalist/insect_super_users_temporal.pdf")
 
 data(wrld_simpl)
@@ -308,6 +337,28 @@ world_plot <- world %>%
 super_obs_map <- tm_shape(world_plot) + tm_polygons(col = "log_sum", palette = "YlGnBu", title = "Log10(Observations)") + 
   tm_layout(legend.text.size = 1, legend.title.size = 1.25)
 tmap_save(super_obs_map, "figs/inaturalist/insect_super_obs_map.pdf")
+
+states <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
+  filter(sr_adm0_a3 == "USA" | sr_adm0_a3 == "CAN") %>%
+  filter(name != "Alaska" & name != "Hawaii") %>%
+  st_crop(c(xmin = -178, ymin = 18, xmax = -52.65, ymax = 60))
+
+super_users_us <- super_users_space %>%
+  filter(NAME == "United States" | NAME == "Canada") %>%
+  st_intersection(states)
+
+super_users_state <- super_users_us %>%
+  group_by(name) %>%
+  count() %>%
+  st_set_geometry(NULL)
+
+super_users_map <- states %>%
+  left_join(super_users_state) %>%
+  mutate(log_sum = log10(n))
+
+super_obs_us <- tm_shape(super_users_map) + tm_polygons(col = "log_sum", palette = "YlGnBu", title = "Log10(Observations)") +
+  tm_layout(legend.text.size = 1, legend.title.size = 1.25)
+tmap_save(super_obs_us, "figs/inaturalist/insect_super_obs_us_map.pdf")
 
 # Tendency to submit repeat observations of the same species in a day, month, year
 # Case study: Eastern Tiger Swallowtail
