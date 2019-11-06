@@ -2,7 +2,6 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
-library(RcppRoll)
 #library(tidyr)
 
 
@@ -654,7 +653,32 @@ multiSitePhenoPlot = function(fullDataset,
 
 
 
+#####################################
+# Function for adding a simple date axis and labels
 
+jdAxis = function(jdRange, biweekly = FALSE, ...) {
+  
+  if (biweekly) {
+    jds = c(1, 15, 32, 46, 60, 74, 91, 105, 121, 135, 152, 166, 
+            182, 196, 213, 227, 244, 258, 274, 288, 305, 319, 335, 349)
+    
+    jd_labels = c("Jan 1", "Jan 15", "Feb 1", "Feb 15", "Mar 1", 
+                  "Mar 15", "Apr 1", "Apr 15", "May 1", "May 15", 
+                  "Jun 1", "Jun 15", "Jul 1", "Jul 15", "Aug 1", 
+                  "Aug 15", "Sep 1", "Sep 15", "Oct 1", "Oct 15", 
+                  "Nov 1", "Nov 15", "Dec 1", "Dec 15")
+  } else {
+    jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+    jd_labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+  }
+  
+  
+  # x-axis range
+  minPos = which(jds == max(jds[jds <= min(jdRange)]))
+  maxPos = which(jds == min(jds[jds >= max(jdRange)]))
+
+  axis(1, at = jds[minPos:maxPos], labels = jd_labels[minPos:maxPos], ...)
+}
 
 
 ############################################################
@@ -788,10 +812,12 @@ getEbirdBarchartData = function(countyCode, speciesCode = 'reevir1', year) {
   fileIn = fread(url, skip = 16, header = F)
   
   fileOut = data.frame(date = paste0(rep(year, 48), '-', rep(1:12, each = 4), '-', rep(c(1,8,15,22), times = 12))) %>%
-    mutate(Year = year,
+    mutate(speciesCode = speciesCode,
+           county = countyCode,
+           Year = year,
            julianday = yday(date), 
-           freq = unlist(fileIn[1, 2:49]),
-           county = countyCode)
+           freq = unlist(fileIn[1, 2:49])) %>%
+    select(-date)
   return(fileOut)
 }
 
@@ -824,7 +850,7 @@ matedateCalc1 = function(birdFreqDataframe, latitude, proportionOfPeak = 0.9) {
 # the first "big" dip is the period we want to characterize. Also check for a run of
 # consecutive smaller dips that on their own fall below the threshold, but as a run
 # exceed the threshold.
-require(RcppRoll)
+
 matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
   freqDiff = diff(birdFreqDataframe$freq)
   diffRelativeToMax = freqDiff/max(birdFreqDataframe$freq, na.rm = TRUE)
@@ -874,4 +900,23 @@ catOverlapRatio = function(hatchingDate,
     ratio = NA
   }
   return(ratio)  
+}
+
+
+################################################################
+# Calculation of the accumulation of growing degree days
+# exceeding a specified base threshold in degrees C (default 0 C)
+# up to a specified date.
+
+# temperatureData is a dataframe of daily temperature data with julian day 
+# and temperature ("tmean") columns.
+# The temperature data is assumed to be t_mean, the average of t_min and t_max
+
+gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+  
+  tmean_minus_base = temperatureData$tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  
+  gdd = cumsum(tmean_minus_base)[asOfJD]
+  return(gdd)
 }
