@@ -11,41 +11,33 @@ source('code/reading_datafiles_without_users.r')
 ################################################################
 # GDD and NPN spring index
 #
-
-npnGDD16 = raster('data/maps/npn_gdd_base32_to_may1_2016.tif')
-npnGDD17 = raster('data/maps/npn_gdd_base32_to_may1_2017.tif')
-npnGDD18 = raster('data/maps/npn_gdd_base32_to_may1_2018.tif')
-npnGDD19 = raster('data/maps/npn_gdd_base32_to_may1_2019.tif')
-
-npnleaf15 = raster('data/maps/npn_springindex_firstleaf_2015.tif')
-npnleaf16 = raster('data/maps/npn_springindex_firstleaf_2016.tif')
-npnleaf17 = raster('data/maps/npn_springindex_firstleaf_2017.tif')
-npnleaf18 = raster('data/maps/npn_springindex_firstleaf_2018.tif')
-npnleaf19 = raster('data/maps/npn_springindex_firstleaf_2019.tif')
-
 siteyears = fullDataset %>% 
   filter(!Name %in% c('Example Site', Name[grepl('BBS', Name)])) %>%
   distinct(Name, Year, Longitude, Latitude, medianGreenup, ebirdCounty)
 
-years = 2016:2019
+leafyears = 2002:2019
 
-out = vector("list", length(years))
-for (i in 1:length(years)) {
+leafout = vector("list", length(leafyears))
+for (i in 1:length(leafyears)) {
   
-  out[[i]] = filter(siteyears, Year == years[i]) %>%
-    mutate(npnGDD_May1 = extract(get(paste0('npnGDD', substr(years[i], 3, 4))), cbind.data.frame(Longitude, Latitude)),
-           npn_firstLeaf = extract(get(paste0('npnleaf', substr(years[i], 3, 4))), cbind.data.frame(Longitude, Latitude)))
+  npnleaf = raster(paste0('data/maps/npn_springindex_firstleaf_', leafyears[i], '.tif'))
+  leafout[[i]] = filter(siteyears, Year == leafyears[i]) %>%
+    mutate(npn_firstLeaf = extract(npnleaf, cbind.data.frame(Longitude, Latitude)))
   
 }
+leaf = bind_rows(leafout)
 
-envData = bind_rows(out)
-# For 2015, only spring index, but not GDD data are available, 
-# so calc separately and then rbind
+gddyears = 2016:2019
+gddout = vector("list", length(gddyears))
+for (i in 1:length(gddyears)) {
+  
+  npngdd = raster(paste0('data/maps/npn_gdd_base32_to_may1_', gddyears[i], '.tif'))
+  gddout[[i]] = filter(siteyears, Year == gddyears[i]) %>%
+    mutate(npnGDD_May1 = extract(npngdd, cbind.data.frame(Longitude, Latitude)))
+  
+}
+gdd = bind_rows(gddout)
 
-leaf2015 = filter(siteyears, Year == 2015) %>%
-  mutate(npnGDD_May1 = NA,
-         npn_firstLeaf = extract(npnleaf15, cbind.data.frame(Longitude, Latitude)))
-
-envData = rbind(leaf2015, envData)         
+envData = left_join(leaf, gdd[, c('Name', 'Year', 'npnGDD_May1')], by = c('Name', 'Year'))
 
 write.csv(envData, 'data/env/npn_gdd_firstleaf.csv', row.names = F)
