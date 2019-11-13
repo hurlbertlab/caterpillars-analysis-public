@@ -945,20 +945,38 @@ catOverlapRatio = function(hatchingDate,
 }
 
 
-################################################################
-# Calculation of the accumulation of growing degree days
-# exceeding a specified base threshold in degrees C (default 0 C)
-# up to a specified date.
-
-# temperatureData is a dataframe of daily temperature data with julian day 
-# and temperature ("tmean") columns.
-# The temperature data is assumed to be t_mean, the average of t_min and t_max
-
-gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+# Functions for calculating the total GDD accumulated by a certain date,
+# or the date at which a given GDD is accumulated.
+#   tmean is a vector of daily average temperature values for a year,
+#   which is the daily average of tmin and tmax
+gddCalc = function(tmean, base = 0, asOfJD = 121) {
   
-  tmean_minus_base = temperatureData$tmean - base
+  if (length(tmean) != 365) {
+    warning("tmean should include daily temperature values, but is not of length 365.")
+  }
+  tmean_minus_base = tmean - base
   tmean_minus_base[tmean_minus_base < 0] = 0
   
-  gdd = cumsum(tmean_minus_base)[asOfJD]
-  return(gdd)
+  gdd = cumsum(tmean_minus_base)
+  
+  gddAsOfJD = gdd[asOfJD]
+  return(gddAsOfJD)
 }
+
+
+dateOfGDDaccumulation = function(tmean, base = 0, accumulateTo = 2400) {
+  
+  if (length(tmean) != 365) {
+    warning("tmean should include daily temperature values, but is not of length 365.")
+  }
+  
+  jds = 1:365
+  
+  tmean_minus_base = tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  gdd = cumsum(tmean_minus_base)
+  
+  dateAccumulated = min(jds[gdd >= accumulateTo])
+  return(dateAccumulated)
+}
+
