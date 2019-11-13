@@ -2,6 +2,7 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
+library(gsheet)
 #library(tidyr)
 
 
@@ -27,6 +28,24 @@ Mode = function(x){
   return(max(mod))
 }
 
+
+
+# Function for reading in frass data from GoogleDoc
+# *if aim is to backup GoogleDoc and write to disk only, then open =F and write = T
+# *if aim is to use data without writing to disk, then open = T and write = F
+
+frassData = function(open = F, write = F) {
+  require(gsheet)
+  url = "https://docs.google.com/spreadsheets/d/1RwXzwhHUbP0m5gKSOVhnKZbS1C_NrbdfHLglIVCzyFc/edit#gid=1479231778"
+  data = gsheet2tbl(url)
+  
+  if (write) {
+    # Write a copy
+    write.csv(data, paste('data/arthropods/frass_', Sys.Date(), '.csv', sep = ''),
+              row.names = F)
+  }
+  if (open) { return (data) }
+}
 
 
 
