@@ -318,9 +318,9 @@ phenoSummary = function(fullDataset, # fullDataset format
   
   for (y in years) {
     yearFilteredDataset = dplyr::filter(fullDataset, Year == y)
-    sites = unique(yearFilteredDataset$Name)
+    uniqueSites = unique(yearFilteredDataset$Name)
     
-    for (site in sites) {
+    for (site in uniqueSites) {
       siteYearFilteredDataset = dplyr::filter(yearFilteredDataset, Name==site)
       
       pheno = meanDensityByWeek(siteYearFilteredDataset, allDates = FALSE, plot = FALSE, ...)
