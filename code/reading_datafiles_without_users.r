@@ -3,6 +3,9 @@ library(dplyr)
 library(lubridate)
 library(rgdal)
 library(raster)
+library(dggridR)
+library(sf)
+
 
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition
@@ -15,6 +18,8 @@ mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
 # Slope and intercept parameters for power function length-weight regressions for different arthropod groups
 massregs = read.csv('data/arthropod_length_weight_regressions.csv', header = TRUE, stringsAsFactors = FALSE)
 
+# Read in hex grid data
+hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp")
 
 
 # Read in data files
@@ -73,6 +78,16 @@ sites$county = case_when(sites$Name == 'Sault College' ~ 'ontario,algoma',
 countyCodes = read.table('data/countyCodes.txt', sep = '\t', header = T, stringsAsFactors = F)
 sites2 = left_join(sites, countyCodes, by = 'county')
 
+# Number of weeks per site per year per hex cell
+hexcells <- sites %>% 
+  st_as_sf(coords = c("Longitude", "Latitude")) %>%
+  st_set_crs("+proj=longlat +datum=WGS84 +no_defs") %>%
+  st_intersection(hex)   
+
+sites3 = left_join(sites2, hexcells[, c('Name', 'cell')], by = 'Name')
+
+
+
 # Note there are still a few sites with no greenup data including 
 #   RVCC, Beare Swamp in Rouge Park, and Wye Marsh Wildlife Centre
 
@@ -81,7 +96,7 @@ fullDataset = surveys %>%
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, names(arths) != "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
-  left_join(sites2[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region', 'medianGreenup', 'ebirdCounty')], by = c('SiteFK' = 'ID')) %>% 
+  left_join(sites3[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region', 'medianGreenup', 'ebirdCounty', 'cell')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
   rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y) %>%

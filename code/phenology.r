@@ -9,6 +9,8 @@ library(maptools)
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
 
+# Read in environmental data
+envData = read.csv('data/env/npn_gdd_firstleaf.csv', header = T)
 
 #########################
 # Map and rainbow phenocurves
@@ -40,12 +42,41 @@ for (s in siteList$Name) {
 
 ###############################
 # Phenology summaries
-fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75, minNumWeeks = 5)
+fullPhenoSummary = phenoSummary(fullDataset, ordersToInclude = 'caterpillar', postGreenupBeg = 30, postGreenupEnd = 75, minNumWeeks = 5) %>%
+  left_join(envData[, -which(names(envData)=='medianGreenup')], by = c('Name', 'Year'))
+
+
+# Coweeta NPN green up vs caterpillar biomass peak
+pdf('figs/Coweeta_massPeakDateWindow_v_date2000GDD.pdf', height = 6, width = 8)
+par(mar = c(6, 6, 1, 1), mgp = c(4, 1, 0), cex.axis = 1.3, cex.lab = 1.8, oma = c(0, 0, 0, 0))
+plot(fullPhenoSummary$date2000GDD[grepl("Coweeta", fullPhenoSummary$Name)], 
+     fullPhenoSummary$massPeakDateWindow[grepl("Coweeta", fullPhenoSummary$Name)], 
+     pch = 16, col = 'darkgreen', cex = 2.5, las = 1, xlab = "Date of accumulation of 2000 GDD",
+     ylab = "Caterpillar Biomass Peak Date")
+massPeakDateWindow_gddDate_lm = lm(massPeakDateWindow ~ date2000GDD, data = fullPhenoSummary[grepl("Coweeta", fullPhenoSummary$Name),])
+abline(massPeakDateWindow_gddDate_lm, lwd = 2)
+text(190, 200, expression(paste(R^2, "= 0.21")), cex = 1.3)
+text(190, 195, expression(paste(italic(p), "= 0.046")), cex = 1.3)
+dev.off()
+
+
+pdf('figs/Coweeta_massPeakDateWindow_v_npn_firstleaf.pdf', height = 6, width = 8)
+par(mar = c(6, 6, 1, 1), mgp = c(4, 1, 0), cex.axis = 1.3, cex.lab = 1.8, oma = c(0, 0, 0, 0))
+plot(fullPhenoSummary$npn_firstLeaf[grepl("Coweeta", fullPhenoSummary$Name)], 
+     fullPhenoSummary$massPeakDateWindow[grepl("Coweeta", fullPhenoSummary$Name)], 
+     pch = 16, col = 'darkgreen', cex = 2.5, las = 1, xlab = "Date of accumulation of 2000 GDD",
+     ylab = "Caterpillar Biomass Peak Date")
+massPeakDateWindow_leaf_lm = lm(massPeakDateWindow ~ npn_firstLeaf, data = fullPhenoSummary[grepl("Coweeta", fullPhenoSummary$Name),])
+abline(massPeakDateWindow_leaf_lm, lwd = 2)
+text(190, 200, expression(paste(R^2, "= 0.21")), cex = 1.3)
+text(190, 195, expression(paste(italic(p), "= 0.046")), cex = 1.3)
+dev.off()
+
+
 
 pheno19 = filter(fullPhenoSummary, Year == 2019, 
                  #numWeeksPostGreenupWindow >= 3,
-                 numWeeksPostSolsticeWindow >= 3) %>%
-  left_join(sites[, c('Name', 'Longitude', 'Latitude')], by = 'Name')
+                 numWeeksPostSolsticeWindow >= 3)
 
 # Function for rescaling 
 rescale = function(vec, newMin, newMax) {
@@ -296,6 +327,44 @@ multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REV
 multiSitePhenoPlot(fullDataset, 2019, sites19_select10, monthRange = c(4,8), REVI = 'matedate2', ordersToInclude = 'caterpillar', plotVar = 'meanBiomass',
                    filename = 'caterpillarPhenology_selectSites_2019_REVImatedate2', panelRows = 2, panelCols = 5, greenup = F,
                    cex.axis = 1, cex.text = 1.5, cex.main = 1.3, height =6, width = 12, colREVI = rgb(1, 228/255, 225/255))
+
+
+
+
+### Comparison of REVI phenology across years at NCBG and PR
+
+pdf('figs/REVI_phenology_NCBG_PR_2015-2019.pdf', height = 6, width = 12)
+par(mfcol = c(2, 5), mar = c(4, 4,2, 1), oma = c(4, 4 , 0, 0))
+for (y in 2015:2019) {
+  tempBG = getEbirdBarchartData(countyCode = 'US-NC-135', year = y)
+  tempPR = getEbirdBarchartData(countyCode = 'US-NC-183', year = y)
+  
+  matedate2BG = matedateCalc2(tempBG, dipFromPeak = .1)
+  matedate2PR = matedateCalc2(tempPR, dipFromPeak = .1)
+  
+  plot(tempBG$julianday, tempBG$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', 
+       main = paste0(y, ", ", matedate2BG))
+  abline(v = matedate2BG)
+  if (y == 2015) {
+    legend("topright", "NCBG", bty = 'n', cex = 1.5)
+  }
+  
+  plot(tempPR$julianday, tempPR$freq, type = 'l', lwd = 2, col = 'limegreen', xlab = '', ylab = '', 
+       main = paste0(y, ", ", matedate2PR))
+  abline(v = matedate2PR)
+  if (y == 2015) {
+    legend("topright", "PR", bty = 'n', cex = 1.5)
+  }
+  
+}
+mtext('Red-eyed Vireo frequency', 2, outer = TRUE, cex = 1.5)
+mtext('Julian day', 1, outer = TRUE, cex = 1.5)
+dev.off()
+
+
+
+
+
 
 
 ############################################

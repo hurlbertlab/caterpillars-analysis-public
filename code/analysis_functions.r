@@ -2,6 +2,7 @@
 library(dplyr)
 library(lubridate)
 library(data.table)
+library(gsheet)
 #library(tidyr)
 
 
@@ -27,6 +28,24 @@ Mode = function(x){
   return(max(mod))
 }
 
+
+
+# Function for reading in frass data from GoogleDoc
+# *if aim is to backup GoogleDoc and write to disk only, then open =F and write = T
+# *if aim is to use data without writing to disk, then open = T and write = F
+
+frassData = function(open = F, write = F) {
+  require(gsheet)
+  url = "https://docs.google.com/spreadsheets/d/1RwXzwhHUbP0m5gKSOVhnKZbS1C_NrbdfHLglIVCzyFc/edit#gid=1479231778"
+  data = gsheet2tbl(url)
+  
+  if (write) {
+    # Write a copy
+    write.csv(data, paste('data/frass/frass_', Sys.Date(), '.csv', sep = ''),
+              row.names = F)
+  }
+  if (open) { return (data) }
+}
 
 
 
@@ -284,6 +303,8 @@ siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, w
 phenoSummary = function(fullDataset, # fullDataset format
                         postGreenupBeg = 40,     # number of days post-greenup marking the beginning of the time window
                         postGreenupEnd = 75,     # number of days post-greenup marking the end of the time window
+                        fullWindowBeg = 135,     # julian day of the beginning of a specified time window (default May 15)
+                        fullWindowEnd = 212,     # julian day of the end of a specified time window (default July 31)
                         minNumWeeks = 5,         # minimum number of weeks of survey data to calculate pheno summaries
                         ...) {
   
@@ -292,13 +313,14 @@ phenoSummary = function(fullDataset, # fullDataset format
                       numGoodWeeks = NA, numWeeksPostSolsticeWindow = NA, numWeeksPostGreenupWindow = NA, 
                       pctSolstice = NA, densSolstice = NA, massSolstice= NA, pctPostGU = NA, densPostGU = NA, massPostGU = NA,
                       pctPeakDate = NA, densPeakDate = NA, massPeakDate = NA, pctPeakDateWindow = NA, densPeakDateWindow = NA,
-                      massPeakDateWindow = NA, pctRollingPeakDateWindow = NA, densRollingPeakDateWindow = NA, massRollingPeakDateWindow = NA)
+                      massPeakDateWindow = NA, pctPeakDateGreenupWindow = NA, densPeakDateGreenupWindow = NA, 
+                      massPeakDateGreenupWindow = NA, pctRollingPeakDateWindow = NA, densRollingPeakDateWindow = NA, massRollingPeakDateWindow = NA)
   
   for (y in years) {
     yearFilteredDataset = dplyr::filter(fullDataset, Year == y)
-    sites = unique(yearFilteredDataset$Name)
+    uniqueSites = unique(yearFilteredDataset$Name)
     
-    for (site in sites) {
+    for (site in uniqueSites) {
       siteYearFilteredDataset = dplyr::filter(yearFilteredDataset, Name==site)
       
       pheno = meanDensityByWeek(siteYearFilteredDataset, allDates = FALSE, plot = FALSE, ...)
@@ -342,21 +364,28 @@ phenoSummary = function(fullDataset, # fullDataset format
                                   julianweek[meanDensity == max(meanDensity, na.rm = TRUE)][1]),
             massPeakDate = ifelse(sum(totalCount) == 0, NA, 
                                   julianweek[meanBiomass == max(meanBiomass, na.rm = TRUE)][1]),
-            # peak date between the beginning of the post-greenup window and the end of July; [1] selects the 1st date if multiple dates have the same peak val
+            # peak date within a specified, hard-coded window; [1] selects the 1st date if multiple dates have the same peak value
             pctPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                       julianweek[fracSurveys == max(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE)][1]),
+                                              julianweek[fracSurveys == max(fracSurveys[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE)][1]),
             densPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                        julianweek[meanDensity == max(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE)][1]),
+                                               julianweek[meanDensity == max(meanDensity[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE)][1]),
             massPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                        julianweek[meanBiomass == max(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE)][1]),
+                                               julianweek[meanBiomass == max(meanBiomass[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE)][1]),
+            # peak date between the beginning of the post-greenup window and the end of July; [1] selects the 1st date if multiple dates have the same peak value
+            pctPeakDateGreenupWindow = ifelse(sum(totalCount) == 0, NA, 
+                                       julianweek[fracSurveys == max(fracSurveys[julianweek >= (greenup + postGreenupBeg) & julianweek <= 212], na.rm = TRUE)][1]),
+            densPeakDateGreenupWindow = ifelse(sum(totalCount) == 0, NA, 
+                                        julianweek[meanDensity == max(meanDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= 212], na.rm = TRUE)][1]),
+            massPeakDateGreenupWindow = ifelse(sum(totalCount) == 0, NA, 
+                                        julianweek[meanBiomass == max(meanBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= 212], na.rm = TRUE)][1]),
             # peak date for the 3-week rolling average between the beginning of the post-greenup window and the end of July;
             #    -1 at the end to select the middle (rather than end) of the 3-week window
             pctRollingPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                              julianweek[which(rollingPct == max(rollingPct[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE))][1]),
+                                              julianweek[which(rollingPct == max(rollingPct[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE))][1]),
             densRollingPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                               julianweek[which(rollingDensity == max(rollingDensity[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE))][1]),
+                                               julianweek[which(rollingDensity == max(rollingDensity[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE))][1]),
             massRollingPeakDateWindow = ifelse(sum(totalCount) == 0, NA, 
-                                               julianweek[which(rollingBiomass == max(rollingBiomass[julianweek >= (greenup + postGreenupBeg) & julianweek <= 213], na.rm = TRUE))][1]))
+                                               julianweek[which(rollingBiomass == max(rollingBiomass[julianweek >= fullWindowBeg & julianweek <= fullWindowEnd], na.rm = TRUE))][1]))
         
         output = rbind(output, siteoutput)        
       }
@@ -881,20 +910,33 @@ matedateCalc2 = function(birdFreqDataframe, dipFromPeak = 0.1) {
 catOverlapRatio = function(hatchingDate, 
                            caterpillarPhenology, 
                            plotVar = 'meanBiomass',
-                           plusMinusWeekWindow = 3) {
+                           plusMinusWeekWindow = 2) {
   
-  jdMinusHatching = abs(caterpillarPhenology$julianweek - hatchingDate - 6)
-  midNestlingDate = which(jdMinusHatching == min(jdMinusHatching))
+  julianweeks = seq(4, 235, by = 7)
   
-  observedCaterpillars = mean(caterpillarPhenology[(midNestlingDate - 1):(midNestlingDate + 1), plotVar], na.rm = T)
-
-  if (midNestlingDate > plusMinusWeekWindow + 1 & midNestlingDate < nrow(caterpillarPhenology) - plusMinusWeekWindow) {
+  # hatchingDate + 6 is the mid-point of the 12d nestling period
+  midNestlingDate = julianweeks[abs(julianweeks - (hatchingDate + 6)) <= 3]
+  
+  # check that caterpillar data exist for at least 2 weeks in every 3-week window
+  enoughData = c()
+  for (i in 1:(2*plusMinusWeekWindow + 1)) {
+    jdwindow = seq(midNestlingDate - 7*(plusMinusWeekWindow + 2 -i), midNestlingDate - 7*(plusMinusWeekWindow -i), by = 7)
+    enough = length(caterpillarPhenology$julianweek[caterpillarPhenology$julianweek %in% jdwindow]) >= 2
+    enoughData = c(enoughData, enough)
+  }
+  
+  if (!FALSE %in% enoughData) {
+    observedCaterpillars = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% c(midNestlingDate - 7, midNestlingDate, midNestlingDate + 7), plotVar], na.rm = T)
+    
     potentialCaterpillars = vector(length = 2*plusMinusWeekWindow)
     for (i in 1:plusMinusWeekWindow) {
-      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[(midNestlingDate - 1-i):(midNestlingDate + 1-i), plotVar], na.rm = T)
-      potentialCaterpillars[2*i] = mean(caterpillarPhenology[(midNestlingDate - 1+i):(midNestlingDate + 1+i), plotVar], na.rm = T)
+      
+      potentialCaterpillars[2*i-1] = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% (midNestlingDate - 7*(i + -1:1)), plotVar], na.rm = T)
+      potentialCaterpillars[2*i] = mean(caterpillarPhenology[caterpillarPhenology$julianweek %in% (midNestlingDate + 7*(i + -1:1)), plotVar], na.rm = T)
     }
-    ratio = observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars))
+
+    ratio = ifelse(max(potentialCaterpillars) > 0, observedCaterpillars/max(c(potentialCaterpillars, observedCaterpillars)), NA)
+
   } else {
     warning("Caterpillar data is not available for the full range of windows specified.")
     ratio = NA
@@ -903,20 +945,38 @@ catOverlapRatio = function(hatchingDate,
 }
 
 
-################################################################
-# Calculation of the accumulation of growing degree days
-# exceeding a specified base threshold in degrees C (default 0 C)
-# up to a specified date.
-
-# temperatureData is a dataframe of daily temperature data with julian day 
-# and temperature ("tmean") columns.
-# The temperature data is assumed to be t_mean, the average of t_min and t_max
-
-gddCalc = function(temperatureData, base = 0, asOfJD = 121) {
+# Functions for calculating the total GDD accumulated by a certain date,
+# or the date at which a given GDD is accumulated.
+#   tmean is a vector of daily average temperature values for a year,
+#   which is the daily average of tmin and tmax
+gddCalc = function(tmean, base = 0, asOfJD = 121) {
   
-  tmean_minus_base = temperatureData$tmean - base
+  if (length(tmean) != 365) {
+    warning("tmean should include daily temperature values, but is not of length 365.")
+  }
+  tmean_minus_base = tmean - base
   tmean_minus_base[tmean_minus_base < 0] = 0
   
-  gdd = cumsum(tmean_minus_base)[asOfJD]
-  return(gdd)
+  gdd = cumsum(tmean_minus_base)
+  
+  gddAsOfJD = gdd[asOfJD]
+  return(gddAsOfJD)
 }
+
+
+dateOfGDDaccumulation = function(tmean, base = 0, accumulateTo = 2400) {
+  
+  if (length(tmean) != 365) {
+    warning("tmean should include daily temperature values, but is not of length 365.")
+  }
+  
+  jds = 1:365
+  
+  tmean_minus_base = tmean - base
+  tmean_minus_base[tmean_minus_base < 0] = 0
+  gdd = cumsum(tmean_minus_base)
+  
+  dateAccumulated = min(jds[gdd >= accumulateTo])
+  return(dateAccumulated)
+}
+
