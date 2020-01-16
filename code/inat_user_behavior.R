@@ -91,6 +91,42 @@ for(y in unique(obs_effort_plot$year)) {
 }
 dev.off()
 
+# Phenology in observer effort by latitude bin
+
+obs_effort_lat_db <- tbl(con, "inat") %>%
+  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  filter(!is.na(latitude)) %>%
+  mutate(jday = julianday(observed_on),
+         jd_wk = 7*floor(jday/7),
+         lat_bin = floor(latitude)) %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  distinct(lat_bin, year, jd_wk, observed_on, user_login, id) %>%
+  group_by(lat_bin, year, jd_wk) %>%
+  summarize(n_obs = n_distinct(id),
+            n_users = n_distinct(user_login))
+
+obs_effort_lat_df <- obs_effort_lat_db %>%
+  collect()
+
+obs_effort_lat_plot <- obs_effort_lat_df %>%
+  na.omit() %>%
+  filter(year > 2008 & year < 2018) %>%
+  group_by(year) %>%
+  mutate(jd_wk = jd_wk - min(jd_wk))
+
+obs_effort_plot_2017 <- obs_effort_lat_plot %>%
+  filter(year == 2017) %>%
+  group_by(lat_bin) %>%
+  mutate(n_weeks = n_distinct(jd_wk)) %>%
+  filter(lat_bin > 25 & lat_bin < 60)
+
+ggplot(obs_effort_plot_2017, aes(x = jd_wk, y = n_obs)) + geom_col(color = "white") + 
+  geom_smooth(method = "loess", se = F) +
+  facet_wrap(~lat_bin, scales = "free") +
+  labs(x = "Julian week", y = "Number of observations")
+ggsave("figs/inaturalist/seasonal_observations_latitude.pdf", height = 12, width = 12, units = "in")
+
 # Yearly growth
 
 obs_year_db <- tbl(con, "inat") %>%
