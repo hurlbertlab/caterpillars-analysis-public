@@ -5,6 +5,30 @@ library(lubridate)
 library(tmap)
 library(sf)
 
+# Spatial extent
+
+# 1 degree cells:
+#   MA region: 42-43 North, 70.5-71.5 West
+# MD region: 38.5-39.5 North, 76.5-77.5 West
+# GA region: 33.5-34.5 North, 83.25-84.25 West
+
+one_deg_bins <- function(lat, lon) {
+  case_when(lat >= 42 & lat <= 43 & lon <= -70.5 & lon >= -71.5 ~ "MA",
+            lat >= 38.5 & lat <= 39.5 & lon <= -76.5 & lon >= -77.5 ~ "MD",
+            lat >= 33.5 & lat <= 34.5 & lon <= -83.25 & lon >= -84.25 ~ "GA")
+}
+ 
+# Flatter cells:
+#   MA region: 42.25-42.75 N, 70.5-72.5 W  
+# MD region: 38.5-39 N, 76-78 W
+# GA region: 33.6-34.1 N, 83-85 W
+
+flat_bins <- function(lat, lon) {
+  case_when(lat >= 42.25 & lat <= 42.75 & lon <= -70.5 & lon >= -72.5 ~ "MA",
+            lat >= 38.5 & lat <= 39.5 & lon <= -76 & lon >= -78 ~ "MD",
+            lat >= 33.6 & lat <= 34.1 & lon <= -83 & lon >= -85 ~ "GA")
+}
+
 # Temp database species list
 
 spplist <- read.csv("C:/Users/gdicecco/Desktop/SpeciesList.csv", header = F)
@@ -28,18 +52,31 @@ cats <- inatcat %>%
          !is.na(latitude),
          latitude > 25)
 
-# ~10-15% identified to species but not research grade
-table(cats$year, cats$quality_grade)
+# Number of records per species in the bins required 
 
-cats_overlap <- cats %>%
-  filter(scientific_name %in% spplist$V1)
+cats_onedeg_bins <- cats %>%
+  mutate(region = one_deg_bins(latitude, longitude)) %>%
+  filter(!is.na(region)) %>%
+  group_by(region, year, scientific_name) %>%
+  summarize(num_obs = n_distinct(id),
+            research_grade = length(id[quality_grade == "research"])/num_obs) %>%
+  filter(num_obs >= 5)
 
-spp_overlap <- unique(cats_overlap$scientific_name)
-overlap_density <- cats_overlap %>%
-  group_by(scientific_name) %>%
-  count()
-# Monarchs @ 9500 records, everything else below 200 records
-# Fall armyworm Spodoptera frugiperda 150, Cabbage white Pieris rapae 120
+overlap_spp <- filter(cats_onedeg_bins, scientific_name %in% spplist$V1)
+
+write.csv(cats_onedeg_bins, "data/inat_caterpillars_biomass_onedeg.csv", row.names = F)
+
+cats_flat_bins <- cats %>%
+  mutate(region = flat_bins(latitude, longitude)) %>%
+  filter(!is.na(region)) %>%
+  group_by(region, year, scientific_name) %>%
+  summarize(num_obs = n_distinct(id),
+            research_grade = length(id[quality_grade == "research"])/num_obs) %>%
+  filter(num_obs >= 5)
+
+write.csv(cats_flat_bins, "data/inat_caterpillars_biomass_flatbin.csv", row.names = F)
+
+overlap_spp_flat <- filter(cats_flat_bins, scientific_name %in% spplist$V1)
 
 # Caterpillar data density by 1 degree lat lon grids
 
