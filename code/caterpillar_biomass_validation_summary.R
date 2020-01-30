@@ -64,7 +64,7 @@ cats_onedeg_bins <- cats %>%
 
 overlap_spp <- filter(cats_onedeg_bins, scientific_name %in% spplist$V1)
 
-write.csv(cats_onedeg_bins, "data/inat_caterpillars_biomass_onedeg.csv", row.names = F)
+# write.csv(cats_onedeg_bins, "data/inat_caterpillars_biomass_onedeg.csv", row.names = F)
 
 cats_flat_bins <- cats %>%
   mutate(region = flat_bins(latitude, longitude)) %>%
@@ -74,9 +74,32 @@ cats_flat_bins <- cats %>%
             research_grade = length(id[quality_grade == "research"])/num_obs) %>%
   filter(num_obs >= 5)
 
-write.csv(cats_flat_bins, "data/inat_caterpillars_biomass_flatbin.csv", row.names = F)
+# write.csv(cats_flat_bins, "data/inat_caterpillars_biomass_flatbin.csv", row.names = F)
 
 overlap_spp_flat <- filter(cats_flat_bins, scientific_name %in% spplist$V1)
+
+# Cat species data for 
+# Acronicta americana
+# Malacosoma americana
+# Papilio polyxenes
+
+threespp <- c("Acronicta americana", "Malacosoma americana", "Papilio polyxenes")
+
+cat_dates_onedeg <- cats %>%
+  mutate(region = one_deg_bins(latitude, longitude),
+         jday = yday(Date)) %>%
+  filter(!is.na(region), scientific_name %in% threespp) %>%
+  select(id, observed_on, url, description, quality_grade, latitude, longitude, scientific_name, year, jday, region)
+
+# write.csv(cat_dates_onedeg, "C:/Users/gdicecco/Desktop/three_cats_obs_onedeg.csv", row.names = F)
+
+cat_dates_flat <- cats %>%
+  mutate(region = flat_bins(latitude, longitude),
+         jday = yday(Date)) %>%
+  filter(!is.na(region), scientific_name %in% threespp) %>%
+  select(id, observed_on, url, description, quality_grade, latitude, longitude, scientific_name, year, jday, region)
+
+# write.csv(cat_dates_flat, "C:/Users/gdicecco/Desktop/three_cats_obs_flatbin.csv", row.names = F)
 
 # Caterpillar data density by 1 degree lat lon grids
 
