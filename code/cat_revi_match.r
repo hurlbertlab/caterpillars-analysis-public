@@ -5,6 +5,9 @@ source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
 
 revi_pheno_summary = read.table('data/revi/revi_pheno_summary_by_county_thru2019.txt', header = T, sep = '\t')
+ebird_fledge = read.csv("data/birds/bird_fledge-2019-11-08.csv", header = T)
+ebird_arrival = read.csv("data/birds/BirdArrival.csv", header = T)
+cc_hex = read.csv("data/CatCount_density_hex_cells.csv", header = T)
 
 phenoSum = phenoSummary(fullDataset) %>%
   left_join(sites2[, c('Name', 'ebirdCounty')], by = 'Name') %>%
