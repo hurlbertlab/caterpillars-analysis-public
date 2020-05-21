@@ -1,6 +1,6 @@
 # Examining caterpillar phenology with iNaturalist data
 
-# iNaturalist data requested in August 2019
+# iNaturalist data requested in May 2020
 
 #### Libraries ####
 library(tidyverse)
@@ -14,7 +14,7 @@ library(forcats)
 library(dggridR)
 
 #####  Read in data ########
-inat = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
+inat = read.csv('data/inat_caterpillars_eastern_NA_5-20-2020.csv', header = TRUE, stringsAsFactors = F)
 
 NAmap = readOGR('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
@@ -98,6 +98,31 @@ inat_cc_bins <- cc_recent %>%
   left_join(inat_noCC, by = c("cell", "Year" = "year", "jd_wk")) %>%
   group_by(Year, cell) %>%
   summarize(sum_CC = sum(n_CC, na.rm = T), sum_inat = sum(n_inat, na.rm = T))
+
+##### Compare iNat & CC family composition ####
+
+inat_taxa_withCC <- inat %>%
+  filter(year > 2014, jday >= jdBeg, jday <= jdEnd) %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  mutate(datasource = case_when(user_login == "caterpillarscount" ~ "CC",
+                                TRUE ~ "iNat")) %>%
+  distinct() %>%
+  filter(taxon_family_name != "") %>%
+  group_by(datasource, taxon_family_name) %>%
+  filter(n() > 10) %>%
+  summarize(n_obs = n()) %>%
+  group_by(datasource) %>%
+  mutate(total_obs = sum(n_obs),
+         prop_obs = n_obs/total_obs) %>%
+  mutate(family_plot = case_when(prop_obs < 0.01 ~ "Other", 
+                                 TRUE ~ taxon_family_name)) %>%
+  group_by(datasource, family_plot) %>%
+  summarize(prop_obs_grp = sum(prop_obs))
+
+ggplot(inat_taxa_withCC, aes(x = datasource, y = prop_obs_grp, fill = family_plot)) +
+  geom_col(position = "stack") + coord_flip() + scale_fill_viridis_d() +
+  labs(x = "", y = "Proportion of observations", fill = "Family")
+ggsave("figs/inaturalist/inat_cc_families.pdf", units = "in", height = 6, width = 10)
 
 ##### Plot number of records ####
 # Plot of records within radius of CC site

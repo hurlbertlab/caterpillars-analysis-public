@@ -3,9 +3,15 @@
 library(tidyverse)
 library(raster)
 library(sf)
+library(tmap)
 
 # plotting theme
 theme_set(theme_classic(base_size = 15))
+
+# Map of north america
+
+na_map <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
+  filter(sr_adm0_a3 == "CAN" | sr_adm0_a3 == "USA")
 
 # Source caterpillars count data
 source('code/analysis_functions.r')
@@ -74,5 +80,17 @@ cat_sites_dist <- cat_sites_lc %>%
 ggplot(cat_sites_dist, aes(x = dataset, y = prop_recs, fill = legend)) + 
   geom_col(position = "stack") + coord_flip() +
   labs(x = "", y = "Proportion of sites", fill = "") + scale_fill_viridis_d()
-ggsave("figs/inaturalist/landcover_types_inat_cc.pdf", units = "in", width = 10, height = 5)
+# ggsave("figs/inaturalist/landcover_types_inat_cc.pdf", units = "in", width = 10, height = 5)
 
+## Map of CC land cover 
+
+cc_sites_sf <- cc_sites_lc %>%
+  st_as_sf(coords = c("lon", "lat"))
+
+us_map <- na_map %>%
+  st_crop(xmin = -148, xmax = -53, ymin = 20, ymax = 60)
+
+cc_site_lc_map <- tm_shape(us_map) + tm_polygons() + tm_shape(cc_sites_sf) + 
+  tm_dots(size = 0.5, col = "legend", palette = "Paired", title = "Land cover") +
+  tm_layout(legend.text.size = 0.75, legend.title.size = 1)
+tmap_save(cc_site_lc_map, "figs/caterpillars-count/cc_site_landcover_map.pdf", units = "in", height = 6, width= 8)
