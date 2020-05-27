@@ -3,6 +3,9 @@ library(dplyr)
 library(lubridate)
 library(data.table)
 library(gsheet)
+library(maps)
+library(sp)
+library(maptools)
 #library(tidyr)
 
 
