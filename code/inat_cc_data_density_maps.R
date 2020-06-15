@@ -38,7 +38,7 @@ con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "inat_2019.db")
 db_list_tables(con)
 
 inat_insects_db <- tbl(con, "inat") %>%
-  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
   filter(!is.na(longitude) | !is.na(latitude)) %>%
   filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
   filter(iconic_taxon_name == "Insecta") %>%
@@ -50,6 +50,12 @@ inat_insects_db <- tbl(con, "inat") %>%
 inat_insects_df <- inat_insects_db %>%
   collect()
 
+DBI::dbDisconnect(con, "inat")
+
+inat_2019_june <- inat_insects_df %>%
+  filter(year == "2019", month == "06")
+# 75,891 observations
+
 # For earlier
 
 setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
@@ -57,8 +63,8 @@ con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
 
 db_list_tables(con)
 
-inat_insects_db <- tbl(con, "inat") %>%
-  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+inat_insects_early_db <- tbl(con, "inat") %>%
+  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
   filter(!is.na(longitude) | !is.na(latitude)) %>%
   filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
   filter(iconic_taxon_name == "Insecta") %>%
@@ -67,9 +73,12 @@ inat_insects_db <- tbl(con, "inat") %>%
   mutate(jday = julianday(observed_on),
          jd_wk = 7*floor(jday/7))
 
-
-inat_insects_early_df <- inat_insects_db %>%
+inat_insects_early_df <- inat_insects_early_db %>%
   collect()
+
+inat_2018_june <- inat_insects_early_df %>%
+  filter(year == "2018", month == "06")
+# 172,043 obs
 
 ## iNat insect number of observations per hex cell
 
@@ -100,19 +109,24 @@ outlierCount = 10000
 catcount_june <- fullDataset %>%
   mutate(month = word(LocalDate, 2, sep = "-")) %>%
   filter(month == "06") %>%
+  filter(Region != "IA") %>%
   mutate(Quantity2 = ifelse(Quantity > outlierCount, 1, Quantity)) %>% #outlier counts replaced with 1
-  group_by(Name, Region, Latitude, Longitude, Year) %>%
+  mutate(groupName = case_when(grepl("EwA", Name) ~ "EwA",
+                               grepl("Acadia", Name) ~ "Acadia",
+                               grepl("Litzsinger", Name)~ "Litzsinger",
+                               TRUE ~ Name)) %>%
+  group_by(groupName, Region, Latitude, Longitude, Year) %>%
   summarize(nSurveyBranches = n_distinct(PlantFK),
             nSurveys = n_distinct(ID),
             totalCount = sum(Quantity2, na.rm = TRUE),
             numSurveysGTzero = length(unique(ID[Quantity > 0])),
             totalBiomass = sum(Biomass_mg, na.rm = TRUE)) %>% 
-  filter(nSurveyBranches >= 40) %>%
+  filter(nSurveys >= 40) %>%
   mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0, totalBiomass = 0) %>%
   mutate(meanDensity = totalCount/nSurveys,
          fracSurveys = 100*numSurveysGTzero/nSurveys,
          meanBiomass = totalBiomass/nSurveys) %>%
-  filter(Year >= 2016 & Year <= 2019)
+  filter(Year == 2019)
 
 ## iNat data density in June: caterpillar obs/total arth obs
 
@@ -121,7 +135,7 @@ four_families <- c("Erebidae", "Noctuidae", "Notodontidae", "Geometridae")
 inat_june <- inat %>%
   mutate(year = as.numeric(word(observed_on, 1, sep = "-")),
          month = as.numeric(word(observed_on, 2, sep = "-"))) %>%
-  filter(year >= 2016, year <= 2019, month == 6, user_login != "caterpillarscount") %>%
+  filter(year == 2019, month == 6, user_login != "caterpillarscount") %>%
   filter(!is.na(latitude), !is.na(longitude)) %>%
   st_as_sf(coords = c("longitude", "latitude")) %>%
   st_set_crs(4326) %>%
@@ -138,7 +152,26 @@ inat_june <- inat %>%
 inat_june_hex <- hex %>%
   right_join(inat_june)
 
-## Figure: iNat hex density with CC location dots, All and just 4 common families
+# Identified CC observations, June
+
+cc_id_june <- inat %>%
+  mutate(year = as.numeric(word(observed_on, 1, sep = "-")),
+         month = as.numeric(word(observed_on, 2, sep = "-"))) %>%
+  filter(year == 2019, month == 6, user_login == "caterpillarscount") %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(hex)) %>%
+  st_intersection(hex) %>%
+  group_by(year, cell) %>%
+  summarize(n_cats = n_distinct(id),
+            n_cats_4fam = n_distinct(id[taxon_family_name %in% four_families])) %>%
+  st_set_geometry(NULL)
+
+cc_id_june_hex <- hex %>%
+  right_join(cc_id_june)
+
+## Figure: iNat/CC hex density, All and just 4 common families, 1:1 plot
 
 easternNA <- NAmap %>%
   filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
@@ -147,45 +180,101 @@ easternNA <- NAmap %>%
 
 inat_june_ortho <- inat_june_hex %>%
   st_transform(st_crs(easternNA)) %>%
-  filter(!is.na(cats_effort), cats_effort > 0) %>%
-  mutate(log_cats_effort = log10(cats_effort))
+  filter(!is.na(cats_effort), cats_effort > 0)
 
-catcount_june_ortho <- catcount_june %>%
-  rename(year = "Year") %>%
-  st_as_sf(coords= c("Longitude", "Latitude")) %>%
-  st_set_crs(4326) %>%
-  st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 55)) %>%
+cc_id_june_ortho <- cc_id_june_hex %>%
   st_transform(st_crs(easternNA))
-  
+
+cc_id_june_sites <- inat %>%
+  mutate(year = as.numeric(word(observed_on, 1, sep = "-")),
+         month = as.numeric(word(observed_on, 2, sep = "-"))) %>%
+  filter(year == 2019, month == 6, user_login == "caterpillarscount") %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(easternNA))
+
 all_cats <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Caterpillar obs.", alpha = 0.65) + tm_facets(by = "year", nrow = 1) +
-  tm_shape(catcount_june_ortho) + tm_dots(col = "black", size = 0.25) + tm_facets(by = "year", nrow = 1) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.5, panel.label.size = 1.5) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count! site"), shape = 16, size = 0.75)
+  tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65)+
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
 
 inat_june_fourfams <- inat_june_ortho %>%
   filter(!is.na(cats_4fam_effort), cats_4fam_effort > 0)
 
 four_fams <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Woody Caterpillar obs.", alpha = 0.65) + tm_facets(by = "year", nrow = 1) +
-  tm_shape(catcount_june_ortho) + tm_dots(col = "black", size = 0.25) + tm_facets(by = "year", nrow = 1) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.5, panel.label.size = 1.5) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count! site"), shape = 16, size = 0.75)
+  tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65)+
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
 
-inat_cc <- tmap_arrange(all_cats, four_fams, nrow = 2)
-tmap_save(inat_cc, "figs/cross-comparisons/inat_cat_with_CC_june_map.pdf", units = "in", width = 12, height = 6)
+cc_all_cats <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65, breaks = c(0, 75, 150, 225, 300)) + 
+  tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5)+
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+
+cc_four_fams <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats_4fam", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65, breaks = c(0, 25, 50, 75, 100)) + 
+  tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+
+cc_inat_11 <- inat_june %>%
+  right_join(cc_id_june, by = c("year", "cell"), suffix = c("_inat", "_cc"))
+
+theme_set(theme_classic(base_size = 17))
+inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 2) + scale_y_log10() +
+  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
+  labs(x = "iNaturalist caterpillar density", y = "Caterpillars Count! caterpillar density")
+
+inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 2) + scale_y_log10() +
+  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
+  labs(x = "iNaturalist woody caterpillar density", y = "Caterpillars Count! woody caterpillar density")
+
+grid.newpage()
+pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_data_density_six_panel.pdf"), height = 10, width = 18)
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+print(all_cats, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(four_fams, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
+print(cc_all_cats, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(cc_four_fams, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
+print(inat_cc_11_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+print(inat_cc_11_4fam_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
+dev.off()
 
 ## Figure: CC data, % surveys with caterpillars, # cats per survey
 
+catcount_avgs_june <- catcount_june %>%
+  rename(year = "Year") %>%
+  st_as_sf(coords= c("Longitude", "Latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(hex)) %>%
+  st_intersection(hex) %>%
+  group_by(year, cell) %>%
+  summarize(meanFracSurveys = mean(fracSurveys),
+            meanMeanDensity = mean(meanDensity)) %>%
+  st_set_geometry(NULL)
+
+cc_avgs_june_hex <- hex %>%
+  right_join(catcount_avgs_june) %>%
+  st_transform(st_crs(easternNA))
+
+catcount_sites_june_ortho <- catcount_june %>%
+   rename(year = "Year") %>%
+   st_as_sf(coords= c("Longitude", "Latitude")) %>%
+   st_set_crs(4326) %>%
+   st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 55)) %>%
+   st_transform(st_crs(easternNA))
+  
 cc_fracsurveys <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(catcount_june_ortho) + tm_dots(col = "fracSurveys", size = 0.25, palette = "YlGnBu", title = "Pct. surveys with caterpillars") + 
-  tm_facets(by = "year", nrow = 1, free.coords = F) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.5, panel.label.size = 1.5) 
+  tm_shape(cc_avgs_june_hex) + 
+  tm_polygons(col = "meanFracSurveys", size = 0.25, palette = "YlGnBu", title = "Pct. surveys with caterpillars", alpha = 0.65) +
+  tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) 
 
 cc_meandens <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(catcount_june_ortho) + tm_dots(col = "meanDensity", size = 0.25, palette = "YlGnBu", title = "Avg. caterpillars per survey") + 
-  tm_facets(by = "year", nrow = 1, free.coords = F) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.5, panel.label.size = 1.5) 
+  tm_shape(cc_avgs_june_hex) + 
+  tm_polygons(col = "meanMeanDensity", size = 0.25, palette = "YlGnBu", title = "Avg. caterpillars per survey", alpha = 0.65) + 
+  tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) 
 
-cc_map <- tmap_arrange(cc_fracsurveys, cc_meandens, nrow = 2)
+cc_map <- tmap_arrange(cc_fracsurveys, cc_meandens, ncol = 2)
 tmap_save(cc_map, "figs/caterpillars-count/catcount_june_map.pdf", units = "in", width = 12, height = 6)
