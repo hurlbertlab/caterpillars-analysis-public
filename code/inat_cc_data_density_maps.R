@@ -11,6 +11,7 @@ library(sf)
 library(tmap)
 library(forcats)
 library(dggridR)
+library(grid)
 
 #####  Read in data ########
 inat = read.csv('data/inat_caterpillars_eastern_NA_5-20-2020.csv', header = TRUE, stringsAsFactors = F)
@@ -100,7 +101,8 @@ inat_june_hex_obs <- inat_june_obs %>%
 
 # Only map effort for iNat in hex cells with at least 100 arthropod observations
 inat_june_hex_obs <- read.csv("data/inat_insect_obs_june2016-2019_hex.csv") %>%
-  filter(n_obs >= 100)
+  filter(n_obs >= 100) %>%
+  filter(year == 2019)
 
 ## Caterpillars count data density in June: sites with at least 40 branches, calc % surveys with caterpillars and # cats per survey
 
@@ -118,9 +120,9 @@ catcount_june <- fullDataset %>%
   group_by(groupName, Region, Latitude, Longitude, Year) %>%
   summarize(nSurveyBranches = n_distinct(PlantFK),
             nSurveys = n_distinct(ID),
-            totalCount = sum(Quantity2, na.rm = TRUE),
-            numSurveysGTzero = length(unique(ID[Quantity > 0])),
-            totalBiomass = sum(Biomass_mg, na.rm = TRUE)) %>% 
+            totalCount = sum(Quantity2[Group == "caterpillar"], na.rm = TRUE),
+            numSurveysGTzero = length(unique(ID[Quantity > 0 & Group == "caterpillar"])),
+            totalBiomass = sum(Biomass_mg[Group == "caterpillar"], na.rm = TRUE)) %>% 
   filter(nSurveys >= 40) %>%
   mutate_cond(is.na(totalCount), totalCount = 0, numSurveysGTzero = 0, totalBiomass = 0) %>%
   mutate(meanDensity = totalCount/nSurveys,
@@ -130,7 +132,7 @@ catcount_june <- fullDataset %>%
 
 ## iNat data density in June: caterpillar obs/total arth obs
 
-four_families <- c("Erebidae", "Noctuidae", "Notodontidae", "Geometridae")
+woody_families <- c("Erebidae", "Noctuidae", "Notodontidae", "Geometridae", "Depressariidae", "Tortricidae")
 
 inat_june <- inat %>%
   mutate(year = as.numeric(word(observed_on, 1, sep = "-")),
@@ -141,10 +143,10 @@ inat_june <- inat %>%
   st_set_crs(4326) %>%
   st_transform(st_crs(hex)) %>%
   st_intersection(hex) %>%
-  group_by(year, cell) %>%
+  group_by(cell) %>%
   summarize(n_cats = n_distinct(id),
-            n_cats_4fam = n_distinct(id[taxon_family_name %in% four_families])) %>%
-  right_join(inat_june_hex_obs, by = c("year", "cell")) %>%
+            n_cats_4fam = n_distinct(id[taxon_family_name %in% woody_families])) %>%
+  right_join(inat_june_hex_obs, by = c("cell")) %>%
   mutate(cats_effort = n_cats/n_obs,
          cats_4fam_effort = n_cats_4fam/n_obs) %>%
   st_set_geometry(NULL)
@@ -165,7 +167,7 @@ cc_id_june <- inat %>%
   st_intersection(hex) %>%
   group_by(year, cell) %>%
   summarize(n_cats = n_distinct(id),
-            n_cats_4fam = n_distinct(id[taxon_family_name %in% four_families])) %>%
+            n_cats_4fam = n_distinct(id[taxon_family_name %in% woody_families])) %>%
   st_set_geometry(NULL)
 
 cc_id_june_hex <- hex %>%
@@ -175,7 +177,7 @@ cc_id_june_hex <- hex %>%
 
 easternNA <- NAmap %>%
   filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
-  st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 55)) %>%
+  st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 51)) %>%
   st_transform("+proj=ortho +lon_0=-75 +lat_0=40")
 
 inat_june_ortho <- inat_june_hex %>%
@@ -183,6 +185,7 @@ inat_june_ortho <- inat_june_hex %>%
   filter(!is.na(cats_effort), cats_effort > 0)
 
 cc_id_june_ortho <- cc_id_june_hex %>%
+  st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 51)) %>%
   st_transform(st_crs(easternNA))
 
 cc_id_june_sites <- inat %>%
@@ -192,30 +195,31 @@ cc_id_june_sites <- inat %>%
   filter(!is.na(latitude), !is.na(longitude)) %>%
   st_as_sf(coords = c("longitude", "latitude")) %>%
   st_set_crs(4326) %>%
+  st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 51)) %>%
   st_transform(st_crs(easternNA))
 
 all_cats <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
 
 inat_june_fourfams <- inat_june_ortho %>%
   filter(!is.na(cats_4fam_effort), cats_4fam_effort > 0)
 
 four_fams <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
 
 cc_all_cats <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65, breaks = c(0, 75, 150, 225, 300)) + 
   tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
   tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
 
 cc_four_fams <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats_4fam", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65, breaks = c(0, 25, 50, 75, 100)) + 
   tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
   tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0))
+  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
 
 cc_inat_11 <- inat_june %>%
   right_join(cc_id_june, by = c("year", "cell"), suffix = c("_inat", "_cc"))
@@ -250,31 +254,46 @@ catcount_avgs_june <- catcount_june %>%
   st_intersection(hex) %>%
   group_by(year, cell) %>%
   summarize(meanFracSurveys = mean(fracSurveys),
-            meanMeanDensity = mean(meanDensity)) %>%
+            meanMeanDensity = mean(meanDensity),
+            meanMeanBiomass = mean(meanBiomass)) %>%
   st_set_geometry(NULL)
 
 cc_avgs_june_hex <- hex %>%
   right_join(catcount_avgs_june) %>%
   st_transform(st_crs(easternNA))
 
+easternNA_zoom <- NAmap %>%
+  filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
+  st_crop(c(xmin = -93, ymin = 20, xmax = -59, ymax = 48)) %>%
+  st_transform("+proj=ortho +lon_0=-75 +lat_0=40")
+
 catcount_sites_june_ortho <- catcount_june %>%
    rename(year = "Year") %>%
    st_as_sf(coords= c("Longitude", "Latitude")) %>%
    st_set_crs(4326) %>%
-   st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 55)) %>%
+   st_crop(c(xmin = -93, ymin = 20, xmax = -59, ymax = 48)) %>%
    st_transform(st_crs(easternNA))
   
-cc_fracsurveys <- tm_shape(easternNA) + tm_polygons() +
+cc_fracsurveys <- tm_shape(easternNA_zoom) + tm_polygons() +
   tm_shape(cc_avgs_june_hex) + 
-  tm_polygons(col = "meanFracSurveys", size = 0.25, palette = "YlGnBu", title = "Pct. surveys with caterpillars", alpha = 0.65) +
+  tm_polygons(col = "meanFracSurveys", size = 0.25, palette = "YlGnBu", title = "% surveys with caterpillars", alpha = 0.65) +
   tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) 
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
+  tm_layout(legend.text.size = 1.25, legend.title.size = 1.5)
 
-cc_meandens <- tm_shape(easternNA) + tm_polygons() +
+cc_meandens <- tm_shape(easternNA_zoom) + tm_polygons() +
   tm_shape(cc_avgs_june_hex) + 
-  tm_polygons(col = "meanMeanDensity", size = 0.25, palette = "YlGnBu", title = "Avg. caterpillars per survey", alpha = 0.65) + 
+  tm_polygons(col = "meanMeanDensity", size = 0.25, palette = "YlGnBu", title = "Caterpillars/survey", alpha = 0.65) + 
   tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) 
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
+  tm_layout(legend.text.size = 1.25, legend.title.size = 1.5)
 
-cc_map <- tmap_arrange(cc_fracsurveys, cc_meandens, ncol = 2)
-tmap_save(cc_map, "figs/caterpillars-count/catcount_june_map.pdf", units = "in", width = 12, height = 6)
+cc_meanbiomass <- tm_shape(easternNA_zoom) + tm_polygons() +
+  tm_shape(cc_avgs_june_hex) + 
+  tm_polygons(col = "meanMeanBiomass", size = 0.25, palette = "YlGnBu", title = "Biomass (mg)/survey", alpha = 0.65) + 
+  tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
+  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
+  tm_layout(legend.text.size = 1.25, legend.title.size = 1.5) 
+
+cc_map <- tmap_arrange(cc_fracsurveys, cc_meandens, cc_meanbiomass, ncol = 3)
+tmap_save(cc_map, "figs/caterpillars-count/catcount_june_map.pdf", units = "in", width = 18, height = 6)

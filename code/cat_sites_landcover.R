@@ -93,6 +93,12 @@ catcount_sites_df <- read.csv("data/catcount_site_landcover.csv", stringsAsFacto
 inat_sites_df <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
 nlcd_legend <- read.csv("data/nlcd2016_legend.csv", stringsAsFactors = F)
 
+nlcd_order <- c("Open Water", "Developed Open Space", "Developed Low Intensity", "Developed Medium Intensity", 
+                "Developed High Intensity", "Barren Land (Rocky/Sand/Clay)",
+                "Deciduous Forest", "Evergreen Forest", "Mixed Forest",
+                "Shrub/Scrub", "Grassland/Herbaceous", "Pasture/Hay",
+                "Cultivated Crops", "Woody Wetlands", "Emergent Herbaceous Wetlands")
+
 cat_sites_lc <- inat_sites_df %>%
   mutate(Name = NA) %>%
   bind_rows(catcount_sites_df) %>%
@@ -107,12 +113,19 @@ cat_sites_dist <- cat_sites_lc %>%
   summarize(n_recs = n()) %>%
   group_by(dataset) %>%
   mutate(total_recs = sum(n_recs),
-         prop_recs = n_recs/total_recs)
+         prop_recs = n_recs/total_recs) 
 
-ggplot(cat_sites_dist, aes(x = dataset, y = prop_recs, fill = legend)) +
+nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", "Developed Low Intensity" = "#fde5e4",
+             "Developed Medium Intensity" = "#f7b29f", "Developed High Intensity" = "#e7564e",
+             "Barren Land (Rocky/Sand/Clay)" = "#b3ada3",
+             "Deciduous Forest" = "#69ab63", "Evergreen Forest" = "#1c6330", "Mixed Forest" = "#b5c98f",
+             "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
+             "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Emergent Herbaceous Wetlands" = "#70a3ba")
+
+ggplot(cat_sites_dist, aes(x = dataset, y = prop_recs, fill = fct_relevel(legend, nlcd_order))) +
   geom_col(position = "stack") + coord_flip() +
-  labs(x = "", y = "Proportion of sites", fill = "") + scale_fill_viridis_d()
-# ggsave("figs/inaturalist/landcover_types_inat_cc.pdf", units = "in", width = 10, height = 5)
+  labs(x = "", y = "Proportion of sites", fill = "") + scale_fill_manual(values = nlcd_palette)
+# ggsave("figs/cross-comparisons/landcover_types_inat_cc.pdf", units = "in", width = 10, height = 5)
 
 ## Map of CC land cover
 
