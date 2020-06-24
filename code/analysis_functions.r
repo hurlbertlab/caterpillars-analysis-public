@@ -250,9 +250,9 @@ siteEffortSummary = function(fullDataset,
   {
   
   summary = filter(fullDataset, Year == year) %>%
-    group_by(Name, Region, Latitude, Longitude, julianweek, medianGreenup) %>%
+    group_by(Name, Region, cell, Latitude, Longitude, julianweek, medianGreenup) %>%
     summarize(nSurveysPerWeek = n_distinct(ID)) %>%
-    group_by(Name, Region, Latitude, Longitude, medianGreenup) %>%
+    group_by(Name, Region, cell, Latitude, Longitude, medianGreenup) %>%
     summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
               modalSurveyCirclesPerWeek = Mode(ceiling(nSurveysPerWeek/5)),
               medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T), 
