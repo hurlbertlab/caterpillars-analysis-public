@@ -7,20 +7,14 @@ library(RSQLite)
 ## Get June arthropod records from all iNaturalist database to control for sampling effort iNat
 
 # For 2019
-# setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_thru_2019")
+setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_june_2019/")
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "inat_2019.db")
 
 db_list_tables(con)
 
 inat_insects_db <- tbl(con, "inat") %>%
-  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
-  filter(!is.na(longitude) | !is.na(latitude)) %>%
-  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
   filter(iconic_taxon_name == "Insecta") %>%
-  mutate(jday = julianday(observed_on),
-         jd_wk = 7*floor(jday/7)) %>%
-  mutate(year = substr(observed_on, 1, 4),
-         month = substr(observed_on, 6, 7))
+  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30)
 
 inat_insects_df <- inat_insects_db %>%
   collect()
@@ -28,10 +22,40 @@ inat_insects_df <- inat_insects_db %>%
 DBI::dbDisconnect(con, "inat")
 
 inat_2019_june <- inat_insects_df %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
   filter(year == "2019", month == "06")
 
 length(unique(inat_2019_june$id))
 # 75,891 observations
+
+# For 2019
+setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_june_2019/")
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "inat_2019_06.db")
+
+db_list_tables(con)
+
+inat_insects_db <- tbl(con, "inat") %>%
+  filter(iconic_taxon_name == "Insecta") %>%
+  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30)
+
+inat_insects_df <- inat_insects_db %>%
+  collect()
+
+DBI::dbDisconnect(con, "inat")
+
+inat_2019_june <- inat_insects_df %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  filter(year == "2019", month == "06")
+# 7,003 observations
+
+# 2019 csv
+
+inat_csv <- read.csv("inat_2019_06.csv", stringsAsFactors = F)
+inat_insecta <- inat_csv %>% 
+  filter(iconic_taxon_name == "Insecta") %>% 
+  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30)
 
 # For earlier years
 
