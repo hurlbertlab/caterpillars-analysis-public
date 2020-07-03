@@ -75,3 +75,54 @@ allweeks <- ggplot(yearpairs_all, aes(x = minWeeks)) +
 
 plot_grid(allweeks, goodweeks, ncol = 2)
 ggsave("figs/caterpillars-count/pheno_data_paired_years.pdf", units = "in", height = 5, width = 10)
+
+## If at least 8 good weeks
+
+focal_sites <- yearpairs_good %>%
+  filter(minGoodWeeks == 8) %>%
+  dplyr::select(-sites) %>%
+  unnest(cols = c("consec_years"))
+
+focal_years <- yearpairs_good %>%
+  filter(minGoodWeeks == 8) %>%
+  dplyr::select(-consec_years) %>%
+  unnest(cols = c("sites")) %>%
+  filter(year == 2019 & Name %in% c("Currituck Banks Reserve", "Georgetown", "NC Botanical Garden", 
+                                    "UNC Chapel Hill Campus", "Prairie Ridge Ecostation") | year %in% focal_sites$year & Name %in% focal_sites$Name) %>%
+  filter(!(year == 2015 & Name == "NC Botanical Garden"))
+
+focal_years_plot <-  focal_years %>% 
+  pivot_longer(firstGoodDate:lastGoodDate, names_to = "time", values_to = "dates")
+
+# For sites with at least 8 good weeks, what is difference between mean jday of all surveys?
+
+surveyThreshold = 0.8            # proprortion of surveys conducted to be considered a good sampling day
+minJulianWeek = 102              # beginning of seasonal window for tabulating # of good weeks
+maxJulianWeek = 214
+
+## Keep just good weeks
+## This is broken - means are the same each year
+meanJday <- fullDataset %>%
+  right_join(focal_years) %>%
+  group_by(Name, Region, year, julianweek) %>%
+  summarize(nSurveysPerWeek = n_distinct(ID)) %>%
+  group_by(Name, Region, year) %>%
+  mutate(medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T)) %>%
+  filter(julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek) %>%
+  group_by(year, Name) %>%
+  summarize(meanJday = mean(julianweek))
+
+# plot panel for each site with at least 8 good weeks
+# year vs. jday, lines from firstGoodDate to lastGoodDate
+
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+ggplot(focal_years_plot) + geom_path(aes(x = dates, y = year, group = year), size = 2) + 
+  scale_x_continuous(breaks = jds, labels = dates) + facet_wrap(~Name) +
+  labs(x = " ", y = " ")
+ggsave("figs/caterpillars-count/pheno_paired_siteyears_overlap.pdf")
+
+
+
+

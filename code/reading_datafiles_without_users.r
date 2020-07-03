@@ -5,7 +5,9 @@ library(rgdal)
 library(raster)
 library(dggridR)
 library(sf)
-
+library(rvest)
+library(xml2)
+library(stringr)
 
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition
@@ -23,13 +25,25 @@ hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp")
 
 
 # Read in data files
-sites = read.csv(paste('data/', list.files('data')[grep('Site.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
-surveys = read.csv(paste('data/', list.files('data')[grep('Survey.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+## Get most recent data files from caterpillars-count-data repo
+data_repo <- "https://github.com/hurlbertlab/caterpillars-count-data"
+webpage <- read_html(data_repo)
+repo_links <- html_attr(html_nodes(webpage, "a"), "href")
+data_links <- tibble(link = repo_links[grepl(".csv", repo_links)]) %>%
+  mutate(file_name = word(link, 6, 6, sep = "/"))
 
-plants = read.csv(paste('data/', list.files('data')[grep('Plant.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE)
+## Read data files from data repo links
+github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-count-data/master/"
 
-arths = read.csv(paste('data/', list.files('data')[grep('ArthropodSighting.csv', list.files('data'))], sep = ''), header = TRUE, stringsAsFactors = FALSE) %>%
+sites = read.csv(paste(github_raw, filter(data_links, grepl("Site", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+
+surveys = read.csv(paste(github_raw, filter(data_links, grepl("Survey", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+
+plants = read.csv(paste(github_raw, filter(data_links, grepl("Plant", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+
+arths = read.csv(paste(github_raw, filter(data_links, grepl("Arthropod", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE) %>%
+  rename(Group = "UpdatedGroup", BeetleLarva = "UpdatedBeetleLarva", Sawfly = "UpdatedSawfly") %>%
   left_join(massregs, by = 'Group') %>%
   mutate(Biomass_mg = Quantity*a_constant*Length^b_exponent, 
          Photo = ifelse(PhotoURL == "", 0, 1)) %>%
