@@ -4,6 +4,7 @@ source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
 
 library(grid)
+library(tmap)
 
 
 # What plant species 1) have been surveyed sufficiently in the month of June, 2) across the most sites?
@@ -49,7 +50,7 @@ summaryStats = fullDataset %>%
             nCaterpillars = sum(totalCount[Group == 'caterpillar'], na.rm = TRUE),
             catsPerSurvey = nCaterpillars/nSurveys,
             catOccurrence = nSurveysGTzero/nSurveys) %>%
-  filter(nSurveys >= 10)
+  filter(nSurveys >= 20)
   
 beech = filter(summaryStats, PlantSpecies == 'American beech')
 red = filter(summaryStats, PlantSpecies =='Red maple')
@@ -77,6 +78,55 @@ beechhex = filter(hexStats, PlantSpecies == 'American beech')
 redhex = filter(hexStats, PlantSpecies =='Red maple')
 sugarhex = filter(hexStats, PlantSpecies == 'Sugar maple')
 rhodhex = filter(hexStats, PlantSpecies == 'Great rhododendron')
+
+
+            
+########################
+## ggplot maps
+
+NAmap = read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
+
+easternNA <- NAmap %>%
+  filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
+  st_crop(c(xmin = -90, ymin = 20, xmax = -59, ymax = 51)) %>%
+  st_transform("+proj=ortho +lon_0=-75 +lat_0=40")
+
+# hex grid
+hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors= F) %>%
+  mutate(cell.num = as.numeric(cell)) %>%
+  dplyr::select(-cell) %>%
+  rename(cell = "cell.num")
+
+
+cats_sf <- hex %>%
+  right_join(hexStats) %>%
+  st_transform(st_crs(easternNA))
+
+beech_sf <- filter(cats_sf, PlantSpecies == 'American beech')
+sugar_sf <- filter(cats_sf, PlantSpecies == 'Sugar maple')
+red_sf <- filter(cats_sf, PlantSpecies == 'Red maple')
+
+beech_map <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(beech_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "American beech")
+
+sugar_map <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(sugar_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3, outer.margins = c(0.01,0.01,0.01,0.01), title = "Sugar maple")
+
+red_map <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(red_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "Red maple")
+
+
+grid.newpage()
+pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map.pdf"), height = 10, width = 18)
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
+print(beech_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(sugar_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(red_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+dev.off()
+
 
 
 ###################
@@ -116,49 +166,3 @@ points(rhod$Longitude, rhod$Latitude, pch = 16, col = 'dodgerblue', cex = 20*rho
 points(rhod$Longitude[rhod$catOccurrence == 0], rhod$Latitude[rhod$catOccurrence == 0], col = 'dodgerblue', pch = 4)
 
 
-            
-########################
-## ggplot
-
-NAmap = read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
-
-easternNA <- NAmap %>%
-  filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
-  st_crop(c(xmin = -90, ymin = 20, xmax = -59, ymax = 51)) %>%
-  st_transform("+proj=ortho +lon_0=-75 +lat_0=40")
-
-# hex grid
-hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors= F) %>%
-  mutate(cell.num = as.numeric(cell)) %>%
-  dplyr::select(-cell) %>%
-  rename(cell = "cell.num")
-
-
-cats_sf <- hex %>%
-  right_join(hexStats) %>%
-  st_transform(st_crs(easternNA))
-
-beech_sf <- filter(cats_sf, PlantSpecies == 'American beech')
-sugar_sf <- filter(cats_sf, PlantSpecies == 'Sugar maple')
-red_sf <- filter(cats_sf, PlantSpecies == 'Red maple')
-
-beech_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(beech_sf) + tm_polygons(col = "catOccurrencePct", palette = "YlGnBu", title = "% of surveys", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "American beech")
-
-sugar_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(sugar_sf) + tm_polygons(col = "catOccurrencePct", palette = "YlGnBu", title = "% of surveys", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3, outer.margins = c(0.01,0.01,0.01,0.01), title = "Sugar maple")
-
-red_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(red_sf) + tm_polygons(col = "catOccurrencePct", palette = "YlGnBu", title = "% of surveys", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "Red maple")
-
-
-grid.newpage()
-pdf(paste0(getwd(),"/figs/caterpillars-count/cats_on_3focal_plants_map.pdf"), height = 10, width = 18)
-pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
-print(beech_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
-print(sugar_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
-print(red_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
-dev.off()
