@@ -257,6 +257,8 @@ siteEffortSummary = function(fullDataset,
               modalSurveyCirclesPerWeek = Mode(ceiling(nSurveysPerWeek/5)),
               medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T), 
               nWeeks = n_distinct(julianweek),
+              nWeeksGoodor50Surveys = n_distinct(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
+                                             (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek > 50)]),
               nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
               medianEffortDeviation = median(abs(nSurveysPerWeek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek] - 5*modalSurveyCirclesPerWeek)),
               firstDate = min(julianweek),

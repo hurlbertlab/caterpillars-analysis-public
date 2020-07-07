@@ -4,6 +4,8 @@
 library(tidyverse)
 library(cowplot)
 
+theme_set(theme_classic(base_size = 15))
+
 ### Read in CC data and functions
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
@@ -19,30 +21,21 @@ site_effort <- data.frame(year = c(2015:2019)) %>%
 
 ## For nGoodWeeks 3-10, how many site/2year points in analysis?
 
-yearpairs_good <- tibble(minGoodWeeks = c(3:10)) %>%
-  mutate(sites = purrr::map(minGoodWeeks, ~{
+years_good <- tibble(minWeeksGoodor50Surveys = c(3:10)) %>%
+  mutate(sites = purrr::map(minWeeksGoodor50Surveys, ~{
     nweeks <- .
     site_effort %>%
-      filter(nGoodWeeks >= nweeks)
+      filter(nWeeksGoodor50Surveys >= nweeks)
   }),
-  consec_years = purrr::map(sites, ~{
-    df <- .
-    df %>%
-      group_by(Name) %>%
-      arrange(year) %>%
-      mutate(consec_year = lead(year) - year) %>%
-      filter(consec_year == 1)
-  }),
-  n_yearpairs = purrr::map_dbl(consec_years, ~nrow(.)),
-  n_regions = purrr::map_dbl(consec_years, ~length(unique(.$Region))),
-  n_cells = purrr::map_dbl(consec_years, ~length(unique(.$cell))))
+  n_siteyears = purrr::map_dbl(sites, ~nrow(.)),
+  n_regions = purrr::map_dbl(sites, ~length(unique(.$Region))),
+  n_cells = purrr::map_dbl(sites, ~length(unique(.$cell))))
 
-goodweeks <- ggplot(yearpairs_good, aes(x = minGoodWeeks)) + 
-  geom_line(aes(y = n_yearpairs, col = "Paired site-years"), cex = 1) +
+goodweeks <- ggplot(years_good, aes(x = minWeeksGoodor50Surveys)) + 
+  geom_line(aes(y = n_siteyears, col = "Site-years"), cex = 1) +
   geom_line(aes(y = n_regions, col = "Regions"), cex = 1) +
   geom_line(aes(y = n_cells, col = "Hex cells"), cex = 1) +
-  labs(col = "", y = " ", x = "Minimum good weeks") +
-  ylim(c(0, 40)) +
+  labs(col = "", y = " ", x = "Minimum good weeks or weeks with 50 surveys") +
   theme(legend.position = c(0.8, 0.9))
 
 ## For nWeeks 3-10
@@ -53,45 +46,27 @@ yearpairs_all <- tibble(minWeeks = c(3:10)) %>%
     site_effort %>%
       filter(nWeeks >= nweeks)
   }),
-  consec_years = purrr::map(sites, ~{
-    df <- .
-    df %>%
-      group_by(Name) %>%
-      arrange(year) %>%
-      mutate(consec_year = lead(year) - year) %>%
-      filter(consec_year == 1)
-  }),
-  n_yearpairs = purrr::map_dbl(consec_years, ~nrow(.)),
-  n_regions = purrr::map_dbl(consec_years, ~length(unique(.$Region))),
-  n_cells = purrr::map_dbl(consec_years, ~length(unique(.$cell))))
+  n_siteyears = purrr::map_dbl(sites, ~nrow(.)),
+  n_regions = purrr::map_dbl(sites, ~length(unique(.$Region))),
+  n_cells = purrr::map_dbl(sites, ~length(unique(.$cell))))
 
 allweeks <- ggplot(yearpairs_all, aes(x = minWeeks)) + 
-  geom_line(aes(y = n_yearpairs, col = "Paired site-years"), cex = 1) +
+  geom_line(aes(y = n_siteyears, col = "Site-years"), cex = 1) +
   geom_line(aes(y = n_regions, col = "Regions"), cex = 1) +
   geom_line(aes(y = n_cells, col = "Hex cells"), cex = 1) +
   labs(col = "", y = "Data points", x = "Minimum weeks") +
-  ylim(c(0, 40)) +
   theme(legend.position = c(0.8, 0.9))
 
 plot_grid(allweeks, goodweeks, ncol = 2)
-ggsave("figs/caterpillars-count/pheno_data_paired_years.pdf", units = "in", height = 5, width = 10)
+ggsave("figs/caterpillars-count/pheno_data_sites_per_year.pdf", units = "in", height = 5, width = 10)
 
 ## If at least 8 good weeks
 
 focal_sites <- yearpairs_good %>%
-  filter(minGoodWeeks == 8) %>%
-  dplyr::select(-sites) %>%
-  unnest(cols = c("consec_years"))
+  filter(minWeeksGoodor50Surveys == 8) %>%
+  unnest(cols = c("sites"))
 
-focal_years <- yearpairs_good %>%
-  filter(minGoodWeeks == 8) %>%
-  dplyr::select(-consec_years) %>%
-  unnest(cols = c("sites")) %>%
-  filter(year == 2019 & Name %in% c("Currituck Banks Reserve", "Georgetown", "NC Botanical Garden", 
-                                    "UNC Chapel Hill Campus", "Prairie Ridge Ecostation") | year %in% focal_sites$year & Name %in% focal_sites$Name) %>%
-  filter(!(year == 2015 & Name == "NC Botanical Garden"))
-
-focal_years_plot <-  focal_years %>% 
+focal_years_plot <-  focal_sites %>% 
   pivot_longer(firstGoodDate:lastGoodDate, names_to = "time", values_to = "dates")
 
 # For sites with at least 8 good weeks, what is difference between mean jday of all surveys?
@@ -103,7 +78,7 @@ maxJulianWeek = 214
 ## Keep just good weeks
 ## This is broken - means are the same each year
 meanJday <- fullDataset %>%
-  right_join(focal_years) %>%
+  right_join(focal_sites) %>%
   group_by(Name, Region, year, julianweek) %>%
   summarize(nSurveysPerWeek = n_distinct(ID)) %>%
   group_by(Name, Region, year) %>%
@@ -121,7 +96,7 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 ggplot(focal_years_plot) + geom_path(aes(x = dates, y = year, group = year), size = 2) + 
   scale_x_continuous(breaks = jds, labels = dates) + facet_wrap(~Name) +
   labs(x = " ", y = " ")
-ggsave("figs/caterpillars-count/pheno_paired_siteyears_overlap.pdf")
+ggsave("figs/caterpillars-count/pheno_siteyears_overlap.pdf", units = "in", height = 10, width = 15)
 
 
 
