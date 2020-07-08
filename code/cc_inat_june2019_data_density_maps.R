@@ -99,6 +99,8 @@ inat_june_hex_obs <- inat_june_obs %>%
   st_set_geometry(NULL)
 # write.csv(inat_june_hex_obs, "data/inat_insect_obs_june2016-2019_hex.csv", row.names = F)
 
+### Use June CSV from Vijay to correct figure!
+
 # Only map effort for iNat in hex cells with at least 100 arthropod observations
 inat_june_hex_obs <- read.csv("data/inat_insect_obs_june2016-2019_hex.csv") %>%
   filter(n_obs >= 100) %>%
