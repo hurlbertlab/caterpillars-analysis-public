@@ -62,8 +62,8 @@ ggsave("figs/caterpillars-count/pheno_data_sites_per_year.pdf", units = "in", he
 
 ## If at least 8 good weeks
 
-focal_sites <- yearpairs_good %>%
-  filter(minWeeksGoodor50Surveys == 8) %>%
+focal_sites <- years_good %>%
+  filter(minWeeksGoodor50Surveys == 6) %>%
   unnest(cols = c("sites"))
 
 focal_years_plot <-  focal_sites %>% 
