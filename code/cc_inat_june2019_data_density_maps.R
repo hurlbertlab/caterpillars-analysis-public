@@ -30,23 +30,23 @@ hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors
   dplyr::select(-cell) %>%
   rename(cell = "cell.num")
 
-## Get June arthropod records from all iNaturalist database to control for sampling effort iNat
+## Get June insect records from all iNaturalist database to control for sampling effort iNat
 
 # For 2019
-setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_thru_2019")
+setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist")
 con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "inat_2019.db")
 
 db_list_tables(con)
 
 inat_insects_db <- tbl(con, "inat") %>%
-  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, time_observed_at, taxon_id) %>%
   filter(!is.na(longitude) | !is.na(latitude)) %>%
   filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
   filter(iconic_taxon_name == "Insecta") %>%
   mutate(jday = julianday(observed_on),
          jd_wk = 7*floor(jday/7)) %>%
-  mutate(year = substr(observed_on, 1, 4),
-         month = substr(observed_on, 6, 7))
+  mutate(year = substr(time_observed_at, 1, 4),
+         month = substr(time_observed_at, 6, 7))
 
 inat_insects_df <- inat_insects_db %>%
   collect()
@@ -99,12 +99,38 @@ inat_june_hex_obs <- inat_june_obs %>%
   st_set_geometry(NULL)
 # write.csv(inat_june_hex_obs, "data/inat_insect_obs_june2016-2019_hex.csv", row.names = F)
 
-### Use June CSV from Vijay to correct figure!
-
-# Only map effort for iNat in hex cells with at least 100 arthropod observations
+# Only map effort for iNat in hex cells with at least 100 Insecta observations
 inat_june_hex_obs <- read.csv("data/inat_insect_obs_june2016-2019_hex.csv") %>%
   filter(n_obs >= 100) %>%
   filter(year == 2019)
+
+### Use June 2019 iNat CSV data while DB issues are being worked out
+
+inat_june_2019 <- read.csv("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_june_2019/inat_2019_06.csv", stringsAsFactors = F)
+
+## iNat insect number of observations per hex cell
+
+inat_june_obs <- inat_june_2019 %>%
+  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  filter(!is.na(longitude) | !is.na(latitude)) %>%
+  filter(user_login != "caterpillarscount") %>%
+  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
+  filter(iconic_taxon_name == "Insecta") %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  mutate(year_num = as.numeric(year)) %>%
+  filter(year_num == 2019) %>%
+  filter(month == "06") %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(hex)) %>%
+  st_intersection(hex) %>%
+  group_by(year, cell) %>%
+  summarize(n_obs = n_distinct(id))
+
+inat_june_hex_obs <- inat_june_obs %>%
+  filter(n_obs >= 100) %>%
+  st_set_geometry(NULL)
 
 ## Caterpillars count data density in June: sites with at least 40 branches, calc % surveys with caterpillars and # cats per survey
 
@@ -233,6 +259,7 @@ cc_four_fams <- tm_shape(easternNA) + tm_polygons() +
   tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
 
 cc_inat_11 <- inat_june %>%
+  mutate_at(c("year"), ~as.numeric(.)) %>%
   right_join(cc_id_june, by = c("year", "cell"), suffix = c("_inat", "_cc"))
 
 theme_set(theme_classic(base_size = 17))
