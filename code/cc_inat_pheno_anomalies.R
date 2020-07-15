@@ -86,7 +86,7 @@ allweeks <- ggplot(yearpairs_all, aes(x = minWeeks)) +
   theme(legend.position = c(0.8, 0.9))
 
 plot_grid(allweeks, goodweeks, ncol = 2)
-ggsave("figs/caterpillars-count/pheno_data_sites_per_year.pdf", units = "in", height = 5, width = 10)
+# ggsave("figs/caterpillars-count/pheno_data_sites_per_year.pdf", units = "in", height = 5, width = 10)
 
 ## If at least 8 good weeks
 
@@ -106,7 +106,7 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 ggplot(focal_years_plot) + geom_path(aes(x = dates, y = year, group = year), size = 2) + 
   scale_x_continuous(breaks = jds, labels = dates) + facet_wrap(~Name) +
   labs(x = " ", y = " ")
-ggsave("figs/caterpillars-count/pheno_siteyears_overlap.pdf", units = "in", height = 10, width = 15)
+# ggsave("figs/caterpillars-count/pheno_siteyears_overlap.pdf", units = "in", height = 10, width = 15)
 
 # For sites with at least 6 good weeks, find common time window across years for sites (w/ at least 6 weeks overlap)
 
@@ -141,6 +141,13 @@ sites_6weeks_overlap <- site_overlap %>%
   ungroup() %>%
   distinct(Name, Year, Region, cell, Latitude, Longitude, medianGreenup, Start, End)
 
+hex_start_end <- sites_6weeks_overlap %>%
+  group_by(Year, cell) %>%
+  summarize(start = min(Start),
+            end = max(End)) %>%
+  ungroup() %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.)))
+
 ## Calculate pheno anomalies for sites with at least 2 years, min six weeks of good survey overlap between years
 ## Same start/end dates across years
 ## Anomalies in centroid, peak date
@@ -174,35 +181,172 @@ cell_pheno <- pheno_dev %>%
   summarize(avgDevPeak = mean(devPeakDate),
             avgDevCentroid = mean(devCentroidDate))
 
+hex_subset <- hex %>%
+  filter(cell %in% cell_pheno$cell)
+
 ## Pull weekly iNaturalist cats excluding caterpillars_count for min start and max end dates of cell/years from cell_pheno
 ## Pull weekly iNaturalist arthropod observations for the same set of weeks to do effort correction
 ## At least 100 insect observations per hex cell (2017-2019)
 
 # Pull iNaturalist insect data (to 2018)
 
-setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
+# setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
+# con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
+# 
+# db_list_tables(con)
+# 
+# inat_insects_early_db <- tbl(con, "inat") %>%
+#   dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+#   filter(!is.na(longitude) | !is.na(latitude)) %>%
+#   filter(latitude > 15, latitude < 90, longitude > -100, longitude < -30) %>%
+#   filter(iconic_taxon_name == "Insecta") %>%
+#   mutate(year = substr(observed_on, 1, 4),
+#          month = substr(observed_on, 6, 7)) 
+# 
+# inat_insects_early_df <- inat_insects_early_db %>%
+#   collect()
+# 
+# inat_insects_subset <- inat_insects_early_df %>%
+#   filter(year >= 2015, year <= 2018) %>%
+#   mutate(jday = yday(observed_on), 
+#          jd_wk = 7*floor(jday/7)) %>%
+#   filter(jd_wk >= minJulianWeek, jd_wk <= maxJulianWeek)
+# 
+# inat_insects_cells <- inat_insects_subset %>%
+#   st_as_sf(coords = c("longitude", "latitude")) %>%
+#   st_set_crs(4326) %>%
+#   st_intersection(hex_subset)
+# 
+# inat_insects_weekly_cells <- inat_insects_cells %>%
+#   st_set_geometry(NULL) %>%
+#   group_by(cell, year, jd_wk) %>%
+#   summarize(nObs = n_distinct(id))
+# write.csv(inat_insects_weekly_cells, "data/inat_2015-2018_weekly_insecta_hex.csv", row.names = F)
 
-db_list_tables(con)
+inat_insects_weekly_cells <- read.csv("data/inat_2015-2018_weekly_insecta_hex.csv", stringsAsFactors = F)
 
-inat_insects_early_db <- tbl(con, "inat") %>%
-  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
-  filter(!is.na(longitude) | !is.na(latitude)) %>%
-  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
-  filter(iconic_taxon_name == "Insecta") %>%
-  mutate(year = substr(observed_on, 1, 4),
-         month = substr(observed_on, 6, 7)) %>%
-  filter(year >= 2017, year <= 2018) %>%
-  mutate(jday = julianday(observed_on),
+## iNaturalist weekly Insecta observations (2019)
+
+# inat_june_2019 <- read.csv("inat_june_2019/inat_2019_06.csv", stringsAsFactors = F)
+# inat_june_insecta <- inat_june_2019 %>%
+#   filter(iconic_taxon_name == "Insecta") %>%
+#   mutate(year = substr(observed_on, 1, 4),
+#          jday = yday(observed_on), 
+#          jd_wk = 7*floor(jday/7)) %>%
+#   filter(jd_wk >= minJulianWeek, jd_wk <= maxJulianWeek) %>%
+#   dplyr::select(id, observed_on, user_login, latitude, longitude, year, jday, jd_wk) %>%
+#   mutate_at(c("id", "latitude"), as.numeric)
+# 
+# summer_files <- data.frame(filename = list.files("inat_insecta_summer_2019")) %>%
+#   filter(grepl("observations", filename)) %>%
+#   group_by(filename) %>%
+#   nest() %>%
+#   mutate(file = purrr::map(filename, ~read.csv(paste0("inat_insecta_summer_2019/", .), stringsAsFactors = F)))
+#   
+# summer_table <- summer_files %>%
+#   dplyr::select(-data) %>%
+#   unnest(cols = c("file")) %>%
+#   mutate(year = substr(observed_on, 1, 4),
+#          jday = yday(observed_on), 
+#          jd_wk = 7*floor(jday/7)) %>%
+#   filter(jd_wk >= minJulianWeek, jd_wk <= maxJulianWeek) %>%
+#   ungroup() %>%
+#   dplyr::select(id, observed_on, user_login, latitude, longitude, year, jday, jd_wk)
+# 
+# inat_summer_2019 <- bind_rows(inat_june_insecta, summer_table) %>%
+#   st_as_sf(coords = c("longitude", "latitude")) %>%
+#   st_set_crs(4326) %>%
+#   st_intersection(hex) %>%
+#   st_set_geometry(NULL) %>%
+#   group_by(cell, year, jd_wk) %>%
+#   summarize(nObs = n_distinct(id))
+# write.csv(inat_summer_2019, "data/inat_2019_weekly_insecta_hex.csv", row.names = F)
+
+inat_summer_2019 <- read.csv("data/inat_2019_weekly_insecta_hex.csv", stringsAsFactors = F)
+
+# Where can we calculate iNat deviations
+
+inat_insect_allyrs <- inat_summer_2019 %>%
+  filter(cell %in% hex_subset$cell) %>%
+  bind_rows(inat_insects_weekly_cells) %>%
+  filter(nObs > 50) %>%
+  ungroup() %>%
+  mutate_at(c("year", "cell"), as.numeric) %>%
+  left_join(hex_start_end, by = c("year" = "Year", "cell")) %>%
+  filter(jd_wk <= end, jd_wk >= start) %>%
+  group_by(cell, year) %>%
+  mutate(n_wks = n()) %>%
+  filter(n_wks >= 6)
+
+# Calculate caterpillars/insect observations per week for inaturalist
+
+inat_cats_pheno <- inat %>%
+  filter(user_login != "caterpillarscount") %>%
+  mutate(year = as.numeric(substr(observed_on, 1, 4)),
+         jday = yday(observed_on), 
          jd_wk = 7*floor(jday/7)) %>%
-  filter(jd_wk >= minJulianWeek, jd_wk <= maxJulianWeek)
-
-inat_insects_early_df <- inat_insects_early_db %>%
-  collect()
-
-# iNaturalist
-# Create weekly insect observations by hex cell for the inclusive weeks per hex cell from site_overlap
+  filter(year >= 2015, year <= 2019) %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs(4326) %>%
+  st_intersection(hex) %>%
+  st_set_geometry(NULL) %>%
+  group_by(cell, year, jd_wk) %>%
+  summarize(nCats = n_distinct(id))
 
 ## Peak and centroid dates and anomalies for caterpillars (effort corrected)
 
-## Figure: peak and centroid date deviations vs green up deviations, iNat and CC diff colors
+inat_pheno <- inat_cats_pheno %>%
+  right_join(inat_insect_allyrs, by = c("cell", "year", "jd_wk")) %>%
+  mutate(cat_effort = nCats/nObs) %>%
+  group_by(cell, year) %>%
+  summarize(peakDate = median(jd_wk[cat_effort == max(cat_effort, na.rm = T)], na.rm = T),
+            centroidDate = sum(jd_wk*cat_effort, na.rm = T)/sum(cat_effort, na.rm = T)) %>%
+  group_by(cell) %>%
+  mutate(meanPeakDate = mean(peakDate),
+         meanCentroidDate = mean(centroidDate),
+         devPeakDate = meanPeakDate - peakDate,
+         devCentroidDate = meanCentroidDate - centroidDate)
+
+## Temperature anomalies
+
+hex_temps <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
+
+cell_pheno <- cell_pheno %>%
+  ungroup() %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.)))
+
+temp_dev <- hex_temps %>%
+  right_join(inat_pheno, by = c("cell", "year")) %>%
+  group_by(cell) %>%
+  mutate(tempDev = mean(mean_temp) - mean_temp) %>%
+  left_join(cell_pheno, by = c("cell", "year" = "Year"))
+
+## Figure: peak and centroid date deviations vs temperature deviations, iNat and CC diff colors
+
+peak_dev <- temp_dev %>%
+  dplyr::select(cell, year, mean_temp, tempDev, devPeakDate, avgDevPeak) %>%
+  pivot_longer(devPeakDate:avgDevPeak, names_to = "metric", values_to = "deviance") %>%
+  mutate(dataset = case_when(metric == "devPeakDate" ~ "iNaturalist",
+                             TRUE ~ "Caterpillars Count!"))
+
+CC_dev_plot <- ggplot(peak_dev, aes(x = tempDev, y = deviance, col = dataset, lty = dataset)) +
+  geom_point(cex = 2) + geom_smooth(method = "lm", se = F, cex = 1) +
+  scale_color_manual(values = c("skyblue2", "springgreen3")) +
+  labs(x = "Spring temperature deviance (C)", y = "Peak caterpillar date deviance (julian days)", col = "", lty = "")
+
+centroid_dev <- temp_dev %>%
+  dplyr::select(cell, year, mean_temp, tempDev, devCentroidDate, avgDevCentroid) %>%
+  pivot_longer(devCentroidDate:avgDevCentroid, names_to = "metric", values_to = "deviance") %>%
+  mutate(dataset = case_when(metric == "devCentroidDate" ~ "iNaturalist",
+                             TRUE ~ "Caterpillars Count!"))
+  
+CC_centroid_plot <- ggplot(centroid_dev, aes(x = tempDev, y = deviance, col = dataset, lty = dataset)) +
+  geom_point(cex = 2) + geom_smooth(method = "lm", se = F, cex = 1) +
+  scale_color_manual(values = c("skyblue2", "springgreen3")) +
+  labs(x = "Spring temperature deviance (C)", y = "Centroid caterpillar date deviance (julian days)", col = "", lty = "") +
+  theme(legend.position = "none")
+
+legend <- get_legend(CC_dev_plot)
+
+plot_grid(CC_dev_plot + theme(legend.position = "none"), CC_centroid_plot, legend, ncol = 3, rel_widths = c(0.4, 0.4, 0.2))
+ggsave("figs/cross-comparisons/phenometric_deviations.pdf", units = 'in', height = 5, width = 12)
