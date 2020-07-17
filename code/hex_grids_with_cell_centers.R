@@ -21,7 +21,7 @@ cell_centers <- dggridR::dgSEQNUM_to_GEO(hex, unique(cats$cell))
 cc_df <- data.frame(cell = unique(cats$cell), 
                     lon = cell_centers$lon_deg, 
                     lat = cell_centers$lat_deg)
-#write.csv(cc_df, "data/hex_grid_cell_centers.csv", row.names = F)
+# write.csv(cc_df, "data/hex_grid_cell_centers.csv", row.names = F)
 
 #### Convert hex grid to sf format for plotting/data joining
 
