@@ -166,6 +166,7 @@ pheno_plot <- hex %>%
   left_join(pheno_2019) %>%
   left_join(cell_centers) %>%
   left_join(hex_springtemp)
+# write.csv(pheno_plot, "data/pheno_2019_cc_inat_plot.csv", row.names =F)
 
 easternNA <- NAmap %>%
   filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
@@ -205,47 +206,27 @@ cc_cent <- tm_shape(easternNA) + tm_polygons() +
   tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
 
 ## Panel 5
-# Scatterplot showing pheno metrics (col = dataset, symbol = metric) vs latitude (center of cell)
+# Scatterplot comparing inat/cc peak date
 
 theme_set(theme_classic(base_size = 17))
 
-cols <- c("Caterpillars Count!" = "skyblue2", "iNaturalist" = "springgreen3")
-line_types <- c("Peak date" = 1, "Centroid date" = 3)
-shapes <- c("Peak date" = 16, "Centroid date" = 17)
+peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) + 
+  geom_point(cex = 2) + 
+  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
+  labs(x = "iNaturalist peak date", y = "Caterpillars Count! peak date")
 
-lat_plot <- ggplot(pheno_plot_ortho, aes(x = lat)) + 
-  geom_point(aes(y = peakDate, col = "iNaturalist", shape = "Peak date"), cex = 2) +
-  geom_smooth(aes(y = peakDate, col = "iNaturalist", lty = "Peak date"), method = "lm", se = F) +
-  geom_point(aes(y = avgPeakDate, col = "Caterpillars Count!", shape = "Peak date"), cex = 2) +
-  geom_smooth(aes(y = avgPeakDate, col = "Caterpillars Count!", lty = "Peak date"), method = "lm", se = F) +
-  geom_point(aes(y = centroidDate, col = "iNaturalist", shape = "Centroid date"), cex = 2) +
-  geom_smooth(aes(y = centroidDate, col = "iNaturalist", lty = "Centroid date"), method = "lm", se = F) +
-  geom_point(aes(y = avgCentroidDate, col = "Caterpillars Count!", shape = "Centroid date"), cex = 2) +
-  geom_smooth(aes(y = avgCentroidDate, col = "Caterpillars Count!", lty = "Centroid date"), method = "lm", se = F) +
-  scale_color_manual(name = "Dataset", values =  cols) +
-  scale_shape_manual(name = "Pheno metric", values = shapes, guide = F) +
-  scale_linetype_manual(name = "Pheno metric", values = line_types, guide = F) +
-  theme(legend.position = c(0.25, 0.15), legend.background = element_rect(fill = "transparent")) +
-  labs(x = "Latitude", y = "Julian day")
+cor.test(pheno_plot_ortho$peakDate, pheno_plot_ortho$avgPeakDate) # r = 0.204, p = 0.572
 
 ## Panel 6
-# Scatterplot showing peak dates (col = dataset, symbol = metric) vs mean temperature
-  
-temp_plot <- ggplot(pheno_plot_ortho, aes(x = mean_temp)) + 
-  geom_point(aes(y = peakDate, col = "iNaturalist", shape = "Peak date"), cex = 2) +
-  geom_smooth(aes(y = peakDate, col = "iNaturalist", lty = "Peak date"), method = "lm", se = F) +
-  geom_point(aes(y = avgPeakDate, col = "Caterpillars Count!", shape = "Peak date"), cex = 2) +
-  geom_smooth(aes(y = avgPeakDate, col = "Caterpillars Count!", lty = "Peak date"), method = "lm", se = F) +
-  geom_point(aes(y = centroidDate, col = "iNaturalist", shape = "Centroid date"), cex = 2) +
-  geom_smooth(aes(y = centroidDate, col = "iNaturalist", lty = "Centroid date"), method = "lm", se = F) +
-  geom_point(aes(y = avgCentroidDate, col = "Caterpillars Count!", shape = "Centroid date"), cex = 2) +
-  geom_smooth(aes(y = avgCentroidDate, col = "Caterpillars Count!", lty = "Centroid date"), method = "lm", se = F) +
-  scale_color_manual(name = "Dataset", values =  cols, guide = F) +
-  scale_shape_manual(name = "Pheno metric", values = shapes) +
-  scale_linetype_manual(name = "Pheno metric", values = line_types) +
-  theme(legend.position = c(0.8, 0.15)) +
-  labs(x = "Spring temperature (C)", y = "Julian day")
+# Scatterplot comparing inat/cc centroid date
 
+centroid_plot <- ggplot(pheno_plot_ortho, aes(x = centroidDate, y = avgCentroidDate)) + 
+  geom_point(cex = 2) + 
+  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
+  labs(x = "iNaturalist centroid date", y = "Caterpillars Count! centroid date")
+
+cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 0.658, p = 0.039
+  
 ## Multipanel fig
 grid.newpage()
 pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_2019_phenometrics.pdf"), height = 10, width = 18)
@@ -254,6 +235,6 @@ print(inat_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
 print(inat_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
 print(cc_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
 print(cc_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
-print(lat_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
-print(temp_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
+print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
 dev.off()
