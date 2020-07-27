@@ -4,9 +4,10 @@ library(tidyverse)
 library(raster)
 library(sf)
 library(tmap)
+library(cowplot)
 
 # plotting theme
-theme_set(theme_classic(base_size = 15))
+theme_set(theme_classic(base_size = 18))
 
 # Map of north america
 
@@ -17,8 +18,17 @@ na_map <- read_sf("data/maps/ne_50m_admin_1_states_provinces_lakes.shp") %>%
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
 
+# Total caterpillars:
+cc_cats <- fullDataset %>% filter(Group == "caterpillar")
+length(unique(cc_cats$ID))
+
 # Read in iNat caterpillars of eastern North America project data
-inat <- read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
+inat <- read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE, stringsAsFactors = F)
+
+inat$observed_on = as.Date(inat$observed_on, format = "%Y-%m-%d")
+inat$year = format(inat$observed_on, format = "%Y")
+inat$jday = yday(inat$observed_on)
+inat$jd_wk = 7*floor(inat$jday/7)   # week 1 = jd 4, week 2 = jd 11, etc
 
 # CRS from CEC Land cover map for North America, 2015
 na_crs <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
@@ -113,7 +123,9 @@ cat_sites_dist <- cat_sites_lc %>%
   summarize(n_recs = n()) %>%
   group_by(dataset) %>%
   mutate(total_recs = sum(n_recs),
-         prop_recs = n_recs/total_recs) 
+         prop_recs = n_recs/total_recs)  %>%
+  mutate(datasource = case_when(dataset == "CC" ~ "Caterpillars Count!",
+                                TRUE ~ "iNaturalist"))
 
 nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", "Developed Low Intensity" = "#fde5e4",
              "Developed Medium Intensity" = "#f7b29f", "Developed High Intensity" = "#e7564e",
@@ -122,9 +134,9 @@ nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", 
              "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
              "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Emergent Herbaceous Wetlands" = "#70a3ba")
 
-ggplot(cat_sites_dist, aes(x = dataset, y = prop_recs, fill = fct_relevel(legend, nlcd_order))) +
-  geom_col(position = "stack") + coord_flip() +
-  labs(x = "", y = "Proportion of sites", fill = "") + scale_fill_manual(values = nlcd_palette)
+lc_plot <- ggplot(cat_sites_dist, aes(x = datasource, y = prop_recs, fill = fct_relevel(legend, nlcd_order))) +
+  geom_col(position = "stack") + 
+  labs(x = "", y = "Proportion of sites", fill = "Land cover") + scale_fill_manual(values = nlcd_palette)
 # ggsave("figs/cross-comparisons/landcover_types_inat_cc.pdf", units = "in", width = 10, height = 5)
 
 ## Map of CC land cover
@@ -139,3 +151,41 @@ cc_site_lc_map <- tm_shape(us_map) + tm_polygons() + tm_shape(cc_sites_sf) +
   tm_dots(size = 0.5, col = "legend", palette = "Paired", title = "Land cover") +
   tm_layout(legend.text.size = 0.75, legend.title.size = 1)
 # tmap_save(cc_site_lc_map, "figs/caterpillars-count/cc_site_landcover_map.pdf", units = "in", height = 6, width= 8)
+
+### Book chapter: figure 2 panels. caterpillar sites land cover and family composition
+
+##### Compare iNat & CC family composition ####
+
+family_labels <- c("Erebidae", "Geometridae", "Lasiocampidae", "Limacodidae", 
+                   "Noctuidae", "Notodontidae", "Nymphalidae", "Papilionidae",
+                   "Saturniidae", "Sphingidae")
+jdBeg = 91
+jdEnd = 240
+
+inat_taxa_withCC <- inat %>%
+  filter(year > 2014, jday >= jdBeg, jday <= jdEnd) %>%
+  filter(!is.na(latitude), !is.na(longitude)) %>%
+  mutate(datasource = case_when(user_login == "caterpillarscount" ~ "Caterpillars Count!",
+                                TRUE ~ "iNaturalist")) %>%
+  distinct() %>%
+  filter(taxon_family_name != "") %>%
+  group_by(datasource, taxon_family_name) %>%
+  summarize(n_obs = n()) %>%
+  group_by(datasource) %>%
+  mutate(total_obs = sum(n_obs),
+         prop_obs = n_obs/total_obs) %>%
+  mutate(family_plot = case_when(taxon_family_name %in% family_labels ~ taxon_family_name, 
+                                 TRUE ~ "Other")) %>%
+  group_by(datasource, family_plot) %>%
+  summarize(prop_obs_grp = sum(prop_obs)) %>%
+  mutate_at(c("family_plot"), ~fct_relevel(., "Other", after = Inf))
+
+palette <- c(RColorBrewer::brewer.pal(n = 10, name = "Paired"), "#C0C0C0")
+
+family_plot <- ggplot(inat_taxa_withCC, aes(x = datasource, y = prop_obs_grp, fill = family_plot)) +
+  geom_col(position = "stack") + scale_fill_manual(values = palette) +
+  labs(x = "", y = "Proportion of observations", fill = "Family")
+# ggsave("figs/cross-comparisons/inat_cc_families.pdf", units = "in", height = 6, width = 10)
+
+plot_grid(family_plot, lc_plot, ncol = 2, labels = c("A", "B"), label_size = 21)
+ggsave("figs/cross-comparisons/landcover-families-multipanel.pdf", units = "in", height = 6, width = 20)
