@@ -13,8 +13,6 @@ library(dggridR)
 library(grid)
 library(cowplot)
 
-theme_set(theme_classic(base_size = 15))
-
 ### Read in CC data and functions
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
@@ -323,6 +321,8 @@ temp_dev <- hex_temps %>%
 
 ## Figure: peak and centroid date deviations vs temperature deviations, peak & centroid v temp and lat in 2019 iNat and CC diff colors
 
+theme_set(theme_classic(base_size = 17))
+
 # read in 2019 peak, centroid, temp, lat data
 pheno_plot <- read.csv("data/pheno_2019_cc_inat_plot.csv", stringsAsFactors = F)
 
@@ -332,10 +332,20 @@ peak_dev <- temp_dev %>%
   mutate(dataset = case_when(metric == "devPeakDate" ~ "iNaturalist",
                              TRUE ~ "Caterpillars Count!"))
 
+# iNat peak model
+summary(lm(deviance ~ tempDev, data = filter(peak_dev, dataset == "iNaturalist")))
+
+# CC peak model
+summary(lm(deviance ~ tempDev, data = filter(peak_dev, dataset == "Caterpillars Count!")))
+
 CC_dev_plot <- ggplot(peak_dev, aes(x = tempDev, y = deviance, col = dataset)) +
-  geom_point(cex = 2) + geom_smooth(method = "lm", se = F, cex = 1) +
-  scale_color_manual(values = c("skyblue2", "springgreen3")) +
-  labs(x = "Spring temperature deviation (C)", y = "Peak date deviation (julian days)", col = "")
+  geom_hline(yintercept = 0, lty = 2, col = "darkgray", cex = 1) + 
+  geom_vline(xintercept = 0, lty = 2, col = "darkgray", cex = 1) +
+  geom_point(cex = 3) + 
+  geom_smooth(method = "lm", se = F, cex = 1) +
+  scale_color_manual(values = c("blue3", "palegreen3")) +
+  labs(x = "Spring temperature deviation (°C)", y = "Peak date deviation (Julian days)", col = "") +
+  theme(legend.position = "none")
 
 centroid_dev <- temp_dev %>%
   dplyr::select(cell, year, mean_temp, tempDev, devCentroidDate, avgDevCentroid) %>%
@@ -343,11 +353,40 @@ centroid_dev <- temp_dev %>%
   mutate(dataset = case_when(metric == "devCentroidDate" ~ "iNaturalist",
                              TRUE ~ "Caterpillars Count!"))
   
+# iNat centroid model
+summary(lm(deviance ~ tempDev, data = filter(centroid_dev, dataset == "iNaturalist")))
+
+# CC centroid model
+summary(lm(deviance ~ tempDev, data = filter(centroid_dev, dataset == "Caterpillars Count!")))
+
+
 CC_centroid_plot <- ggplot(centroid_dev, aes(x = tempDev, y = deviance, col = dataset)) +
-  geom_point(cex = 2) + geom_smooth(method = "lm", se = F, cex = 1) +
-  scale_color_manual(values = c("skyblue2", "springgreen3")) +
-  labs(x = "Spring temperature deviation (C)", y = "Centroid date deviation (julian days)", col = "") +
-  theme(legend.position = "none")
+  geom_hline(yintercept = 0, lty = 2, col = "darkgray", cex = 1) + 
+  geom_vline(xintercept = 0, lty = 2, col = "darkgray", cex = 1) +
+  geom_point(cex = 3) + 
+  geom_smooth(method = "lm", se = F, cex = 1) +
+  scale_color_manual(values = c("blue3", "palegreen3")) +
+  labs(x = "Spring temperature deviation (°C)", y = "Centroid date deviation (Julian days)", col = "") +
+  theme(legend.position = c(0.8, 0.9))
+
+# Plot comparing cc and inaturalist deviations in peak date 
+cc_inat_cent <- ggplot(temp_dev, aes(x = devCentroidDate, y = avgDevCentroid)) + 
+  geom_point(cex = 3) + 
+  labs(x = "iNaturalist centroid date", y = "Caterpillars Count! centroid date")
+
+cor.test(temp_dev$devCentroidDate, temp_dev$avgDevCentroid) # r = -0.172, p = 0.574
+
+# Plot comparing cc and inatuarlist deviations in centroid date
+cc_inat_peak <- ggplot(temp_dev, aes(x = devPeakDate, y = avgDevPeak)) + 
+  geom_point(cex = 3) + 
+  labs(x = "iNaturalist peak date", y = "Caterpillars Count! peak date")
+
+cor.test(temp_dev$devPeakDate, temp_dev$avgDevPeak) # r = 0.043, p = 0.888
+
+plot_grid(cc_inat_peak, cc_inat_cent,
+  CC_dev_plot, CC_centroid_plot, ncol = 2, labels = c("A", "B", "C", "D"), label_size = 17)
+ggsave("figs/cross-comparisons/phenometric_deviations.pdf", units = 'in', height = 10, width = 12)
+
 
 #2019 pheno metrics
 cols <- c("Caterpillars Count!" = "skyblue2", "iNaturalist" = "springgreen3")
@@ -385,8 +424,9 @@ temp_plot <- ggplot(pheno_plot, aes(x = mean_temp)) +
   theme(legend.position = "none") +
   labs(x = "Spring temperature (C)", y = "Julian day")
 
-legend <- get_legend(lat_plot)
+# Linear models of inat/cc centroid dates with spring temperature
+# iNat centroid date
+summary(lm(centroidDate ~ mean_temp, data = pheno_plot))
 
-pheno_multi <- plot_grid(CC_dev_plot + theme(legend.position = "none"), CC_centroid_plot, lat_plot + theme(legend.position = "none"), temp_plot, ncol = 2, labels = c("A", "B", "C", "D"))
-plot_grid(pheno_multi, legend, ncol = 2, rel_widths = c(0.8, 0.2))
-ggsave("figs/cross-comparisons/phenometric_deviations.pdf", units = 'in', height = 10, width = 12)
+# CC centroid date
+summary(lm(avgCentroidDate ~ mean_temp, data = pheno_plot))

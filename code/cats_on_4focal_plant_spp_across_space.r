@@ -107,20 +107,20 @@ sugar_sf <- filter(cats_sf, PlantSpecies == 'Sugar maple')
 red_sf <- filter(cats_sf, PlantSpecies == 'Red maple')
 
 beech_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(beech_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "American beech")
+  tm_shape(beech_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "A. American beech")
 
 sugar_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(sugar_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3, outer.margins = c(0.01,0.01,0.01,0.01), title = "Sugar maple")
+  tm_shape(sugar_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5, outer.margins = c(0.01,0.01,0.01,0.01), title = "B. Sugar maple")
 
 red_map <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(red_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "caterpillars\nper survey", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 3,  outer.margins = c(0.01,0.01,0.01,0.01), title = "Red maple")
+  tm_shape(red_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "C. Red maple")
 
 
 grid.newpage()
-pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map.pdf"), height = 10, width = 18)
+pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map.pdf"), height = 10, width = 20)
 pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
 print(beech_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
 print(sugar_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))

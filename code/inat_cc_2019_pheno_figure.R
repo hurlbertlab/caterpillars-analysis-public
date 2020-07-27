@@ -13,7 +13,7 @@ library(dggridR)
 library(grid)
 library(cowplot)
 
-theme_set(theme_classic(base_size = 15))
+theme_set(theme_classic(base_size = 23))
 
 ### Read in CC data and functions
 source('code/analysis_functions.r')
@@ -181,49 +181,53 @@ pheno_plot_ortho <- pheno_plot %>%
 # Hex cells with iNat peak date
 
 inat_peak <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "peakDate", palette = "YlGnBu", title = "Peak date", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "peakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "A. iNaturalist - peak date")
 
 ## Panel 2
 # Hex cells with iNat centroid date
 
 inat_cent <-  tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "centroidDate", palette = "YlGnBu", title = "Centroid date", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "centroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "C. iNaturalist - centroid date")
 
 ## Panel 3
 # Hex cells with CC peak date
 
 cc_peak <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Peak date", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
+  tm_shape(pheno_plot_ortho) + 
+  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian date", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - peak date")
 
 ## panel 4
 # Hex cells with CC centroid date
 
 cc_cent <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Centroid date", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian date", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "D. Caterpillars Count! - centroid date") 
 
 ## Panel 5
 # Scatterplot comparing inat/cc peak date
 
-theme_set(theme_classic(base_size = 17))
+theme_set(theme_classic(base_size = 23))
 
 peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) + 
   geom_point(cex = 2) + 
-  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
-  labs(x = "iNaturalist peak date", y = "Caterpillars Count! peak date")
+  labs(x = "iNaturalist", y = "Caterpillars Count!", title = "C. Peak date") +
+  theme(plot.title = element_text(hjust = -0.3, size = 24))
 
 cor.test(pheno_plot_ortho$peakDate, pheno_plot_ortho$avgPeakDate) # r = 0.204, p = 0.572
-
 ## Panel 6
 # Scatterplot comparing inat/cc centroid date
 
 centroid_plot <- ggplot(pheno_plot_ortho, aes(x = centroidDate, y = avgCentroidDate)) + 
   geom_point(cex = 2) + 
-  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
-  labs(x = "iNaturalist centroid date", y = "Caterpillars Count! centroid date")
+  labs(x = "iNaturalist", y = "Caterpillars Count!", title = "F. Centroid date") +
+  theme(plot.title = element_text(hjust = -0.3, size = 24))
 
 cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 0.658, p = 0.039
   

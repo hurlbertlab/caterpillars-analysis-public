@@ -178,6 +178,8 @@ inat_june <- inat %>%
   mutate(cats_effort = n_cats/n_obs,
          cats_4fam_effort = n_cats_4fam/n_obs) %>%
   st_set_geometry(NULL)
+# total number of caterpillars
+sum(inat_june$n_cats, na.rm = T)
 
 inat_june_hex <- hex %>%
   right_join(inat_june)
@@ -189,8 +191,14 @@ surveys_per_cell <- fullDataset %>%
   filter(month == "06", Year == 2019) %>%
   filter(Region != "IA") %>%
   group_by(cell) %>%
-  summarize(nSurveys = n_distinct(ID)) %>%
+  summarize(nSurveyBranches = n_distinct(PlantFK, julianday),
+            nSurveys = n_distinct(ID),
+            nCats = sum(Quantity[Group == "caterpillar"], na.rm = T)) %>%
   mutate_at(c("cell"), ~as.numeric(as.character(.)))
+# Total surveyed branches
+sum(surveys_per_cell$nSurveyBranches)
+# Total caterpillars
+sum(surveys_per_cell$nCats)
 
 cc_id_june <- inat %>%
   mutate(year = as.numeric(word(observed_on, 1, sep = "-")),
@@ -236,40 +244,43 @@ cc_id_june_sites <- inat %>%
   st_transform(st_crs(easternNA))
 
 all_cats <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
+  tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Occurrence", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "A. iNaturalist - all", title.size = 2)
 
 inat_june_fourfams <- inat_june_ortho %>%
   filter(!is.na(cats_4fam_effort), cats_4fam_effort > 0)
 
 four_fams <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "iNaturalist")
+  tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Occurrence", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "D. iNaturalist - woody", title.size = 2)
 
 cc_all_cats <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats", palette = "YlGnBu", title = "Caterpillars", alpha = 0.65) + 
-  tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5)+
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
+  tm_shape(cc_id_june_ortho) +
+  tm_polygons(col = "n_cats", palette = "YlGnBu", title = "Density", alpha = 0.65, breaks = c(0, 0.04, 0.08, 0.12, 0.14)) + 
+  tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.3, shape = 1) +
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - all", title.size = 2)
 
 cc_four_fams <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats_4fam", palette = "YlGnBu", title = "Woody caterpillars", alpha = 0.65) + 
-  tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.067) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
-  tm_layout(legend.text.size = 1, legend.title.size = 1.3, outer.margins = c(0.01,0,0.01,0), title = "Caterpillars Count!")
+  tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats_4fam", palette = "YlGnBu", title = "Density", alpha = 0.65) + 
+  tm_shape(cc_id_june_sites) + tm_symbols(col = "black", size = 0.3, shape = 1) +
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "E. Caterpillars Count! - woody", title.size = 2)
 
 cc_inat_11 <- inat_june %>%
   mutate_at(c("year"), ~as.numeric(.)) %>%
   right_join(cc_id_june, by = c("year", "cell"), suffix = c("_inat", "_cc"))
 
-theme_set(theme_classic(base_size = 17))
-inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 2) + scale_y_log10() +
-  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
-  labs(x = "iNaturalist caterpillar density", y = "Caterpillars Count! caterpillar density")
+theme_set(theme_classic(base_size = 23))
+inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 2) + 
+  labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "C. All") +
+  theme(plot.title = element_text(hjust = -0.25))
 
-inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 2) + scale_y_log10() +
-  geom_smooth(method = "lm", col = "darkgray", se = F, cex = 1.5) +
-  labs(x = "iNaturalist woody caterpillar density", y = "Caterpillars Count! woody caterpillar density")
+inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 2) + 
+  labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "F. Woody") +
+  theme(plot.title = element_text(hjust = -0.3))
+
+# Correlation tests for inat/cc comparisons
+cor.test(cc_inat_11$cats_effort, cc_inat_11$n_cats_cc)
+cor.test(cc_inat_11$cats_4fam_effort, cc_inat_11$n_cats_4fam_cc)
 
 grid.newpage()
 pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_data_density_six_panel.pdf"), height = 10, width = 18)
@@ -322,7 +333,6 @@ cc_fracsurveys <- tm_shape(easternNA_zoom) + tm_polygons() +
   tm_polygons(col = "meanFracSurveys", size = 0.25, palette = "YlGnBu", title = "% surveys with caterpillars", 
               alpha = 0.65, breaks = breaks_fracsurveys) +
   tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
   tm_layout(legend.text.size = 1.25, legend.title.size = 1.5)
 
 cc_meandens <- tm_shape(easternNA_zoom) + tm_polygons() +
@@ -330,7 +340,6 @@ cc_meandens <- tm_shape(easternNA_zoom) + tm_polygons() +
   tm_polygons(col = "meanMeanDensity", size = 0.25, palette = "YlGnBu", title = "Caterpillars/survey", 
               alpha = 0.65, breaks = breaks_meandens) + 
   tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
   tm_layout(legend.text.size = 1.25, legend.title.size = 1.5)
 
 cc_meanbiomass <- tm_shape(easternNA_zoom) + tm_polygons() +
@@ -338,7 +347,6 @@ cc_meanbiomass <- tm_shape(easternNA_zoom) + tm_polygons() +
   tm_polygons(col = "meanMeanBiomass", size = 0.25, palette = "YlGnBu", title = "Biomass (mg)/survey", 
               alpha = 0.65, breaks = breaks_meanbiomass) + 
   tm_shape(catcount_sites_june_ortho) + tm_dots(col = "black", size = 0.05) +
-  tm_add_legend(type = c("symbol"), col = "black", labels = c("Caterpillars Count!"), shape = 16, size = 0.5) +
   tm_layout(legend.text.size = 1.25, legend.title.size = 1.5) 
 
 cc_map <- tmap_arrange(cc_fracsurveys, cc_meandens, cc_meanbiomass, ncol = 3)
