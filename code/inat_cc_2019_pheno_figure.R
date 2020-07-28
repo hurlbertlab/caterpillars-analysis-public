@@ -62,8 +62,8 @@ hex_cells_2019 <- unique(sites_2019$cell)
 ## Find 6 week common time windows
 
 surveyThreshold = 0.8            # proprortion of surveys conducted to be considered a good sampling day
-minJulianWeek = 102              # beginning of seasonal window for tabulating # of good weeks
-maxJulianWeek = 214
+minJulianWeek = 135              # May 15 beginning of seasonal window for tabulating # of good weeks
+maxJulianWeek = 211              # July 30 - end of seasonal window
 
 site_overlap <- fullDataset %>%
   right_join(sites_2019, by = c("Year" = "year", "Name", "Region", "cell", "Latitude", "Longitude", "medianGreenup")) %>%
@@ -177,6 +177,11 @@ pheno_plot_ortho <- pheno_plot %>%
   st_crop(c(xmin = -100, ymin = 20, xmax = -59, ymax = 51)) %>%
   st_transform(st_crs(easternNA))
 
+cc_sites_ortho <- sites_6weeks %>%
+  st_as_sf(coords = c("Longitude", "Latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(easternNA))
+
 ## Panel 1
 # Hex cells with iNat peak date
 
@@ -198,7 +203,16 @@ inat_cent <-  tm_shape(easternNA) + tm_polygons() +
 
 cc_peak <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(pheno_plot_ortho) + 
-  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian date", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - peak date")
+
+## panel 3 with cc site dots
+
+cc_peak_dots <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(pheno_plot_ortho) + 
+  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_shape(cc_sites_ortho) + tm_symbols(col = "black", size = 0.3, shape = 1) +
   tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
             outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - peak date")
 
@@ -206,30 +220,45 @@ cc_peak <- tm_shape(easternNA) + tm_polygons() +
 # Hex cells with CC centroid date
 
 cc_cent <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian date", alpha = 0.65)+
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
   tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
             outer.margins = c(0.01,0,0.01,0), title = "D. Caterpillars Count! - centroid date") 
+
+## Panel 4 with dots
+
+cc_cent_dots <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
+  tm_shape(cc_sites_ortho) + tm_symbols(col = "black", size = 0.3, shape = 1) +  
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+            outer.margins = c(0.01,0,0.01,0), title = "D. Caterpillars Count! - centroid date") 
+
 
 ## Panel 5
 # Scatterplot comparing inat/cc peak date
 
 theme_set(theme_classic(base_size = 23))
 
+cor.test(pheno_plot_ortho$peakDate, pheno_plot_ortho$avgPeakDate) # r = 0.330, p = 0.352
+
 peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) + 
   geom_point(cex = 2) + 
+  geom_smooth(method = "lm", se = F, cex = 1, col = "darkgray") +
+  annotate(geom = "text", x = 190, y = 155, label = c("r = 0.33"), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "C. Peak date") +
   theme(plot.title = element_text(hjust = -0.3, size = 24))
 
-cor.test(pheno_plot_ortho$peakDate, pheno_plot_ortho$avgPeakDate) # r = 0.204, p = 0.572
 ## Panel 6
 # Scatterplot comparing inat/cc centroid date
 
+cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 0.472, p = 0.169
+
 centroid_plot <- ggplot(pheno_plot_ortho, aes(x = centroidDate, y = avgCentroidDate)) + 
   geom_point(cex = 2) + 
+  geom_smooth(method = "lm", se = F, cex = 1, col = "darkgray") +
+  annotate(geom = "text", x = 182, y = 168, label = c("r = 0.47"), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "F. Centroid date") +
   theme(plot.title = element_text(hjust = -0.3, size = 24))
 
-cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 0.658, p = 0.039
   
 ## Multipanel fig
 grid.newpage()
@@ -242,3 +271,16 @@ print(cc_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
 print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
 dev.off()
+
+## Multipanel fig with CC site dots
+grid.newpage()
+pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_2019_phenometrics_withCCsites.pdf"), height = 10, width = 18)
+pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+print(inat_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(inat_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
+print(cc_peak_dots, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(cc_cent_dots, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
+print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
+dev.off()
+

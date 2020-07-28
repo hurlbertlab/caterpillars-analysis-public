@@ -106,7 +106,11 @@ inat_june_hex_obs <- read.csv("data/inat_insect_obs_june2016-2019_hex.csv") %>%
 
 ### Use June 2019 iNat CSV data while DB issues are being worked out
 
-inat_june_2019 <- read.csv("\\\\BioArk/HurlbertLab/Databases/iNaturalist/inat_june_2019/inat_2019_06.csv", stringsAsFactors = F)
+# Append correct BioArk path
+info <- sessionInfo()
+bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+
+inat_june_2019 <- read.csv(paste0(bioark, "/HurlbertLab/Databases/iNaturalist/inat_june_2019/inat_2019_06.csv"), stringsAsFactors = F)
 
 ## iNat insect number of observations per hex cell
 
@@ -269,18 +273,23 @@ cc_inat_11 <- inat_june %>%
   mutate_at(c("year"), ~as.numeric(.)) %>%
   right_join(cc_id_june, by = c("year", "cell"), suffix = c("_inat", "_cc"))
 
+# Correlation tests for inat/cc comparisons
+cor.test(cc_inat_11$cats_effort, cc_inat_11$n_cats_cc)
+cor.test(cc_inat_11$cats_4fam_effort, cc_inat_11$n_cats_4fam_cc)
+
 theme_set(theme_classic(base_size = 23))
 inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 2) + 
+  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1) +
+  annotate(geom = "text", x = 0.075, y = 0.02, label = c("r = 0.73"), size = 9) +
   labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "C. All") +
   theme(plot.title = element_text(hjust = -0.25))
 
 inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 2) + 
   labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "F. Woody") +
+  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1) +
+  annotate(geom = "text", x = 0.035, y = 0.005, label = c("r = 0.40"), size = 9) +
   theme(plot.title = element_text(hjust = -0.3))
 
-# Correlation tests for inat/cc comparisons
-cor.test(cc_inat_11$cats_effort, cc_inat_11$n_cats_cc)
-cor.test(cc_inat_11$cats_4fam_effort, cc_inat_11$n_cats_4fam_cc)
 
 grid.newpage()
 pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_data_density_six_panel.pdf"), height = 10, width = 18)
