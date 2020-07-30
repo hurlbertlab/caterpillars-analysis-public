@@ -9,6 +9,8 @@ library(rvest)
 library(xml2)
 library(stringr)
 
+source('code/analysis_functions.r')
+
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition
 mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
@@ -37,13 +39,13 @@ data_links <- tibble(link = repo_links[grepl(".csv", repo_links)]) %>%
 ## Read data files from data repo links
 github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-count-data/master/"
 
-sites = read.csv(paste(github_raw, filter(data_links, grepl("Site", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+sites = read.csv(paste(github_raw, filter(data_links, grepl("Site.csv", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
-surveys = read.csv(paste(github_raw, filter(data_links, grepl("Survey", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+surveys = read.csv(paste(github_raw, filter(data_links, grepl("Survey.csv", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
-plants = read.csv(paste(github_raw, filter(data_links, grepl("Plant", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
+plants = read.csv(paste(github_raw, filter(data_links, grepl("Plant.csv", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
-arths = read.csv(paste(github_raw, filter(data_links, grepl("Arthropod", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE) %>%
+arths = read.csv(paste(github_raw, filter(data_links, grepl("ArthropodSighting.csv", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE) %>%
   rename(Group = "UpdatedGroup", BeetleLarva = "UpdatedBeetleLarva", Sawfly = "UpdatedSawfly") %>%
   left_join(massregs, by = 'Group') %>%
   mutate(Biomass_mg = Quantity*a_constant*Length^b_exponent, 
