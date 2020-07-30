@@ -31,6 +31,23 @@ backupToGithub = function(all = FALSE) {
 }
 
 
+removeOldGithubFiles = function() {
+  datafiles = list.files('data')
+  dbfiles = data.frame(filename = datafiles[grepl('ArthropodQuizQuestions|ArthropodSighting|CachedResult|CronJobStatus|DisputedIdentification|Download|ExpertIdentification|ManagerRequest|Plant.csv|Site.csv|SiteUserPreset|SiteUserValidation|Survey.csv|TemporaryExpertIdentificationChangeLog|VirtualSurveyScore', datafiles)]) %>%
+    mutate(filetype = word(filename, 2, 2, sep = "_"),
+           day = yday(as.Date(substr(filename, 1, 10), format = "%Y-%m-%d")),
+           year = as.numeric(substr(filename, 1, 4))) %>%
+    arrange(filetype, desc(year, day))
+
+  filesToKeep = dbfiles %>%  
+    group_by(filetype) %>%
+    slice(1)
+           
+  filesToDelete = dbfiles$filename[!dbfiles$filename %in% filesToKeep$filename]
+                       
+  sapply(paste0("data/", filesToDelete), unlink)
+  
+}
 
 ###################################
 # Function for substituting values based on a condition using dplyr::mutate
