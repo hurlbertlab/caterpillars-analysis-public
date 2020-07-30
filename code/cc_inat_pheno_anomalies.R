@@ -86,7 +86,7 @@ allweeks <- ggplot(yearpairs_all, aes(x = minWeeks)) +
 plot_grid(allweeks, goodweeks, ncol = 2)
 # ggsave("figs/caterpillars-count/pheno_data_sites_per_year.pdf", units = "in", height = 5, width = 10)
 
-## If at least 8 good weeks
+## If at least 6 good weeks
 
 focal_sites <- years_good %>%
   filter(minWeeksGoodor50Surveys == 6) %>%
@@ -109,8 +109,8 @@ ggplot(focal_years_plot) + geom_path(aes(x = dates, y = year, group = year), siz
 # For sites with at least 6 good weeks, find common time window across years for sites (w/ at least 6 weeks overlap)
 
 surveyThreshold = 0.8            # proprortion of surveys conducted to be considered a good sampling day
-minJulianWeek = 102              # beginning of seasonal window for tabulating # of good weeks
-maxJulianWeek = 214
+minJulianWeek = 135              # beginning of seasonal window for tabulating # of good weeks
+maxJulianWeek = 211
 
 site_overlap <- fullDataset %>%
   right_join(focal_sites, by = c("Year" = "year", "Name", "Region", "cell", "Latitude", "Longitude", "medianGreenup")) %>%
@@ -344,8 +344,9 @@ CC_dev_plot <- ggplot(peak_dev, aes(x = tempDev, y = deviance, col = dataset)) +
   geom_point(cex = 3) + 
   geom_smooth(method = "lm", se = F, cex = 1) +
   scale_color_manual(values = c("blue3", "palegreen3")) +
-  labs(x = "Spring temperature deviation (°C)", y = "Peak date deviation (Julian days)", col = "") +
-  theme(legend.position = "none")
+  labs(x = "Spring temperature deviation (°C)", y = "Peak date deviation (Julian days)", col = "", title = "C. Peak date deviation") +
+  theme(legend.position = c(0.8, 0.9), plot.title = element_text(hjust = -0.25))
+
 
 centroid_dev <- temp_dev %>%
   dplyr::select(cell, year, mean_temp, tempDev, devCentroidDate, avgDevCentroid) %>%
@@ -366,25 +367,31 @@ CC_centroid_plot <- ggplot(centroid_dev, aes(x = tempDev, y = deviance, col = da
   geom_point(cex = 3) + 
   geom_smooth(method = "lm", se = F, cex = 1) +
   scale_color_manual(values = c("blue3", "palegreen3")) +
-  labs(x = "Spring temperature deviation (°C)", y = "Centroid date deviation (Julian days)", col = "") +
-  theme(legend.position = c(0.8, 0.9))
+  labs(x = "Spring temperature deviation (°C)", y = "Centroid date deviation (Julian days)", col = "", title = "D. Centroid date deviation") +
+  theme(legend.position = c(0.8, 0.9), plot.title = element_text(hjust = -0.25))
 
 # Plot comparing cc and inaturalist deviations in peak date 
 cc_inat_cent <- ggplot(temp_dev, aes(x = devCentroidDate, y = avgDevCentroid)) + 
+  geom_hline(yintercept = 0, lty = 2, col = "darkgray", cex = 1) + 
+  geom_vline(xintercept = 0, lty = 2, col = "darkgray", cex = 1) +
   geom_point(cex = 3) + 
-  labs(x = "iNaturalist centroid date", y = "Caterpillars Count! centroid date")
+  labs(x = "iNaturalist", y = "Caterpillars Count!", title = "B. Centroid date deviation") +
+  theme(plot.title = element_text(hjust = -0.25))
 
-cor.test(temp_dev$devCentroidDate, temp_dev$avgDevCentroid) # r = -0.172, p = 0.574
+cor.test(temp_dev$devCentroidDate, temp_dev$avgDevCentroid) # r = -0.354, p = 0.235
 
 # Plot comparing cc and inatuarlist deviations in centroid date
 cc_inat_peak <- ggplot(temp_dev, aes(x = devPeakDate, y = avgDevPeak)) + 
+  geom_hline(yintercept = 0, lty = 2, col = "darkgray", cex = 1) + 
+  geom_vline(xintercept = 0, lty = 2, col = "darkgray", cex = 1) +
   geom_point(cex = 3) + 
-  labs(x = "iNaturalist peak date", y = "Caterpillars Count! peak date")
+  labs(x = "iNaturalist", y = "Caterpillars Count!", title = "A. Peak date deviation") +
+  theme(plot.title = element_text(hjust = -0.25))
 
-cor.test(temp_dev$devPeakDate, temp_dev$avgDevPeak) # r = 0.043, p = 0.888
+cor.test(temp_dev$devPeakDate, temp_dev$avgDevPeak) # r = -0.217, p = 0.477
 
 plot_grid(cc_inat_peak, cc_inat_cent,
-  CC_dev_plot, CC_centroid_plot, ncol = 2, labels = c("A", "B", "C", "D"), label_size = 17)
+  CC_dev_plot, CC_centroid_plot, ncol = 2)
 ggsave("figs/cross-comparisons/phenometric_deviations.pdf", units = 'in', height = 10, width = 12)
 
 

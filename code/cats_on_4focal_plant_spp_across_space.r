@@ -127,7 +127,57 @@ print(sugar_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
 print(red_map, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 dev.off()
 
+# Tree maps with CC site points
 
+# sites points shapefile
+
+sites <- fullDataset %>%
+  distinct(Name, Latitude, Longitude, cell)
+
+beech_sites_points <- june_sites %>%
+  left_join(sites) %>%
+  filter(cell %in% beech_sf$cell) %>%
+  st_as_sf(coords = c("Longitude", "Latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(easternNA))
+
+beech_map_points <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(beech_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_shape(beech_sites_points) + tm_symbols(col = "black", size = 0.3, shape = 1) +
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "A. American beech")
+
+sugar_sites_points <- june_sites %>%
+  left_join(sites) %>%
+  filter(cell %in% sugar_sf$cell) %>%
+  st_as_sf(coords = c("Longitude", "Latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(easternNA))
+
+sugar_map_points <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(sugar_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_shape(sugar_sites_points) + tm_symbols(col = "black", size = 0.3, shape = 1) +
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5, outer.margins = c(0.01,0.01,0.01,0.01), title = "B. Sugar maple")
+
+red_sites_points <- june_sites %>%
+  left_join(sites) %>%
+  filter(cell %in% red_sf$cell) %>%
+  st_as_sf(coords = c("Longitude", "Latitude")) %>%
+  st_set_crs(4326) %>%
+  st_transform(st_crs(easternNA))
+
+red_map_points <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(red_sf) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_shape(red_sites_points) + tm_symbols(col = "black", size = 0.3, shape = 1) +
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "C. Red maple")
+
+
+grid.newpage()
+pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map_withCCsites.pdf"), height = 10, width = 20)
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
+print(beech_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(sugar_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(red_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+dev.off()
 
 ###################
 # Old school
