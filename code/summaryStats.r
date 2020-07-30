@@ -99,7 +99,12 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
       distinct(Name, LocalDate) %>%
       count(Name) %>%
       summarize(n = median(n)) %>% 
-      pull(n)
+      pull(n),
+    
+    iNatObsTot = sum(dataset$Photo == 1, na.rm = TRUE),
+    
+    iNatObsThisYear = sum(datasetThisYear$Photo == 1, na.rm = TRUE)
+
   )
   return(stats)
 }
