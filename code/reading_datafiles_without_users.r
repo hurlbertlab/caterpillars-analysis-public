@@ -11,14 +11,6 @@ library(stringr)
 
 source('code/analysis_functions.r')
 
-# Function for substituting values based on a condition using dplyr::mutate
-# Modification of dplyr's mutate function that only acts on the rows meeting a condition
-mutate_cond <- function(.data, condition, ..., envir = parent.frame()) {
-  condition <- eval(substitute(condition), .data, envir)
-  .data[condition, ] <- .data[condition, ] %>% mutate(...)
-  .data
-}
-
 # Slope and intercept parameters for power function length-weight regressions for different arthropod groups
 massregs = read.csv('data/arthropod_length_weight_regressions.csv', header = TRUE, stringsAsFactors = FALSE)
 
