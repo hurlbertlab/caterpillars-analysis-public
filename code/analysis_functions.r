@@ -9,6 +9,29 @@ library(maptools)
 #library(tidyr)
 
 
+# Backup most recent Caterpillar's Count! web files to Github repo.
+# --If all = FALSE, just download the 4 core files with survey data, otherwise download all files.
+
+backupToGithub = function(all = FALSE) {
+  
+  web_backups <- "https://caterpillarscount.unc.edu/backups"
+  webpage <- read_html(web_backups)
+  repo_links <- html_attr(html_nodes(webpage, "a"), "href")
+  files <- tibble(link = repo_links[grepl(".csv", repo_links)]) %>%
+    mutate(day = yday(as.Date(substr(link, 1, 10), format = "%Y-%m-%d")),
+           filetype = word(link, 2, 2, sep = "_")) %>%
+    filter(day == max(day))
+  
+  if (!all) {
+    files = filter(files, filetype %in% c('ArthropodSighting.csv', 'Plant.csv', 'Site.csv', 'Survey.csv'))
+  }
+  
+  sapply(1:nrow(files), function(x) download.file(paste0(web_backups, "/", files$link[x]), paste0('data/', files$link[x])))  
+  
+}
+
+
+
 ###################################
 # Function for substituting values based on a condition using dplyr::mutate
 # Modification of dplyr's mutate function that only acts on the rows meeting a condition

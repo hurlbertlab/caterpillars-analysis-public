@@ -31,7 +31,10 @@ data_repo <- "https://github.com/hurlbertlab/caterpillars-count-data"
 webpage <- read_html(data_repo)
 repo_links <- html_attr(html_nodes(webpage, "a"), "href")
 data_links <- tibble(link = repo_links[grepl(".csv", repo_links)]) %>%
-  mutate(file_name = word(link, 6, 6, sep = "/"))
+  mutate(file_name = word(link, 6, 6, sep = "/"),
+         day = yday(as.Date(substr(link, 1, 10), format = "%Y-%m-%d"))) %>%
+  filter(day == max(day))
+
 
 ## Read data files from data repo links
 github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-count-data/master/"
