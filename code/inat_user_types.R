@@ -174,7 +174,11 @@ daily_medians <- inat_user_daily_medians_db %>%
 
 ## Shannon equitability
 
+inat_user_taxa_db <- tbl(con, "inat") %>%
+  group_by(user_login, iconic_taxon_name) %>%
+  summarize(n_obs = n_distinct(id))
 
+user_taxa <- inat_user_taxa_db 
 
 ## # spp vs # observations
 
