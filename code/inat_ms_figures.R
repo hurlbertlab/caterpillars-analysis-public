@@ -6,7 +6,7 @@
 library(tidyverse)
 library(cowplot)
 
-theme_set(theme_classic(base_size = 20))
+theme_set(theme_classic(base_size = 18))
 
 #### Figure 3: Are users taxonomically specialized? ####
 
@@ -31,11 +31,13 @@ order_mod <- lm(log(spp_per_obs_insect/(1 - spp_per_obs_insect)) ~ shannonE_clas
 
 class_plot <- ggplot(user_specializ, aes(x = shannonE_class, y = spp_per_obs)) + 
   geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
-  labs(x = "Shannon Evenness", y = "Species per observation")
+  labs(x = "Shannon Evenness", y = "Species per observation") + 
+  theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
 
 order_plot <- ggplot(user_specializ, aes(x = shannonE_order, y = spp_per_obs_insect)) + 
   geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
-  labs(x = "Shannon Evenness", y = "Species per observation")
+  labs(x = "Shannon Evenness", y = "Species per observation") + 
+  theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
 
 plot_grid(class_plot, order_plot, nrow = 1, labels = c("A) All Classes", "B) Insect Orders"))
 ggsave("figs/inaturalist/shannon_evenness_scatter.pdf", height = 5, width = 10, units = "in")
@@ -45,7 +47,11 @@ shannonE <- ggplot(user_specializ, aes(x = shannonE_class)) +
   geom_histogram(aes(x = shannonE_order, fill = "Insect Orders"), alpha = 0.5) +
   scale_fill_manual(values = c("All Classes" = "skyblue3", "Insect Orders" = "springgreen3")) +
   labs(x = "Shannon Evenness", y = "Count", fill = "") + 
-  theme(legend.position = c(0.85, 0.9))
+  theme(legend.position = c(0.8, 0.9))
 
 user_insect_all <- ggplot(user_specializ, aes(x = shannonE_class, y = shannonE_order)) +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F)
+  geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
+  labs(x = "Shannon Evenness - All Classes", y = "Shannon Evenness - Insect Orders")
+
+plot_grid(shannonE, user_insect_all, nrow = 1)
+ggsave("figs/inaturalist/shannon_evenness_distributions.pdf", height = 5, width = 10, units = "in")
