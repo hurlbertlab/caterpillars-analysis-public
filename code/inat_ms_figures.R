@@ -26,15 +26,15 @@ user_specializ <- inat_user_obs %>%
   filter(spp_per_obs <= 1, spp_per_obs_insect <= 1) %>%
   mutate_at(c("spp_per_obs", "spp_per_obs_insect"), ~ifelse(. == 1, . - 0.00001, .))
 
-class_mod <- lm(log(spp_per_obs/(1 - spp_per_obs)) ~ shannonE_class, data = user_specializ)
-order_mod <- lm(log(spp_per_obs_insect/(1 - spp_per_obs_insect)) ~ shannonE_class, data = user_specializ)
+class_mod <- lm(log(spp_per_obs/(1 - spp_per_obs)) ~ shannonE_class, data = filter(user_specializ, total_obs > 20))
+order_mod <- lm(log(spp_per_obs_insect/(1 - spp_per_obs_insect)) ~ shannonE_class, data = filter(user_specializ, total_obs_insect > 20))
 
-class_plot <- ggplot(user_specializ, aes(x = shannonE_class, y = spp_per_obs)) + 
+class_plot <- ggplot(filter(user_specializ, total_obs > 20), aes(x = shannonE_class, y = spp_per_obs)) + 
   geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
   labs(x = "Shannon Evenness", y = "Species per observation") + 
   theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
 
-order_plot <- ggplot(user_specializ, aes(x = shannonE_order, y = spp_per_obs_insect)) + 
+order_plot <- ggplot(filter(user_specializ, total_obs_insect > 20), aes(x = shannonE_order, y = spp_per_obs_insect)) + 
   geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
   labs(x = "Shannon Evenness", y = "Species per observation") + 
   theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
@@ -42,14 +42,14 @@ order_plot <- ggplot(user_specializ, aes(x = shannonE_order, y = spp_per_obs_ins
 plot_grid(class_plot, order_plot, nrow = 1, labels = c("A) All Classes", "B) Insect Orders"))
 ggsave("figs/inaturalist/shannon_evenness_scatter.pdf", height = 5, width = 10, units = "in")
 
-shannonE <- ggplot(user_specializ, aes(x = shannonE_class)) + 
+shannonE <- ggplot(filter(user_specializ, total_obs > 20), aes(x = shannonE_class)) + 
   geom_histogram(aes(fill = "All Classes"), alpha = 0.5) + 
-  geom_histogram(aes(x = shannonE_order, fill = "Insect Orders"), alpha = 0.5) +
+  geom_histogram(data = filter(user_specializ, total_obs_insect > 20), aes(x = shannonE_order, fill = "Insect Orders"), alpha = 0.5) +
   scale_fill_manual(values = c("All Classes" = "skyblue3", "Insect Orders" = "springgreen3")) +
   labs(x = "Shannon Evenness", y = "Count", fill = "") + 
   theme(legend.position = c(0.8, 0.9))
 
-user_insect_all <- ggplot(user_specializ, aes(x = shannonE_class, y = shannonE_order)) +
+user_insect_all <- ggplot(filter(user_specializ, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class, y = shannonE_order)) +
   geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
   labs(x = "Shannon Evenness - All Classes", y = "Shannon Evenness - Insect Orders")
 
