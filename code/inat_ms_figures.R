@@ -8,6 +8,11 @@ library(cowplot)
 
 theme_set(theme_classic(base_size = 18))
 
+# Append correct BioArk path
+
+info <- sessionInfo()
+bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+
 #### Figure 3: Are users taxonomically specialized? ####
 
 user_even_order <- read.csv("data/inat_user_evenness_orders.csv", stringsAsFactors = F)
@@ -55,3 +60,130 @@ user_insect_all <- ggplot(filter(user_specializ, total_obs > 20, total_obs_insec
 
 plot_grid(shannonE, user_insect_all, nrow = 1)
 ggsave("figs/inaturalist/shannon_evenness_distributions.pdf", height = 5, width = 10, units = "in")
+
+# For range of n_obs observed by users, calculate 999 shannon Evenness, z score for actual
+# 158 classes, 25 Insect orders in data
+
+inat_species <- read.csv("data/inat_taxon_info_2019.csv", stringsAsFactors = F)
+
+inat_class_obs <- inat_species %>%
+  group_by(class) %>%
+  summarize(obs = sum(total_obs),
+            spp = n_distinct(taxon_name))
+
+inat_order_obs <- inat_species %>%
+  filter(class == "Insecta") %>%
+  group_by(order) %>%
+  summarize(obs = sum(total_obs),
+            spp = n_distinct(taxon_name))
+
+shannon_e_expected <- user_specializ %>%
+  mutate(shannonE_class_z_obs = map2_dbl(total_obs, shannonE_class, ~{
+    n <- .x
+    shannonE <- .y
+    
+    shannonExpected <- c()
+    
+    for(i in 1:999) {
+      sample <- sample_n(inat_class_obs, n, replace = T, weight = obs) %>%
+        group_by(class) %>%
+        count()
+      
+      sum_obs <- sum(sample$n)
+  
+      shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
+      
+      shannonE <- shannonH/log(158)
+      
+      shannonExpected <- c(shannonExpected, shannonE)
+    }
+    
+    sE_mean <- mean(shannonExpected)
+    sE_sd <- sd(shannonExpected)
+    
+    (shannonE - sE_mean)/sE_sd
+    
+  }), shannonE_class_z_spp = map2_dbl(total_obs, shannonE_class, ~{
+    n <- .x
+    shannonE <- .y
+    
+    shannonExpected <- c()
+    
+    for(i in 1:999) {
+      sample <- sample_n(inat_class_obs, n, replace = T, weight = spp) %>%
+        group_by(class) %>%
+        count()
+      
+      sum_obs <- sum(sample$n)
+      
+      shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
+      
+      shannonE <- shannonH/log(158)
+      
+      shannonExpected <- c(shannonExpected, shannonE)
+    }
+    
+    sE_mean <- mean(shannonExpected)
+    sE_sd <- sd(shannonExpected)
+    
+    (shannonE - sE_mean)/sE_sd
+    
+  }), shannonE_order_z_obs = map2_dbl(total_obs_insect, shannonE_order, ~{
+    n <- .x
+    shannonE <- .y
+    
+    shannonExpected <- c()
+    
+    for(i in 1:999) {
+      sample <- sample_n(inat_order_obs, n, replace = T, weight = obs) %>%
+        group_by(class) %>%
+        count()
+      
+      sum_obs <- sum(sample$n)
+      
+      shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
+      
+      shannonE <- shannonH/log(25)
+      
+      shannonExpected <- c(shannonExpected, shannonE)
+    }
+    
+    sE_mean <- mean(shannonExpected)
+    sE_sd <- sd(shannonExpected)
+    
+    (shannonE - sE_mean)/sE_sd
+    
+  }), shannonE_order_z_spp = map2_dbl(total_obs_insect, shannonE_order, ~{
+    n <- .x
+    shannonE <- .y
+    
+    shannonExpected <- c()
+    
+    for(i in 1:999) {
+      sample <- sample_n(inat_order_obs, n, replace = T, weight = spp) %>%
+        group_by(class) %>%
+        count()
+      
+      sum_obs <- sum(sample$n)
+      
+      shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
+      
+      shannonE <- shannonH/log(25)
+      
+      shannonExpected <- c(shannonExpected, shannonE)
+    }
+    
+    sE_mean <- mean(shannonExpected)
+    sE_sd <- sd(shannonExpected)
+    
+    (shannonE - sE_mean)/sE_sd
+    
+  }))
+write.csv(shannon_e_expected, "data/inat_evenness_null_mod.csv", row.names = F)
+
+## Cluster analysis
+
+user_profs_folder <- paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior/")
+
+inat_user_obs_classes_2019 <- read.csv(paste0(user_profs_folder, "inat_user_obs_classes_2019.csv"), stringsAsFactors = F)
+inat_user_obs_insecta_orders_2019 <- read.csv(paste0(user_profs_folder, "inat_user_obs_insecta_orders.csv"), stringsAsFactors = F)

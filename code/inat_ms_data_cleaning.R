@@ -206,7 +206,7 @@ obs_effort_2018 <- obs_effort_df %>%
 
 # 2019
 
-repo <- "C:/Users/gdicecco/Desktop/git/caterpillars-analysis-public/"
+user_profs_folder <- paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior/")
 
 for(f in files) {
   df <- readRDS(f)
@@ -222,12 +222,12 @@ for(f in files) {
     dplyr::select(year, month, user.login, n_obs, n_obs_insect, class, order, taxon_name) %>%
     distinct()
   
-  write.csv(res, paste0(repo, "data/", f, "_user_profs.csv"), row.names = F)
+  write.csv(res, paste0(user_profs_folder, "data/", f, "_user_profs.csv"), row.names = F)
   
   print(f)
 }
 
-user_profs <- list.files(paste0(repo, "data/"))[grepl("rds_user_profs", list.files(paste0(repo, "data/")))]
+user_profs <- list.files(user_profs_folder)[grepl("rds_user_profs.csv", list.files(user_profs_folder))]
 
 inat_user_profs_2019 <- data.frame(filename = user_profs) %>%
   group_by(filename) %>%
@@ -272,7 +272,7 @@ for(f in files) {
     group_by(year, month, user.login, class) %>%
     summarize(n_obs = n_distinct(id))
   
-  write.csv(res_class, paste0(repo, "data/", f, "_user_profs_class.csv"), row.names = F)
+  write.csv(res_class, paste0(user_profs_folder, f, "_user_profs_class.csv"), row.names = F)
   
   res_orders <- df %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
@@ -282,21 +282,21 @@ for(f in files) {
     group_by(year, month, user.login, order) %>%
     summarize(n_obs = n_distinct(id))
   
-  write.csv(res_orders, paste0(repo, "data/", f, "_user_profs_orders.csv"), row.names = F)
+  write.csv(res_orders, paste0(user_profs_folder, "_user_profs_orders.csv"), row.names = F)
   
   print(f)
 }
 
-orders_files <- list.files(paste0(repo, "/data"))[grepl("profs_orders", list.files(paste0(repo, "/data")))]
+orders_files <- list.files(user_profs_folder)[grepl("profs_orders", list.files(user_profs_folder))]
 
-classes_files <- list.files(paste0(repo, "/data"))[grepl("profs_class", list.files(paste0(repo, "/data")))]
+classes_files <- list.files(user_profs_folder)[grepl("profs_class", list.files(user_profs_folder))]
 
 inat_user_obs_orders <- data.frame(filename = orders_files) %>%
   group_by(filename) %>%
   nest() %>%
   mutate(df = purrr::map(filename, ~{
     f <- .
-    df <- read.csv(paste0(repo, "data/", f))
+    df <- read.csv(paste0(user_profs_folder, f))
     
     df
   })) %>%
@@ -306,7 +306,7 @@ inat_user_obs_orders <- data.frame(filename = orders_files) %>%
 inat_user_obs_orders_2019 <- inat_user_obs_orders %>%
   group_by(user.login, order) %>%
   summarize(total_obs = sum(n_obs))
-# write.csv(inat_user_obs_orders_2019, paste0(repo, "data/inat_user_obs_insecta_orders_2019.csv"), row.names = F)
+# write.csv(inat_user_obs_orders_2019, paste0(user_profs_folder, "inat_user_obs_insecta_orders_2019.csv"), row.names = F)
 
 inat_user_obs_classes <- data.frame(filename = classes_files) %>%
   group_by(filename) %>%
@@ -323,7 +323,7 @@ inat_user_obs_classes <- data.frame(filename = classes_files) %>%
 inat_user_obs_classes_2019 <- inat_user_obs_classes %>%
   group_by(user.login, class) %>%
   summarize(total_obs = sum(n_obs))
-# write.csv(inat_user_obs_classes_2019, paste0(repo, "data/inat_user_obs_classes_2019.csv"), row.names = F)
+# write.csv(inat_user_obs_classes_2019, paste0(user_profs_folder, "inat_user_obs_classes_2019.csv"), row.names = F)
 
 # User evenness: classes, insect orders
 
@@ -346,6 +346,34 @@ user_even_order <- inat_user_obs_orders_2019 %>%
             shannonH = -sum((total_obs/all_obs)*log(total_obs/all_obs), na.rm = T),
             shannonE = shannonH/log(n_orders))
 # write.csv(user_even_order, paste0(repo, "data/inat_user_evenness_orders.csv"), row.names = F)
+
+# Expected evenness
+# Number of obserations per class/order, number of species per class/order in 2019 dataset
+
+inat_species <- data.frame(month = c(), class = c(), order = c(), taxon_name = c())
+
+Sys.time()
+for(f in files) {
+  df <- readRDS(f)
+  
+  res <- df %>%
+    mutate(year = substr(observed_on_details.date, 1, 4),
+           month = substr(observed_on_details.date, 6, 7)) %>%
+    filter(year == 2019) %>%
+    filter(taxon.rank == "species", !is.na(taxon_name)) %>%
+    group_by(month, class, order, taxon_name) %>%
+    summarize(n_obs = n_distinct(id))
+  
+  inat_species <- bind_rows(inat_species, res)
+  
+  print(f)
+  print(Sys.time())
+}
+
+inat_species_2019 <- inat_species %>%
+  group_by(class, order, taxon_name) %>%
+  summarize(total_obs = sum(n_obs))
+# write.csv(inat_species_2019, paste0(repo, "data/inat_taxon_info_2019.csv"), row.names = F)
 
 
 # May-Sep obs frequency: median # dates per month
