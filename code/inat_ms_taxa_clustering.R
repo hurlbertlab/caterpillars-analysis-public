@@ -45,7 +45,7 @@ user_orders <- inat_user_orders %>%
 user_classes <- inat_user_classes %>%
   group_by(user.login) %>%
   mutate(obs = sum(total_obs)) %>%
-  filter(obs > 20, class %in% classes$class) %>%
+  filter(obs > 50, class %in% classes$class) %>%
   ungroup() %>%
   mutate(prop_obs = total_obs/obs) %>%
   dplyr::select(user.login, class, prop_obs)
@@ -83,10 +83,14 @@ for(g in groups) {
     mutate(cluster = sub_grp)
   
   groups_orders <- orders_df %>%
-    dplyr::select(user.login, cluster)
+    dplyr::select(user.login, cluster) 
   
-  n_users_plot <- ggplot(groups_orders, aes(x = cluster)) + geom_histogram() + labs(x = "Group", y = "Number of users") +
-    scale_y_log10() + scale_x_continuous(breaks = c(1:g))
+  pct_users <- groups_orders %>%
+    group_by(cluster) %>%
+    summarize(n_user = n_distinct(user.login)) %>%
+    mutate(total_user = sum(n_user),
+           prop_user = n_user/total_user,
+           pct_user = prop_user*100)
   
   taxon_grps <- user_orders %>%
     left_join(groups_orders) %>%
@@ -102,15 +106,59 @@ for(g in groups) {
   order_grp_plot <- taxon_grps %>%
     left_join(top_12_order)
   
-  taxon_grp_plot <- ggplot(order_grp_plot, aes(x = cluster, y = mean_prop, fill = order_plot)) + 
+  ggplot(order_grp_plot, aes(x = cluster, y = mean_prop, fill = order_plot)) + 
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
+    annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
     labs(x = "Group", y = "Mean proportion of observations", fill = "Order")
-  
-  plot_grid(n_users_plot, taxon_grp_plot, nrow = 1, rel_widths = c(0.4, 0.6))
-  ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 11)
+  ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
 }
 
-# Clustering for classes
-# Try on desktop at school or longleaf
+# Clustering for classes (works with obs > 50)
 
 clust_classes <- hclust(classes_dist)
+
+# Explore 8, 10, 12 groups for Classes
+
+groups <- c(8, 10, 12)
+
+for(g in groups) {
+  sub_grp <- cutree(clust_classes, k = g)
+  
+  classes_df <- inat_classes_wide %>%
+    mutate(cluster = sub_grp)
+  
+  groups_classes <- classes_df %>%
+    dplyr::select(user.login, cluster) 
+  
+  pct_users <- groups_classes %>%
+    group_by(cluster) %>%
+    summarize(n_user = n_distinct(user.login)) %>%
+    mutate(total_user = sum(n_user),
+           prop_user = n_user/total_user,
+           pct_user = prop_user*100)
+  
+  taxon_grps <- user_classes %>%
+    left_join(groups_classes) %>%
+    group_by(cluster, class) %>%
+    summarize(mean_prop = mean(prop_obs)) %>%
+    group_by(cluster) %>%
+    mutate(total = sum(mean_prop)) %>%
+    mutate(mean_prop_scaled = mean_prop/total)
+  
+  top_12_class <- taxon_grps %>%
+    group_by(class) %>%
+    summarize(total_mean = mean(mean_prop_scaled)) %>%
+    arrange(desc(total_mean)) %>%
+    mutate(class_plot = ifelse(row_number() > 11, "Other", class))
+  
+  class_grp_plot <- taxon_grps %>%
+    left_join(top_12_class) %>%
+    group_by(class_plot, cluster) %>%
+    summarize(mean = sum(mean_prop_scaled))
+  
+  ggplot(class_grp_plot, aes(x = cluster, y = mean, fill = class_plot)) + 
+    geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
+    annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
+    labs(x = "Group", y = "Mean proportion of observations", fill = "Class")
+  ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
+}
