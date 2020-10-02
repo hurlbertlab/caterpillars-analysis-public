@@ -31,6 +31,13 @@ world <-  wrld_simpl %>%
 
 ## 2b) land cover
 
+nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", "Developed Low Intensity" = "#fde5e4",
+                  "Developed Medium Intensity" = "#f7b29f", "Developed High Intensity" = "#e7564e",
+                  "Barren Land (Rocky/Sand/Clay)" = "#b3ada3",
+                  "Deciduous Forest" = "#69ab63", "Evergreen Forest" = "#1c6330", "Mixed Forest" = "#b5c98f",
+                  "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
+                  "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Emergent Herbaceous Wetlands" = "#70a3ba")
+
 inat_landcover <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
 
 # Land cover distribution for whole US
