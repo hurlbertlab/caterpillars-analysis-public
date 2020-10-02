@@ -1,19 +1,56 @@
 ### iNaturalist user behavior MS
 ## Figures and analysis
 
-#### Libraries
+## Earlier iterations of plot code in inat_user_behavior.R
+## Clean data for plots from iNat databases in inat_ms_data_cleaning.R
+## Save figures to caterpillars-analysis-public/figs/inaturalist
+
+#### Libraries ####
 
 library(tidyverse)
 library(cowplot)
+library(sf)
+library(tmap)
+library(maptools)
 
+## ggplot theme
 theme_set(theme_classic(base_size = 18))
 
-# Append correct BioArk path
+#### Figure 1: iNat user and observation growth over time ####
 
-info <- sessionInfo()
-bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+annual_growth <- read.csv("data/inat_thru_2019_annual_growth.csv", stringsAsFactors = F)
 
-#### Figure 3: Are users taxonomically specialized? ####
+#### Figure 2: spatial and temporal biases ####
+
+## 2a) Map of observations by country
+
+data(wrld_simpl)
+world <-  wrld_simpl %>% 
+  st_as_sf()
+
+
+## 2b) land cover
+
+inat_landcover <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
+
+# Land cover distribution for whole US
+#https://www.mrlc.gov/data/statistics/national-land-cover-database-2016-nlcd2016-statistics-2016
+
+## 2c) species per class
+
+inat_2019_species <- read.csv("data/inat_2019_spp.csv", stringsAsFactors = F)
+
+eol_spp_per_class <- read.csv("data/species_cnts_by_taxon.csv", stringsAsFactors = F)
+
+## 2d) 2018 observation phenology
+
+# City nature challenge - jday 119 in 2018
+jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+inat_2018_pheno <- read.csv("data/inat_2018_annual_user_pheno.csv", stringsAsFactors = F)
+
+#### Figures 3-5: User behavior ####
 
 user_even_order <- read.csv("data/inat_user_evenness_orders.csv", stringsAsFactors = F)
 user_even_class <- read.csv("data/inat_user_evenness_class.csv", stringsAsFactors = F)
@@ -62,6 +99,7 @@ plot_grid(shannonE, user_insect_all, nrow = 1)
 ggsave("figs/inaturalist/shannon_evenness_distributions.pdf", height = 5, width = 10, units = "in")
 
 # For range of n_obs observed by users, calculate 999 shannon Evenness, z score for actual
+# Weighted by # observations, weighted by # species
 # 158 classes, 25 Insect orders in data
 
 inat_species <- read.csv("data/inat_taxon_info_2019.csv", stringsAsFactors = F)
@@ -180,10 +218,3 @@ shannon_e_expected <- user_specializ %>%
     
   }))
 write.csv(shannon_e_expected, "data/inat_evenness_null_mod.csv", row.names = F)
-
-## Cluster analysis
-
-user_profs_folder <- paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior/")
-
-inat_user_obs_classes_2019 <- read.csv(paste0(user_profs_folder, "inat_user_obs_classes_2019.csv"), stringsAsFactors = F)
-inat_user_obs_insecta_orders_2019 <- read.csv(paste0(user_profs_folder, "inat_user_obs_insecta_orders.csv"), stringsAsFactors = F)
