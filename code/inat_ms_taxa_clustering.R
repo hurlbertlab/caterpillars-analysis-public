@@ -21,6 +21,7 @@ inat_user_orders <- read.csv(paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user
 inat_user_classes <- read.csv(paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior/inat_user_obs_classes_2019.csv"), stringsAsFactors = F)
 
 # Observations per order and class
+# More stringent class filter
 
 orders <- inat_user_orders %>%
   group_by(order) %>%
@@ -30,7 +31,8 @@ orders <- inat_user_orders %>%
 classes <- inat_user_classes %>%
   group_by(class) %>%
   summarize(obs = sum(total_obs)) %>%
-  filter(obs > 5000)
+  arrange(desc(obs)) %>%
+  slice(1:10)
 
 # Only users with at least 20 obs, orders with at least 1000 observations, classes with at least 5000 observations
 
@@ -160,5 +162,5 @@ for(g in groups) {
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
     annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
     labs(x = "Group", y = "Mean proportion of observations", fill = "Class")
-  ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
+  ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
 }
