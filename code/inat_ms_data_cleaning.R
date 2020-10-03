@@ -6,6 +6,8 @@
 library(tidyverse)
 library(RSQLite)
 library(dbplyr)
+library(sf)
+library(maptools)
 
 #### Read in datasets ####
 
@@ -143,7 +145,7 @@ inat_thru_2019_sites <- inat_2019_sites %>%
   distinct() %>%
   mutate_all(~as.numeric(.)) %>%
   bind_rows(inat_sites_2018_df)
-# write.csv(inat_thru_2019_sites, paste0(repo, "/data/inat_thru_2019_sites.csv"), row.names = F)
+# write.csv(inat_thru_2019_sites, "inat_thru_2019_sites.csv"), row.names = F)
 # on BioArk b/c too big for git
 
 # Spp per class in whole dataset

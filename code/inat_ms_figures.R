@@ -28,6 +28,7 @@ data(wrld_simpl)
 world <-  wrld_simpl %>% 
   st_as_sf()
 
+# Data file of iNat observation coordinates is on Grace's google drive
 
 ## 2b) land cover
 
@@ -38,6 +39,9 @@ nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", 
                   "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
                   "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Emergent Herbaceous Wetlands" = "#70a3ba")
 
+nlcd_legend <- read.csv("data/nlcd2016_legend.csv", stringsAsFactors = F)
+
+# Land cover for iNat observation sites, 0's and NA are no data
 inat_landcover <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
 
 # Land cover distribution for whole US
