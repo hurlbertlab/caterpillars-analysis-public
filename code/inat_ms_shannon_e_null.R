@@ -46,6 +46,7 @@ inat_order_obs <- inat_species %>%
 
 shannon_e_expected <- user_specializ %>%
   filter(total_obs > 20) %>%
+  sample_n(5000, replace = F) %>% # Randomly sample subset of 5,000 users for calculation
   mutate(shannonE_class_z_obs = map2_dbl(total_obs, shannonE_class, ~{
     n <- .x
     shannonE <- .y
@@ -61,9 +62,9 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE <- shannonH/log(158)
+      shannonE_null <- shannonH/log(158)
       
-      shannonExpected <- c(shannonExpected, shannonE)
+      shannonExpected <- c(shannonExpected, shannonE_null)
     }
     
     sE_mean <- mean(shannonExpected)
@@ -86,9 +87,9 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE <- shannonH/log(158)
+      shannonE_null <- shannonH/log(158)
       
-      shannonExpected <- c(shannonExpected, shannonE)
+      shannonExpected <- c(shannonExpected, shannonE_null)
     }
     
     sE_mean <- mean(shannonExpected)
@@ -111,9 +112,9 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE <- shannonH/log(25)
+      shannonE_null <- shannonH/log(25)
       
-      shannonExpected <- c(shannonExpected, shannonE)
+      shannonExpected <- c(shannonExpected, shannonE_null)
     }
     
     sE_mean <- mean(shannonExpected)
@@ -136,9 +137,9 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE <- shannonH/log(25)
+      shannonE_null <- shannonH/log(25)
       
-      shannonExpected <- c(shannonExpected, shannonE)
+      shannonExpected <- c(shannonExpected, shannonE_null)
     }
     
     sE_mean <- mean(shannonExpected)
@@ -168,92 +169,80 @@ shannon_e_expected_ins <- shannon_e_expected %>%
 
 ## Distributions: shannonE_z weighted by obs
 
-ggplot(shannon_e_expected, aes(x = shannonE_class_z_obs)) + 
-  geom_histogram(aes(fill = "All Classes"), alpha = 0.5) + 
+obs_dist <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_obs)) +
+  geom_histogram(aes(fill = "All Classes"), alpha = 0.5) +
   geom_histogram(data = shannon_e_expected_ins, aes(x = shannonE_order_z_obs, fill = "Insect Orders"), alpha = 0.5) +
   scale_fill_manual(values = c("All Classes" = "skyblue3", "Insect Orders" = "springgreen3")) +
-  labs(x = "z-Shannon Evenness, weighted by observations", y = "Count", fill = "") + 
+  labs(x = "z-Shannon Evenness, weighted by observations", y = "Count", fill = "") +
   theme(legend.position = c(0.8, 0.9))
 
 ## Distributions: shannonE_z weighted by spp
 
-ggplot(shannon_e_expected, aes(x = shannonE_class_z_spp)) + 
-  geom_histogram(aes(fill = "All Classes"), alpha = 0.5) + 
+spp_dist <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_spp)) +
+  geom_histogram(aes(fill = "All Classes"), alpha = 0.5) +
   geom_histogram(data = shannon_e_expected_ins, aes(x = shannonE_order_z_spp, fill = "Insect Orders"), alpha = 0.5) +
   scale_fill_manual(values = c("All Classes" = "skyblue3", "Insect Orders" = "springgreen3")) +
-  labs(x = "z-Shannon Evenness, weighted by species", y = "Count", fill = "") + 
+  labs(x = "z-Shannon Evenness, weighted by species", y = "Count", fill = "") +
   theme(legend.position = c(0.8, 0.9))
+
+plot_grid(obs_dist, spp_dist, nrow = 1)
+ggsave("figs/inaturalist/shannon_z_dist.pdf", units = "in", height = 5, width = 12)
 
 ## For a user: insect vs class weighted by obs
 
-ggplot(filter(shannon_e_expected, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class_z_obs, y = shannonE_order_z_obs)) +
+user_obs <- ggplot(filter(shannon_e_expected, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class_z_obs, y = shannonE_order_z_obs)) +
   geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
   labs(x = "z-Shannon Evenness - All Classes", y = "z-Shannon Evenness - Insect Orders", title = "Weighted by observations")
 
-ggplot(filter(shannon_e_expected, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class_z_spp, y = shannonE_order_z_spp)) +
+user_spp <- ggplot(filter(shannon_e_expected, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class_z_spp, y = shannonE_order_z_spp)) +
   geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
   labs(x = "z-Shannon Evenness - All Classes", y = "z-Shannon Evenness - Insect Orders", title = "Weighted by species")
+
+plot_grid(user_obs, user_spp, nrow = 1)
+ggsave("figs/inaturalist/shannon_z_order_vs_class.pdf", units = "in", height = 5, width = 12)
+
+## Weights
+
+class_plot <- ggplot(filter(shannon_e_expected, total_obs > 20), aes(x = shannonE_class_z_obs, y = shannonE_class_z_spp)) +
+  geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
+  labs(x = "z-Shannon Evenness - wtd by obs", y = "z-Shannon Evenness - wtd by spp", title = "All classes")
+
+order_plot <- ggplot(filter(shannon_e_expected, total_obs_insect > 20), aes(x = shannonE_order_z_obs, y = shannonE_order_z_spp)) +
+  geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
+  labs(x = "z-Shannon Evenness - wtd by obs", y = "z-Shannon Evenness - wtd by spp", title = "Insect Orders")
+
+plot_grid(class_plot, order_plot, nrow = 1)
+ggsave("figs/inaturalist/shannon_z_obs_vs_spp.pdf", units = "in", height = 5, width = 12)
 
 ## Insect: shannonE_z weighted by obs vs species per obs
 
 insect_obs <- ggplot(shannon_e_expected_ins, aes(x = shannonE_order_z_obs, y = spp_per_obs_insect)) +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
+  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) + ylim(0,1) +
   labs(x = "z-Shannon Evenness weighted by obs", y = "Species per observation", title = "Insect Orders")
 
 ## Insect: shannonE_z weighted by spp vs species per obs
 
 insect_spp <- ggplot(shannon_e_expected_ins, aes(x = shannonE_order_z_spp, y = spp_per_obs_insect)) +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
+  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +  ylim(0,1) +
   labs(x = "z-Shannon Evenness weighted by spp", y = "Species per observation", title = "Insect Orders")
 
 
 ## Class: shannonE_z weighted by obs vs species per obs
 
 class_obs <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_obs, y = spp_per_obs)) +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
+  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +  ylim(0,1) +
   labs(x = "z-Shannon Evenness weighted by obs", y = "Species per observation", title = "All Classes")
 
 
 ## Class: shannonE_z weighted by spp vs species per obs
 
 class_spp <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_spp, y = spp_per_obs)) +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
+  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +  ylim(0,1) +
   labs(x = "z-Shannon Evenness weighted byspp", y = "Species per observation", title = "All Classes")
 
 plot_grid(class_obs, class_spp, insect_obs, insect_spp, nrow = 2)
 
 ggsave("figs/inaturalist/shannon_e_expected_multipanel.pdf", units = "in", height = 10, width = 12)
 
-## Multipanel vs total obs
+## Shannon E by taxa group
 
-insect_obs_total <- ggplot(shannon_e_expected_ins, aes(x = shannonE_order_z_obs, y = total_obs_insect)) +
-  scale_y_log10() +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
-  labs(x = "z-Shannon Evenness weighted by obs", y = "Total observations", title = "Insect Orders")
-
-## Insect: shannonE_z weighted by spp vs species per obs
-
-insect_spp_total <- ggplot(shannon_e_expected_ins, aes(x = shannonE_order_z_spp, y = total_obs_insect)) +
-  scale_y_log10() +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
-  labs(x = "z-Shannon Evenness weighted by spp", y = "Total observations", title = "Insect Orders")
-
-
-## Class: shannonE_z weighted by obs vs species per obs
-
-class_obs_total <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_obs, y = total_obs)) +
-  scale_y_log10() +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
-  labs(x = "z-Shannon Evenness weighted by obs", y = "Total observations", title = "All Classes")
-
-
-## Class: shannonE_z weighted by spp vs species per obs
-
-class_spp_total <- ggplot(shannon_e_expected, aes(x = shannonE_class_z_spp, y = total_obs)) +
-  scale_y_log10() +
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se = F) +
-  labs(x = "z-Shannon Evenness weighted byspp", y = "Total observations", title = "All Classes")
-
-plot_grid(class_obs_total, class_spp_total, insect_obs_total, insect_spp_total, nrow = 2)
-
-ggsave("figs/inaturalist/shannon_e_expected_total_obs_multipanel.pdf", units = "in", height = 10, width = 12)
