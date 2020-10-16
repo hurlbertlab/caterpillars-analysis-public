@@ -54,11 +54,11 @@ user_classes <- inat_user_classes %>%
 
 # Reshape data to wide format
 
-inat_orders_wide <- pivot_wider(user_orders, values_from = prop_obs, names_from = order)
-write.csv(inat_orders_wide, "data/inat_user_insecta_orders_wide.csv", row.names = F)
-
-inat_classes_wide <- pivot_wider(user_classes, values_from = prop_obs, names_from = class)
-write.csv(inat_classes_wide, "data/inat_user_classes_wide.csv", row.names = F)
+# inat_orders_wide <- pivot_wider(user_orders, values_from = prop_obs, names_from = order)
+# write.csv(inat_orders_wide, "data/inat_user_insecta_orders_wide.csv", row.names = F)
+# 
+# inat_classes_wide <- pivot_wider(user_classes, values_from = prop_obs, names_from = class)
+# write.csv(inat_classes_wide, "data/inat_user_classes_wide.csv", row.names = F)
 
 inat_orders_wide <- read.csv("data/inat_user_insecta_orders_wide.csv", stringsAsFactors = F)
 
@@ -119,6 +119,15 @@ for(g in groups) {
 
 clust_classes <- hclust(classes_dist)
 
+# Proportion of observations by class
+
+user_obs <- inat_user_classes %>%
+  filter(class %in% classes$class) %>%
+  group_by(user.login) %>%
+  summarize(obs = sum(total_obs))
+
+class_total_obs <- sum(user_obs$obs)
+
 # Explore 8, 10, 12 groups for Classes
 
 groups <- c(8, 10, 12)
@@ -133,8 +142,10 @@ for(g in groups) {
     dplyr::select(user.login, cluster) 
   
   pct_users <- groups_classes %>%
+    left_join(user_obs) %>%
     group_by(cluster) %>%
-    summarize(n_user = n_distinct(user.login)) %>%
+    summarize(n_user = n_distinct(user.login),
+              prop_all_obs = 100*sum(obs)/class_total_obs) %>%
     mutate(total_user = sum(n_user),
            prop_user = n_user/total_user,
            pct_user = prop_user*100)
@@ -161,6 +172,7 @@ for(g in groups) {
   ggplot(class_grp_plot, aes(x = cluster, y = mean, fill = class_plot)) + 
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
     annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
+    annotate(geom = "text", x = pct_users$cluster, y = 1.1, label = round(pct_users$prop_all_obs, 1), size = 4.5, col = "darkblue") +
     labs(x = "Group", y = "Mean proportion of observations", fill = "Class")
   ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
 }
