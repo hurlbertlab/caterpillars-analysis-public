@@ -64,6 +64,10 @@ inat_orders_wide <- read.csv("data/inat_user_insecta_orders_wide.csv", stringsAs
 
 inat_classes_wide <- read.csv("data/inat_user_classes_wide.csv", stringsAsFactors = F)
 
+# Shannon evenness
+
+evenness_null <- read.csv("data/inat_evenness_null_mod.csv", stringsAsFactors = F)
+
 # Distance matrix
 
 orders_dist <- dist(inat_orders_wide)
@@ -113,6 +117,13 @@ for(g in groups) {
     annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
     labs(x = "Group", y = "Mean proportion of observations", fill = "Order")
   ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
+  
+  group_evenness <- groups_orders %>%
+    left_join(evenness_null)
+  
+  ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(cluster))) + geom_histogram() +
+    labs(x = "z-Shannon evenness wtd by spp", y = "Count", fill = "Group") + scale_fill_brewer(palette = "Paired")
+  ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
 }
 
 # Clustering for classes (works with obs > 50)
@@ -175,4 +186,11 @@ for(g in groups) {
     annotate(geom = "text", x = pct_users$cluster, y = 1.1, label = round(pct_users$prop_all_obs, 1), size = 4.5, col = "darkblue") +
     labs(x = "Group", y = "Mean proportion of observations", fill = "Class")
   ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
+  
+  group_evenness <- groups_classes %>%
+    left_join(evenness_null)
+  
+  ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(cluster))) + geom_histogram() +
+    labs(x = "z-Shannon evenness wtd by spp", y = "Count", fill = "Group") + scale_fill_brewer(palette = "Paired")
+  ggsave(paste0("figs/inaturalist/class_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
 }
