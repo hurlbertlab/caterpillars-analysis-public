@@ -120,10 +120,17 @@ for(g in groups) {
   
   group_evenness <- groups_orders %>%
     left_join(evenness_null)
-  
-  ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(cluster))) + geom_histogram() +
-    labs(x = "z-Shannon evenness wtd by spp", y = "Count", fill = "Group") + scale_fill_brewer(palette = "Paired")
-  ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
+
+  # Make this plots of densities not histogram  
+  ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(cluster))) + geom_density(alpha = 0.5) +
+    labs(x = "z-Shannon evenness wtd by spp", y = "Density", fill = "Group") +
+    scale_y_continuous(breaks = c(0, 0.3)) +
+    xlim(-50, 10) +
+    geom_vline(xintercept = 0, lty = 2) +
+    scale_fill_brewer(palette = "Paired") +
+    facet_wrap(~cluster, ncol = 1) + theme(strip.background = element_blank(),
+      strip.text.x = element_blank())
+  ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 10, width = 6)
 }
 
 # Clustering for classes (works with obs > 50)
@@ -190,7 +197,13 @@ for(g in groups) {
   group_evenness <- groups_classes %>%
     left_join(evenness_null)
   
-  ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(cluster))) + geom_histogram() +
-    labs(x = "z-Shannon evenness wtd by spp", y = "Count", fill = "Group") + scale_fill_brewer(palette = "Paired")
+  ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(cluster))) + geom_density(alpha = 0.5) +
+    labs(x = "z-Shannon evenness wtd by spp", y = "Density", fill = "Group") +
+    scale_y_continuous(breaks = c(0, 0.1)) +
+    xlim(-50, 10) +
+    geom_vline(xintercept = 0, lty = 2) +
+    scale_fill_brewer(palette = "Paired") +
+    facet_wrap(~cluster, ncol = 1) + theme(strip.background = element_blank(),
+                                           strip.text.x = element_blank())
   ggsave(paste0("figs/inaturalist/class_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
 }
