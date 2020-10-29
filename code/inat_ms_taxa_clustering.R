@@ -96,7 +96,9 @@ for(g in groups) {
     summarize(n_user = n_distinct(user.login)) %>%
     mutate(total_user = sum(n_user),
            prop_user = n_user/total_user,
-           pct_user = prop_user*100)
+           pct_user = prop_user*100,
+           rank = dense_rank(pct_user),
+           rev_rank = dense_rank(desc(pct_user)))
   
   taxon_grps <- user_orders %>%
     left_join(groups_orders) %>%
@@ -110,27 +112,33 @@ for(g in groups) {
     mutate(order_plot = ifelse(row_number() > 11, "Other", order))
   
   order_grp_plot <- taxon_grps %>%
-    left_join(top_12_order)
+    left_join(top_12_order) %>%
+    left_join(pct_users) 
   
-  ggplot(order_grp_plot, aes(x = cluster, y = mean_prop, fill = order_plot)) + 
-    geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
-    annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
-    labs(x = "Group", y = "Mean proportion of observations", fill = "Order")
-  ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
+  cluster_plot <- ggplot(order_grp_plot, aes(x = rank, y = mean_prop, fill = order_plot)) + 
+    geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks= c(1:g)) +
+    annotate(geom = "text", x = pct_users$rank, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
+    labs(x = "Group", y = "Mean proportion of observations", fill = "Order") + coord_flip()
+  # ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
   
   group_evenness <- groups_orders %>%
-    left_join(evenness_null)
-
-  # Make this plots of densities not histogram  
-  ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(cluster))) + geom_density(alpha = 0.5) +
-    labs(x = "z-Shannon evenness wtd by spp", y = "Density", fill = "Group") +
-    scale_y_continuous(breaks = c(0, 0.3)) +
+    left_join(evenness_null) %>%
+    left_join(pct_users)
+  
+  dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(rev_rank))) + 
+    geom_density(alpha = 0.5) +
+    labs(x = "User z-Shannon evenness", y = "Density", fill = "Group") +
+    scale_y_continuous(breaks = c(0, 0.15, 0.3)) +
     xlim(-50, 10) +
     geom_vline(xintercept = 0, lty = 2) +
     scale_fill_brewer(palette = "Paired") +
-    facet_wrap(~cluster, ncol = 1) + theme(strip.background = element_blank(),
-      strip.text.x = element_blank())
-  ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 10, width = 6)
+    facet_wrap(~rev_rank, ncol = 1) + theme(strip.background = element_blank(),
+                                           strip.text.x = element_blank(), legend.position = "none") +
+    geom_text(aes(x = -50, y = 0.15, label = rank), size = 5)
+  # ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 10, width = 6)
+  
+  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.6, 0.4), labels = c("A", "B"), label_size = 16)
+  ggsave(paste0("figs/inaturalist/insect_order_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 12)
 }
 
 # Clustering for classes (works with obs > 50)
@@ -166,7 +174,9 @@ for(g in groups) {
               prop_all_obs = 100*sum(obs)/class_total_obs) %>%
     mutate(total_user = sum(n_user),
            prop_user = n_user/total_user,
-           pct_user = prop_user*100)
+           pct_user = prop_user*100,
+           rank = dense_rank(pct_user),
+           rev_rank = dense_rank(desc(pct_user)))
   
   taxon_grps <- user_classes %>%
     left_join(groups_classes) %>%
@@ -185,25 +195,32 @@ for(g in groups) {
   class_grp_plot <- taxon_grps %>%
     left_join(top_12_class) %>%
     group_by(class_plot, cluster) %>%
-    summarize(mean = sum(mean_prop_scaled))
+    summarize(mean = sum(mean_prop_scaled)) %>%
+    left_join(pct_users)
   
-  ggplot(class_grp_plot, aes(x = cluster, y = mean, fill = class_plot)) + 
+  cluster_plot <- ggplot(class_grp_plot, aes(x = rank, y = mean, fill = class_plot)) + 
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
-    annotate(geom = "text", x = pct_users$cluster, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
-    annotate(geom = "text", x = pct_users$cluster, y = 1.1, label = round(pct_users$prop_all_obs, 1), size = 4.5, col = "darkblue") +
-    labs(x = "Group", y = "Mean proportion of observations", fill = "Class")
-  ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
+    annotate(geom = "text", x = pct_users$rank, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
+    labs(x = "Group", y = "Mean proportion of observations", fill = "Class") + coord_flip()
+  # ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
   
   group_evenness <- groups_classes %>%
-    left_join(evenness_null)
+    left_join(evenness_null) %>%
+    left_join(pct_users)
   
-  ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(cluster))) + geom_density(alpha = 0.5) +
-    labs(x = "z-Shannon evenness wtd by spp", y = "Density", fill = "Group") +
+  dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(rev_rank))) + geom_density(alpha = 0.5) +
+    labs(x = "User z-Shannon evenness", y = "Density", fill = "Group") +
     scale_y_continuous(breaks = c(0, 0.1)) +
     xlim(-50, 10) +
     geom_vline(xintercept = 0, lty = 2) +
     scale_fill_brewer(palette = "Paired") +
-    facet_wrap(~cluster, ncol = 1) + theme(strip.background = element_blank(),
-                                           strip.text.x = element_blank())
-  ggsave(paste0("figs/inaturalist/class_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
+    facet_wrap(~rev_rank, ncol = 1) + theme(strip.background = element_blank(),
+                                           strip.text.x = element_blank(), legend.position = "none") +
+    geom_text(aes(x = -50, y = 0.09, label = rank), size = 5)
+  # ggsave(paste0("figs/inaturalist/class_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
+  
+  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.6, 0.4), labels = c("A", "B"), label_size = 16)
+  ggsave(paste0("figs/inaturalist/class_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 12)
+  
+  
 }
