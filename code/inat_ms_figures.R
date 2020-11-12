@@ -12,6 +12,7 @@ library(cowplot)
 library(sf)
 library(tmap)
 library(maptools)
+library(ggExtra)
 
 ## ggplot theme
 theme_set(theme_classic(base_size = 18))
@@ -61,7 +62,7 @@ dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 
 inat_2018_pheno <- read.csv("data/inat_2018_annual_user_pheno.csv", stringsAsFactors = F)
 
-#### Figures 3-5: User behavior ####
+#### Figure 3: Number of species vs number of observations ####
 
 user_even_order <- read.csv("data/inat_user_evenness_orders.csv", stringsAsFactors = F)
 user_even_class <- read.csv("data/inat_user_evenness_class.csv", stringsAsFactors = F)
@@ -79,33 +80,24 @@ user_specializ <- inat_user_obs %>%
   filter(spp_per_obs <= 1, spp_per_obs_insect <= 1) %>%
   mutate_at(c("spp_per_obs", "spp_per_obs_insect"), ~ifelse(. == 1, . - 0.00001, .))
 
-class_mod <- lm(log(spp_per_obs/(1 - spp_per_obs)) ~ shannonE_class, data = filter(user_specializ, total_obs > 20))
-order_mod <- lm(log(spp_per_obs_insect/(1 - spp_per_obs_insect)) ~ shannonE_class, data = filter(user_specializ, total_obs_insect > 20))
+spp_obs_plot <- ggplot(user_specializ, aes(x = total_obs, y = n_spp)) + geom_point(alpha = 0.1) +
+  scale_x_log10(breaks = c(10, 100, 1000, 10000)) +
+  scale_y_log10() +
+  geom_abline(slope = 1, intercept = 0, col = "blue") +
+  labs(x = "Observations", y = "Species")
 
-class_plot <- ggplot(filter(user_specializ, total_obs > 20), aes(x = shannonE_class, y = spp_per_obs)) + 
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
-  labs(x = "Shannon Evenness", y = "Species per observation") + 
-  theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
+spp_hist <- ggplot(user_specializ, aes(x = n_spp)) + geom_histogram(bins = 20) +
+  geom_vline(xintercept = median(user_specializ$n_spp, na.rm = T), col = "red") +
+  scale_x_log10() + theme_void() + coord_flip()
 
-order_plot <- ggplot(filter(user_specializ, total_obs_insect > 20), aes(x = shannonE_order, y = spp_per_obs_insect)) + 
-  geom_point(alpha = 0.1) + geom_smooth(method = "lm", se= F) +
-  labs(x = "Shannon Evenness", y = "Species per observation") + 
-  theme(plot.margin=unit(c(0.25,0.25,0.25,0.25), "in"))
+obs_hist <- ggplot(user_specializ, aes(x = total_obs)) + geom_histogram(bins = 20) +
+  geom_vline(xintercept = median(user_specializ$total_obs, na.rm = T), col = "red") +
+  scale_x_log10() + theme_void()
 
-plot_grid(class_plot, order_plot, nrow = 1, labels = c("A) All Classes", "B) Insect Orders"))
-ggsave("figs/inaturalist/shannon_evenness_scatter.pdf", height = 5, width = 10, units = "in")
+align_x_hist <- align_plots(obs_hist, spp_obs_plot, align = "v")[[1]]
+align_y_hist <- align_plots(spp_hist, spp_obs_plot, align = "h")[[1]]
 
-shannonE <- ggplot(filter(user_specializ, total_obs > 20), aes(x = shannonE_class)) + 
-  geom_histogram(aes(fill = "All Classes"), alpha = 0.5) + 
-  geom_histogram(data = filter(user_specializ, total_obs_insect > 20), aes(x = shannonE_order, fill = "Insect Orders"), alpha = 0.5) +
-  scale_fill_manual(values = c("All Classes" = "skyblue3", "Insect Orders" = "springgreen3")) +
-  labs(x = "Shannon Evenness", y = "Count", fill = "") + 
-  theme(legend.position = c(0.8, 0.9))
+plot_grid(align_x_hist, NULL, spp_obs_plot, align_y_hist,
+          ncol = 2, nrow = 2, rel_heights = c(0.2, 1), rel_widths = c(1, 0.2))
 
-user_insect_all <- ggplot(filter(user_specializ, total_obs > 20, total_obs_insect > 20), aes(x = shannonE_class, y = shannonE_order)) +
-  geom_point(alpha = 0.1) + geom_abline(intercept = 0, slope = 1, col = "blue", lty = 2, cex = 1) +
-  labs(x = "Shannon Evenness - All Classes", y = "Shannon Evenness - Insect Orders")
-
-plot_grid(shannonE, user_insect_all, nrow = 1)
-ggsave("figs/inaturalist/shannon_evenness_distributions.pdf", height = 5, width = 10, units = "in")
-
+ggsave("figs/inaturalist/nSpp_vs_nObs.pdf")

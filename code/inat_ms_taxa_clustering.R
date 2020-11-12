@@ -117,28 +117,32 @@ for(g in groups) {
   
   cluster_plot <- ggplot(order_grp_plot, aes(x = rank, y = mean_prop, fill = order_plot)) + 
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks= c(1:g)) +
-    annotate(geom = "text", x = pct_users$rank, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
-    labs(x = "Group", y = "Mean proportion of observations", fill = "Order") + coord_flip()
+    labs(x = "Group", y = "Mean proportion of observations", fill = "Order") + coord_flip() +
+    theme(legend.position = "left")
   # ggsave(paste0("figs/inaturalist/insect_order_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8)
   
   group_evenness <- groups_orders %>%
     left_join(evenness_null) %>%
     left_join(pct_users)
   
-  dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_spp, fill = as.factor(rev_rank))) + 
-    geom_density(alpha = 0.5) +
-    labs(x = "User z-Shannon evenness", y = "Density", fill = "Group") +
-    scale_y_continuous(breaks = c(0, 0.15, 0.3)) +
-    xlim(-50, 10) +
+  dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_spp)) + 
+    geom_density(alpha = 0.5, fill = "gray") +
+    labs(y = "", fill = "Group") +
+    xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
+    xlim(-35, 10) +
     geom_vline(xintercept = 0, lty = 2) +
     scale_fill_brewer(palette = "Paired") +
     facet_wrap(~rev_rank, ncol = 1) + theme(strip.background = element_blank(),
-                                           strip.text.x = element_blank(), legend.position = "none") +
-    geom_text(aes(x = -50, y = 0.15, label = rank), size = 5)
+                                           strip.text.x = element_blank(), legend.position = "none",
+                                           axis.line.y = element_blank(), axis.text.y = element_blank(),
+                                           axis.ticks.y = element_blank()) +
+    geom_text(aes(x = -20, y = 0.15, 
+                  label = ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%")), size = 5))
   # ggsave(paste0("figs/inaturalist/insect_order_groups_shannonE_", g, ".pdf"), units = "in", height = 10, width = 6)
+
   
-  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.6, 0.4), labels = c("A", "B"), label_size = 16)
-  ggsave(paste0("figs/inaturalist/insect_order_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 12)
+  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
+  ggsave(paste0("figs/inaturalist/insect_order_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 14)
 }
 
 # Clustering for classes (works with obs > 50)
@@ -200,27 +204,32 @@ for(g in groups) {
   
   cluster_plot <- ggplot(class_grp_plot, aes(x = rank, y = mean, fill = class_plot)) + 
     geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
-    annotate(geom = "text", x = pct_users$rank, y = 1.05, label = round(pct_users$pct_user, 1), size = 4.5) +
-    labs(x = "Group", y = "Mean proportion of observations", fill = "Class") + coord_flip()
+    labs(x = "Group", y = "Mean proportion of observations", fill = "Class") + coord_flip() +
+    theme(legend.position = "left")
   # ggsave(paste0("figs/inaturalist/class_user_groups_", g, ".pdf"), units = "in", height = 5, width = 8.5)
   
   group_evenness <- groups_classes %>%
     left_join(evenness_null) %>%
     left_join(pct_users)
   
-  dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_spp, fill = as.factor(rev_rank))) + geom_density(alpha = 0.5) +
-    labs(x = "User z-Shannon evenness", y = "Density", fill = "Group") +
-    scale_y_continuous(breaks = c(0, 0.1)) +
-    xlim(-50, 10) +
+  dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_spp,)) +
+    geom_density(alpha = 0.5, fill = "gray") +
+    labs(y = "", fill = "Group") +
+    xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
+    xlim(-35, 10) +
     geom_vline(xintercept = 0, lty = 2) +
     scale_fill_brewer(palette = "Paired") +
     facet_wrap(~rev_rank, ncol = 1) + theme(strip.background = element_blank(),
-                                           strip.text.x = element_blank(), legend.position = "none") +
-    geom_text(aes(x = -50, y = 0.09, label = rank), size = 5)
+                                            strip.text.x = element_blank(), legend.position = "none",
+                                            axis.line.y = element_blank(), axis.text.y = element_blank(),
+                                            axis.ticks.y = element_blank()) +
+    geom_text(aes(x = -20, y = 0.1, 
+                  label = ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%")), size = 5))
+  
   # ggsave(paste0("figs/inaturalist/class_groups_shannonE_", g, ".pdf"), units = "in", height = 5, width = 6)
   
-  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.6, 0.4), labels = c("A", "B"), label_size = 16)
-  ggsave(paste0("figs/inaturalist/class_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 12)
+  plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
+  ggsave(paste0("figs/inaturalist/class_group_multipanel_", g, ".pdf"), units = "in", height = 6, width = 14)
   
   
 }
