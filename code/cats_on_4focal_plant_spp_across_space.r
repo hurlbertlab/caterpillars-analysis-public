@@ -179,40 +179,149 @@ print(sugar_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
 print(red_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 dev.off()
 
-###################
-# Old school
 
-library(maps)
 
-pdf('figs/caterpillars-count/cats_on_beech_and_maples_in_June.pdf', height = 6, width = 12)
-par(mfrow = c(1, 3), mar = c(1, 0, 3, 0))
+##################################
+# Considering variation in density by month (because June in GA may reflect something different than June in Ontario)
+hexLat = sites3 %>%
+  group_by(cell) %>%
+  summarize(meanLat = mean(Latitude, na.rm = TRUE),
+            meanGreen = mean(medianGreenup, na.rm = TRUE))
+hexLat$cell = as.numeric(hexLat$cell)
 
-map('state', xlim = c(-90,-66))
-points(beech$Longitude, beech$Latitude, pch = 16, col = 'orange1', cex = 30*beech$catOccurrence)
-points(beech$Longitude, beech$Latitude, pch = 1, cex = 30*beech$catOccurrence)
-points(beech$Longitude[beech$catOccurrence == 0], beech$Latitude[beech$catOccurrence == 0], col = 'orange1', pch = 4, cex = 1.8)
-mtext('American beech', 3, cex = 1.5)
 
-map('state', xlim = c(-90,-66))
-points(sugar$Longitude, sugar$Latitude, pch = 16, col = 'limegreen', cex = 30*sugar$catOccurrence)
-points(sugar$Longitude, sugar$Latitude, pch = 1, cex = 30*sugar$catOccurrence)
-points(sugar$Longitude[sugar$catOccurrence == 0], sugar$Latitude[sugar$catOccurrence == 0], col = 'limegreen', pch = 4, cex = 1.8)
-mtext('Sugar maple', 3, cex = 1.5)
+hexStats2 = fullDataset %>%
+  mutate(month = month(LocalDate)) %>%
+  filter(PlantSpecies %in% c('American beech', 'Red maple', 'Sugar maple'),
+         cell %in% june_hexes$cell) %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.))) %>%
+  group_by(cell, month, PlantSpecies, ID, Group) %>% 
+  summarize(totalCount = sum(Quantity)) %>%
+  group_by(cell, month, PlantSpecies) %>%
+  summarize(nSurveys = n_distinct(ID),
+            nSurveysGTzero = sum(Group == 'caterpillar' & totalCount > 0),
+            nCaterpillars = sum(totalCount[Group == 'caterpillar'], na.rm = TRUE),
+            catsPerSurvey = nCaterpillars/nSurveys,
+            catOccurrence = nSurveysGTzero/nSurveys,
+            catOccurrencePct = 100*catOccurrence) %>%
+  filter(nSurveys >= 30) %>% 
+  left_join(hexLat, by = 'cell')
 
-points(rep(-73, 4), c(33, 31, 29, 27), pch = c(4, 16, 16, 16), cex = c(1.8, 30*c(.04, .12, .2)))
-text(rep(-70, 4), c(33, 31, 29, 27), pch = c(4, 16, 16, 16), c('0%', '4%', '12%', '20%'), cex = 1.5)  
+beech2 = filter(hexStats2, PlantSpecies == 'American beech', month %in% c(6,7))
+red2 = filter(hexStats2, PlantSpecies == 'Red maple', month %in% c(6,7))
+sugar2 = filter(hexStats2, PlantSpecies == 'Sugar maple', month %in% c(6,7))
 
-map('state', xlim = c(-90,-66))
-points(red$Longitude, red$Latitude, pch = 16, col = 'red', cex = 30*red$catOccurrence)
-points(red$Longitude, red$Latitude, pch = 1, cex = 30*red$catOccurrence)
-points(red$Longitude[red$catOccurrence == 0], red$Latitude[red$catOccurrence == 0], col = 'red', pch = 4, cex = 1.8)
-mtext('Red maple', 3, cex = 1.5)
+
+par(mfrow = c(3, 1))
+plot(c(6,7), range(beech2$catsPerSurvey), xlab = 'Month', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(beech2$cell), function(x) points(beech2$month[beech2$cell == x], beech2$catsPerSurvey[beech2$cell == x], type = 'l', col = round(beech2$meanLat[beech2$cell == x][1], 0), lwd = 2))
+
+legend("topright", legend = unique(round(hexStats2$meanLat)), lwd = 2, col = unique(round(hexStats2$meanLat)), bty = 'n')
+
+plot(c(6,7), range(red2$catsPerSurvey), xlab = 'Month', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(red2$cell), function(x) points(red2$month[red2$cell == x], red2$catsPerSurvey[red2$cell == x], type = 'l', col = round(red2$meanLat[red2$cell == x][1], 0), lwd = 2))
+
+plot(c(6,7), range(sugar2$catsPerSurvey), xlab = 'Month', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(sugar2$cell), function(x) points(sugar2$month[sugar2$cell == x], sugar2$catsPerSurvey[sugar2$cell == x], type = 'l', col = round(sugar2$meanLat[sugar2$cell == x][1], 0), lwd = 2))
+
+
+# Weekly resolution
+
+hexStatsWeek = fullDataset %>%
+  filter(PlantSpecies %in% c('American beech', 'Red maple', 'Sugar maple'),
+         cell %in% june_hexes$cell) %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.))) %>%
+  group_by(cell, julianweek, PlantSpecies, ID, Group) %>% 
+  summarize(totalCount = sum(Quantity)) %>%
+  group_by(cell, julianweek, PlantSpecies) %>%
+  summarize(nSurveys = n_distinct(ID),
+            nSurveysGTzero = sum(Group == 'caterpillar' & totalCount > 0),
+            nCaterpillars = sum(totalCount[Group == 'caterpillar'], na.rm = TRUE),
+            catsPerSurvey = nCaterpillars/nSurveys,
+            catOccurrence = nSurveysGTzero/nSurveys,
+            catOccurrencePct = 100*catOccurrence) %>%
+  filter(nSurveys >= 10) %>% 
+  left_join(hexLat, by = 'cell')
+
+beechWeek = filter(hexStatsWeek, PlantSpecies == 'American beech', julianweek %in% 144:200)
+redWeek = filter(hexStatsWeek, PlantSpecies == 'Red maple', julianweek %in% 144:200)
+sugarWeek = filter(hexStatsWeek, PlantSpecies == 'Sugar maple', julianweek %in% 144:200)
+
+colorpal = rainbow(15)
+
+par(mfrow = c(3, 1), mar = c(4, 4, 1, 1))
+plot(c(144,200), range(beechWeek$catsPerSurvey), xlab = 'Week', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(beechWeek$cell), function(x) points(beechWeek$julianweek[beechWeek$cell == x], beechWeek$catsPerSurvey[beechWeek$cell == x], type = 'l', col = colorpal[which(round(beechWeek$meanLat[beechWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+legend("topright", legend = 35:49, lwd = 2, col = colorpal, bty = 'n')
+
+plot(c(144,200), range(redWeek$catsPerSurvey), xlab = 'Week', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(redWeek$cell), function(x) points(redWeek$julianweek[redWeek$cell == x], redWeek$catsPerSurvey[redWeek$cell == x], type = 'l', col = colorpal[which(round(redWeek$meanLat[redWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+plot(c(144,200), range(sugarWeek$catsPerSurvey), xlab = 'Week', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(sugarWeek$cell), function(x) points(sugarWeek$julianweek[sugarWeek$cell == x], sugarWeek$catsPerSurvey[sugarWeek$cell == x], type = 'l', col = colorpal[which(round(sugarWeek$meanLat[sugarWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+# Shift by meanGreen
+par(mfrow = c(3, 1), mar = c(4, 4, 1, 1))
+plot(c(0,100), range(beechWeek$catsPerSurvey), xlab = 'Days after green-up', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(beechWeek$cell), function(x) points(beechWeek$julianweek[beechWeek$cell == x] - beechWeek$meanGreen[beechWeek$cell == x][1], 
+         beechWeek$catsPerSurvey[beechWeek$cell == x], type = 'l', col = colorpal[which(round(beechWeek$meanLat[beechWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+legend("topright", legend = 35:49, lwd = 2, col = colorpal, bty = 'n')
+
+plot(c(0,100), range(redWeek$catsPerSurvey), xlab = 'Days after green-up', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(redWeek$cell), function(x) points(redWeek$julianweek[redWeek$cell == x]  - redWeek$meanGreen[redWeek$cell == x][1], redWeek$catsPerSurvey[redWeek$cell == x], type = 'l', col = colorpal[which(round(redWeek$meanLat[redWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+plot(c(0,100), range(sugarWeek$catsPerSurvey), xlab = 'Days after green-up', las = 1, ylab = 'Caterpillar density', type = 'n')
+sapply(unique(sugarWeek$cell), function(x) points(sugarWeek$julianweek[sugarWeek$cell == x] - sugarWeek$meanGreen[sugarWeek$cell == x][1], sugarWeek$catsPerSurvey[sugarWeek$cell == x], type = 'l', col = colorpal[which(round(sugarWeek$meanLat[sugarWeek$cell == x][1], 0) == 35:49)], lwd = 2))
+
+
+###########################################################################################
+# Getting caterpillar density in window 30-60 days post medianGreenup (no data for Ontario)
+
+hexStatsGreenup = fullDataset %>%
+  filter(PlantSpecies %in% c('American beech', 'Red maple', 'Sugar maple'), 
+         julianday >= medianGreenup + 30, julianday <= medianGreenup + 60) %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.))) %>%
+  group_by(cell, PlantSpecies, ID, Group) %>% 
+  summarize(totalCount = sum(Quantity)) %>%
+  group_by(cell, PlantSpecies) %>%
+  summarize(nSurveys = n_distinct(ID),
+            nSurveysGTzero = sum(Group == 'caterpillar' & totalCount > 0),
+            nCaterpillars = sum(totalCount[Group == 'caterpillar'], na.rm = TRUE),
+            catsPerSurvey = nCaterpillars/nSurveys,
+            catOccurrence = nSurveysGTzero/nSurveys,
+            catOccurrencePct = 100*catOccurrence) %>%
+  filter(nSurveys >= 20) %>% 
+  left_join(hexLat, by = 'cell')
+
+
+cats_sf_green <- hex %>%
+  right_join(hexStatsGreenup) %>%
+  st_transform(st_crs(easternNA))
+
+beech_sf_green <- filter(cats_sf_green, PlantSpecies == 'American beech')
+sugar_sf_green <- filter(cats_sf_green, PlantSpecies == 'Sugar maple')
+red_sf_green <- filter(cats_sf_green, PlantSpecies == 'Red maple')
+
+beech_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(beech_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "A. American beech")
+
+sugar_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(sugar_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5, outer.margins = c(0.01,0.01,0.01,0.01), title = "B. Sugar maple")
+
+red_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(red_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "C. Red maple")
+
+
+grid.newpage()
+pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map_green_30-60d_post_greenup.pdf"), height = 10, width = 20)
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
+print(beech_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(sugar_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(red_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 dev.off()
-
-
-
-map('state', xlim = c(-90,-60))
-points(rhod$Longitude, rhod$Latitude, pch = 16, col = 'dodgerblue', cex = 20*rhod$catOccurrence)
-points(rhod$Longitude[rhod$catOccurrence == 0], rhod$Latitude[rhod$catOccurrence == 0], col = 'dodgerblue', pch = 4)
-
 
