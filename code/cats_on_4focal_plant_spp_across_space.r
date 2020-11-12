@@ -179,40 +179,54 @@ print(sugar_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
 print(red_map_points, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 dev.off()
 
-###################
-# Old school
 
-library(maps)
 
-pdf('figs/caterpillars-count/cats_on_beech_and_maples_in_June.pdf', height = 6, width = 12)
-par(mfrow = c(1, 3), mar = c(1, 0, 3, 0))
+###########################################################################################
+# Getting caterpillar density in window 30-60 days post medianGreenup (no data for Ontario)
 
-map('state', xlim = c(-90,-66))
-points(beech$Longitude, beech$Latitude, pch = 16, col = 'orange1', cex = 30*beech$catOccurrence)
-points(beech$Longitude, beech$Latitude, pch = 1, cex = 30*beech$catOccurrence)
-points(beech$Longitude[beech$catOccurrence == 0], beech$Latitude[beech$catOccurrence == 0], col = 'orange1', pch = 4, cex = 1.8)
-mtext('American beech', 3, cex = 1.5)
+hexStatsGreenup = fullDataset %>%
+  filter(PlantSpecies %in% c('American beech', 'Red maple', 'Sugar maple'), 
+         julianday >= medianGreenup + 30, julianday <= medianGreenup + 60) %>%
+  mutate_at(c("cell"), ~as.numeric(as.character(.))) %>%
+  group_by(cell, PlantSpecies, ID, Group) %>% 
+  summarize(totalCount = sum(Quantity)) %>%
+  group_by(cell, PlantSpecies) %>%
+  summarize(nSurveys = n_distinct(ID),
+            nSurveysGTzero = sum(Group == 'caterpillar' & totalCount > 0),
+            nCaterpillars = sum(totalCount[Group == 'caterpillar'], na.rm = TRUE),
+            catsPerSurvey = nCaterpillars/nSurveys,
+            catOccurrence = nSurveysGTzero/nSurveys,
+            catOccurrencePct = 100*catOccurrence) %>%
+  filter(nSurveys >= 20) %>% 
+  left_join(hexLat, by = 'cell')
 
-map('state', xlim = c(-90,-66))
-points(sugar$Longitude, sugar$Latitude, pch = 16, col = 'limegreen', cex = 30*sugar$catOccurrence)
-points(sugar$Longitude, sugar$Latitude, pch = 1, cex = 30*sugar$catOccurrence)
-points(sugar$Longitude[sugar$catOccurrence == 0], sugar$Latitude[sugar$catOccurrence == 0], col = 'limegreen', pch = 4, cex = 1.8)
-mtext('Sugar maple', 3, cex = 1.5)
 
-points(rep(-73, 4), c(33, 31, 29, 27), pch = c(4, 16, 16, 16), cex = c(1.8, 30*c(.04, .12, .2)))
-text(rep(-70, 4), c(33, 31, 29, 27), pch = c(4, 16, 16, 16), c('0%', '4%', '12%', '20%'), cex = 1.5)  
+cats_sf_green <- hex %>%
+  right_join(hexStatsGreenup) %>%
+  st_transform(st_crs(easternNA))
 
-map('state', xlim = c(-90,-66))
-points(red$Longitude, red$Latitude, pch = 16, col = 'red', cex = 30*red$catOccurrence)
-points(red$Longitude, red$Latitude, pch = 1, cex = 30*red$catOccurrence)
-points(red$Longitude[red$catOccurrence == 0], red$Latitude[red$catOccurrence == 0], col = 'red', pch = 4, cex = 1.8)
-mtext('Red maple', 3, cex = 1.5)
+beech_sf_green <- filter(cats_sf_green, PlantSpecies == 'American beech')
+sugar_sf_green <- filter(cats_sf_green, PlantSpecies == 'Sugar maple')
+red_sf_green <- filter(cats_sf_green, PlantSpecies == 'Red maple')
+
+beech_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(beech_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "A. American beech")
+
+sugar_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(sugar_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5, outer.margins = c(0.01,0.01,0.01,0.01), title = "B. Sugar maple")
+
+red_map_green <- tm_shape(easternNA) + tm_polygons() +
+  tm_shape(red_sf_green) + tm_polygons(col = "catsPerSurvey", palette = "YlGnBu", title = "Density", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2.5, title.size = 2.5,  outer.margins = c(0.01,0.01,0.01,0.01), title = "C. Red maple")
+
+
+grid.newpage()
+pdf(paste0(getwd(),"/figs/caterpillars-count/cat_density_on_3focal_plants_map_green_30-60d_post_greenup.pdf"), height = 10, width = 20)
+pushViewport(viewport(layout = grid.layout(nrow = 1, ncol = 3)))
+print(beech_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+print(sugar_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+print(red_map_green, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 dev.off()
-
-
-
-map('state', xlim = c(-90,-60))
-points(rhod$Longitude, rhod$Latitude, pch = 16, col = 'dodgerblue', cex = 20*rhod$catOccurrence)
-points(rhod$Longitude[rhod$catOccurrence == 0], rhod$Latitude[rhod$catOccurrence == 0], col = 'dodgerblue', pch = 4)
-
 
