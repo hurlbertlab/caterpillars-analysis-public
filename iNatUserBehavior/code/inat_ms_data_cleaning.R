@@ -96,22 +96,12 @@ inat_fig1 <- inat_2018_fig1 %>%
 
 # Unique lat-lon of all observations
 
-### Thru 2018
-
-inat_sites_2018_db <- tbl(con, "inat") %>%
-  filter(!is.na(longitude) | !is.na(latitude)) %>%
-  dplyr::select(longitude, latitude) %>%
-  distinct()
-
-inat_sites_2018_df <- inat_sites_2018_db %>%
-  collect()
-
-### 2019
+### Thru 2019
 
 inat_2019_sites <- data.frame(latitude = c(), longitude = c())
 
 Sys.time()
-for(f in files) {
+for(f in files_all) {
   df <- readRDS(f)
   
   res <- df %>%
@@ -129,8 +119,8 @@ for(f in files) {
 
 inat_thru_2019_sites <- inat_2019_sites %>%
   distinct() %>%
-  mutate_all(~as.numeric(.)) %>%
-  bind_rows(inat_sites_2018_df)
+  mutate_all(~as.numeric(.)) 
+
 # write.csv(inat_thru_2019_sites, "inat_thru_2019_sites.csv"), row.names = F)
 # on BioArk b/c too big for git
 
@@ -141,7 +131,7 @@ inat_thru_2019_nam <- inat_thru_2019_sites %>%
   mutate(lat = latitude,
          lon = longitude) %>%
   filter(!is.na(latitude), !is.na(longitude)) 
-write.csv(inat_thru_2019_nam, "inat_northam_site_coords.csv", row.names = F)
+write.csv(inat_thru_2019_nam, "/Volumes/hurlbertlab/Databases/iNaturalist/inat_northam_site_coords.csv", row.names = F)
 
 # Observation phenology in example year - observations grouped by week for 2018
 
