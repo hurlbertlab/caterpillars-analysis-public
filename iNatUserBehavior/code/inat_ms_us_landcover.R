@@ -1,6 +1,6 @@
 ### iNaturalist through 2019 land cover
 
-library(tidyverse)
+library(dplyr)
 library(raster)
 library(sf)
 
