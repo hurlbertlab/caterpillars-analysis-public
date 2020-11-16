@@ -99,8 +99,8 @@ inat_sites <- inat %>%
 
 ## Figure: comparison of land cover distributions for iNat and CC records
 
-catcount_sites_df <- read.csv("data/catcount_site_landcover.csv", stringsAsFactors = F)
-inat_sites_df <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
+catcount_sites_df <- read.csv("InTheMiddle/data/catcount_site_landcover.csv", stringsAsFactors = F)
+inat_sites_df <- read.csv("InTheMiddle/data/inat_site_landcover.csv", stringsAsFactors = F)
 nlcd_legend <- read.csv("data/nlcd2016_legend.csv", stringsAsFactors = F)
 
 nlcd_order <- c("Open Water", "Developed Open Space", "Developed Low Intensity", "Developed Medium Intensity", 
@@ -188,4 +188,4 @@ family_plot <- ggplot(inat_taxa_withCC, aes(x = datasource, y = prop_obs_grp, fi
 # ggsave("figs/cross-comparisons/inat_cc_families.pdf", units = "in", height = 6, width = 10)
 
 plot_grid(family_plot, lc_plot, ncol = 2, labels = c("A", "B"), label_size = 21)
-ggsave("figs/cross-comparisons/landcover-families-multipanel.pdf", units = "in", height = 6, width = 20)
+ggsave("InTheMiddle/figs/landcover-families-multipanel.pdf", units = "in", height = 6, width = 20)

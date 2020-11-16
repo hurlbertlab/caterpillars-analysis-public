@@ -166,7 +166,10 @@ pheno_plot <- hex %>%
   left_join(pheno_2019) %>%
   left_join(cell_centers) %>%
   left_join(hex_springtemp)
-# write.csv(pheno_plot, "data/pheno_2019_cc_inat_plot.csv", row.names =F)
+
+pheno_df <- pheno_plot %>%
+  st_set_geometry(NULL)
+# write.csv(pheno_df, "./InTheMiddle/data/pheno_2019_cc_inat_plot.csv", row.names =F)
 
 easternNA <- NAmap %>%
   filter(sr_adm0_a3 %in% c("USA", "CAN")) %>%
@@ -186,51 +189,52 @@ cc_sites_ortho <- sites_6weeks %>%
 # Hex cells with iNat peak date
 
 inat_peak <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "peakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+  tm_shape(pheno_plot_ortho) + 
+  tm_polygons(col = "peakDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65, breaks = c(140, 155, 170, 185, 200, 215))+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2, inner.margins = c(0.02, 0.02, 0.1, 0.05),
             outer.margins = c(0.01,0,0.01,0), title = "A. iNaturalist - peak date")
 
 ## Panel 2
 # Hex cells with iNat centroid date
 
 inat_cent <-  tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "centroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
-            outer.margins = c(0.01,0,0.01,0), title = "C. iNaturalist - centroid date")
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "centroidDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2, inner.margins = c(0.02, 0.02, 0.1, 0.05),
+            outer.margins = c(0.01,0,0.01,0), title = "D. iNaturalist - centroid date")
 
 ## Panel 3
 # Hex cells with CC peak date
 
 cc_peak <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(pheno_plot_ortho) + 
-  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2, inner.margins = c(0.02, 0.02, 0.1, 0.05),
             outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - peak date")
 
 ## panel 3 with cc site dots
 
 cc_peak_dots <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(pheno_plot_ortho) + 
-  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
+  tm_polygons(col = "avgPeakDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65, breaks = c(150, 170, 190, 210, 220))+
   tm_shape(cc_sites_ortho) + tm_symbols(col = "black", size = 0.3, shape = 1) +
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2, inner.margins = c(0.02, 0.02, 0.1, 0.05),
             outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - peak date")
 
 ## panel 4
 # Hex cells with CC centroid date
 
 cc_cent <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
-            outer.margins = c(0.01,0,0.01,0), title = "D. Caterpillars Count! - centroid date") 
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65)+
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2, inner.margins = c(0.02, 0.02, 0.1, 0.05),
+            outer.margins = c(0.01,0,0.01,0), title = "E. Caterpillars Count! - centroid date") 
 
 ## Panel 4 with dots
 
 cc_cent_dots <- tm_shape(easternNA) + tm_polygons() +
-  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Julian day", alpha = 0.65)+
+  tm_shape(pheno_plot_ortho) + tm_polygons(col = "avgCentroidDate", palette = "YlGnBu", title = "Day of year", alpha = 0.65)+
   tm_shape(cc_sites_ortho) + tm_symbols(col = "black", size = 0.3, shape = 1) +  
   tm_layout(legend.text.size = 1.5, legend.title.size = 2, title.size = 2,
-            outer.margins = c(0.01,0,0.01,0), title = "D. Caterpillars Count! - centroid date") 
+            outer.margins = c(0.01,0,0.01,0), title = "E. Caterpillars Count! - centroid date") 
 
 
 ## Panel 5
@@ -241,9 +245,11 @@ theme_set(theme_classic(base_size = 23))
 cor.test(pheno_plot_ortho$peakDate, pheno_plot_ortho$avgPeakDate) # r = 0.330, p = 0.352
 
 peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) + 
-  geom_point(cex = 2) + 
-  geom_smooth(method = "lm", se = F, cex = 1, col = "darkgray") +
-  annotate(geom = "text", x = 190, y = 155, label = c("r = 0.33"), size = 9) +
+  geom_point(cex = 3) + 
+  geom_smooth(method = "lm", se = F, cex = 1.5, col = "darkgray") +
+  geom_abline(slope = 1, intercept = 0, cex = 1.5, col = "darkgray", lty = 2) +
+  annotate(geom = "text", x = 160, y = 160, label = c("1:1 line"), size = 9) +
+  annotate(geom = "text", x = 190, y = 155, label = c(expression(italic("r") == 0.33 )), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "C. Peak date") +
   theme(plot.title = element_text(hjust = -0.3, size = 24))
 
@@ -253,16 +259,18 @@ peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) +
 cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 0.472, p = 0.169
 
 centroid_plot <- ggplot(pheno_plot_ortho, aes(x = centroidDate, y = avgCentroidDate)) + 
-  geom_point(cex = 2) + 
-  geom_smooth(method = "lm", se = F, cex = 1, col = "darkgray") +
-  annotate(geom = "text", x = 182, y = 168, label = c("r = 0.47"), size = 9) +
+  geom_point(cex = 3) + 
+  geom_abline(slope = 1, intercept = 0, cex = 1.5, col = "darkgray", lty = 2) +
+  annotate(geom = "text", x = 171, y = 170, label = c("1:1 line"), size = 9) +
+  geom_smooth(method = "lm", se = F, cex = 1.5, col = "darkgray") +
+  annotate(geom = "text", x = 182, y = 168, label = c(expression(italic('r') == 0.47)), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "F. Centroid date") +
   theme(plot.title = element_text(hjust = -0.3, size = 24))
 
   
 ## Multipanel fig
 grid.newpage()
-pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_2019_phenometrics.pdf"), height = 10, width = 18)
+pdf(paste0(getwd(),"/InTheMiddle/figs/inat_cc_2019_phenometrics.pdf"), height = 10, width = 18)
 pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
 print(inat_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
 print(inat_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
@@ -272,15 +280,15 @@ print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
 print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
 dev.off()
 
-## Multipanel fig with CC site dots
-grid.newpage()
-pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_2019_phenometrics_withCCsites.pdf"), height = 10, width = 18)
-pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
-print(inat_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
-print(inat_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
-print(cc_peak_dots, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
-print(cc_cent_dots, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
-print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
-print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
-dev.off()
+# ## Multipanel fig with CC site dots
+# grid.newpage()
+# pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_2019_phenometrics_withCCsites.pdf"), height = 10, width = 18)
+# pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
+# print(inat_peak, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
+# print(inat_cent, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
+# print(cc_peak_dots, vp = viewport(layout.pos.row = 1, layout.pos.col = 2))
+# print(cc_cent_dots, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
+# print(peak_plot, vp = viewport(layout.pos.row = 1, layout.pos.col = 3))
+# print(centroid_plot, vp = viewport(layout.pos.row = 2, layout.pos.col = 3))
+# dev.off()
 

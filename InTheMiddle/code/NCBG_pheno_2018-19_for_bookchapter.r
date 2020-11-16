@@ -8,10 +8,10 @@ ncbg = filter(fullDataset, Name == "NC Botanical Garden", Year %in% c(2018, 2019
 bg18 = meanDensityByWeek(ncbg[ncbg$Year == 2018, ], ordersToInclude = 'caterpillar')
 bg19 = meanDensityByWeek(ncbg[ncbg$Year == 2019, ], ordersToInclude = 'caterpillar')
 
-pdf('figs/caterpillars-count/NCBG_caterpillar_phenology_2018-19.pdf', height = 6, width = 8)
+pdf(paste0(getwd(),'/InTheMiddle/figs/NCBG_caterpillar_phenology_2018-19.pdf'), height = 6, width = 8)
 par(mgp = c(3, 1, 0), cex.lab = 1.7, cex.axis = 1.25, mar = c(5, 5, 1, 1))
-plot(bg18$julianweek, bg18$fracSurveys, type = 'l', lwd = 4, col = 'lightgreen', xlab = 'Julian day', 
-     ylab = '% of surveys', las = 1, ylim = c(0, 16), xaxt = "n")
+plot(bg18$julianweek, bg18$fracSurveys, type = 'l', lwd = 4, col = 'lightgreen', xlab = 'Day of year', 
+     ylab = '% of surveys with caterpillars', las = 1, ylim = c(0, 16), xaxt = "n")
 points(bg19$julianweek, bg19$fracSurveys, type = 'l', lwd = 4, col = 'forestgreen')
 jdAxis(jdRange = c(130, 214), biweekly = TRUE)
 

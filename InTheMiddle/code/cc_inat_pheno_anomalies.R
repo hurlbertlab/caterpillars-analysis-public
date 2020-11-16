@@ -324,7 +324,7 @@ temp_dev <- hex_temps %>%
 theme_set(theme_classic(base_size = 17))
 
 # read in 2019 peak, centroid, temp, lat data
-pheno_plot <- read.csv("data/pheno_2019_cc_inat_plot.csv", stringsAsFactors = F)
+pheno_plot <- read.csv("InTheMiddle/data/pheno_2019_cc_inat_plot.csv", stringsAsFactors = F)
 
 peak_dev <- temp_dev %>%
   dplyr::select(cell, year, mean_temp, tempDev, devPeakDate, avgDevPeak) %>%
@@ -344,7 +344,7 @@ CC_dev_plot <- ggplot(peak_dev, aes(x = tempDev, y = deviance, col = dataset)) +
   geom_point(cex = 3) + 
   geom_smooth(method = "lm", se = F, cex = 1) +
   scale_color_manual(values = c("blue3", "palegreen3")) +
-  labs(x = "Spring temperature deviation (°C)", y = "Peak date deviation (Julian days)", col = "", title = "C. Peak date deviation") +
+  labs(x = "Spring temperature deviation (°C)", y = "Peak date deviation (days)", col = "", title = "C. Peak date deviation") +
   theme(legend.position = c(0.8, 0.9), plot.title = element_text(hjust = -0.25))
 
 
@@ -367,7 +367,7 @@ CC_centroid_plot <- ggplot(centroid_dev, aes(x = tempDev, y = deviance, col = da
   geom_point(cex = 3) + 
   geom_smooth(method = "lm", se = F, cex = 1) +
   scale_color_manual(values = c("blue3", "palegreen3")) +
-  labs(x = "Spring temperature deviation (°C)", y = "Centroid date deviation (Julian days)", col = "", title = "D. Centroid date deviation") +
+  labs(x = "Spring temperature deviation (°C)", y = "Centroid date deviation (days)", col = "", title = "D. Centroid date deviation") +
   theme(legend.position = c(0.8, 0.9), plot.title = element_text(hjust = -0.25))
 
 # Plot comparing cc and inaturalist deviations in peak date 
@@ -392,7 +392,7 @@ cor.test(temp_dev$devPeakDate, temp_dev$avgDevPeak) # r = -0.217, p = 0.477
 
 plot_grid(cc_inat_peak, cc_inat_cent,
   CC_dev_plot, CC_centroid_plot, ncol = 2)
-ggsave("figs/cross-comparisons/phenometric_deviations.pdf", units = 'in', height = 10, width = 12)
+ggsave("InTheMiddle/figs/phenometric_deviations.pdf", units = 'in', height = 10, width = 12)
 
 
 #2019 pheno metrics

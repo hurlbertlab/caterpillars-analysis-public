@@ -339,7 +339,7 @@ inat_species_2019 <- inat_species %>%
   summarize(total_obs = sum(n_obs))
 # write.csv(inat_species_2019, paste0(repo, "data/inat_taxon_info_2019.csv"), row.names = F)
 
-
+# Table of frequency/intensity measures
 # May-Sep obs frequency: median # dates per month
 # May-Sep obs intensity: median obs per day
 

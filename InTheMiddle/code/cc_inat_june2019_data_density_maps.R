@@ -31,80 +31,7 @@ hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors
   rename(cell = "cell.num")
 
 ## Get June insect records from all iNaturalist database to control for sampling effort iNat
-
-# For 2019
-setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "inat_2019.db")
-
-db_list_tables(con)
-
-inat_insects_db <- tbl(con, "inat") %>%
-  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, time_observed_at, taxon_id) %>%
-  filter(!is.na(longitude) | !is.na(latitude)) %>%
-  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
-  filter(iconic_taxon_name == "Insecta") %>%
-  mutate(jday = julianday(observed_on),
-         jd_wk = 7*floor(jday/7)) %>%
-  mutate(year = substr(time_observed_at, 1, 4),
-         month = substr(time_observed_at, 6, 7))
-
-inat_insects_df <- inat_insects_db %>%
-  collect()
-
-DBI::dbDisconnect(con, "inat")
-
-inat_2019_june <- inat_insects_df %>%
-  filter(year == "2019", month == "06")
-# 75,891 observations
-
-# For earlier
-
-setwd("\\\\BioArk/HurlbertLab/Databases/iNaturalist/")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = "iNaturalist_s.db")
-
-db_list_tables(con)
-
-inat_insects_early_db <- tbl(con, "inat") %>%
-  dplyr::select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
-  filter(!is.na(longitude) | !is.na(latitude)) %>%
-  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
-  filter(iconic_taxon_name == "Insecta") %>%
-  mutate(year = substr(observed_on, 1, 4),
-         month = substr(observed_on, 6, 7)) %>%
-  mutate(jday = julianday(observed_on),
-         jd_wk = 7*floor(jday/7))
-
-inat_insects_early_df <- inat_insects_early_db %>%
-  collect()
-
-inat_2018_june <- inat_insects_early_df %>%
-  filter(year == "2018", month == "06")
-# 172,043 obs
-
-## iNat insect number of observations per hex cell
-
-inat_june_obs <- inat_insects_early_df %>%
-  mutate(year_num = as.numeric(year)) %>%
-  filter(year_num > 2015, year_num < 2019) %>%
-  bind_rows(inat_insects_df) %>%
-  filter(month == "06") %>%
-  st_as_sf(coords = c("longitude", "latitude")) %>%
-  st_set_crs(4326) %>%
-  st_transform(st_crs(hex)) %>%
-  st_intersection(hex) %>%
-  group_by(year, cell) %>%
-  summarize(n_obs = n_distinct(id))
-
-inat_june_hex_obs <- inat_june_obs %>%
-  st_set_geometry(NULL)
-# write.csv(inat_june_hex_obs, "data/inat_insect_obs_june2016-2019_hex.csv", row.names = F)
-
-# Only map effort for iNat in hex cells with at least 100 Insecta observations
-inat_june_hex_obs <- read.csv("data/inat_insect_obs_june2016-2019_hex.csv") %>%
-  filter(n_obs >= 100) %>%
-  filter(year == 2019)
-
-### Use June 2019 iNat CSV data while DB issues are being worked out
+### Use June 2019 iNat CSV data
 
 # Append correct BioArk path
 info <- sessionInfo()
@@ -249,25 +176,29 @@ cc_id_june_sites <- inat %>%
 
 all_cats <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(inat_june_ortho) + tm_polygons(col = "cats_effort", palette = "YlGnBu", title = "Occurrence", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "A. iNaturalist - all", title.size = 2)
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), 
+            inner.margins = c(0.02, 0.02, 0.1, 0.1), title = "A. iNaturalist - all", title.size = 2)
 
 inat_june_fourfams <- inat_june_ortho %>%
   filter(!is.na(cats_4fam_effort), cats_4fam_effort > 0)
 
 four_fams <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(inat_june_fourfams) + tm_polygons(col = "cats_4fam_effort", palette = "YlGnBu", title = "Occurrence", alpha = 0.65)+
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "D. iNaturalist - woody", title.size = 2)
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), 
+            inner.margins = c(0.02, 0.02, 0.1, 0.1), title = "D. iNaturalist - woody", title.size = 2)
 
 cc_all_cats <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(cc_id_june_ortho) +
   tm_polygons(col = "n_cats", palette = "YlGnBu", title = "Density", alpha = 0.65, breaks = c(0, 0.04, 0.08, 0.12, 0.14)) + 
   tm_shape(cc_id_june_sites) + tm_dots(col = "black", size = 0.3, shape = 1) +
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "B. Caterpillars Count! - all", title.size = 2)
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0),
+            inner.margins = c(0.02, 0.02, 0.1, 0.1), title = "B. Caterpillars Count! - all", title.size = 2)
 
 cc_four_fams <- tm_shape(easternNA) + tm_polygons() +
   tm_shape(cc_id_june_ortho) + tm_polygons(col = "n_cats_4fam", palette = "YlGnBu", title = "Density", alpha = 0.65) + 
   tm_shape(cc_id_june_sites) + tm_symbols(col = "black", size = 0.3, shape = 1) +
-  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), title = "E. Caterpillars Count! - woody", title.size = 2)
+  tm_layout(legend.text.size = 1.5, legend.title.size = 2, outer.margins = c(0.01,0,0.01,0), 
+            inner.margins = c(0.02, 0.02, 0.1, 0.1), title = "E. Caterpillars Count! - woody", title.size = 2)
 
 cc_inat_11 <- inat_june %>%
   mutate_at(c("year"), ~as.numeric(.)) %>%
@@ -278,21 +209,21 @@ cor.test(cc_inat_11$cats_effort, cc_inat_11$n_cats_cc)
 cor.test(cc_inat_11$cats_4fam_effort, cc_inat_11$n_cats_4fam_cc)
 
 theme_set(theme_classic(base_size = 23))
-inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 2) + 
-  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1) +
-  annotate(geom = "text", x = 0.075, y = 0.02, label = c("r = 0.73"), size = 9) +
+inat_cc_11_plot <- ggplot(cc_inat_11, aes(x = cats_effort, y = n_cats_cc)) + geom_point(cex = 3) + 
+  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1.5) +
+  annotate(geom = "text", x = 0.075, y = 0.02, label = c(expression(italic('r') == 0.73 )), size = 9) +
   labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "C. All") +
   theme(plot.title = element_text(hjust = -0.25))
 
-inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 2) + 
+inat_cc_11_4fam_plot <- ggplot(cc_inat_11, aes(x = cats_4fam_effort, y = n_cats_4fam_cc)) + geom_point(cex = 3) + 
   labs(x = "iNaturalist occurrence", y = "Caterpillars Count! density", title = "F. Woody") +
-  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1) +
-  annotate(geom = "text", x = 0.035, y = 0.005, label = c("r = 0.40"), size = 9) +
+  geom_smooth(method = "lm", se = F, col = "darkgray", cex = 1.5) +
+  annotate(geom = "text", x = 0.035, y = 0.005, label = c(expression(italic('r') == 0.40 )), size = 9) +
   theme(plot.title = element_text(hjust = -0.3))
 
 
 grid.newpage()
-pdf(paste0(getwd(),"/figs/cross-comparisons/inat_cc_data_density_six_panel.pdf"), height = 10, width = 18)
+pdf(paste0(getwd(),"/InTheMiddle/figs/inat_cc_data_density_six_panel.pdf"), height = 10, width = 18)
 pushViewport(viewport(layout = grid.layout(nrow = 2, ncol = 3)))
 print(all_cats, vp = viewport(layout.pos.row = 1, layout.pos.col = 1))
 print(four_fams, vp = viewport(layout.pos.row = 2, layout.pos.col = 1))
