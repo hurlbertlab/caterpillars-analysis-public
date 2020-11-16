@@ -248,7 +248,7 @@ peak_plot <- ggplot(pheno_plot_ortho, aes(x = peakDate, y = avgPeakDate)) +
   geom_point(cex = 3) + 
   geom_smooth(method = "lm", se = F, cex = 1.5, col = "darkgray") +
   geom_abline(slope = 1, intercept = 0, cex = 1.5, col = "darkgray", lty = 2) +
-  annotate(geom = "text", x = 160, y = 160, label = c("1:1 line"), size = 9) +
+  annotate(geom = "text", x = 160, y = 164, label = c("1:1"), size = 9, angle = 35) +
   annotate(geom = "text", x = 190, y = 155, label = c(expression(italic("r") == 0.33 )), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "C. Peak date") +
   theme(plot.title = element_text(hjust = -0.3, size = 24))
@@ -261,7 +261,7 @@ cor.test(pheno_plot_ortho$centroidDate, pheno_plot_ortho$avgCentroidDate) # r = 
 centroid_plot <- ggplot(pheno_plot_ortho, aes(x = centroidDate, y = avgCentroidDate)) + 
   geom_point(cex = 3) + 
   geom_abline(slope = 1, intercept = 0, cex = 1.5, col = "darkgray", lty = 2) +
-  annotate(geom = "text", x = 171, y = 170, label = c("1:1 line"), size = 9) +
+  annotate(geom = "text", x = 169, y = 171, label = c("1:1"), size = 9, angle = 15) +
   geom_smooth(method = "lm", se = F, cex = 1.5, col = "darkgray") +
   annotate(geom = "text", x = 182, y = 168, label = c(expression(italic('r') == 0.47)), size = 9) +
   labs(x = "iNaturalist", y = "Caterpillars Count!", title = "F. Centroid date") +

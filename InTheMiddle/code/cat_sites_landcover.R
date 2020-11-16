@@ -7,7 +7,7 @@ library(tmap)
 library(cowplot)
 
 # plotting theme
-theme_set(theme_classic(base_size = 18))
+theme_set(theme_classic(base_size = 20))
 
 # Map of north america
 
@@ -187,5 +187,5 @@ family_plot <- ggplot(inat_taxa_withCC, aes(x = datasource, y = prop_obs_grp, fi
   labs(x = "", y = "Proportion of observations", fill = "Family")
 # ggsave("figs/cross-comparisons/inat_cc_families.pdf", units = "in", height = 6, width = 10)
 
-plot_grid(family_plot, lc_plot, ncol = 2, labels = c("A", "B"), label_size = 21)
-ggsave("InTheMiddle/figs/landcover-families-multipanel.pdf", units = "in", height = 6, width = 20)
+plot_grid(family_plot, lc_plot, ncol = 1, labels = c("A", "B"), label_size = 21)
+ggsave("InTheMiddle/figs/landcover-families-multipanel.pdf", units = "in", height = 12, width = 10)
