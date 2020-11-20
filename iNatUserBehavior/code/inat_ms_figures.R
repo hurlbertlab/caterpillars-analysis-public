@@ -83,7 +83,7 @@ spp_obs_plot <- ggplot(user_specializ, aes(x = total_obs, y = n_spp)) + geom_poi
   scale_x_log10(breaks = c(10, 100, 1000, 10000)) +
   scale_y_log10() +
   geom_abline(slope = 1, intercept = 0, col = "blue") +
-  labs(x = "Observations", y = "Species")
+  labs(x = "Observations per user", y = "Species per user")
 
 spp_hist <- ggplot(user_specializ, aes(x = n_spp)) + geom_histogram(bins = 20) +
   geom_vline(xintercept = median(user_specializ$n_spp, na.rm = T), col = "red") +
@@ -105,23 +105,23 @@ user_prop_obs <- inat_user_obs %>%
   arrange(total_obs) %>%
   mutate(cum_obs = cumsum(prop_obs))
 
-# 50, 90, 99th percentiles
+# 90, 99th percentiles
 
-quantile(user_prop_obs$total_obs, c(0.5, 0.9, 0.99))
-# 3, 29, 455
+quantile(user_prop_obs$total_obs, c(0.9, 0.99))
+# 29, 455
+
+sum(user_prop_obs$prop_obs[user_prop_obs$total_obs >= 29])
+sum(user_prop_obs$prop_obs[user_prop_obs$total_obs >= 455])
 
 panel2 <- ggplot(user_prop_obs, aes(x = total_obs, y = cum_obs)) + 
   scale_x_log10(breaks = c(1, 10, 100, 1000, 10000)) + geom_line() +
-  geom_ribbon(data = filter(user_prop_obs, total_obs <= 3), aes(x = total_obs, ymin = 0, ymax = cum_obs), alpha = 0.4, fill = "skyblue") +
-  geom_ribbon(data = filter(user_prop_obs, total_obs <= 29), aes(x = total_obs, ymin = 0, ymax = cum_obs), alpha = 0.4, fill = "skyblue") +
-  geom_ribbon(data = filter(user_prop_obs, total_obs <= 455), aes(x = total_obs, ymin = 0, ymax = cum_obs), alpha = 0.4, fill = "skyblue") +
-  geom_vline(xintercept = 3, lty = 2, col = "darkgray") +
-  geom_vline(xintercept = 29, lty = 2, col = "darkgray") +
-  geom_vline(xintercept = 455, lty = 2, col = "darkgray") +
-  annotate(geom = "text", x = 3, y = 1, label = "50% of\nusers", size = 4) +
-  annotate(geom = "text", x = 29, y = 1, label = "90% of\nusers", size = 4) +
-  annotate(geom = "text", x = 455, y = 1, label = "99% of\nusers", size = 4) +
-  labs(x = "Observations", y = "Proportion of observations")
+  geom_ribbon(data = filter(user_prop_obs, total_obs >= 29), aes(x = total_obs, ymin = 0, ymax = cum_obs), alpha = 0.3, fill = "skyblue") +
+  geom_ribbon(data = filter(user_prop_obs, total_obs >= 455), aes(x = total_obs, ymin = 0, ymax = cum_obs), alpha = 0.5, fill = "skyblue") +
+  annotate(geom = "text", x = 650, y = 0.1, label = "Top 10% of users provide\n87% of observations", size = 4) +
+  geom_segment(aes(x=29,xend=max(user_prop_obs$total_obs),y=0.02,yend=0.02), cex = 0.5, lineend = "butt") +
+  geom_segment(aes(x=455,xend=max(user_prop_obs$total_obs),y=0.22,yend=0.22), col = "navy", lineend = "butt") +
+  annotate(geom = "text", x = 8200, y = 0.29, label = "Top 1% of users provide\n62% of observations", size = 4, col = "navy") +
+  labs(x = "Observations per user", y = "Proportion of all observations")
 
 plot_grid(panel1, panel2, nrow = 1, labels = c("A", "B"))
 
