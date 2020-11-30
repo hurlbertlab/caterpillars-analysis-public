@@ -1,0 +1,17 @@
+,2016 Land Cover Class for the conterminous United States,Percentage,GeneralizedClass
+11,Water,5.24,Water
+12,Perennial Ice Snow,0.01,Ice Snow
+21,"Developed, Open Space",2.87,Developed
+22,"Developed, Low Intensity",1.48,Developed
+23,"Developed, Medium Intensity",0.7,Developed
+24,Developed High Intensity,0.25,Developed
+31,Bare Rock/Sand/Clay,1.03,Barren
+41,Deciduous Forest,9.37,Forest
+42,Evergreen Forest,11.43,Forest
+43,Mixed Forest,3.63,Forest
+52,Shrub/Scrub,21.78,Shrubland
+71,Grasslands/Herbaceous,13.84,Grassland
+81,Pasture/Hay,6.28,Agriculture
+82,Cultivated Crops,16.25,Agriculture
+90,Woody Wetlands,4.37,Wetlands
+95,Emergent Herbaceous Wetlands,1.47,Wetlands
