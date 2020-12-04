@@ -43,15 +43,16 @@ files_all <- list.files()[!grepl(".csv", list.files())]
 ### Data through 2018
 
 inat_2018_fig1_db <- tbl(con, "inat") %>%
-  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id, quality_grade) %>%
   mutate(jday = julianday(observed_on),
          jd_wk = 7*floor(jday/7)) %>%
   mutate(year = substr(observed_on, 1, 4),
          month = substr(observed_on, 6, 7)) %>%
-  distinct(year, jd_wk, observed_on, user_login, id) %>%
+  distinct(year, quality_grade, jd_wk, observed_on, user_login, id) %>%
   group_by(year) %>%
   summarize(n_obs = n_distinct(id),
-            n_users = n_distinct(user_login))
+            n_users = n_distinct(user_login),
+            n_obs_research = n_distinct(id[quality_grade == "research"]))
 
 inat_2018_fig1 <- inat_2018_fig1_db %>%
   collect()
@@ -168,12 +169,13 @@ obs_effort_2018 <- obs_effort_df %>%
 
 # thru 2019
 
-user_profs_folder <- paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior/")
+user_profs_folder <- paste0(bioark, "/hurlbertlab/DiCecco/data/inat_user_behavior_rg/")
 
 for(f in files_all) {
   df <- readRDS(f)
   
   res <- df %>%
+    filter(quality_grade == "research") %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
            month = substr(observed_on_details.date, 6, 7)) %>%
     filter(taxon.rank == "species", !is.na(taxon_name)) %>%
@@ -229,6 +231,7 @@ for(f in files_all) {
   df <- readRDS(f)
   
   res_class <- df %>%
+    filter(quality_grade == "research") %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
            month = substr(observed_on_details.date, 6, 7)) %>%
     filter(taxon.rank == "species", !is.na(taxon_name)) %>%
@@ -238,6 +241,7 @@ for(f in files_all) {
   write.csv(res_class, paste0(user_profs_folder, f, "_user_profs_class.csv"), row.names = F)
   
   res_orders <- df %>%
+    filter(quality_grade == "research") %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
            month = substr(observed_on_details.date, 6, 7)) %>%
     filter(taxon.rank == "species", !is.na(taxon_name), class == "Insecta") %>%
@@ -291,7 +295,7 @@ write.csv(inat_user_obs_classes_thru2019, paste0(user_profs_folder, "inat_user_o
 
 n_classes <- length(unique(inat_user_obs_classes_thru2019$class))
 
-# 218 classes
+# 189 classes
 user_even_class <- inat_user_obs_classes_thru2019 %>%
   group_by(user.login) %>%
   summarize(all_obs = sum(total_obs),
@@ -319,6 +323,7 @@ for(f in files_all) {
   df <- readRDS(f)
   
   res <- df %>%
+    filter(quality_grade == "research") %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
            month = substr(observed_on_details.date, 6, 7)) %>%
     filter(taxon.rank == "species", !is.na(taxon_name)) %>%
@@ -346,17 +351,18 @@ for(f in files_all) {
   df <- readRDS(f)
   
   res <- df %>%
+    filter(quality_grade == "research") %>%
     mutate(year = substr(observed_on_details.date, 1, 4),
            month = substr(observed_on_details.date, 6, 7),
            day = substr(observed_on_details.date, 9, 10)) %>%
     filter(month %in% c("05", "06", "07", "08", "09")) %>%
     group_by(user.login, year, month, day) %>%
     summarize(n_obs = n_distinct(id))
- 
+  
   if(nrow(res) > 0) {
     write.csv(res, paste0(user_profs_folder, f, "_user_freq.csv"), row.names = F)
   }
-   
+  
   print(f)
 }
 
@@ -385,12 +391,12 @@ user_annual_freq <- user_freq %>%
   summarize(dates = n())
 
 quantile(user_annual_freq$dates, c(0.05, 0.50, 0.95))
-# 1, 3, 37
+# 1, 3, 35
 
 # Obs per day
 
 quantile(user_freq$total_obs, c(0.05, 0.50, 0.95))
-# 1, 1, 15
+# 1, 1, 12
 
 # Obs per user 
 
@@ -398,5 +404,4 @@ user_total_obs <- user_freq %>%
   group_by(user.login) %>%
   summarize(obs = sum(total_obs))
 quantile(user_total_obs$obs, c(0.05, 0.50, 0.95))
-# 1, 3, 64
-  
+# 1, 2, 55

@@ -10,7 +10,7 @@ setwd("/proj/hurlbertlab/gdicecco/caterpillars-analysis/")
 
 # For range of n_obs observed by users, calculate 999 shannon Evenness, z score for actual
 # Weighted by # observations, weighted by # species
-# 218 classes, 27 Insect orders in data
+# 189 classes, 27 Insect orders in data
 
 user_even_order <- read.csv("inat_user_evenness_orders.csv", stringsAsFactors = F)
 user_even_class <- read.csv("inat_user_evenness_class.csv", stringsAsFactors = F)
@@ -61,7 +61,7 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE_null <- shannonH/log(218)
+      shannonE_null <- shannonH/log(189)
       
       shannonExpected <- c(shannonExpected, shannonE_null)
     }
@@ -86,7 +86,7 @@ shannon_e_expected <- user_specializ %>%
       
       shannonH <- -sum((sample$n/sum_obs)*log(sample$n/sum_obs))
       
-      shannonE_null <- shannonH/log(218)
+      shannonE_null <- shannonH/log(189)
       
       shannonExpected <- c(shannonExpected, shannonE_null)
     }
