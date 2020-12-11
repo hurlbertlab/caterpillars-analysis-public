@@ -115,7 +115,7 @@ user_prop_obs <- inat_user_obs %>%
 # 90, 99th percentiles
 
 quantile(user_prop_obs$total_obs, c(0.9, 0.99))
-# 29, 455
+# 26, 435
 
 sum(user_prop_obs$prop_obs[user_prop_obs$total_obs >= 29])
 sum(user_prop_obs$prop_obs[user_prop_obs$total_obs >= 455])
@@ -176,15 +176,9 @@ user_classes <- inat_user_classes %>%
 
 # Reshape data to wide format
 
-# inat_orders_wide <- pivot_wider(user_orders, values_from = prop_obs, names_from = order)
-# write.csv(inat_orders_wide, "iNatUserBehavior/data/inat_user_insecta_orders_wide.csv", row.names = F)
-# 
-# inat_classes_wide <- pivot_wider(user_classes, values_from = prop_obs, names_from = class)
-# write.csv(inat_classes_wide, "iNatUserBehavior/data/inat_user_classes_wide.csv", row.names = F)
+inat_orders_wide <- pivot_wider(user_orders, values_from = prop_obs, names_from = order)
 
-inat_orders_wide <- read.csv("iNatUserBehavior/data/inat_user_insecta_orders_wide.csv", stringsAsFactors = F)
-
-inat_classes_wide <- read.csv("iNatUserBehavior/data/inat_user_classes_wide.csv", stringsAsFactors = F)
+inat_classes_wide <- pivot_wider(user_classes, values_from = prop_obs, names_from = class)
 
 # Shannon evenness
 
@@ -265,7 +259,7 @@ group_evenness <- groups_classes %>%
   left_join(evenness_null) %>%
   left_join(pct_users)
 
-dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_spp,)) +
+dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_obs,)) +
   geom_density(alpha = 0.5, fill = "gray") +
   labs(y = "", fill = "Group") +
   xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
@@ -330,7 +324,7 @@ group_evenness <- groups_orders %>%
   left_join(pct_users) %>%
   filter(!is.na(rank))
 
-dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_spp)) + 
+dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_obs)) + 
   geom_density(alpha = 0.5, fill = "gray") +
   labs(y = "", fill = "Group") +
   xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
