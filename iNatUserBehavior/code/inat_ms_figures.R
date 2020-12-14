@@ -24,51 +24,6 @@ theme_set(theme_classic(base_size = 18))
 info <- sessionInfo()
 bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
 
-# #### Figure 1: iNat user and observation growth over time ####
-# 
-# annual_growth <- read.csv("data/inat_thru_2019_annual_growth.csv", stringsAsFactors = F)
-# 
-# #### Figure 2: spatial and temporal biases ####
-# 
-# ## 2a) Map of observations by country
-# 
-# data(wrld_simpl)
-# world <-  wrld_simpl %>% 
-#   st_as_sf()
-# 
-# # Data file of iNat observation coordinates is on Grace's google drive
-# 
-# ## 2b) land cover
-# 
-# nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", "Developed Low Intensity" = "#fde5e4",
-#                   "Developed Medium Intensity" = "#f7b29f", "Developed High Intensity" = "#e7564e",
-#                   "Barren Land (Rocky/Sand/Clay)" = "#b3ada3",
-#                   "Deciduous Forest" = "#69ab63", "Evergreen Forest" = "#1c6330", "Mixed Forest" = "#b5c98f",
-#                   "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
-#                   "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Emergent Herbaceous Wetlands" = "#70a3ba")
-# 
-# nlcd_legend <- read.csv("data/nlcd2016_legend.csv", stringsAsFactors = F)
-# 
-# # Land cover for iNat observation sites, 0's and NA are no data
-# inat_landcover <- read.csv("data/inat_site_landcover.csv", stringsAsFactors = F)
-# 
-# # Land cover distribution for whole US
-# #https://www.mrlc.gov/data/statistics/national-land-cover-database-2016-nlcd2016-statistics-2016
-# 
-# ## 2c) species per class
-# 
-# inat_species <- read.csv("data/inat_taxo.csv", stringsAsFactors = F)
-# 
-# eol_spp_per_class <- read.csv("data/species_cnts_by_taxon.csv", stringsAsFactors = F)
-# 
-# ## 2d) 2018 observation phenology
-# 
-# # City nature challenge - jday 119 in 2018
-# jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
-# dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-# 
-# inat_2018_pheno <- read.csv("data/inat_2018_annual_user_pheno.csv", stringsAsFactors = F)
-
 #### Figure 3: Number of species vs number of observations, observations by user acct ####
 
 user_even_order <- read.csv("iNatUserBehavior/data/inat_user_evenness_orders.csv", stringsAsFactors = F)
@@ -254,10 +209,11 @@ class_grp_plot <- taxon_grps %>%
   left_join(top_12_class) %>%
   group_by(class_plot, cluster) %>%
   summarize(mean = sum(mean_prop_scaled)) %>%
-  left_join(pct_users)
+  left_join(pct_users) %>%
+  mutate(group_label = factor(rev_rank, levels = c("10", "9", "8", "7", "6", "5", "4", "3", "2", "1")))
 
-cluster_plot <- ggplot(class_grp_plot, aes(x = rank, y = mean, fill = class_plot)) + 
-  geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks = c(1:g)) +
+cluster_plot <- ggplot(class_grp_plot, aes(x = group_label, y = mean, fill = class_plot)) + 
+  geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + 
   labs(x = "Group", y = "Mean proportion of observations", fill = "Class") + coord_flip() +
   theme(legend.position = "left")
 
@@ -265,7 +221,7 @@ group_evenness <- groups_classes %>%
   left_join(evenness_null) %>%
   left_join(pct_users)
 
-dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_spp,)) +
+dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_obs,)) +
   geom_density(alpha = 0.5, fill = "gray") +
   labs(y = "", fill = "Group") +
   xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
@@ -318,10 +274,12 @@ top_12_order <- taxon_grps %>%
 
 order_grp_plot <- taxon_grps %>%
   left_join(top_12_order) %>%
-  left_join(pct_users) 
+  left_join(pct_users) %>% 
+  filter(!is.na(rank)) %>%
+  mutate(group_label = factor(rev_rank, levels = c("8", "7", "6", "5", "4", "3", "2", "1")))
 
-cluster_plot <- ggplot(order_grp_plot, aes(x = rank, y = mean_prop, fill = order_plot)) + 
-  geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + scale_x_continuous(breaks= c(1:g)) +
+cluster_plot <- ggplot(order_grp_plot, aes(x = group_label, y = mean_prop, fill = order_plot)) + 
+  geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + 
   labs(x = "Group", y = "Mean proportion of observations", fill = "Order") + coord_flip() +
   theme(legend.position = "left")
 
@@ -330,7 +288,7 @@ group_evenness <- groups_orders %>%
   left_join(pct_users) %>%
   filter(!is.na(rank))
 
-dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_spp)) + 
+dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_obs)) + 
   geom_density(alpha = 0.5, fill = "gray") +
   labs(y = "", fill = "Group") +
   xlab(expression(""%<-%"More specialist users       More generalist users"%->%"")) +
