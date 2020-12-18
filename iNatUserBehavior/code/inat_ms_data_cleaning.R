@@ -94,7 +94,7 @@ inat_fig1 <- inat_2018_fig1 %>%
 # Write into repo data folder
 # write.csv(inat_fig1, "data/inat_thru_2019_annual_growth.csv", row.names = F)
 
-#### Figure 2: iNat spatial, temporal, taxonomic biases ####
+#### Figure 1: iNat spatial, temporal, taxonomic biases ####
 
 # Unique lat-lon of all observations
 
@@ -159,6 +159,21 @@ obs_effort_2018 <- obs_effort_df %>%
   mutate(jd_wk = jd_wk - min(jd_wk))
 
 # write.csv(obs_effort_2018, paste0(repo, "/data/inat_2018_annual_user_pheno.csv"), row.names = F)
+
+# Weekend effect
+
+weekend_db <- tbl(con, "inat") %>%
+  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  mutate(jday = julianday(observed_on)) %>%
+  mutate(year = substr(observed_on, 1, 4),
+         month = substr(observed_on, 6, 7)) %>%
+  filter(year == "2018") %>%
+  group_by(year, observed_on, jday) %>%
+  summarize(n_obs = n_distinct(id),
+            n_users = n_distinct(user_login))
+
+weekend_df <- weekend_db %>%
+  collect()
 
 #### Figures 3, 4 & 5: User behavior ####
 
