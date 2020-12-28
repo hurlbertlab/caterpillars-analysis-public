@@ -32,16 +32,16 @@ annual_growth_plot <- ggplot() +
             size = 1.25, color = "Black") +
   labs(x = "Year", y = " Unique Users") + 
   scale_x_continuous(breaks = c(2008, 2010, 2012, 2014, 2016, 2018))  + 
-  scale_y_continuous(name = "Observations (in Millions)", 
+  scale_y_continuous(name = "Observations (M)", 
                      breaks = c(0, 2, 4, 6, 8, 10, 12), 
                      sec.axis = sec_axis(trans = ~ . / 10 , 
-                                         name = "Users (in Millions)", 
+                                         name = "Users (M)", 
                                          breaks = c(0,0.2,0.4,0.6, 0.8, 1, 1.2))) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(axis.title.y.right = element_text(color = "Purple"),
         axis.line.y.right = element_line(color = "Purple"),
         axis.ticks.y.right = element_line(color = "Purple"),
-        axis.text.y.right = element_text(color = "Purple"))+ 
+        axis.text.y.right = element_text(color = "Purple")) + 
   ggtitle("A")
 
 
@@ -59,19 +59,118 @@ pheno <- ggplot() +
             stat = "identity", size = 1.25) + 
   geom_line(inat_2018_pheno, mapping = aes(x = week, y = n_users / 300), 
             stat = "identity", size = 1.25, color = "purple") + 
-  labs(x = "Week of the Year", y = "Observations") +
-  scale_y_continuous(name = "Observations (in Thousands)", 
+  labs(x = "Week of the year", y = "Observations") +
+  scale_y_continuous(name = "Observations (K)", 
                      breaks = c(0, 200, 400, 600),
                      sec.axis = sec_axis(trans = ~ . /3.3333,
-                                         name = "Users (in Thousands)")) +
+                                         name = "Users (K)")) +
   theme(axis.title.y.right = element_text(color = "Purple"),
         axis.line.y.right = element_line(color = "Purple"),
         axis.ticks.y.right = element_line(color = "Purple"),
         axis.text.y.right = element_text(color = "Purple")) +
   ggtitle("B")
 
-growth_cp <- cowplot::plot_grid(annual_growth_plot, pheno, ncol = 2)
 
+## Weekly observations 
+
+dow <- read.csv("iNatUserBehavior/data/day_of_week_obs_users.csv") %>% 
+  filter(n_obs > 20)
+
+dow$weekday <- as.factor(dow$weekday)
+dow$weekday <- factor(dow$weekday, 
+                      levels = c(
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Sunday"
+                      )) 
+dow <- dow %>% 
+  mutate(Weekend = case_when(weekday == "Monday" ~ "Weekday",
+                             weekday == "Tuesday" ~ "Weekday",
+                             weekday == "Wednesday" ~ "Weekday",
+                             weekday == "Thursday" ~ "Weekday",
+                             weekday == "Friday" ~ "Weekday",
+                             weekday == "Saturday" ~ "Weekend",
+                             weekday == "Sunday" ~ "Weekend")) %>% 
+  mutate(Month = lubridate::month(observed_on, label = TRUE))
+
+dow$Weekend <- as.factor(dow$Weekend)
+dow$Weekend <- factor(dow$Weekend, 
+                      levels = c(
+                        "Weekend", "Weekday"
+                      )) 
+
+mdf <- dow %>% 
+  group_by(Month) %>% 
+  dplyr::summarise(firstDayOfMonth = min(jday))
+
+weekend_plot <- ggplot(dow) + 
+  geom_point(mapping = aes(x = jday, y = n_obs, color = Weekend), size = 2) +
+  scale_color_manual(values = c("dodgerblue", "black")) +
+  scale_x_continuous(breaks = mdf$firstDayOfMonth, labels = mdf$Month) +
+  labs(x = "Month", y = "Daily observations") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        legend.title = element_blank(),
+        legend.text = element_text(size = 12),
+        legend.position = c(0.14, 0.83),
+        legend.direction = "vertical")  +
+  guides(shape = guide_legend(override.aes = list(size = 0.0005))) +
+  scale_size(range=c(0.001,0.001))+
+  theme(legend.background = element_rect(
+                                         fill = 'transparent'))+ 
+  ggtitle("C")
+
+weekend_plot
+
+## Modify dataframe for other weekend bias plot possibility
+
+dow_sum <- dow %>% 
+  group_by(weekday) %>% 
+  summarise(totalObs = sum(n_obs),
+            totalUsers = sum(n_users))
+
+
+dow_sum2 <- data.frame(weekday = c("Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun",
+                                   "Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"),
+                       count = c(dow_sum$totalObs, dow_sum$totalUsers),
+                       type = c(rep("Observations", 7), rep("Users", 7))
+)
+
+dow_sum2$weekday <- factor(dow_sum2$weekday, 
+                           levels = c(
+                             "Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"
+                           )) 
+
+dow_sum2 <- dow_sum2 %>% 
+  mutate(count2 = ifelse(type == "Users", 
+                         yes = count * 3, 
+                         no = count))
+
+weekend_plot2 <- ggplot() +
+  geom_bar(dow_sum2, mapping = aes(x = weekday, y = count2, fill = type), 
+           stat = "identity",
+           position = "dodge")+
+  scale_y_continuous(name = "Observations", 
+                     breaks = c(0, 200000, 400000, 600000, 800000, 1000000),
+                     sec.axis = sec_axis(trans = ~ . /3,
+                                         name = "Users"),
+                     expand = c(0,0)) +
+  scale_fill_manual(values = c("black", "purple")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.title.y.right = element_text(color = "Purple"),
+        axis.line.y.right = element_line(color = "Purple"),
+        axis.ticks.y.right = element_line(color = "Purple"),
+        axis.text.y.right = element_text(color = "Purple")) + 
+  labs(x = "Weekday") +
+  theme(legend.position = "none") +
+  ggtitle("C")
+
+# Combine Top panel
+top_panel <- cowplot::plot_grid(annual_growth_plot, pheno, weekend_plot, ncol = 3)
+top_panel2 <- cowplot::plot_grid(annual_growth_plot, pheno, weekend_plot2, ncol = 3)
 #### spatial Map of observations ####
 
 ## Map of observations by country
@@ -97,15 +196,23 @@ world2 <- left_join(world, inat_world) %>%
   mutate(percapita = count/POP2005) %>% 
   mutate(perarea = count/AREA)
 
-global_obs <- ggplot() + 
+  
+  
+ global_obs <-  ggplot() + 
   geom_sf(world2, mapping = aes(fill = count)) +
   scale_fill_viridis_c(trans = "log10", breaks = c(1,1000,1000000),
                        guide = guide_colorbar(title.position = "top"),
                        labels = c(1, 1000, "1 Mill")) +
   labs(fill = "Observations") +
-  theme(legend.position = "bottom") +
-  ggtitle("C")
-
+  theme(legend.position = c(0.1,0.45),
+        legend.background = element_rect(colour = 'black',
+                                         fill = 'white', 
+                                         linetype = 'solid'),
+        legend.title = element_text(size = 12), 
+        legend.text = element_text(size = 12)) +
+    guides(shape = guide_legend(override.aes = list(size = 0.2)),
+           color = guide_legend(override.aes = list(size = 0.2))) +
+  ggtitle("D")
 
 ## Land Cover Bias Plot
 
@@ -165,34 +272,47 @@ lc_plot <- ggplot(inat_lc_group2) +
   geom_bar(stat = "identity",
            aes (y = Land_Cover_Class, x = obs_perc, fill = GeneralizedClass)) +
   geom_bar(stat = "identity",
-           aes (y = Land_Cover_Class, x = true_perc, color = "Expected Percentage"), fill = "transparent") +
+           aes (y = Land_Cover_Class, x = true_perc, color = "Expected percentage"), fill = "transparent") +
   scale_color_manual(values = "Black")  +
   scale_fill_manual(values = c("darkorange3", "grey", "orangered3", "chartreuse4",
                                "yellow", "tan", "dodger blue", "light blue", "Pink"),
-                    name = "Generalized Class") +
+                    name = "Generalized class") +
   scale_x_continuous(expand = c(0,0)) + 
-  labs(x = "Percentage of Observations", y = "") + 
+  labs(x = "Percentage of observations", y = "") + 
   labs(color = "") +
-  ggtitle("D")
+  ggtitle("E")
 
 # Land cover distribution for whole US
 #https://www.mrlc.gov/data/statistics/national-land-cover-database-2016-nlcd2016-statistics-2016
 
 ## Grid Arrange these all together for FIg 1 ##
 
-lay <- rbind(c(1,1,3,3),
-             c(1,1,3,3),
+lay <- rbind(c(1,1,1,1),
+             c(1,1,1,1),
              c(2,2,3,3),
              c(2,2,3,3))
 
-ga <- grid.arrange(growth_cp, global_obs, lc_plot, 
-                   layout_matrix = lay, heights = c(0.5,0.5, 0.75,1),
-                   widths = c(1,1, 1.25,1))
+ga <- grid.arrange(top_panel, global_obs, lc_plot, 
+                   layout_matrix = lay, heights = c(0.9,0.9,1.25, 1.25),
+                   widths = c(0.75,0.75,0.75,0.75))
 
 ggsave(filename = "iNatUserBehavior/figs/Fig1.pdf", plot = ga,
        width = 16, height = 10, dpi = 450)
 
 ggsave(filename = "iNatUserBehavior/figs/Fig1.png", plot = ga,
+       width = 16, height = 10, dpi = 300)
+
+
+## Try alternitive panel C
+
+ga <- grid.arrange(top_panel2, global_obs, lc_plot, 
+                   layout_matrix = lay, heights = c(0.9,0.9,1.25, 1.25),
+                   widths = c(0.75,0.75,0.75,0.75))
+
+ggsave(filename = "iNatUserBehavior/figs/Fig1_alternative.pdf", plot = ga,
+       width = 16, height = 10, dpi = 450)
+
+ggsave(filename = "iNatUserBehavior/figs/Fig1_alternative.png", plot = ga,
        width = 16, height = 10, dpi = 300)
 
 
@@ -275,8 +395,8 @@ obs_by_class <- ggplot(tdf2) +
                 label = "Coniocybomycetes", nudge_y = -0.03) +
   scale_x_log10(breaks = c(1,10,100,1000,10000,100000),
                 labels=scales::comma_format(accuracy = 1)) + 
-  labs(x = "Log of Named Species per Class", 
-       y = "Proportion of Species Observed per Class", 
+  labs(x = "Named species per class", 
+       y = "Proportion of species observed per class", 
        color = "Phylum") + 
   scale_color_manual(values = c("#33638DFF", "#f68f46ff", "#73D055FF"))
 
