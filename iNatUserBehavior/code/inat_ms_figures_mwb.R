@@ -57,12 +57,12 @@ inat_2018_pheno <- read.csv("iNatUserBehavior/data/inat_2018_annual_user_pheno.c
 pheno <- ggplot() + 
   geom_line(inat_2018_pheno, mapping = aes(x = week, y = n_obs / 1000), 
             stat = "identity", size = 1.25) + 
-  geom_line(inat_2018_pheno, mapping = aes(x = week, y = n_users / 300), 
+  geom_line(inat_2018_pheno, mapping = aes(x = week, y = n_users / 50), 
             stat = "identity", size = 1.25, color = "purple") + 
   labs(x = "Week of the year", y = "Observations") +
   scale_y_continuous(name = "Observations (K)", 
-                     breaks = c(0, 200, 400, 600),
-                     sec.axis = sec_axis(trans = ~ . /3.3333,
+                     breaks = c(0, 200, 400, 600, 800),
+                     sec.axis = sec_axis(trans = ~ . / 20,
                                          name = "Users (K)")) +
   theme(axis.title.y.right = element_text(color = "Purple"),
         axis.line.y.right = element_line(color = "Purple"),
@@ -70,6 +70,7 @@ pheno <- ggplot() +
         axis.text.y.right = element_text(color = "Purple")) +
   ggtitle("B")
 
+pheno
 
 ## Weekly observations 
 
@@ -154,7 +155,6 @@ weekend_plot2 <- ggplot() +
            stat = "identity",
            position = "dodge")+
   scale_y_continuous(name = "Observations", 
-                     breaks = c(0, 200000, 400000, 600000, 800000, 1000000),
                      sec.axis = sec_axis(trans = ~ . /3,
                                          name = "Users"),
                      expand = c(0,0)) +
