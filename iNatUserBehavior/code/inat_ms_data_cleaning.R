@@ -11,7 +11,7 @@ library(maptools)
 
 #### Read in datasets ####
 
-repo <- "/Users/gracedicecco/Desktop/git/caterpillars-analysis-public/iNatUserBehavior/"
+repo <- "/Users/gracedicecco/git/caterpillars-analysis-public/iNatUserBehavior/"
 
 # Append correct BioArk path
 
@@ -102,16 +102,25 @@ inat_fig1 <- inat_2018_fig1 %>%
 
 inat_2019_sites <- data.frame(latitude = c(), longitude = c())
 
+no_latlon <- c()
+
 Sys.time()
 for(f in files_all) {
   df <- readRDS(f)
   
-  res <- df %>%
-    filter(!is.na(longitude) | !is.na(latitude)) %>%
+  na <- df %>%
+    filter(is.na(longitude) | is.na(latitude))
+  
+  no_na <- df %>%
+    filter(!is.na(longitude) | !is.na(latitude)) 
+  
+  res <- no_na %>%
     dplyr::select(longitude, latitude) %>%
     distinct()
   
   inat_2019_sites <- bind_rows(inat_2019_sites, res)
+  
+  no_latlon <- c(no_latlon, (nrow(na)/(nrow(na) + nrow(no_na))))
   
   print(f)
   print(Sys.time())
