@@ -184,6 +184,13 @@ weekend_db <- tbl(con, "inat") %>%
 weekend_df <- weekend_db %>%
   collect()
 
+weekend_days <- weekend_df %>%
+  filter(!is.na(jday), !grepl(":", observed_on)) %>%
+  filter(observed_on != "2018-04-27", observed_on != "2018-04-28", observed_on != "2018-04-29", observed_on != "2018-04-30") %>% # CNC2018
+  mutate(date = as.Date(observed_on, format = "%Y-%m-%d"),
+         weekday = weekdays(date))
+write.csv(weekend_days, "data/day_of_week_obs_users.csv", row.names = F)
+
 #### Figures 3, 4 & 5: User behavior ####
 
 # For each user:  
