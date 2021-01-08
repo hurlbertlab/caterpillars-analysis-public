@@ -104,29 +104,7 @@ dow$Weekend <- factor(dow$Weekend,
                         "Weekend", "Weekday"
                       )) 
 
-mdf <- dow %>% 
-  group_by(Month) %>% 
-  dplyr::summarise(firstDayOfMonth = min(jday))
-
-weekend_plot <- ggplot(dow) + 
-  geom_point(mapping = aes(x = jday, y = n_obs, color = Weekend), size = 2) +
-  scale_color_manual(values = c("dodgerblue", "black")) +
-  scale_x_continuous(breaks = mdf$firstDayOfMonth, labels = mdf$Month) +
-  labs(x = "Month", y = "Daily observations") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.title = element_blank(),
-        legend.text = element_text(size = 12),
-        legend.position = c(0.14, 0.83),
-        legend.direction = "vertical")  +
-  guides(shape = guide_legend(override.aes = list(size = 0.0005))) +
-  scale_size(range=c(0.001,0.001))+
-  theme(legend.background = element_rect(
-                                         fill = 'transparent'))+ 
-  ggtitle("C")
-
-weekend_plot
-
-## Modify dataframe for other weekend bias plot possibility
+## Modify dataframe for weekend bias plot possibility
 
 dow_sum <- dow %>% 
   group_by(weekday) %>% 
@@ -151,12 +129,16 @@ dow_sum2 <- dow_sum2 %>%
                          no = count))
 
 weekend_plot2 <- ggplot() +
-  geom_bar(dow_sum2, mapping = aes(x = weekday, y = count2, fill = type), 
+  geom_bar(dow_sum2, mapping = aes(x = weekday, y = count2/1000000, fill = type), 
            stat = "identity",
            position = "dodge")+
-  scale_y_continuous(name = "Observations", 
+  scale_y_continuous(name = "Observations (M)", 
+                     labels=scales::comma_format(.1),
+                     breaks = c(0.2,0.4,0.6,0.8,1,1.2),
                      sec.axis = sec_axis(trans = ~ . /3,
-                                         name = "Users"),
+                                         name = "User days (M)",
+                                         breaks = c(0.1,0.2,0.3,0.4),
+                                         labels=scales::comma_format(.1)),
                      expand = c(0,0)) +
   scale_fill_manual(values = c("black", "purple")) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -168,8 +150,9 @@ weekend_plot2 <- ggplot() +
   theme(legend.position = "none") +
   ggtitle("C")
 
+weekend_plot2
+
 # Combine Top panel
-top_panel <- cowplot::plot_grid(annual_growth_plot, pheno, weekend_plot, ncol = 3)
 top_panel2 <- cowplot::plot_grid(annual_growth_plot, pheno, weekend_plot2, ncol = 3)
 #### spatial Map of observations ####
 
@@ -292,7 +275,8 @@ lay <- rbind(c(1,1,1,1),
              c(2,2,3,3),
              c(2,2,3,3))
 
-ga <- grid.arrange(top_panel, global_obs, lc_plot, 
+
+ga <- grid.arrange(top_panel2, global_obs, lc_plot, 
                    layout_matrix = lay, heights = c(0.9,0.9,1.25, 1.25),
                    widths = c(0.75,0.75,0.75,0.75))
 
@@ -300,19 +284,6 @@ ggsave(filename = "iNatUserBehavior/figs/Fig1.pdf", plot = ga,
        width = 16, height = 10, dpi = 450)
 
 ggsave(filename = "iNatUserBehavior/figs/Fig1.png", plot = ga,
-       width = 16, height = 10, dpi = 300)
-
-
-## Try alternitive panel C
-
-ga <- grid.arrange(top_panel2, global_obs, lc_plot, 
-                   layout_matrix = lay, heights = c(0.9,0.9,1.25, 1.25),
-                   widths = c(0.75,0.75,0.75,0.75))
-
-ggsave(filename = "iNatUserBehavior/figs/Fig1_alternative.pdf", plot = ga,
-       width = 16, height = 10, dpi = 450)
-
-ggsave(filename = "iNatUserBehavior/figs/Fig1_alternative.png", plot = ga,
        width = 16, height = 10, dpi = 300)
 
 
@@ -398,7 +369,9 @@ obs_by_class <- ggplot(tdf2) +
   labs(x = "Named species per class", 
        y = "Proportion of species observed per class", 
        color = "Phylum") + 
-  scale_color_manual(values = c("#33638DFF", "#f68f46ff", "#73D055FF"))
+  scale_color_manual(values = c("#33638DFF", "hotpink2", "#73D055FF"))
+
+obs_by_class
 
 ggsave(filename = "iNatUserBehavior/figs/Fig2.pdf", plot = obs_by_class, width = 8, height = 6)
 ggsave(filename = "iNatUserBehavior/figs/Fig2.png", plot = obs_by_class, width = 8, height = 6)
