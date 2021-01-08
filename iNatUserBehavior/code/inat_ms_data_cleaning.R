@@ -92,7 +92,7 @@ inat_fig1 <- inat_2018_fig1 %>%
   bind_rows(inat_2019_fig1_df)
 
 # Write into repo data folder
-# write.csv(inat_fig1, "data/inat_thru_2019_annual_growth.csv", row.names = F)
+# write.csv(inat_fig1, "iNatUserBehavior/data/inat_thru_2019_annual_growth.csv", row.names = F)
 
 #### Figure 1: iNat spatial, temporal, taxonomic biases ####
 

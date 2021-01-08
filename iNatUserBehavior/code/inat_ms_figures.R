@@ -205,15 +205,31 @@ top_12_class <- taxon_grps %>%
   arrange(desc(total_mean)) %>%
   mutate(class_plot = ifelse(row_number() > 11, "Other", class))
 
+paired_cols <- RColorBrewer::brewer.pal(10, "Paired")
+
+class_cols <- data.frame(class = c("Liliopsida", "Magnoliopsida", 
+                                   "Agaricomycetes", "Arachnida",
+                                   "Insecta","Actinopterygii",
+                                   "Amphibia", "Reptilia", "Aves","Mammalia"),
+                         col = c("#B2DF8A", "#33A02C", "#FB9A99",
+                                 "#E31A1C", "#FDBF6F", "#FF7F00",
+                                 "#CAB2D6", "#6A3D9A", "#A6CEE3","#1F78B4"), stringsAsFactors = F)
+
+cols <- class_cols$col
+names(cols) <- class_cols$class
+
 class_grp_plot <- taxon_grps %>%
   left_join(top_12_class) %>%
   group_by(class_plot, cluster) %>%
   summarize(mean = sum(mean_prop_scaled)) %>%
   left_join(pct_users) %>%
-  mutate(group_label = factor(rev_rank, levels = c("10", "9", "8", "7", "6", "5", "4", "3", "2", "1")))
+  mutate(group_label = factor(rev_rank, levels = c("10", "9", "8", "7", "6", "5", "4", "3", "2", "1"))) 
 
-cluster_plot <- ggplot(class_grp_plot, aes(x = group_label, y = mean, fill = class_plot)) + 
-  geom_col(position = "stack") + scale_fill_brewer(palette = "Paired") + 
+
+
+cluster_plot <- ggplot(class_grp_plot, aes(x = group_label, y = mean, 
+                                           fill = fct_relevel(class_plot, class_cols$class))) + 
+  geom_col(position = "stack") + scale_fill_manual(values = cols) + 
   labs(x = "Group", y = "Mean proportion of observations", fill = "Class") + coord_flip() +
   theme(legend.position = "left")
 
@@ -232,8 +248,10 @@ dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_obs,)) +
                                           strip.text.x = element_blank(), legend.position = "none",
                                           axis.line.y = element_blank(), axis.text.y = element_blank(),
                                           axis.ticks.y = element_blank()) +
-  geom_text(aes(x = -20, y = 0.1, 
-                label = ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%")), size = 6)) +
+  geom_text(aes(x = -25, y = 0.1, 
+                label = ifelse(round(pct_user, 1) > 50, paste0(round(pct_user, 1), "% of users"),
+                               ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%"))), 
+                size = 6)) +
   theme(plot.margin = unit(c(0.5, 0, 0.25, 0), "in"))
 
 plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
@@ -300,7 +318,8 @@ dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_obs)) +
                                           axis.line.y = element_blank(), axis.text.y = element_blank(),
                                           axis.ticks.y = element_blank()) +
   geom_text(aes(x = -20, y = 0.15, 
-                label = ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%")), size = 5)) +
+                label = ifelse(round(pct_user, 1) > 50, paste0(round(pct_user, 1), "% of users"),
+                               ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%"))), size = 5)) +
   theme(plot.margin = unit(c(0.5, 0, 0.25, 0), "in"))
 
 plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
