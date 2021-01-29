@@ -2,6 +2,12 @@
 
 ## Analysis related to Caterpillars Count! citizen science project and phenological mismatch between vegetation, caterpillars, and birds
 
+### InTheMiddle
+
+Scripts, data, and figures exploring how structured and unstructured citizen science data can be used to study patterns in caterpillar occurrence and phenology from the book chapter:
+
+Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights from and contrasts between two citizen science datasets. In S. Koptur & R.J. Marquis (Eds). Caterpillars in the Middle. 
+
 ### Code
 
 - `2019-2020_cat_site_comparisons.r`: comparing Caterpillars Count! sites between 2019-2020
@@ -55,8 +61,3 @@ Scripts, data, and figures for understanding spatiotemporal biases and user beha
 
 Di Cecco, G., Barve, V., Belitz, M.W., Stucky, B.J., Guralnick, R.P., and Hurlbert, A.H. Observing the observers: how participants contribute data to iNaturalist and implications for biodiversity science.
  
-### InTheMiddle
-
-Scripts, data, and figures exploring how structured and unstructured citizen science data can be used to study patterns in caterpillar occurrence and phenology from the book chapter:
-
-Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights from and contrasts between two citizen science datasets. In S. Koptur & R.J. Marquis (Eds). Caterpillars in the Middle. 
