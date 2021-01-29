@@ -2,13 +2,13 @@
 
 ## Analysis related to Caterpillars Count! citizen science project and phenological mismatch between vegetation, caterpillars, and birds
 
-### InTheMiddle
+### `/InTheMiddle`
 
 Scripts, data, and figures exploring how structured and unstructured citizen science data can be used to study patterns in caterpillar occurrence and phenology from the book chapter:
 
 Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights from and contrasts between two citizen science datasets. In S. Koptur & R.J. Marquis (Eds). Caterpillars in the Middle. 
 
-### Code
+### `/code`
 
 - `2019-2020_cat_site_comparisons.r`: comparing Caterpillars Count! sites between 2019-2020
 - `/agu`: scripts for making figures used at AGU poster
@@ -45,9 +45,9 @@ Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights
 - `unc_BIOL101_summary.r`: summarize BIOL101 Caterpillars Count! observations
 - `/undergrad_projects`: scripts associated with undergrad projects related to caterpillar defense traits and Coweeta phenology
 
-### Data
+### `/data`
 
-### Figs
+### `/figs`
 
 - `/butterflies-nc`: figures from analyses using NC Butterflies data 
 - `/caterpillars-count`: figures from analyses using Caterpillars Count! data
@@ -55,7 +55,7 @@ Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights
 - `/inaturalist`: figures from analyses using iNaturalist data
 - `/moths-nc`: figures from analyses using NC Moths data
 
-### iNatUserBehavior
+### `/iNatUserBehavior`
 
 Scripts, data, and figures for understanding spatiotemporal biases and user behavior patterns in iNaturalist citizen science data associated with the manuscript:
 
