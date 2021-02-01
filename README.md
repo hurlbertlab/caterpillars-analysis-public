@@ -20,6 +20,7 @@ Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights
   - `caterpillar_biomass_validation_summary.R`: Summarize availability of data for caterpillar species in Abarcas/Ries lab trait database in iNaturalist larval data in MA, GA, and MD regions 
   - `caterpillar_density_hex.R`: Caterpillars Count! survey density in hex cells
   - `cc_inat_family_composition.R`: Plot pie charts of family composition of iNaturalist and Caterpillars Count! records
+  - `cc_subset_traitbased_lep_compare.R`: Subset Caterpillars Count! data to sites with 6 good weeks in any year to compare with adult butterfly phenocurves
   - `combine_inat_cats_adults.R`: Overlap in species composition and phenology estimates in iNaturalist adult moths and iNaturalist caterpillar records
   - `compare_inat_cc.R`: Comparing phenology curves in iNaturalist caterpillars and moths with Caterpillars Count! data
   - `coweeta_max_biomass.R`: Coweeta phenometrics
