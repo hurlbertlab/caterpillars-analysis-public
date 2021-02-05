@@ -8,7 +8,7 @@ library(ggplot2)
 #### Read in Data ####
 inat = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
-inat_species = read.table("data/inat_species.txt", header = T, sep = "\t",quote = "", fill = FALSE)
+inat_species = read.table("data/taxonomy/inat_species.txt", header = T, sep = "\t",quote = "", fill = FALSE)
 
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')

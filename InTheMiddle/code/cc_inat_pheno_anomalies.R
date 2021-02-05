@@ -23,7 +23,7 @@ inat = read.csv('data/inat_caterpillars_eastern_NA_5-20-2020.csv', header = TRUE
 
 NAmap = read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
-inat_species = read.table("data/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
+inat_species = read.table("data/taxonomy/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
 
 hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors= F) %>%
   mutate(cell.num = as.numeric(cell)) %>%
@@ -221,7 +221,7 @@ hex_subset <- hex %>%
 #   summarize(nObs = n_distinct(id))
 # write.csv(inat_insects_weekly_cells, "data/inat_2015-2018_weekly_insecta_hex.csv", row.names = F)
 
-inat_insects_weekly_cells <- read.csv("data/inat_2015-2018_weekly_insecta_hex.csv", stringsAsFactors = F)
+inat_insects_weekly_cells <- read.csv("data/derived_data/inat_2015-2018_weekly_insecta_hex.csv", stringsAsFactors = F)
 
 ## iNaturalist weekly Insecta observations (2019)
 
@@ -260,7 +260,7 @@ inat_insects_weekly_cells <- read.csv("data/inat_2015-2018_weekly_insecta_hex.cs
 #   summarize(nObs = n_distinct(id))
 # write.csv(inat_summer_2019, "data/inat_2019_weekly_insecta_hex.csv", row.names = F)
 
-inat_summer_2019 <- read.csv("data/inat_2019_weekly_insecta_hex.csv", stringsAsFactors = F)
+inat_summer_2019 <- read.csv("data/derived_data/inat_2019_weekly_insecta_hex.csv", stringsAsFactors = F)
 
 # Where can we calculate iNat deviations
 
@@ -307,7 +307,7 @@ inat_pheno <- inat_cats_pheno %>%
 
 ## Temperature anomalies
 
-hex_temps <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
+hex_temps <- read.csv("data/derived_data/hex_mean_temps.csv", stringsAsFactors = F)
 
 cell_pheno <- cell_pheno %>%
   ungroup() %>%

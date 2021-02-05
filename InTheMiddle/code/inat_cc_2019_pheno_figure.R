@@ -25,17 +25,17 @@ inat = read.csv('data/inat_caterpillars_eastern_NA_5-20-2020.csv', header = TRUE
 
 NAmap = read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
-inat_species = read.table("data/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
+inat_species = read.table("data/taxonomy/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
 
 hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors= F) %>%
   mutate(cell.num = as.numeric(cell)) %>%
   dplyr::select(-cell) %>%
   rename(cell = "cell.num")
 
-cell_centers <- read.csv("data/hex_grid_cell_centers.csv", stringsAsFactors = F) %>%
+cell_centers <- read.csv("data/maps/hexgrid_materials/hex_grid_cell_centers.csv", stringsAsFactors = F) %>%
   mutate_at(c("cell"), round)
 
-hex_springtemp <- read.csv("data/hex_mean_temps.csv", stringsAsFactors = F)
+hex_springtemp <- read.csv("data/derived_data/hex_mean_temps.csv", stringsAsFactors = F)
 
 ### Site effort summary
 
@@ -125,7 +125,7 @@ pheno_2019 <- site_overlap %>%
 # iNaturalist
 # Weekly insect observations by hex cell for the inclusive weeks per hex cell from site_overlap
 
-inat_insects <- read.csv("data/inat_2019_weekly_insecta_hex.csv", stringsAsFactors = F) %>%
+inat_insects <- read.csv("data/derived_data/inat_2019_weekly_insecta_hex.csv", stringsAsFactors = F) %>%
   filter(year == 2019, cell %in% hex_cells_2019) %>%
   filter(nObs > 50) %>%
   ungroup() %>%

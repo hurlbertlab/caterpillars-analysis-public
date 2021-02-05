@@ -113,4 +113,4 @@ for(y in years) {
 
 hexDAYMET$mean_temp <- rowMeans(hexDAYMET[, 2:3])
 
-write.csv(hexDAYMET, "C:/Users/gdicecco/Desktop/git/caterpillars-analysis-public/data/hex_mean_temps.csv", row.names = F)
+write.csv(hexDAYMET, "C:/Users/gdicecco/Desktop/git/caterpillars-analysis-public/data/derived_data/hex_mean_temps.csv", row.names = F)

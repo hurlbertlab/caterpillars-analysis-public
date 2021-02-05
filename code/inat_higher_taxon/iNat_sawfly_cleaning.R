@@ -63,4 +63,4 @@ for (name in uniqueNames) {
 } # end for n
 
 output %>% arrange(superfamily, family, subfamily, genus, scientific_name) %>%
-  write.table('data/inat_sawfly_species.txt', sep = '\t', row.names = F)
+  write.table('data/taxonomy/inat_sawfly_species.txt', sep = '\t', row.names = F)

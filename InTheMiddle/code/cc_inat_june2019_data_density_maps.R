@@ -18,7 +18,7 @@ inat = read.csv('data/inat_caterpillars_eastern_NA_5-20-2020.csv', header = TRUE
 
 NAmap = read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes')
 
-inat_species = read.table("data/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
+inat_species = read.table("data/taxonomy/inat_caterpillar_species_traits.txt", header = T, sep = "\t")
 
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
