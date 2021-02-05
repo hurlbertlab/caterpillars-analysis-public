@@ -48,14 +48,14 @@ Di Cecco, G. and Hurlbert, A.H. Caterpillar patterns in space and time: insights
 
 ### `/data`: raw data and derived datasets for analyses
 
-Any data files not in subfolder are raw data, including iNaturalist and Caterpillars Count! records
+Any data files not in subfolders are raw data, including iNaturalist and Caterpillars Count! records
 
-- `/birds`:
-- `/CountyBoundary`:
+- `/birds`: Bird arrival dates
+- `/CountyBoundary`: County boundary maps
 - `/derived_data`: subsets and intermediate summaries of iNaturalist and Caterpillars Count! data for analyses
 - `/env`: environmental variables - climate, NPN greenup
 -`/frass`: frass trap data
-- `/maps`: geographic layers and hexgrid files
+- `/maps`: geographic layers (including map of North America) and hexgrid files
   - `/hexgrid_materials`: shapefiles and scripts for hexgrid layer
 - `/revi`: eBird records for Red-eyed Vireo
 - `/taxonomy`: scripts for obtaining higher level taxonomy for species in iNaturalist, Moths of NC (MNC) and Butterflies of NC (BNC) datasets
