@@ -75,4 +75,4 @@ site_pheno <- site_data %>%
   mutate(meanDensity = totalCount/nSurveys,
          fracSurveys = 100*numSurveysGTzero/nSurveys,
          meanBiomass = totalBiomass/nSurveys)
-write.csv(site_pheno, "data/cc_subset_trait_based_pheno.csv", row.names = F)
+write.csv(site_pheno, "data/derived_data/cc_subset_trait_based_pheno.csv", row.names = F)
