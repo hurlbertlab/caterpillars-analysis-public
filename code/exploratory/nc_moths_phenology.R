@@ -9,9 +9,9 @@ library(lubridate)
 mnc <- read.csv("/Volumes/HurlbertLab/Databases/NC Moths/moth_records_thru2018_lineCleaned.txt", header=T, sep = ';', stringsAsFactors = F)
 mnc <- read.csv("\\\\BioArk\\HurlbertLab\\Databases\\NC Moths\\moth_records_thru2018_lineCleaned.txt", header=T, sep = ';', stringsAsFactors = F)
 
-mnc_species_complete <- read.table("data/mnc_species_complete.txt", header = T)
+mnc_species_complete <- read.table("data/taxonomy/mnc_species_complete.txt", header = T)
 
-#### Get taxonomic information - creates mnc_species.txt, mnc_species_unid.txt, mnc_species_complete.txt #####
+#### Get taxonomic information - creates taxonomy/mnc_species.txt, taxonomy/mnc_species_unid.txt, taxonomy/mnc_species_complete.txt #####
 uniqueNames = unique(mnc$sciName)
 
 output = data.frame(sci_name = uniqueNames, genus = NA, subfamily = NA, family = NA, superfamily = NA, ITIS_id = NA)
@@ -66,18 +66,18 @@ output %>% arrange(superfamily, family, subfamily, genus, sci_name) %>%
   mutate(ITIS_id = as.numeric(ITIS_id)) %>%
   bind_rows(mnc_species) %>%
   distinct() %>%
-  write.table('data/mnc_species.txt', sep = '\t', row.names = F)
+  write.table('data/taxonomy/mnc_species.txt', sep = '\t', row.names = F)
 
 missingSpp <- uniqueNames[!(uniqueNames %in% mnc_species$sci_name)]
-write.table(missingSpp, "data/mnc_species_unid.txt", sep = '\t', row.names = F)
+write.table(missingSpp, "data/taxonomy/mnc_species_unid.txt", sep = '\t', row.names = F)
 
-mnc_unid <- read.table("data/mnc_species_unid.txt", header = T, sep = "\t")
+mnc_unid <- read.table("data/taxonomy/mnc_species_unid.txt", header = T, sep = "\t")
 mnc_unid <- mnc_unid %>%
   select(-sci_name) %>%
   rename("sci_name" = "x")
 
 mnc_complete <- rbind(mnc_species, mnc_unid)
-write.table(mnc_complete, 'data/mnc_species_complete.txt', sep = '\t', row.names = F)
+write.table(mnc_complete, 'data/taxonomy/mnc_species_complete.txt', sep = '\t', row.names = F)
 
 #### Phenological trends ####
 

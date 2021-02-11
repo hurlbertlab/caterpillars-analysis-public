@@ -5,7 +5,7 @@ source('code/reading_datafiles_without_users.r')
 # Read in Caterpillars Count! observations submitted to iNaturalist. Only observations from 2018 on were being
 # submitted automatically, and even then some in 2018 were submitted by me to the caterpillarscount account
 # inadvertently. Filter ensures we are only working with the automatically submitted data
-ccinat = read.csv('data/cc_inat_data_thru_20191018.csv', header = T, quote = '\"', fill = T, stringsAsFactors = FALSE) %>%
+ccinat = read.csv('data/derived_data/cc_inat_data_thru_20191018.csv', header = T, quote = '\"', fill = T, stringsAsFactors = FALSE) %>%
   filter(field.caterpillars.count..observer != "", 
          taxon_order_name == 'Lepidoptera', field.butterfly.moth.life.stage == 'caterpillar')
   

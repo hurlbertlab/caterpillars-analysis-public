@@ -6,9 +6,9 @@ library(ggplot2)
 
 # Read in data
 bnc <- read.csv("//BioArk/HurlbertLab/Databases/NC Butterflies/bnc_thru2018.csv", stringsAsFactors = F)
-bnc_species <- read.table("data/bnc_species.txt", header = T)
+bnc_species <- read.table("data/taxonomy/bnc_species.txt", header = T)
 
-#### Get taxonomic information - creates bnc_species.txt #####
+#### Get taxonomic information - creates taxonomy/bnc_species.txt #####
 uniqueNames = unique(bnc$Cname)
 
 output = data.frame(common_name = uniqueNames, genus = NA, subfamily = NA, family = NA, superfamily = NA, ITIS_id = NA)
@@ -59,7 +59,7 @@ for (name in uniqueNames) {
 } # end for n
 
 output %>% arrange(superfamily, family, subfamily, genus, common_name) %>%
-  write.table('data/bnc_species.txt', sep = '\t', row.names = F)
+  write.table('data/taxonomy/bnc_species.txt', sep = '\t', row.names = F)
 
 
 #### Phenological trends ####

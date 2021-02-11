@@ -48,7 +48,7 @@ obs_effort_arth <- inat_df %>%
   rename("obs_days" = n,
          "count" = nn)
 
-#write.csv(obs_effort_arth,"data/inaturalist_observer_days.csv", row.names = F)
+#write.csv(obs_effort_arth,"data/derived_data/inaturalist_observer_days.csv", row.names = F)
 
 ggplot(obs_effort_arth, aes(x = obs_days, y = count)) + geom_col(width = 0.1) + theme_classic() + scale_x_log10() +
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
@@ -67,7 +67,7 @@ obs_effort_2018_19 <- inat_df %>%
   group_by(year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
 
-#write.csv(obs_effort_2018_19, "data/inaturalist_observer_days_2018_2019.csv", row.names = F)
+#write.csv(obs_effort_2018_19, "data/derived_data/inaturalist_observer_days_2018_2019.csv", row.names = F)
 
 jds = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
 dates = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
@@ -144,7 +144,7 @@ obs_effort_geog <- inat_df %>%
   distinct(Date, year, jday, jd_wk, cell, user_login, id) %>%
   group_by(cell, year, jd_wk) %>%
   summarize(obs_days = n_distinct(Date, user_login)) 
-write.csv(obs_effort_geog, "data/inaturalist_observer_days_by_latlon.csv", row.names = F)
+write.csv(obs_effort_geog, "data/derived_data/inaturalist_observer_days_by_latlon.csv", row.names = F)
   
 ## Observer-hours
 obs_hours <- inat_df %>%
@@ -158,7 +158,7 @@ obs_hours <- inat_df %>%
   rename("obs_hours" = n,
          "count" = nn)
 
-write.csv(obs_hours, "data/inaturalist_observer_hours.csv", row.names = F)
+write.csv(obs_hours, "data/derived_data/inaturalist_observer_hours.csv", row.names = F)
 
 ggplot(obs_hours, aes(x = obs_hours, y = count)) + geom_col(width = 0.1) + theme_classic() + scale_x_log10() +
   theme(axis.title.x = element_text(size = 14), axis.text = element_text(size = 14), 
@@ -244,7 +244,7 @@ mean_rolling_effort_bins <- inat_df %>%
   unnest() %>%
   dplyr::select(-year2, -results) %>%
   rename("year" = year1)
-#write.csv(mean_rolling_effort_bins, "data/inat_observer_days_rolling_means.csv", row.names = F)
+#write.csv(mean_rolling_effort_bins, "data/derived_data/inat_observer_days_rolling_means.csv", row.names = F)
 
 ## Rolling regressions
 lm_rolling <- rollapply(raw_obs_effort, 

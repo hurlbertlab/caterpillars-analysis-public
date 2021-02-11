@@ -17,7 +17,7 @@ inat_moths <- read.csv("data/inat_moths.csv", header = T)
 
 inat_cats = read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
-inat_species <- read.table("data/inat_caterpillar_species_traits.txt", header = T, sep = "\t", quote = '\"')
+inat_species <- read.table("data/taxonomy/inat_caterpillar_species_traits.txt", header = T, sep = "\t", quote = '\"')
 
 # Remove caterpillar observations
 inat_adults <- inat_moths %>%
@@ -91,8 +91,8 @@ inat_combined_gather <- inat_combined %>%
 
 ## Plot foliage arthropod corrections - raw obs, obs/observer-days per week
 
-obs_effort <- read.csv("data/inaturalist_observer_days_by_latlon.csv")
-mean_obs_effort <- read.csv("data/inat_observer_days_rolling_means.csv")
+obs_effort <- read.csv("data/derived_data/inaturalist_observer_days_by_latlon.csv")
+mean_obs_effort <- read.csv("data/derived_data/inat_observer_days_rolling_means.csv")
 
 correction_denom <- mean_obs_effort %>%
   left_join(obs_effort, by = c("year", "cell", "jd_wk")) %>%
@@ -548,7 +548,7 @@ for(yr in c(2017:2019)) {
 
 # NC Moths
 
-mnc_species <- read.table("data/mnc_species_complete.txt", header = T)
+mnc_species <- read.table("data/taxonomy/mnc_species_complete.txt", header = T)
 mnc <- read.csv("\\\\BioArk\\HurlbertLab\\Databases\\NC Moths\\moth_records_thru2018_lineCleaned.txt", header=T, sep = ';', stringsAsFactors = F)
 
 # Map of data records at county level for four major woody moth families

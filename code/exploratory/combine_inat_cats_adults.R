@@ -15,9 +15,9 @@ inat_moths <- read.csv("data/inat_moths.csv", header = T)
 
 inat_cats <- read.csv('data/inat_caterpillars_easternNA.csv', header = TRUE)
 
-inat_species <- read.csv("data/inat_caterpillar_species_traits.txt", sep = "\t")
+inat_species <- read.csv("data/taxonomy/inat_caterpillar_species_traits.txt", sep = "\t")
 
-weekly_effort <- read.csv("data/inat_buts_effort_week_grid.csv", header = T)
+weekly_effort <- read.csv("data/derived_data/inat_buts_effort_week_grid.csv", header = T)
 
 cats <- inat_cats %>%
   left_join(inat_species, by = "scientific_name") %>%
@@ -62,7 +62,7 @@ species_inat <- all_inat %>%
   group_by(year, lat_bin, lon_bin, life_stage, scientific_name) %>%
   count() %>%
   filter(n >= 10, year >= 2017, lat_bin >  24)
-#write.csv(species_inat, "data/inat_adults_cats_ENA_spp_counts.csv", row.names = F)
+#write.csv(species_inat, "data/derived_data/inat_adults_cats_ENA_spp_counts.csv", row.names = F)
 
 # Jaccard similarity for moths vs. caterpillars
 

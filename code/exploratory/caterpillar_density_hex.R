@@ -22,7 +22,7 @@ cc_hex_density <- cc_sf %>%
 
 cc_hex_density_df <- cc_hex_density %>%
   st_set_geometry(NULL)
-# write.csv(cc_hex_density_df, "data/CatCount_density_hex_cells.csv", row.names = F)
+# write.csv(cc_hex_density_df, "data/derived_data/CatCount_density_hex_cells.csv", row.names = F)
   
 # Number of weeks per site per year per 1x1 degree grid cell
 
