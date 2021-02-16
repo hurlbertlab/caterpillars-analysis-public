@@ -25,7 +25,7 @@ hex <- st_read("data/maps/hexgrid_materials/hex_grid_crop.shp", stringsAsFactors
 hex_subset <- hex %>%
   filter(cell %in% cell_subset)
 
-## 2015-2019
+## 2012-2019
 ## Mar-Jun average
 
 # Function: get average temperature for one hex cell polygon
@@ -46,10 +46,13 @@ daymetMean <- function(id) {
 possibly_daymetMean <- possibly(daymetMean, otherwise = NA)
 
 # Calculate mean spring temp at hex cells
+# Make sure you have folders "daymet" and "daymet_out" in directory where you will download Daymet files
 
-setwd("C:/Users/gdicecco/Desktop/")
+wd <- "/Users/gracedicecco/Desktop/"
 
-years <- c(2015:2019)
+daymet_out_wd <- "/Users/gracedicecco/Desktop/daymet_out"
+
+years <- c(2013:2019)
 
 for(y in years) {
   download_daymet_ncss(location = c(60, -100, 20, -52),
@@ -57,14 +60,14 @@ for(y in years) {
                        end = y,
                        param = c("tmin", "tmax"), 
                        frequency = "monthly",
-                       path = "daymet/")
+                       path = paste0(wd, "daymet/"))
   
   # Read in data
-  files <- list.files("daymet/")
+  files <- list.files(paste0(wd, "daymet/"))
   
   for(f in files) {
-    daymet_nc <- nc_open(paste0("daymet/", f))
-    daymet_raster <- brick(paste0("daymet/", f))
+    daymet_nc <- nc_open(paste0(wd, "daymet/", f))
+    daymet_raster <- brick(paste0(wd, "daymet/", f))
     crs(daymet_raster) <- "+proj=lcc +datum=WGS84 +lon_0=-100 +lat_0=42.5 +x_0=0 +y_0=0 +units=km +lat_1=25 +lat_2=60 +ellps=WGS84 +towgs84=0,0,0"
     
     daymet_spring <- daymet_raster[[3:6]]
@@ -78,29 +81,27 @@ for(y in years) {
     hexclim <- data.frame(cell = hex_subset$cell) %>%
       mutate(mean_temp = purrr::map_dbl(cell, possibly_daymetMean))
     
-    write.csv(hexclim, paste0("C:/Users/gdicecco/Desktop/daymet_out/", f, ".csv"), row.names = F)
+    write.csv(hexclim, paste0(daymet_out_wd, "/", f, ".csv"), row.names = F)
     print(f)
     nc_close(daymet_nc)
   }
   
   print(y)
-  sapply(paste0("daymet/", files), unlink)
+  sapply(paste0(wd, "daymet/", files), unlink)
   
 }
 
 ## Combine files to one dataset
 
-dir <- "C:/Users/gdicecco/Desktop/daymet_out/"
-
 hexDAYMET <- data.frame(cell = c(), year = c(), mean_tmax = c(), mean_tmin = c())
 
 for(y in years) {
-  files <- list.files(dir)
+  files <- list.files(daymet_out_wd)
   files_y <- files[grepl(y, files)]
   
-  tmax <- read.csv(paste0(dir, files_y[grepl("tmax", files_y)])) %>%
+  tmax <- read.csv(paste0(daymet_out_wd, "/", files_y[grepl("tmax", files_y)])) %>%
     rename(tmax = "mean_temp")
-  tmin <- read.csv(paste0(dir, files_y[grepl("tmin", files_y)])) %>%
+  tmin <- read.csv(paste0(daymet_out_wd, "/", files_y[grepl("tmin", files_y)])) %>%
     rename(tmin = "mean_temp")
   
   tmp <- tmax %>%
@@ -113,4 +114,4 @@ for(y in years) {
 
 hexDAYMET$mean_temp <- rowMeans(hexDAYMET[, 2:3])
 
-write.csv(hexDAYMET, "C:/Users/gdicecco/Desktop/git/caterpillars-analysis-public/data/derived_data/hex_mean_temps.csv", row.names = F)
+write.csv(hexDAYMET, "data/derived_data/hex_mean_temps.csv", row.names = F)
