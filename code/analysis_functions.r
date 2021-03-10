@@ -116,6 +116,7 @@ meanDensityByWeek = function(surveyData, # merged dataframe of Survey and arthro
     mutate(meanDensity = totalCount/nSurveys,
            fracSurveys = 100*numSurveysGTzero/nSurveys,
            meanBiomass = totalBiomass/nSurveys) %>%
+    arrange(julianweek) %>%
     data.frame()
   
   if (plot & new) {
