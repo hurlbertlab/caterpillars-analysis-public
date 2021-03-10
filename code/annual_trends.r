@@ -50,21 +50,38 @@ hopperCol = barColors[9]
 caterpillarCol = barColors[5]
 
 # Plots
-pdf('figs/NCBG_PRE_annual_trends_2015-2019.pdf', height = 4, width = 7)
-par(mfrow = c(1, 2), mar = c(3, 4, 3, 1), mgp = c(2.5, 1, 0), oma = c(0,0,0,0))
-annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, col = caterpillarCol,add = FALSE, ylim = c(0, 45), 
-                main = "Prairie Ridge Ecostation")
-annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'beetle', col = beetleCol,add = TRUE)
-annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'spider', col = spiderCol,add = TRUE)
-annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'leafhopper', col = hopperCol,add = TRUE)
-annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'truebugs', col = truebugCol,add = TRUE)
 
-annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, col = caterpillarCol,add = FALSE, ylim = c(0, 45), 
-                main = "NC Botanical Garden")
-annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'beetle', col = beetleCol,add = TRUE)
-annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'spider', col = spiderCol,add = TRUE)
-annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'leafhopper', col = hopperCol,add = TRUE)
-annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'truebugs', col = truebugCol,add = TRUE)
+# 2-panel, PR and NCBG
+pdf('figs/NCBG_PRE_annual_trends_2015-2020_density.pdf', height = 4, width = 7)
+par(mfrow = c(1, 2), mar = c(3, 4, 3, 1), mgp = c(2.5, 1, 0), oma = c(0,0,0,0))
+annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, col = caterpillarCol,add = FALSE, ylim = c(0, .8), 
+                main = "Prairie Ridge Ecostation", plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'beetle', col = beetleCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'spider', col = spiderCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'leafhopper', col = hopperCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "Prairie Ridge Ecostation", lwd = 5, group = 'truebugs', col = truebugCol,add = TRUE, plotVar = 'meanDensity')
+
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, col = caterpillarCol,add = FALSE, ylim = c(0, .6), 
+                main = "NC Botanical Garden", plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'beetle', col = beetleCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'spider', col = spiderCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'leafhopper', col = hopperCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'truebugs', col = truebugCol,add = TRUE, plotVar = 'meanDensity')
+legend("topright", legend = c("beetles", "spiders", "leafhoppers", "caterpillars", "true bugs"),
+       col = c(beetleCol, spiderCol, hopperCol, caterpillarCol, truebugCol), lwd = 5, cex = .8)
+dev.off()
+
+
+
+# NCBG only
+pdf('figs/NCBG_annual_trends_2015-2020_density.pdf', height = 4, width = 6)
+par(mfrow = c(1, 1), mar = c(3, 4, 3, 1), mgp = c(2.5, 1, 0), oma = c(0,0,0,0))
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, col = caterpillarCol,add = FALSE, ylim = c(0, .6), 
+                main = "NC Botanical Garden", plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'beetle', col = beetleCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'spider', col = spiderCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'leafhopper', col = hopperCol,add = TRUE, plotVar = 'meanDensity')
+annualTrendPlot(fullDataset, "NC Botanical Garden", lwd = 5, group = 'truebugs', col = truebugCol,add = TRUE, plotVar = 'meanDensity')
 legend("topright", legend = c("beetles", "spiders", "leafhoppers", "caterpillars", "true bugs"),
        col = c(beetleCol, spiderCol, hopperCol, caterpillarCol, truebugCol), lwd = 5, cex = .8)
 dev.off()
