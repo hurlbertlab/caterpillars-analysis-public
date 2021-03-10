@@ -1,7 +1,7 @@
 source('code/summaryStats.r')
 source('code/analysis_functions.r')
 source('code/reading_datafiles_without_users.r')
-# source('code/phenology.r') #need siteList function
+source('code/exploratory/phenology.r') #need siteList function
 
 
 s15 = summaryStats(2015)
@@ -9,16 +9,18 @@ s16 = summaryStats(2016)
 s17 = summaryStats(2017)
 s18 = summaryStats(2018)
 s19 = summaryStats(2019)
+s20 = summaryStats(2020)
 
-sall = rbind(as.data.frame(s15), as.data.frame(s16), as.data.frame(s17), as.data.frame(s18), as.data.frame(s19))
+sall = rbind(as.data.frame(s15), as.data.frame(s16), as.data.frame(s17), as.data.frame(s18), 
+             as.data.frame(s19), as.data.frame(s20))
 
-summ = cbind(data.frame(year = 2015:2019), sall)
+summ = cbind(data.frame(year = 2015:2020), sall)
 
 dataset = fullDataset %>%
   filter(!grepl("BBS", Name), !grepl("Coweeta", Name), Name != "Example Site")
 
 summ$numGoodSites = sapply(summ$year, function(yr) {
-  sl = siteList(dataset, yr, minNumRecords = 100, minNumDates = 6, write = FALSE) %>%
+  sl = siteList(dataset, yr, minNumRecords = 100, minNumDates = 6, write = FALSE) %>%   # there is no function siteList() anywhere...
     nrow()
 })
 
