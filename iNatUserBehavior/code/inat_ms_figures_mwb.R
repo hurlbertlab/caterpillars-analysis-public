@@ -286,6 +286,9 @@ ggsave(filename = "iNatUserBehavior/figs/Fig1.pdf", plot = ga,
 ggsave(filename = "iNatUserBehavior/figs/Fig1.png", plot = ga,
        width = 16, height = 10, dpi = 300)
 
+### Supplemental figure - land cover distribution of all users vs. casual users ###
+
+
 
 ### Figure 2 - Number of Species Observed Per Class ###
 

@@ -22,7 +22,7 @@ theme_set(theme_classic(base_size = 18))
 # Append correct BioArk path
 
 info <- sessionInfo()
-bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\ad.unc.edu/bio")
 
 #### Figure 3: Number of species vs number of observations, observations by user acct ####
 
@@ -45,6 +45,7 @@ spp_obs_plot <- ggplot(user_specializ, aes(x = total_obs, y = n_spp)) + geom_poi
   scale_x_log10(breaks = c(10, 100, 1000, 10000)) +
   scale_y_log10() +
   geom_abline(slope = 1, intercept = 0, col = "blue") +
+  geom_smooth(se = F, col = "lightblue") +
   labs(x = "Observations per user", y = "Species per user")
 
 spp_hist <- ggplot(user_specializ, aes(x = n_spp)) + geom_histogram(bins = 20) +

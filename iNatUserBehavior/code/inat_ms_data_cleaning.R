@@ -485,6 +485,62 @@ quantile(user_total_obs$obs, c(0.05, 0.50, 0.95))
 # 1, 3, 64
 
 ## % of observations that come from top 10 species by # records
-## Casual (accounts with 1 observation) vs. non-casual
+## Casual (accounts with <5 observations) vs. non-casual
 
+# top 10 species
+inat_species <- read_csv("iNatUserBehavior/data/inat_taxon_info_thru2019.csv") %>%
+  arrange(desc(total_obs)) %>%
+  slice(1:10)
+
+# total observations casual/non-casual
+user_group <- user_freq %>%
+  group_by(user.login) %>%
+  summarize(obs = sum(total_obs)) %>%
+  mutate(group = case_when(obs < 5 ~ "casual",
+         TRUE ~ "non-casual"))  
+
+group_obs <- user_group %>%
+  group_by(group) %>%
+  summarize(total_obs = sum(obs))
+
+# Observations of 10 most common spp
+
+for(f in files_all) {
+  df <- readRDS(f)
+  
+  common_spp <- df %>%
+    filter(taxon_name %in% inat_species$taxon_name) %>%
+    group_by(user.login) %>%
+    summarize(n_obs = n_distinct(id))
+  
+  write.csv(common_spp, paste0(user_profs_folder, f, "_user_profs_commonspp.csv"), row.names = F)
+  
+  print(f)
+}
+
+common_spp_files <- list.files(user_profs_folder)[grepl("commonspp", list.files(user_profs_folder))]
+
+users_spp <- data.frame(filename = common_spp_files) %>%
+  group_by(filename) %>%
+  nest() %>%
+  mutate(df = purrr::map(filename, ~{
+    f <- .
+    df <- read.csv(paste0(user_profs_folder, f))
+    
+    df
+  })) %>%
+  dplyr::select(-data) %>%
+  unnest(cols = c(df)) %>%
+  group_by(user.login) %>%
+  summarize(total_obs = sum(n_obs))
+
+common_spp_by_grp <- users_spp %>%
+  left_join(user_group, by = c("user.login")) %>%
+  group_by(group) %>%
+  summarize(common_obs = sum(total_obs))
+
+common_spp_by_grp %>%
+  left_join(group_obs) %>%
+  mutate(prop_common = common_obs/total_obs)
+# Casual observers 4%, observers with 5 or more obs - 3%
 
