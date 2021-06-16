@@ -309,10 +309,10 @@ lc_casual_all_long <- lc_casual_all %>%
 
 ggplot(lc_casual_all_long, aes(x = data_source, y = prop_obs, fill = Land_Cover_Class)) +
          geom_col(position = "stack") + coord_flip() + scale_fill_manual(values = nlcd_palette) +
-  labs(x = "", y = "Percent of observations", fill = "Generalized class") +
-  scale_x_discrete(labels = c("Expected percent",
+  labs(x = "", y = "Percent of observations", fill = "Land cover class") +
+  scale_x_discrete(labels = c("All observers",
                    "Casual observers",
-                   "All observers"))
+                   "Expected percent"))
 ggsave("iNatUserBehavior/figs/figs2_landcover_all_casual_obs.pdf", units = "in", height = 5, width = 10)
 
 lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(obs_perc_casual))
@@ -320,6 +320,8 @@ lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(obs_
 
 lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(obs_perc))
 # 38% developed
+
+lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(true_perc))
 
 ### Figure 2 - Number of Species Observed Per Class ###
 
