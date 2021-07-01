@@ -201,11 +201,11 @@ world2 <- left_join(world, inat_world) %>%
 
 # Data file of iNat observation coordinates is on Grace's google drive
 
-nlcd_palette <- c("Open Water" = "#788cbe", "Developed Open Space" = "#dec9c9", "Developed Low Intensity" = "#fde5e4",
-                  "Developed Medium Intensity" = "#f7b29f", "Developed High Intensity" = "#e7564e",
-                  "Barren Land (Rocky/Sand/Clay)" = "#b3ada3",
+nlcd_palette <- c("Water" = "#788cbe", "Developed, Open Space" = "#dec9c9", "Developed, Low Intensity" = "#fde5e4",
+                  "Developed, Medium Intensity" = "#f7b29f", "Developed, High Intensity" = "#e7564e",
+                  "Bare Rock/Sand/Clay" = "#b3ada3",
                   "Deciduous Forest" = "#69ab63", "Evergreen Forest" = "#1c6330", "Mixed Forest" = "#b5c98f",
-                  "Shrub/Scrub" = "#ccba7d", "Grassland/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
+                  "Shrub/Scrub" = "#ccba7d", "Grasslands/Herbaceous" = "#e3e3c2", "Pasture/Hay" = "#dbd93d",
                   "Cultivated Crops" = "#ab7029", "Woody Wetlands" = "#bad9eb", "Herbaceous Wetlands" = "#70a3ba")
 
 nlcd_legend <- read.csv("data/nlcd2016_legend.csv", stringsAsFactors = F)
@@ -237,7 +237,7 @@ inat_lc_group2$Land_Cover_Class <- factor(inat_lc_group2$Land_Cover_Class,
                                             "Developed, Open Space",
                                             "Developed, Low Intensity",
                                             "Developed, Medium Intensity",
-                                            "Developed High Intensity",
+                                            "Developed, High Intensity",
                                             "Deciduous Forest",
                                             "Evergreen Forest",
                                             "Mixed Forest",
@@ -286,6 +286,42 @@ ggsave(filename = "iNatUserBehavior/figs/Fig1.pdf", plot = ga,
 ggsave(filename = "iNatUserBehavior/figs/Fig1.png", plot = ga,
        width = 16, height = 10, dpi = 300)
 
+### Supplemental figure - land cover distribution of all users vs. casual users ###
+
+inat_casual_landcover <- read.csv("iNatUserBehavior/data/inat_us_site_landcover_casual.csv")
+
+casual_lc <- inat_casual_landcover %>%
+  group_by(landcover) %>%
+  summarize(count = n())
+
+lc_casual_all <- inat_lc_group2 %>%
+  left_join(casual_lc, by = c("landcover"), suffix = c("_all", "_casual")) %>%
+  mutate(obs_perc_casual = (count_casual/sum(count_casual))*100)
+
+lc_casual_all[15,3] <- "Herbaceous Wetlands"
+lc_casual_all[5,3] <- "Developed, High Intensity"
+
+lc_casual_all_long <- lc_casual_all %>%
+  dplyr::select(-count_all, -count_casual) %>%
+  pivot_longer(c("true_perc", "obs_perc", "obs_perc_casual"), names_to = "data_source", 
+               values_to = "prop_obs")
+  
+
+ggplot(lc_casual_all_long, aes(x = data_source, y = prop_obs, fill = Land_Cover_Class)) +
+         geom_col(position = "stack") + coord_flip() + scale_fill_manual(values = nlcd_palette) +
+  labs(x = "", y = "Percent of observations", fill = "Land cover class") +
+  scale_x_discrete(labels = c("All observers",
+                   "Casual observers",
+                   "Expected percent"))
+ggsave("iNatUserBehavior/figs/figs2_landcover_all_casual_obs.pdf", units = "in", height = 5, width = 10)
+
+lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(obs_perc_casual))
+# 58% developed
+
+lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(obs_perc))
+# 38% developed
+
+lc_casual_all %>% group_by(GeneralizedClass) %>% summarize(total_perc = sum(true_perc))
 
 ### Figure 2 - Number of Species Observed Per Class ###
 

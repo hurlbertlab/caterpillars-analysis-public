@@ -16,9 +16,10 @@ repo <- "/Users/gracedicecco/git/caterpillars-analysis-public/iNatUserBehavior/"
 # Append correct BioArk path
 
 info <- sessionInfo()
-bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\ad.unc.edu/bio")
 
 setwd(paste0(bioark, "/HurlbertLab/Databases/iNaturalist/"))
+setwd("C:/Users/gdicecco/Desktop/data/")
 
 # Through 2018 db
 
@@ -28,7 +29,7 @@ db_list_tables(con)
 
 # 2019 RDS
 
-setwd("./inat_thru_2019_taxon_info_rds")
+setwd(paste0(bioark, "/HurlbertLab/Databases/iNaturalist/inat_thru_2019_taxon_info_rds"))
 
 files <- list.files()[grepl("2019", list.files())]
 
@@ -43,15 +44,16 @@ files_all <- list.files()[!grepl(".csv", list.files())]
 ### Data through 2018
 
 inat_2018_fig1_db <- tbl(con, "inat") %>%
-  select(scientific_name, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
+  select(scientific_name, quality_grade, iconic_taxon_name, latitude, longitude, user_login, id, observed_on, taxon_id) %>%
   mutate(jday = julianday(observed_on),
          jd_wk = 7*floor(jday/7)) %>%
   mutate(year = substr(observed_on, 1, 4),
          month = substr(observed_on, 6, 7)) %>%
-  distinct(year, jd_wk, observed_on, user_login, id) %>%
+  distinct(year, jd_wk, observed_on, user_login, id, quality_grade) %>%
   group_by(year) %>%
   summarize(n_obs = n_distinct(id),
-            n_users = n_distinct(user_login))
+            n_users = n_distinct(user_login),
+            n_obs_rg = n_distinct(id[quality_grade == "research"]))
 
 inat_2018_fig1 <- inat_2018_fig1_db %>%
   collect()
@@ -69,7 +71,8 @@ for(f in files) {
            month = substr(observed_on_details.date, 6, 7)) %>%
     filter(year == 2019) %>%
     group_by(year, month) %>%
-    summarize(n_obs = n_distinct(id))
+    summarize(n_obs = n_distinct(id),
+              n_obs_rg = n_distinct(id[quality_grade == "research"]))
   
   inat_2019_fig1 <- bind_rows(inat_2019_fig1, res)
   
@@ -81,7 +84,8 @@ for(f in files) {
 
 inat_2019_fig1_df <- inat_2019_fig1 %>%
   group_by(year) %>%
-  summarize(n_obs = sum(n_obs))
+  summarize(n_obs = sum(n_obs),
+            n_obs_rg = sum(n_obs_rg))
 
 inat_2019_fig1_df$n_users <- length(unique(users_2019))
 
@@ -93,6 +97,12 @@ inat_fig1 <- inat_2018_fig1 %>%
 
 # Write into repo data folder
 # write.csv(inat_fig1, "iNatUserBehavior/data/inat_thru_2019_annual_growth.csv", row.names = F)
+
+inat_fig1$prop_rg <- inat_fig1$n_obs_rg/inat_fig1$n_obs
+
+ggplot(inat_fig1, aes(x = year, y = prop_rg)) + geom_point() + theme_classic(base_size = 15) + 
+  labs(x = "Year", y = "Proportion of observations research grade")
+ggsave("iNatUserBehavior/figs/figs1_propRG.pdf")
 
 #### Figure 1: iNat spatial, temporal, taxonomic biases ####
 
@@ -112,7 +122,7 @@ for(f in files_all) {
     filter(is.na(longitude) | is.na(latitude))
   
   no_na <- df %>%
-    filter(!is.na(longitude) | !is.na(latitude)) 
+    filter(!is.na(longitude) | !is.na(latitude))
   
   res <- no_na %>%
     dplyr::select(longitude, latitude) %>%
@@ -130,7 +140,7 @@ for(f in files_all) {
 
 inat_thru_2019_sites <- inat_2019_sites %>%
   distinct() %>%
-  mutate_all(~as.numeric(.)) 
+  mutate_all(~as.numeric(.))
 
 # write.csv(inat_thru_2019_sites, "inat_thru_2019_sites.csv"), row.names = F)
 # on BioArk b/c too big for git
@@ -141,8 +151,51 @@ inat_thru_2019_nam <- inat_thru_2019_sites %>%
   filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
   mutate(lat = latitude,
          lon = longitude) %>%
-  filter(!is.na(latitude), !is.na(longitude)) 
+  filter(!is.na(latitude), !is.na(longitude))
 write.csv(inat_thru_2019_nam, "/Volumes/hurlbertlab/Databases/iNaturalist/inat_northam_site_coords.csv", row.names = F)
+
+## Sites from casual observers for landcover extraction
+
+inat_2019_sites <- data.frame(latitude = c(), longitude = c())
+
+no_latlon <- c()
+
+Sys.time()
+for(f in files_all) {
+  df <- readRDS(f)
+  
+  na <- df %>%
+    filter(is.na(longitude) | is.na(latitude))
+  
+  no_na <- df %>%
+    filter(!is.na(longitude) | !is.na(latitude))
+  
+  res <- no_na %>%
+    dplyr::select(user.login, id, longitude, latitude) %>%
+    distinct()
+  
+  inat_2019_sites <- bind_rows(inat_2019_sites, res)
+  
+  no_latlon <- c(no_latlon, (nrow(na)/(nrow(na) + nrow(no_na))))
+  
+  print(f)
+  print(Sys.time())
+}
+
+# Filter to casual observers
+inat_thru_2019_nam_casual <- inat_2019_sites %>%
+  filter(latitude > 15, latitude < 90, longitude > -180, longitude < -30) %>%
+  group_by(user.login) %>%
+  mutate(n_obs = n_distinct(id)) %>%
+  filter(n_obs == 1) %>%
+  dplyr::select(longitude, latitude) %>%
+  distinct() %>%
+  mutate_all(~as.numeric(.)) %>%
+  mutate(lat = latitude,
+         lon = longitude) %>%
+  filter(!is.na(latitude), !is.na(longitude))
+write.csv(inat_thru_2019_nam, "/Volumes/hurlbertlab/Databases/iNaturalist/inat_northam_site_coords_casual.csv", row.names = F)
+
 
 # Observation phenology in example year - observations grouped by week for 2018
 
@@ -383,11 +436,11 @@ for(f in files_all) {
     filter(month %in% c("05", "06", "07", "08", "09")) %>%
     group_by(user.login, year, month, day) %>%
     summarize(n_obs = n_distinct(id))
- 
+  
   if(nrow(res) > 0) {
     write.csv(res, paste0(user_profs_folder, f, "_user_freq.csv"), row.names = F)
   }
-   
+  
   print(f)
 }
 
@@ -423,11 +476,71 @@ quantile(user_annual_freq$dates, c(0.05, 0.50, 0.95))
 quantile(user_freq$total_obs, c(0.05, 0.50, 0.95))
 # 1, 1, 15
 
-# Obs per user 
+# Obs per user
 
 user_total_obs <- user_freq %>%
   group_by(user.login) %>%
   summarize(obs = sum(total_obs))
 quantile(user_total_obs$obs, c(0.05, 0.50, 0.95))
 # 1, 3, 64
+
+## % of observations that come from top 10 species by # records
+## Casual (accounts with <5 observations) vs. non-casual
+
+# top 10 species
+inat_species <- read_csv("iNatUserBehavior/data/inat_taxon_info_thru2019.csv") %>%
+  arrange(desc(total_obs)) %>%
+  slice(1:10)
+
+# total observations casual/non-casual
+user_group <- user_freq %>%
+  group_by(user.login) %>%
+  summarize(obs = sum(total_obs)) %>%
+  mutate(group = case_when(obs < 5 ~ "casual",
+         TRUE ~ "non-casual"))  
+
+group_obs <- user_group %>%
+  group_by(group) %>%
+  summarize(total_obs = sum(obs))
+
+# Observations of 10 most common spp
+
+for(f in files_all) {
+  df <- readRDS(f)
   
+  common_spp <- df %>%
+    filter(taxon_name %in% inat_species$taxon_name) %>%
+    group_by(user.login) %>%
+    summarize(n_obs = n_distinct(id))
+  
+  write.csv(common_spp, paste0(user_profs_folder, f, "_user_profs_commonspp.csv"), row.names = F)
+  
+  print(f)
+}
+
+common_spp_files <- list.files(user_profs_folder)[grepl("commonspp", list.files(user_profs_folder))]
+
+users_spp <- data.frame(filename = common_spp_files) %>%
+  group_by(filename) %>%
+  nest() %>%
+  mutate(df = purrr::map(filename, ~{
+    f <- .
+    df <- read.csv(paste0(user_profs_folder, f))
+    
+    df
+  })) %>%
+  dplyr::select(-data) %>%
+  unnest(cols = c(df)) %>%
+  group_by(user.login) %>%
+  summarize(total_obs = sum(n_obs))
+
+common_spp_by_grp <- users_spp %>%
+  left_join(user_group, by = c("user.login")) %>%
+  group_by(group) %>%
+  summarize(common_obs = sum(total_obs))
+
+common_spp_by_grp %>%
+  left_join(group_obs) %>%
+  mutate(prop_common = common_obs/total_obs)
+# Casual observers 4%, observers with 5 or more obs - 3%
+

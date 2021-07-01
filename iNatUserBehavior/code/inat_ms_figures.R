@@ -22,7 +22,7 @@ theme_set(theme_classic(base_size = 18))
 # Append correct BioArk path
 
 info <- sessionInfo()
-bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\BioArk")
+bioark <- ifelse(grepl("apple", info$platform), "/Volumes", "\\\\ad.unc.edu/bio")
 
 #### Figure 3: Number of species vs number of observations, observations by user acct ####
 
@@ -45,6 +45,7 @@ spp_obs_plot <- ggplot(user_specializ, aes(x = total_obs, y = n_spp)) + geom_poi
   scale_x_log10(breaks = c(10, 100, 1000, 10000)) +
   scale_y_log10() +
   geom_abline(slope = 1, intercept = 0, col = "blue") +
+  geom_smooth(se = F, col = "lightblue") +
   labs(x = "Observations per user", y = "Species per user")
 
 spp_hist <- ggplot(user_specializ, aes(x = n_spp)) + geom_histogram(bins = 20) +
@@ -252,6 +253,9 @@ dens_plot <- ggplot(group_evenness, aes(x = shannonE_class_z_obs,)) +
                 label = ifelse(round(pct_user, 1) > 50, paste0(round(pct_user, 1), "% of users"),
                                ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%"))), 
                 size = 6)) +
+  geom_text(aes(x = 5, y = 0.1, 
+                label = ifelse(n_user > 20000, paste0("n = ", n_user), paste0(n_user)), 
+                size = 6)) +
   theme(plot.margin = unit(c(0.5, 0, 0.25, 0), "in"))
 
 plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
@@ -319,7 +323,11 @@ dens_plot <- ggplot(group_evenness, aes(x = shannonE_order_z_obs)) +
                                           axis.ticks.y = element_blank()) +
   geom_text(aes(x = -20, y = 0.15, 
                 label = ifelse(round(pct_user, 1) > 50, paste0(round(pct_user, 1), "% of users"),
-                               ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%"))), size = 5)) +
+                               ifelse(round(pct_user, 1) < 1, paste0("<1%"), paste0(round(pct_user, 1), "%"))), 
+                size = 6)) +
+  geom_text(aes(x = 6, y = 0.1, 
+                label = ifelse(n_user < 20, paste0("n = ", n_user), paste0(n_user)), 
+                size = 6)) +
   theme(plot.margin = unit(c(0.5, 0, 0.25, 0), "in"))
 
 plot_grid(cluster_plot, dens_plot, nrow = 1, rel_widths = c(0.55, 0.45), labels = c("A", "B"), label_size = 16)
