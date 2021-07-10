@@ -22,8 +22,7 @@ overallAgreement = expert %>%
 
 
 confusion = filter(overallAgreement, agree == 0) %>%
-  mutate(incorrect = paste(OriginalGroup, StandardGroup)) %>%
-  count(incorrect) %>% 
+  count(OriginalGroup, StandardGroup) %>% 
   arrange(desc(n))
 
 summary = overallAgreement %>%
