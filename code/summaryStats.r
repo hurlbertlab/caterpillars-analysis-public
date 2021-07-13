@@ -7,7 +7,8 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   }
   
   dataset = fullDataset %>%
-    filter(!grepl("BBS", Name), !grepl("Coweeta", Name), Name != "Example Site")
+    filter(#!grepl("BBS", Name), 
+           !grepl("Coweeta", Name), Name != "Example Site")
   
   datasetThisYear = dataset %>%
     filter(Year == reportYear)
