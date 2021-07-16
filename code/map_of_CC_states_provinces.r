@@ -21,7 +21,7 @@ cc_sites <- NAmap %>%
   st_transform(crs = "+proj=laea +x_0=0 +y_0=0 +lon_0=-100 +lat_0=35")
 
 # Set colors for states with/without CC site
-cols <- c("lightgray", "springgreen3")
+cols <- c("gray95", rgb(93/255, 156/255, 47/255))
 
 # Get bounding box coordinates
 st_bbox(cc_sites)
