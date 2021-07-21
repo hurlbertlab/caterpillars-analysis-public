@@ -38,3 +38,11 @@ summaryLarge = overallAgreement %>%
             total = n(),
             pctCorrect = round(100*agreements/total, 1))
 
+#function for calculating percent error of a given taxon
+errorByTaxon <- function(taxon) {
+  givenTaxon <- overallAgreement %>%
+    filter(StandardGroup == taxon)
+  mistakes <- givenTaxon %>%
+    filter(StandardGroup != OriginalGroup)
+  100*(mistakes/givenTaxon)
+  }
