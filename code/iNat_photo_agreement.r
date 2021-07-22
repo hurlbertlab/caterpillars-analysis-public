@@ -1,4 +1,8 @@
-source('code/reading_datafiles_without_users.r')
+dataFiles = list.files('data')[grep("fullDataset", list.files('data'))]
+mostRecentFile = dataFiles[length(dataFiles)]
+
+fullDataset = read.csv(paste('data/', mostRecentFile, sep = ''), header = T)
+
 
 ## Get most recent data files from caterpillars-count-data repo
 data_repo <- "https://github.com/hurlbertlab/caterpillars-count-data"
@@ -11,10 +15,12 @@ github_raw <- "https://raw.githubusercontent.com/hurlbertlab/caterpillars-count-
 
 expert = read.csv(paste(github_raw, filter(data_links, grepl("ExpertIdentification.csv", file_name))$file_name, sep = ''), header = TRUE, stringsAsFactors = FALSE)
 
+expert2 = fullDataset %>%
+  dplyr::select(Name, UserFKOfObserver, arthID, Length) %>%
+  right_join(expert, by = c('arthID' = 'ArthropodSightingFK'))
 
 
-
-overallAgreement = expert %>%
+overallAgreement = expert2 %>%
   filter(!OriginalGroup %in% c('other', 'unidentified')) %>%
   mutate(agree = ifelse(OriginalGroup == StandardGroup, 1, 0))
 
@@ -26,14 +32,14 @@ confusion = filter(overallAgreement, agree == 0) %>%
   arrange(desc(n))
 
 summary = overallAgreement %>%
-  group_by(SiteFK) %>%
+  group_by(Name) %>%
   summarize(agreements = sum(agree),
             total = n(),
             pctCorrect = round(100*agreements/total, 1))
 
 summaryLarge = overallAgreement %>%
   filter(Length == 5) %>%
-  group_by(SiteFK) %>%
+  group_by(Name) %>%
   summarize(agreements = sum(agree),
             total = n(),
             pctCorrect = round(100*agreements/total, 1))
