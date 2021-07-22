@@ -225,7 +225,7 @@ latlong2county <- function(pointsDF) {
   require(maps)
   require(maptools)
   
-  counties <- map('county', fill=TRUE, col="transparent", plot=FALSE)
+  counties <- maps::map('county', fill=TRUE, col="transparent", plot=FALSE)
   IDs <- sapply(strsplit(counties$names, ":"), function(x) x[1])
   counties_sp <- map2SpatialPolygons(counties, IDs=IDs)
   
