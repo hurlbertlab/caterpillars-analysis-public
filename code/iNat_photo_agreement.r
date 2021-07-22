@@ -44,5 +44,5 @@ errorByTaxon <- function(taxon) {
     filter(StandardGroup == taxon)
   mistakes <- givenTaxon %>%
     filter(StandardGroup != OriginalGroup)
-  100*(mistakes/givenTaxon)
+  100* nrow(mistakes) / nrow(givenTaxon)
   }
