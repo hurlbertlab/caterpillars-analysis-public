@@ -1,6 +1,8 @@
 # Project Summary Statistics
 
 summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
+  require(dplyr)
+  
   if (!exists("fullDataset")) {
     #source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))], sep = ''))
     source("code/reading_datafiles_without_users.r")
@@ -9,6 +11,9 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   dataset = fullDataset %>%
     filter(#!grepl("BBS", Name), 
            !grepl("Coweeta", Name), Name != "Example Site")
+  
+  plants = dataset %>%
+    distinct(PlantFK, SiteFK, Circle, Code, Species)
   
   datasetThisYear = dataset %>%
     filter(Year == reportYear)
