@@ -54,16 +54,16 @@ surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 # Median green up date for 2001-2017 based on MODIS MCD12Q2 v006
 # downloaded from USANPN.org gridded products
 greenup = raster("data/env/inca_midgup_median_nad83_02deg.tif")
-sites$medianGreenup = round(extract(greenup, sites[, c('Longitude', 'Latitude')]))
+sites$medianGreenup = round(raster::extract(greenup, sites[, c('Longitude', 'Latitude')]))
 
 # Manually get median green up for Currituck Banks and Sault College which fall just outside of raster cells
 sites$medianGreenup[sites$Name == "Currituck Banks Reserve"] = 
-  round(mean(unlist(extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Currituck Banks Reserve"], 
+  round(mean(unlist(raster::extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Currituck Banks Reserve"], 
                                                 latitude = sites$Latitude[sites$Name == "Currituck Banks Reserve"]),
                             buffer = 3000)), na.rm = TRUE))
 
 sites$medianGreenup[sites$Name == "Sault College"] = 
-  round(mean(unlist(extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Sault College"], 
+  round(mean(unlist(raster::extract(greenup, data.frame(longitude = sites$Longitude[sites$Name == "Sault College"], 
                                                 latitude = sites$Latitude[sites$Name == "Sault College"]),
                             buffer = 7000)), na.rm = TRUE))
 
@@ -110,3 +110,6 @@ fullDataset = surveys %>%
   mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
   rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y) %>%
   filter(Name != "Example Site")
+
+
+write.csv(fullDataset, paste('data/fullDataset_', Sys.Date(), '.csv', sep = ''), row.names = F)

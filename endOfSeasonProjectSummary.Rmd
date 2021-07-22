@@ -1,0 +1,56 @@
+---
+output: 
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies: ["xcolor"]
+mainfont: Arial
+subparagraph: yes
+header-includes:
+  - \usepackage[fontsize=12pt]{scrextend} 
+  - \hypersetup{colorlinks=true, urlcolor = [rgb]{0, .45, .04}}
+  - \usepackage{titlesec}
+  - \titlespacing{\section}{0pt}{10pt plus 2pt minus 1pt}{8 pt plus 2pt minus 1pt}
+  - \titlespacing{\subsection}{0pt}{12pt plus 2pt minus 1pt}{6pt plus 1pt minus 1pt}
+params:
+  year: 2019
+geometry: "left=.5in,right=.5in,top=.25in,bottom=.25in"
+---
+``` {r echo = FALSE, warning = FALSE, message = FALSE, fig.height = 10.4, fig.width = 7.4, fig.align = "center"}
+
+# To generate an image with up-to-date stats:
+
+# 1) Run 'update_catcount_data.r' in the caterpillars-count-data repo. (Commit and push the new files.)
+# 2) Run 'reading_datafiles_without_users.r' which will save a file called 'data/fullDataset_YYYY-MM-DD.csv'
+# 3) 
+
+library(png)
+library(grid)
+library(stringr)
+
+source('code/summaryStats.r')
+options(dplyr.summarise.inform = FALSE)
+
+dataFiles = list.files('data')[grep("fullDataset", list.files('data'))]
+mostRecentFile = dataFiles[length(dataFiles)]
+
+month = word(mostRecentFile, sep = "-", 2)
+year = word(mostRecentFile, sep = "-", 3) %>% word(sep = "\\.")
+
+fullDataset = read.csv(paste('data/', mostRecentFile, sep = ''), header = T)
+stats = summaryStats()
+
+mypng = readPNG('z:/hurlbertallen/projects/caterpillarscount/outreach/CC_flyer_2021.png')
+
+par(mar = c(0,0,0,0), oma = c(0,0,0,0))
+
+image(matrix(data = rep(0, 10200), nrow = 120, ncol = 85), col = 'white', xaxt = 'n', yaxt = 'n', bty = 'n')
+grid.raster(mypng, x = .5, y = .5, width = 1)
+
+text(.225, .743, bquote(bold(.(prettyNum(stats$numSitesTotal, big.mark = ",", scientific = F)))), cex = 1.5, col = 'white')
+text(.265, .695, bquote(bold(.(prettyNum(stats$numUsers, big.mark = ",", scientific = F)))), cex = 1.5, col = 'white')
+text(.212, .635, bquote(bold(.(prettyNum(stats$numSurveysTotal, big.mark = ",", scientific = F)))), cex = 1.5, col = 'white')
+text(.278, .565, bquote(bold(.(prettyNum(stats$arthTot, big.mark = ",", scientific = F)))), cex = 1.5, col = 'white')
+
+text(.97, .012, paste(month, "/", year, sep = ""), cex = 0.5, col = 'white')
+
+```
