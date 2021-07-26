@@ -1,4 +1,6 @@
 library(dplyr)
+library(xml2)
+library(rvest)
 
 dataFiles = list.files('data')[grep("fullDataset", list.files('data'))]
 mostRecentFile = dataFiles[length(dataFiles)]
