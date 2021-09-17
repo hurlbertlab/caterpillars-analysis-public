@@ -1,0 +1,15 @@
+Group,lengthThreshold,abundanceThreshold
+ant,15,10
+aphid,10,30
+bee,25,6
+beetle,20,6
+caterpillar,50,6
+daddylonglegs,15,6
+fly,15,6
+grasshopper,20,6
+leafhopper,20,6
+moths,30,6
+other,25,6
+spider,15,6
+truebugs,25,6
+unidentified,25,6
