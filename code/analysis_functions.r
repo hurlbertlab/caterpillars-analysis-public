@@ -279,7 +279,7 @@ siteEffortSummary = function(fullDataset,
 
 
 
-compareSamplingDatesBetweenSites = function(siteNames, year) {
+compareSamplingDatesBetweenSites = function(siteNames, year, cex.scalar = 10) {
   
   tmp = fullDataset %>%
     filter(Name %in% siteNames, Year == year) %>%
@@ -297,14 +297,14 @@ compareSamplingDatesBetweenSites = function(siteNames, year) {
       
       par(mar = c(5, 10, 3, 1))
       plot(tmp$julianweek[tmp$Name == siteNames[i]], rep(i, sum(tmp$Name == siteNames[i])),
-           xlim = range(tmp$julianweek, na.rm = T), ylim = c(1, length(siteNames)+1), 
+           xlim = range(tmp$julianweek, na.rm = T), ylim = c(0.5, length(siteNames)+1.5), 
            xlab = "Julian Week", ylab = "", yaxt = "n", 
-           cex = tmp$nSurveys[tmp$Name == siteNames[i]]/10, main = year)
+           cex = tmp$nSurveys[tmp$Name == siteNames[i]]/cex.scalar, main = year)
       
     } else {
       
       points(tmp$julianweek[tmp$Name == siteNames[i]], rep(i, sum(tmp$Name == siteNames[i])),
-             cex = tmp$nSurveys[tmp$Name == siteNames[i]]/10)
+             cex = tmp$nSurveys[tmp$Name == siteNames[i]]/cex.scalar)
       
     }
   }
@@ -312,7 +312,7 @@ compareSamplingDatesBetweenSites = function(siteNames, year) {
   leg.pts = c(0.25, 0.5, 0.75)*(max(tmp$julianweek, na.rm = T) - min(tmp$julianweek, na.rm = T)) + min(tmp$julianweek, na.rm = T)
   leg.cex = c(0.25, 0.5, 1)*round(max(tmp$nSurveys, na.rm = T)/20)*20
   
-  points(leg.pts, rep(length(siteNames) + 1, 3), cex = leg.cex/10, pch = 16)
+  points(leg.pts, rep(length(siteNames) + 1, 3), cex = leg.cex/cex.scalar, pch = 16)
   
   text(leg.pts + 5, rep(length(siteNames) + 1, 3), leg.cex)
   
