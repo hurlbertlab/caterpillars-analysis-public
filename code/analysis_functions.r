@@ -261,13 +261,15 @@ siteEffortSummary = function(fullDataset,
               medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T), 
               nWeeks = n_distinct(julianweek),
               nWeeksGoodor50Surveys = n_distinct(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
-                                             (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek > 50)]),
+                                             (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)]),
               nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
               medianEffortDeviation = median(abs(nSurveysPerWeek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek] - 5*modalSurveyCirclesPerWeek)),
               firstDate = min(julianweek),
               lastDate = max(julianweek),
-              firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
-              lastGoodDate = max(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
+              firstGoodDate = min(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
+                                               (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
+              lastGoodDate = max(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
+                                              (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
               firstGDateAfterGreenup = firstGoodDate - medianGreenup[1],
               lastGDateAfterGreenup = lastGoodDate - medianGreenup[1])
   
