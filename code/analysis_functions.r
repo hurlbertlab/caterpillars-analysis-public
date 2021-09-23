@@ -7,7 +7,7 @@ library(maps)
 library(sp)
 library(maptools)
 #library(tidyr)
-
+options(dplyr.summarise.inform = FALSE)
 
 ###################################
 # Function for substituting values based on a condition using dplyr::mutate
@@ -988,3 +988,75 @@ dateOfGDDaccumulation = function(tmean, base = 0, accumulateTo = 2400) {
   return(dateAccumulated)
 }
 
+
+# Function for doing basic QA/QC check on Caterpillars Count! dataset
+
+qaqc = function(fullDataset,                # fullDataset dataframe
+                totalArthsFlag = 10,        # flag surveys where the total number of arthropods exceeds this value
+                arthDiversityFlag = 4,      # flag surveys where the total number of arthropod types exceeds this value
+                rareArthDiversityFlag = 3,  # flag surveys where the total number of rare arthropod types exceeds this value
+                numberLeavesFlag = c(5, 400), # flag surveys where number of leaves falls outside this range
+                leafLengthFlag = 30,        # flag surveys where leaf length exceeds this value
+                checkNewRecordsOnly = TRUE  # only perform QA/QC on records that have not previously been checked
+                ) {
+  
+  reliabilityDF = read.csv('data/survey_reliability.csv', header = T)
+  
+  if (checkNewRecordsOnly) {
+    
+    dataToCheck = fullDataset %>% 
+      filter(!ID %in% reliabilityDF$ID)
+
+  } else {
+    
+    dataToCheck = fullDataset
+    
+  }
+  
+  arthFlaggedRecs = dataToCheck %>%
+    filter(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 10 |
+             Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 30 |
+             Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6 |
+             Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6 |
+             Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6 |
+             Group == 'daddylonglegs' & Length > 15 | Group == 'daddylonglegs' & Quantity > 6 |
+             Group == 'fly' & Length > 15 | Group == 'fly' & Quantity > 6 |
+             Group == 'grasshopper' & Length > 20 | Group == 'grasshopper' & Quantity > 6 |
+             Group == 'leafhopper' & Length > 20 | Group == 'leafhopper' & Quantity > 6 |
+             Group == 'moths' & Length > 30 | Group == 'moths' & Quantity > 6 |
+             Group == 'other' & Length > 25 | Group == 'other' & Quantity > 6 |
+             Group == 'spider' & Length > 15 | Group == 'spider' & Quantity > 6 |
+             Group == 'truebugs' & Length > 25 | Group == 'truebugs' & Quantity > 6 |
+             Group == 'unidentified' & Length > 25 | Group == 'unidentified' & Quantity > 6 
+             ) %>%
+    dplyr::select(ID)
+  
+  survFlaggedRecs = dataToCheck %>% 
+    group_by(ID, NumberOfLeaves, AverageLeafLength) %>%
+    summarize(totalArthAbund = sum(Quantity, na.rm = TRUE),
+              totalArthDiv = n_distinct(Group[!is.na(Group)]),
+              rareArthDiv = n_distinct(Group[Group %in% c('truebugs', 'grasshopper', 'daddylonglegs', 'bee', 'moths')])) %>%
+    filter(totalArthAbund > totalArthsFlag |
+             totalArthDiv > arthDiversityFlag |
+             rareArthDiv > rareArthDiversityFlag |
+             NumberOfLeaves < min(numberLeavesFlag) | NumberOfLeaves > max(numberLeavesFlag) |
+             AverageLeafLength > leafLengthFlag) %>%
+    dplyr::select(ID)
+  
+  flaggedRecs = unique(c(unlist(arthFlaggedRecs), unlist(survFlaggedRecs)))
+  
+  qaqcOutput = dataToCheck
+  qaqcOutput$reliable = 1
+  
+  if (length(flaggedRecs) > 0) {
+    
+    qaqcOutput$reliable[qaqcOutput$ID %in% flaggedRecs] = 0  
+    
+  }
+  
+  qaqcSurveyIDs = qaqcOutput %>% distinct(ID, reliable)
+  write.csv('data/survey_reliability.csv')
+  
+  return(qaqcOutput)
+  
+}
