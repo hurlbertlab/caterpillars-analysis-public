@@ -261,19 +261,64 @@ siteEffortSummary = function(fullDataset,
               medianSurveysPerWeek = median(nSurveysPerWeek, na.rm = T), 
               nWeeks = n_distinct(julianweek),
               nWeeksGoodor50Surveys = n_distinct(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
-                                             (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek > 50)]),
+                                             (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)]),
               nGoodWeeks = n_distinct(julianweek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek & nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
               medianEffortDeviation = median(abs(nSurveysPerWeek[julianweek >= minJulianWeek & julianweek <= maxJulianWeek] - 5*modalSurveyCirclesPerWeek)),
               firstDate = min(julianweek),
               lastDate = max(julianweek),
-              firstGoodDate = min(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
-              lastGoodDate = max(julianweek[nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek]),
+              firstGoodDate = min(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
+                                               (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
+              lastGoodDate = max(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
+                                              (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
               firstGDateAfterGreenup = firstGoodDate - medianGreenup[1],
               lastGDateAfterGreenup = lastGoodDate - medianGreenup[1])
   
   return(summary)
 }
 
+
+
+
+compareSamplingDatesBetweenSites = function(siteNames, year, cex.scalar = 10) {
+  
+  tmp = fullDataset %>%
+    filter(Name %in% siteNames, Year == year) %>%
+    group_by(Name, julianweek) %>%
+    summarize(nSurveys = n_distinct(ID))
+  
+  if (nrow(tmp) == 0) {
+    break("no data for those sites in that year")
+  }
+  
+  for (i in 1:length(siteNames)) {
+    
+    if (i == 1) {
+      
+      
+      par(mar = c(5, 10, 3, 1))
+      plot(tmp$julianweek[tmp$Name == siteNames[i]], rep(i, sum(tmp$Name == siteNames[i])),
+           xlim = range(tmp$julianweek, na.rm = T), ylim = c(0.5, length(siteNames)+1.5), 
+           xlab = "Julian Week", ylab = "", yaxt = "n", 
+           cex = tmp$nSurveys[tmp$Name == siteNames[i]]/cex.scalar, main = year)
+      
+    } else {
+      
+      points(tmp$julianweek[tmp$Name == siteNames[i]], rep(i, sum(tmp$Name == siteNames[i])),
+             cex = tmp$nSurveys[tmp$Name == siteNames[i]]/cex.scalar)
+      
+    }
+  }
+  
+  leg.pts = c(0.25, 0.5, 0.75)*(max(tmp$julianweek, na.rm = T) - min(tmp$julianweek, na.rm = T)) + min(tmp$julianweek, na.rm = T)
+  leg.cex = c(0.25, 0.5, 1)*round(max(tmp$nSurveys, na.rm = T)/20)*20
+  
+  points(leg.pts, rep(length(siteNames) + 1, 3), cex = leg.cex/cex.scalar, pch = 16)
+  
+  text(leg.pts + 5, rep(length(siteNames) + 1, 3), leg.cex)
+  
+  mtext(c(substr(siteNames, 1, 20), "LEGEND"), 2, at = 1:(length(siteNames) + 1), las = 1)
+  
+} 
 
 ########################################
 # Criteria for inclusion (records refers to survey events)
