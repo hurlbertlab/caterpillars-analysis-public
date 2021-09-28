@@ -316,9 +316,12 @@ compareSamplingDatesBetweenSites = function(siteNames, year, cex.scalar = 10) {
   
   text(leg.pts + 5, rep(length(siteNames) + 1, 3), leg.cex)
   
-  mtext(c(substr(siteNames, 1, 20), "LEGEND"), 2, at = 1:(length(siteNames) + 1), las = 1)
+  mtext(c(substr(siteNames, 1, 20), "NUMBER OF SURVEYS"), 2, at = 1:(length(siteNames) + 1), las = 1)
   
 } 
+
+
+
 
 ########################################
 # Criteria for inclusion (records refers to survey events)
