@@ -30,6 +30,7 @@ groupedSiteLatLongGreen <- fullDataset %>%
 fullDatasetGrouped <- fullDataset %>%
   left_join(groupedSites, by = c('Name', 'Year')) %>%
   left_join(groupedSiteLatLongGreen, by = 'GroupedName') %>%
+  mutate_at(c("Name", "GroupedName"), ~as.character(.)) %>%
   mutate(OriginalName = Name,
          Name = ifelse(!is.na(GroupedName), GroupedName, Name),
          Latitude = ifelse(!is.na(GroupedName), Latitude.y, Latitude.x),
