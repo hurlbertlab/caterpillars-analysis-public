@@ -70,7 +70,7 @@ surveyThreshold = 0.8            # proprortion of surveys conducted to be consid
 minJulianWeek = 135              # beginning of seasonal window for tabulating # of good weeks
 maxJulianWeek = 211
 
-site_data <- fullDataset %>%
+site_data <- fullDatasetGrouped %>%
   right_join(focal_sites, by = c("Year" = "year", "Name", "Region", "cell", "Latitude", "Longitude", "medianGreenup")) %>%
   filter(case_when(Name == "UNC Chapel Hill Campus" ~ julianweek >= 121, # for UNC Campus, take out BIO 101 observations in April
                    TRUE ~ TRUE)) %>%
