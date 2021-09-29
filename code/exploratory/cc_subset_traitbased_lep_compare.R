@@ -4,29 +4,45 @@ library(tidyverse)
 
 ### Read in CC data and functions
 source('code/analysis_functions.r')
-source('code/reading_datafiles_without_users.r')
 
-## Merge EwA sites
+datafiles = list.files('data/')[grepl("fullDataset", list.files('data/'))]
+fullDataset = read.csv(paste('data/', datafiles[length(datafiles)], sep = ''), header = T)
 
-ewa_sites <- unique(filter(fullDataset, grepl("EwA", Name))$Name)
+## Read in file defining grouped sites:
 
-ewa_lat <- unique(filter(fullDataset, Name %in% ewa_sites)$Latitude)
-ewa_lon <-unique(filter(fullDataset, Name %in% ewa_sites)$Longitude)
-ewa_greenup <- unique(filter(fullDataset, Name %in% ewa_sites)$medianGreenup)
+# Note that it may not be valid to group adjacent sites together in every year.
+#   --See code/grouping_sites_by_effort.r to visualize how effort compares between years
+#   --Read in this file which describes the years for which the sites listed have comparable sampling effort.
 
-fullDataset_ewa <- fullDataset %>%
-  mutate_at(c("Name"), ~case_when( Name %in% ewa_sites ~ "EwA",
-                                  TRUE ~ .)) %>%
-  mutate_at(c("Latitude"), ~ifelse(Name == "EwA" & Latitude %in% ewa_lat, mean(ewa_lat), Latitude)) %>%
-  mutate_at(c("Longitude"), ~ifelse(Name == "EwA" & Longitude %in% ewa_lon, mean(ewa_lon), Longitude)) %>%
-  mutate_at(c("medianGreenup"), ~ifelse(Name == "EwA" & medianGreenup %in% ewa_greenup, mean(ewa_greenup), medianGreenup))
+groupedSites <- read.csv('data/grouped_CC_sites.csv', header = T)
+
+# Calculate mean lats, longs, and greenup dates for each set of grouped sites
+groupedSiteLatLongGreen <- fullDataset %>%
+  distinct(Name, Latitude, Longitude, medianGreenup) %>%
+  left_join(unique(groupedSites[, c('Name', 'GroupedName')]), by = 'Name') %>%
+  group_by(GroupedName) %>%
+  summarize(Latitude = mean(Latitude),
+            Longitude = mean(Longitude),
+            medianGreenup = mean(medianGreenup)) %>%
+  filter(!is.na(GroupedName))
+
+# Join grouped names, lats, longs, and greenup to fullDataset; straighten out column names              
+fullDatasetGrouped <- fullDataset %>%
+  left_join(groupedSites, by = c('Name', 'Year')) %>%
+  left_join(groupedSiteLatLongGreen, by = 'GroupedName') %>%
+  mutate(OriginalName = Name,
+         Name = ifelse(!is.na(GroupedName), GroupedName, Name),
+         Latitude = ifelse(!is.na(GroupedName), Latitude.y, Latitude.x),
+         Longitude = ifelse(!is.na(GroupedName), Longitude.y, Longitude.x),
+         medianGreenup = ifelse(!is.na(GroupedName), medianGreenup.y, medianGreenup.x))
+                           
 
 ### Site effort summary
 
 site_effort <- data.frame(year = c(2000:2020)) %>%
   mutate(site_effort = purrr::map(year, ~{
     y <- .
-    siteEffortSummary(fullDataset_ewa, year = y)
+    siteEffortSummary(fullDatasetGrouped, year = y)
   })) %>%
   unnest(cols = c(site_effort))
 
