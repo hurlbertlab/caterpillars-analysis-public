@@ -1,4 +1,21 @@
+# Script for evaluating which sites can be grouped together for analysis. Relies on visual inspection of sampling effort for now.
+
+# 1) Add sites that are spatially near each other (e.g., same metro area) as list items to `sitegroups`
+
+# 2) Make and examine grouped_sites_effort plot below (will need to expand year range and mfrow eventually)
+
+# 3) For plots that have comparable sampling windows across multiple years, add them to the grouped_CC_sites.csv file in data folder.
+
+# 4) Add workflow step that combines grouped sites prior to calculating phenology, etc.
+
+
+
 source('code/analysis_functions.r')
+
+# Read in data
+latestDatafiles = list.files('data/')[grepl("fullDataset", list.files('data/'))]
+fullDataset = read.csv(paste('data/', latestDatafiles[length(latestDatafiles)], sep = ''), header = T)
+
 
 sitegroups = list(
   vadcsites = c('Robert C. McDonnell Campgrounds', 'Riverbend Park', "Scott's Run Nature Preserve", "Walker Nature Center", 'East Blake Lane Park', 'Broyhill Park', 'Georgetown'),
