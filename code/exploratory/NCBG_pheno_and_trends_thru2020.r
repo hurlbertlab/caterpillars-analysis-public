@@ -1,15 +1,16 @@
 source('code/analysis_functions.r')
-source('code/reading_datafiles_without_users.r')
+#source('code/reading_datafiles_without_users.r')
 
+fullDataset = read.csv('data/fullDataset_2021-09-17.csv', header = T)
 
-
-ncbg = filter(fullDataset, Name == "NC Botanical Garden", Year %in% c(2018, 2019, 2020))
+ncbg = filter(fullDataset, Name == "NC Botanical Garden", Year %in% c(2018, 2019, 2020, 2021))
 
 bg18 = meanDensityByWeek(ncbg[ncbg$Year == 2018, ], ordersToInclude = 'caterpillar')
 bg19 = meanDensityByWeek(ncbg[ncbg$Year == 2019, ], ordersToInclude = 'caterpillar')
 bg20 = meanDensityByWeek(ncbg[ncbg$Year == 2020, ], ordersToInclude = 'caterpillar') %>% arrange(julianweek)
+bg21 = meanDensityByWeek(ncbg[ncbg$Year == 2021, ], ordersToInclude = 'caterpillar') %>% arrange(julianweek)
 
-pdf('z:/projects/CaterpillarsCount/Results/NCBG_pheno_trends_thru2020.pdf', height = 6, width = 12)
+pdf('z:/projects/CaterpillarsCount/Results/NCBG_pheno_trends_thru2021.pdf', height = 6, width = 12)
 par(mgp = c(3, 1, 0), cex.lab = 1.7, cex.axis = 1.25, mar = c(5, 5, 1, 1), mfrow = c(1, 2))
 plot(bg18$julianweek, bg18$fracSurveys, type = 'l', lwd = 4, col = 'lightgreen', xlab = 'Day of year', 
      ylab = '% of surveys with caterpillars', las = 1, ylim = c(0, 16), xaxt = "n")

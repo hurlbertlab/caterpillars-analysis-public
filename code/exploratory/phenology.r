@@ -444,7 +444,7 @@ par(mar = c(4, 6, 1, 2))
 ncbg_15_biomass = ncbg %>%
   filter(Year == 2015) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
-                    plot = TRUE, allDates = FALSE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
                     xlim = c(135, 210), ylim = c(0, 3))
 jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
 mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
@@ -458,13 +458,13 @@ par(mar = c(4, 6, 1, 2))
 ncbg_15_biomass = ncbg %>%
   filter(Year == 2015) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
-                    plot = TRUE, allDates = FALSE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
                     xlim = c(135, 210), ylim = c(0, 3))
 
 ncbg_16_biomass = ncbg %>%
   filter(Year == 2016) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'blue', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
 mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
@@ -478,18 +478,18 @@ par(mar = c(4, 6, 1, 2))
 ncbg_15_biomass = ncbg %>%
   filter(Year == 2015) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
-                    plot = TRUE, allDates = FALSE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
                     xlim = c(135, 210), ylim = c(0, 3))
 
 ncbg_16_biomass = ncbg %>%
   filter(Year == 2016) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'blue', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 ncbg_17_biomass = ncbg %>%
   filter(Year == 2017) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'skyblue', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
 mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
@@ -503,29 +503,67 @@ par(mar = c(4, 6, 1, 2))
 ncbg_15_biomass = ncbg %>%
   filter(Year == 2015) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
-                    plot = TRUE, allDates = FALSE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
                     xlim = c(135, 210), ylim = c(0, 3))
 
 ncbg_16_biomass = ncbg %>%
   filter(Year == 2016) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'blue', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 ncbg_17_biomass = ncbg %>%
   filter(Year == 2017) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'skyblue', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 ncbg_18_biomass = ncbg %>%
   filter(Year == 2018) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'lightpink', new = FALSE,
-                    plot = TRUE, allDates = FALSE, lwd = 5)
+                    plot = TRUE, allDates = TRUE, lwd = 5)
 
 jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
 mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
 
 legend("topleft", legend = 2015:2018, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink'), bty = 'n')
 dev.off()
+
+
+
+pdf('figs/NCBG_caterpillar_biomass_pheno_2015-2019.pdf', height = 5, width = 7)
+par(mar = c(4, 6, 1, 2))
+ncbg_15_biomass = ncbg %>%
+  filter(Year == 2015) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    xlim = c(135, 210), ylim = c(0, 3))
+
+ncbg_16_biomass = ncbg %>%
+  filter(Year == 2016) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'blue', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_17_biomass = ncbg %>%
+  filter(Year == 2017) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'skyblue', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_18_biomass = ncbg %>%
+  filter(Year == 2018) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'lightpink', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_19_biomass = ncbg %>%
+  filter(Year == 2019) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'salmon', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
+mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
+
+legend("topleft", legend = 2015:2019, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink', 'salmon'), bty = 'n')
+dev.off()
+
+
 
 
 pdf('figs/NCBG_caterpillar_biomass_pheno_2015-2020.pdf', height = 5, width = 7)
@@ -558,13 +596,61 @@ ncbg_19_biomass = ncbg %>%
 
 ncbg_20_biomass = ncbg %>%
   filter(Year == 2020) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'red', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
+mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
+
+legend("topleft", legend = 2015:2020, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink', 'salmon', 'red'))
+dev.off()
+
+
+
+pdf('figs/NCBG_caterpillar_biomass_pheno_2015-2021.pdf', height = 5, width = 7)
+par(mar = c(4, 6, 1, 2))
+ncbg_15_biomass = ncbg %>%
+  filter(Year == 2015) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'purple2', 
+                    plot = TRUE, allDates = TRUE, lwd = 5, xlab = "", ylab = "", xaxt = "n", 
+                    xlim = c(135, 210), ylim = c(0, 3))
+
+ncbg_16_biomass = ncbg %>%
+  filter(Year == 2016) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'blue', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_17_biomass = ncbg %>%
+  filter(Year == 2017) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'skyblue', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_18_biomass = ncbg %>%
+  filter(Year == 2018) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'lightpink', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_19_biomass = ncbg %>%
+  filter(Year == 2019) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'salmon', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_20_biomass = ncbg %>%
+  filter(Year == 2020) %>%
+  meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'red', new = FALSE,
+                    plot = TRUE, allDates = TRUE, lwd = 5)
+
+ncbg_21_biomass = ncbg %>%
+  filter(Year == 2021) %>%
   meanDensityByWeek(ordersToInclude = 'caterpillar', plotVar = 'meanBiomass', col = 'darkred', new = FALSE,
                     plot = TRUE, allDates = TRUE, lwd = 5)
 jdAxis(c(135, 210), biweekly = TRUE, cex.axis = 1.3)
 mtext("Caterpillar biomass (mg / survey)", 2, line = 3, cex = 1.5)
 
-legend("topleft", legend = 2015:2020, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink', 'salmon', 'darkred'))
+legend("topleft", legend = 2015:2021, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink', 'salmon', 'red', 'darkred'))
 dev.off()
+
+
+
 
 
 pdf('figs/NCBG_caterpillar_biomass_pheno_2018-2020.pdf', height = 5, width = 7)
@@ -654,9 +740,6 @@ mtext("Caterpillar occurrence (% surveys)", 2, line = 3, cex = 1.5)
 
 legend("topleft", legend = 2015:2019, lwd = 5, col = c('purple2', 'blue', 'skyblue', 'lightpink', 'salmon'))
 dev.off()
-
-
-
 
 
 
