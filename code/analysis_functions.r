@@ -1055,7 +1055,7 @@ qaqc = function(fullDataset,                # fullDataset dataframe
   if (checkNewRecordsOnly) {
     
     dataToCheck = fullDataset %>% 
-      filter(!ID %in% reliabilityDF$ID)
+      filter(!ID %in% surveysChecked$ID)
 
   } else {
     
@@ -1101,7 +1101,7 @@ qaqc = function(fullDataset,                # fullDataset dataframe
   
   updatedSurveysChecked = rbind(surveysChecked, data.frame(ID = unique(fullQAQC$ID))) %>%
     distinct(ID)
-  write.csv(updatedReliabilityDF, 'data/surveys_checked.csv', row.names = FALSE)
+  write.csv(updatedSurveysChecked, 'data/surveys_checked.csv', row.names = FALSE)
   
   # Optionally write the qa/qc'ed dataset to a file
   if (write) {
