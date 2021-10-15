@@ -1064,22 +1064,23 @@ qaqc = function(fullDataset,                # fullDataset dataframe
   }
   
   arthQAQCoutput = dataToCheck %>%
-    mutate(ant = ifelse(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 10, 1, 0),
-           aphid = ifelse(Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 30, 1, 0),
-           bee = ifelse(Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6, 1, 0),
-           beetle = ifelse(Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6, 1, 0),
-           caterpillar = ifelse(Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6, 1, 0),
-           daddylonglegs = ifelse(Group == 'daddylonglegs' & Length > 15 | Group == 'daddylonglegs' & Quantity > 6, 1, 0),
-           fly = ifelse(Group == 'fly' & Length > 15 | Group == 'fly' & Quantity > 6, 1, 0),
-           grasshopper = ifelse( Group == 'grasshopper' & Length > 20 | Group == 'grasshopper' & Quantity > 6, 1, 0),
-           leafhopper = ifelse(Group == 'leafhopper' & Length > 20 | Group == 'leafhopper' & Quantity > 6, 1, 0),
-           moths = ifelse(Group == 'moths' & Length > 30 | Group == 'moths' & Quantity > 6, 1, 0),
-           other = ifelse(Group == 'other' & Length > 25 | Group == 'other' & Quantity > 6, 1, 0),
-           spider = ifelse(Group == 'spider' & Length > 15 | Group == 'spider' & Quantity > 6, 1, 0),
-           truebugs = ifelse(Group == 'truebugs' & Length > 25 | Group == 'truebugs' & Quantity > 6, 1, 0),
-           unidentified = ifelse(Group == 'unidentified' & Length > 25 | Group == 'unidentified' & Quantity > 6, 1, 0),
-           arthFlag = ifelse(!is.na(Group) & (ant == 1 | aphid == 1 | bee == 1 | beetle == 1 | caterpillar == 1 | daddylonglegs == 1 | fly == 1 | 
-                               grasshopper == 1 | leafhopper == 1 | moths == 1 | other == 1 | spider == 1 | truebugs == 1 | unidentified == 1), 1, 0)
+    mutate(antFlag = ifelse(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 10, 1, 0),
+           aphidFlag = ifelse(Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 30, 1, 0),
+           beeFlag = ifelse(Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6, 1, 0),
+           beetleFlag = ifelse(Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6, 1, 0),
+           caterpillarFlag = ifelse(Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6, 1, 0),
+           daddylonglegsFlag = ifelse(Group == 'daddylonglegs' & Length > 15 | Group == 'daddylonglegs' & Quantity > 6, 1, 0),
+           flyFlag = ifelse(Group == 'fly' & Length > 15 | Group == 'fly' & Quantity > 6, 1, 0),
+           grasshopperFlag = ifelse( Group == 'grasshopper' & Length > 20 | Group == 'grasshopper' & Quantity > 6, 1, 0),
+           leafhopperFlag = ifelse(Group == 'leafhopper' & Length > 20 | Group == 'leafhopper' & Quantity > 6, 1, 0),
+           mothsFlag = ifelse(Group == 'moths' & Length > 30 | Group == 'moths' & Quantity > 6, 1, 0),
+           otherFlag = ifelse(Group == 'other' & Length > 25 | Group == 'other' & Quantity > 6, 1, 0),
+           spiderFlag = ifelse(Group == 'spider' & Length > 15 | Group == 'spider' & Quantity > 6, 1, 0),
+           truebugsFlag = ifelse(Group == 'truebugs' & Length > 25 | Group == 'truebugs' & Quantity > 6, 1, 0),
+           unidentifiedFlag = ifelse(Group == 'unidentified' & Length > 25 | Group == 'unidentified' & Quantity > 6, 1, 0),
+           arthFlag = ifelse(!is.na(Group) & (antFlag == 1 | aphidFlag == 1 | beeFlag == 1 | beetleFlag == 1 | caterpillarFlag == 1 | 
+                                                daddylonglegsFlag == 1 | flyFlag == 1 | grasshopperFlag == 1 | leafhopperFlag == 1 | 
+                                                mothsFlag == 1 | otherFlag == 1 | spiderFlag == 1 | truebugsFlag == 1 | unidentifiedFlag == 1), 1, 0)
            )
   
   fullQAQC = dataToCheck %>% 
