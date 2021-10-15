@@ -34,7 +34,7 @@ dataFiles = list.files('data')[grep("fullDataset", list.files('data'))]
 mostRecentFile = dataFiles[length(dataFiles)]
 
 month = word(mostRecentFile, sep = "-", 2)
-year = word(mostRecentFile, sep = "-", 3) %>% word(sep = "\\.")
+year = word(mostRecentFile, sep = "_", 2) %>% word(sep = "-")
 
 fullDataset = read.csv(paste('data/', mostRecentFile, sep = ''), header = T)
 stats = summaryStats()
