@@ -114,3 +114,40 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   )
   return(stats)
 }
+
+
+
+# For a given year, provide site summary stats and then order results by the sortingVar.
+# Possible sortingVar values: 'nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 
+#   'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers'
+annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = 'pctCat') {
+  require(dplyr)
+  
+  if (!exists("fullDataset")) {
+    #source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))], sep = ''))
+    source("code/reading_datafiles_without_users.r")
+  }
+  
+  if (!sortingVar %in% c('nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers')) {
+    stop("Invalid sortingVar, which must be one of: 'nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers'")
+  }
+  
+  dataset = fullDataset %>%
+    filter(!grepl("BBS", Name), 
+           !grepl("Coweeta", Name), Name != "Example Site",
+           Year == reportYear) %>% 
+    group_by(Name) %>% 
+    summarize(nSurvs = n_distinct(ID), 
+              nDates = n_distinct(julianday), 
+              nWeeks = n_distinct(julianweek), 
+              nCats = sum(Quantity[Group == "caterpillar"]), 
+              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              pctCat = 100*nCatSurvs/nSurvs, 
+              nLargeAvg = sum(Quantity[Length>=10])/nSurvs, 
+              bigCat = max(Length[Group=="caterpillar"], na.rm = T), 
+              pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
+              nUsers = n_distinct(UserFKOfObserver)) %>% 
+    arrange(desc(get(sortingVar)))
+  
+  return(dataset)
+}
