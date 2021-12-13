@@ -4,8 +4,7 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   require(dplyr)
   
   if (!exists("fullDataset")) {
-    #source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))], sep = ''))
-    source("code/reading_datafiles_without_users.r")
+    fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
   }
   
   dataset = fullDataset %>%
@@ -124,8 +123,7 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
   require(dplyr)
   
   if (!exists("fullDataset")) {
-    #source(paste('code/', list.files('code')[grep('CCrawdata2masterdataframe', list.files('code'))], sep = ''))
-    source("code/reading_datafiles_without_users.r")
+    fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
   }
   
   if (!sortingVar %in% c('nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers')) {
