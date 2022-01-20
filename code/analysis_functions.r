@@ -1064,8 +1064,8 @@ qaqc = function(fullDataset,                # fullDataset dataframe
   }
   
   arthQAQCoutput = dataToCheck %>%
-    mutate(antFlag = ifelse(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 10, 1, 0),
-           aphidFlag = ifelse(Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 30, 1, 0),
+    mutate(antFlag = ifelse(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 50, 1, 0),
+           aphidFlag = ifelse(Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 50, 1, 0),
            beeFlag = ifelse(Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6, 1, 0),
            beetleFlag = ifelse(Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6, 1, 0),
            caterpillarFlag = ifelse(Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6, 1, 0),
@@ -1085,7 +1085,7 @@ qaqc = function(fullDataset,                # fullDataset dataframe
   
   fullQAQC = dataToCheck %>% 
     group_by(ID, NumberOfLeaves, AverageLeafLength) %>%
-    summarize(totalArthAbund = sum(Quantity, na.rm = TRUE),
+    summarize(totalArthAbund = sum(Quantity[!Group %in% c('ant', 'aphid')], na.rm = TRUE),
               totalArthDiv = n_distinct(Group[!is.na(Group)]),
               rareArthDiv = n_distinct(Group[Group %in% c('truebugs', 'grasshopper', 'daddylonglegs', 'bee', 'moths')])) %>%
     mutate(totalArthsFlag = ifelse(totalArthAbund > totalArthsMax, 1, 0),
