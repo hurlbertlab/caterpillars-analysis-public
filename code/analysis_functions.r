@@ -1037,77 +1037,58 @@ dateOfGDDaccumulation = function(tmean, base = 0, accumulateTo = 2400) {
 }
 
 
+
+
 # Function for doing basic QA/QC check on Caterpillars Count! dataset
 
-qaqc = function(fullDataset,                # fullDataset dataframe
+qaqc = function(dataToCheck,               # subset of fullDataset dataframe (i.e. new data) that requires checking
                 totalArthsMax = 10,        # flag surveys where the total number of arthropods exceeds this value
                 arthDiversityMax = 4,      # flag surveys where the total number of arthropod types exceeds this value
                 rareArthDiversityMax = 3,  # flag surveys where the total number of rare arthropod types exceeds this value
                 numberLeavesMin = 5,       # flag surveys where number of leaves is less than this value
                 numberLeavesMax = 400,     # flag surveys where number of leaves falls exceeds this value
                 leafLengthMax = 30,        # flag surveys where leaf length exceeds this value
-                checkNewRecordsOnly = TRUE,# only perform QA/QC on records that have not previously been checked
                 write = TRUE
                 ) {
   
- surveysChecked = read.csv('data/surveys_checked.csv', header = T)
-  
-  if (checkNewRecordsOnly) {
-    
-    dataToCheck = fullDataset %>% 
-      filter(!ID %in% surveysChecked$ID)
-
-  } else {
-    
-    dataToCheck = fullDataset
-    
-  }
-  
-  arthQAQCoutput = dataToCheck %>%
-    mutate(antFlag = ifelse(Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 50, 1, 0),
-           aphidFlag = ifelse(Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 50, 1, 0),
-           beeFlag = ifelse(Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6, 1, 0),
-           beetleFlag = ifelse(Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6, 1, 0),
-           caterpillarFlag = ifelse(Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6, 1, 0),
-           daddylonglegsFlag = ifelse(Group == 'daddylonglegs' & Length > 15 | Group == 'daddylonglegs' & Quantity > 6, 1, 0),
-           flyFlag = ifelse(Group == 'fly' & Length > 15 | Group == 'fly' & Quantity > 6, 1, 0),
-           grasshopperFlag = ifelse( Group == 'grasshopper' & Length > 20 | Group == 'grasshopper' & Quantity > 6, 1, 0),
-           leafhopperFlag = ifelse(Group == 'leafhopper' & Length > 20 | Group == 'leafhopper' & Quantity > 6, 1, 0),
-           mothsFlag = ifelse(Group == 'moths' & Length > 30 | Group == 'moths' & Quantity > 6, 1, 0),
-           otherFlag = ifelse(Group == 'other' & Length > 25 | Group == 'other' & Quantity > 6, 1, 0),
-           spiderFlag = ifelse(Group == 'spider' & Length > 15 | Group == 'spider' & Quantity > 6, 1, 0),
-           truebugsFlag = ifelse(Group == 'truebugs' & Length > 25 | Group == 'truebugs' & Quantity > 6, 1, 0),
-           unidentifiedFlag = ifelse(Group == 'unidentified' & Length > 25 | Group == 'unidentified' & Quantity > 6, 1, 0),
-           arthFlag = ifelse(!is.na(Group) & (antFlag == 1 | aphidFlag == 1 | beeFlag == 1 | beetleFlag == 1 | caterpillarFlag == 1 | 
-                                                daddylonglegsFlag == 1 | flyFlag == 1 | grasshopperFlag == 1 | leafhopperFlag == 1 | 
-                                                mothsFlag == 1 | otherFlag == 1 | spiderFlag == 1 | truebugsFlag == 1 | unidentifiedFlag == 1), 1, 0)
-           )
-  
-  fullQAQC = dataToCheck %>% 
+  survQAQC = dataToCheck %>%
+    mutate(arthFlag = case_when(
+      Group == 'ant' & Length > 15 | Group == 'ant' & Quantity > 50 ~ 'ant',
+      Group == 'aphid' & Length > 10 | Group == 'aphid' & Quantity > 50 ~ 'aphid',
+      Group == 'bee' & Length > 25 | Group == 'bee' & Quantity > 6 ~ 'bee',
+      Group == 'beetle' & Length > 20 | Group == 'beetle' & Quantity > 6 ~ 'beetle',
+      Group == 'caterpillar' & Length > 50 | Group == 'caterpillar' & Quantity > 6 ~ 'caterpillar',
+      Group == 'daddylonglegs' & Length > 15 | Group == 'daddylonglegs' & Quantity > 6 ~ 'daddylonglegs',
+      Group == 'fly' & Length > 15 | Group == 'fly' & Quantity > 6 ~ 'fly',
+      Group == 'grasshopper' & Length > 20 | Group == 'grasshopper' & Quantity > 6 ~ 'grasshopper',
+      Group == 'leafhopper' & Length > 20 | Group == 'leafhopper' & Quantity > 6 ~ 'leafhopper',
+      Group == 'moths' & Length > 30 | Group == 'moths' & Quantity > 6 ~ 'moths',
+      Group == 'other' & Length > 25 | Group == 'other' & Quantity > 6 ~ 'other',
+      Group == 'spider' & Length > 15 | Group == 'spider' & Quantity > 6 ~ 'spider',
+      Group == 'truebugs' & Length > 25 | Group == 'truebugs' & Quantity > 6 ~ 'truebugs',
+      Group == 'unidentified' & Length > 25 | Group == 'unidentified' & Quantity > 6 ~ 'unidentified',
+      TRUE ~ ''
+    )) %>%
     group_by(ID, NumberOfLeaves, AverageLeafLength) %>%
-    summarize(totalArthAbund = sum(Quantity[!Group %in% c('ant', 'aphid')], na.rm = TRUE),
+    summarize(arthFlags = trimws(paste(arthFlag, collapse = " ")),
+              totalArthAbund = sum(Quantity[!Group %in% c('ant', 'aphid')], na.rm = TRUE),
               totalArthDiv = n_distinct(Group[!is.na(Group)]),
               rareArthDiv = n_distinct(Group[Group %in% c('truebugs', 'grasshopper', 'daddylonglegs', 'bee', 'moths')])) %>%
-    mutate(totalArthsFlag = ifelse(totalArthAbund > totalArthsMax, 1, 0),
-           arthDivFlag = ifelse(totalArthDiv > arthDiversityMax, 1, 0),
-           rareArthDivFlag = ifelse(rareArthDiv > rareArthDiversityMax, 1, 0),
-           numLeavesFlag = ifelse(NumberOfLeaves > numberLeavesMax | NumberOfLeaves < numberLeavesMin, 1, 0),
-           leafLengthFlag = ifelse(AverageLeafLength > leafLengthMax, 1, 0),
-           reliable = ifelse(totalArthsFlag == 1 | arthDivFlag == 1 | rareArthDivFlag == 1 | 
-                               numLeavesFlag == 1 | leafLengthFlag == 1, 0, 1)) %>%
+    mutate(survFlag1 = ifelse(totalArthAbund > totalArthsMax, paste(arthFlags, 'totalArthAbund'), arthFlags),
+           survFlag2 = ifelse(totalArthDiv > arthDiversityMax, paste(survFlag1, 'totalArthDiv'), survFlag1),
+           survFlag3 = ifelse(NumberOfLeaves > numberLeavesMax | NumberOfLeaves < numberLeavesMin, paste(survFlag2, 'numLeaves'), survFlag2),
+           survFlag4 = ifelse(AverageLeafLength > leafLengthMax, paste(survFlag3, 'leafLength'), survFlag3),
+           flags = trimws(survFlag4),
+           status = ifelse(flags == '', 'ok', 'check')) %>%
     ungroup() %>%
-    dplyr::select(ID, totalArthsFlag, arthDivFlag, rareArthDivFlag, numLeavesFlag, leafLengthFlag, reliable) %>%
-    right_join(arthQAQCoutput, by = 'ID') %>%
-    mutate(reliable = ifelse(arthFlag == 1, 0, reliable))
-  
-  updatedSurveysChecked = rbind(surveysChecked, data.frame(ID = unique(fullQAQC$ID))) %>%
-    distinct(ID)
-  write.csv(updatedSurveysChecked, 'data/surveys_checked.csv', row.names = FALSE)
-  
+    dplyr::select(ID, flags, status) %>%
+    right_join(dataToCheck, by = 'ID') %>%
+    dplyr::select(ID, UserFKOfObserver:cell, flags, status) %>%
+    mutate(actionTaken = NA)
+
   # Optionally write the qa/qc'ed dataset to a file
   if (write) {
-    write.csv(fullQAQC, paste0('data/qa_qc_dataset_', Sys.Date(), '.csv'), row.names = F)
+    write.csv(survQAQC, paste0('data/flagged_dataset_', Sys.Date(), '.csv'), row.names = F)
   }
-  return(qaqcOutput)
-  
+  return(survQAQC)
 }
