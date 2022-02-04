@@ -1088,7 +1088,7 @@ qaqc = function(dataToCheck,               # subset of fullDataset dataframe (i.
 
   # Optionally write the qa/qc'ed dataset to a file
   if (write) {
-    write.csv(survQAQC, paste0('data/flagged_dataset_', Sys.Date(), '.csv'), row.names = F)
+    write.csv(survQAQC, paste0('dataCleaning/flagged_dataset_', Sys.Date(), '.csv'), row.names = F)
   }
   return(survQAQC)
 }
