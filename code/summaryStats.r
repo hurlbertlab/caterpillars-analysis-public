@@ -100,6 +100,14 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
       summarize(n = median(n)) %>% 
       pull(n),
     
+    medianNumDatesPerSitePerYear = dataset %>%
+      distinct(Name, LocalDate, Year) %>%
+      count(Name, Year) %>%
+      group_by(Name) %>%
+      summarize(meanNumDates = mean(n, na.rm = T)) %>%
+      summarize(n = median(meanNumDates)) %>% 
+      pull(n),
+    
     medianNumDatesPerSiteThisYear = datasetThisYear %>%
       distinct(Name, LocalDate) %>%
       count(Name) %>%
