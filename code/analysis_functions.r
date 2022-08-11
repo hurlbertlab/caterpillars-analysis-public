@@ -660,28 +660,33 @@ multiSitePhenoPlot = function(fullDataset,
                                             ordersToInclude = ordersToInclude, ...)
     
     # Plot REVI window
-    if (REVI == 'arrivaldate') {
-      bird = siteSummary %>%
-        filter(Name == site) %>%
-        mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
-               peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
-               arrival = round((preArrival + peakArrival)/2),
-               hatching = arrival + 35, # based on reproduction times from Birds of North America
-               fledging = hatching + 12) # nestling period
-      rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
-    } else if (REVI == 'matedate1') {
-      hatching = siteSummary$matedate1[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
-      if (!is.null(hatching)) {
-        fledging = hatching + 12
-        rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
-      } 
-    } else if (REVI == 'matedate2') {
-      hatching = siteSummary$matedate2[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
-      if (!is.null(hatching)) {
-        fledging = hatching + 12
-        rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+    if (!is.null(REVI)) {
+      
+      if (REVI == 'arrivaldate') {
+        bird = siteSummary %>%
+          filter(Name == site) %>%
+          mutate(preArrival = yday(as.Date(LatestWeekWithFreq0, format = "%m/%d/%Y")) + 3, # +3 to shift from beg to middle of week
+                 peakArrival = yday(as.Date(WeekOfPeakFreq, format = "%m/%d/%Y")) + 3,
+                 arrival = round((preArrival + peakArrival)/2),
+                 hatching = arrival + 35, # based on reproduction times from Birds of North America
+                 fledging = hatching + 12) # nestling period
+        rect(bird$hatching, -5, bird$fledging, 200, col = colREVI, border = NA)
+      } else if (REVI == 'matedate1') {
+        hatching = siteSummary$matedate1[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
+        if (!is.null(hatching)) {
+          fledging = hatching + 12
+          rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+        } 
+      } else if (REVI == 'matedate2') {
+        hatching = siteSummary$matedate2[siteSummary$Name == site] + 24 # 5d nest building + 2d pre-laying + 4d laying + 13d incubation
+        if (!is.null(hatching)) {
+          fledging = hatching + 12
+          rect(hatching, -5, fledging, 200, col = colREVI, border = NA)
+        }
       }
-    }
+      
+    } # end REVI if
+    
     
     
     # Month lines
@@ -1035,6 +1040,172 @@ dateOfGDDaccumulation = function(tmean, base = 0, accumulateTo = 2400) {
   dateAccumulated = min(jds[gdd >= accumulateTo])
   return(dateAccumulated)
 }
+
+
+
+
+######################
+# Function for plotting arthropod trends over time (years)
+
+annualTrendPlot = function(fullDataset, 
+                           site, 
+                           jdRange = c(121, 212), # range of julian days over which to summarize
+                           plotVar = "fracSurveys",    #other option "meanDensity"
+                           group = "caterpillar", 
+                           minSurveysPerYear = 100,
+                           showPoints = FALSE,
+                           add = FALSE,
+                           showTrend = TRUE,
+                           yLab = NULL,
+                           ...) {
+  
+  df = filter(fullDataset, Name == site, julianday >= jdRange[1], julianday <= jdRange[2])
+  
+  survsPerYear = df %>%
+    distinct(Year, ID) %>%
+    count(Year) %>%
+    rename(totalSurvs = n) 
+  
+  output = df %>%
+    filter(Group %in% group) %>%
+    group_by(Year) %>%
+    summarize(nSurvs = sum(Quantity > 0, na.rm = T),
+              nTot = sum(Quantity, na.rm = T)) %>%
+    left_join(survsPerYear, by = 'Year') %>%
+    mutate(fracSurveys = 100*nSurvs/totalSurvs,
+           meanDensity = nTot/totalSurvs) %>%
+    filter(totalSurvs >= minSurveysPerYear) %>%
+    data.frame()
+  
+  if (nrow(output) < 3) {
+    warning("Not enough data points.")
+    return()
+  }
+  
+  if (plotVar == "fracSurveys" & is.null(yLab)) { 
+    yLabel = "Percent of surveys"
+  } else if (plotVar == "meanDensity" & is.null(yLab)) {
+    yLabel = "Mean number per survey"
+  } else {
+    yLabel = yLab
+  }
+  
+  if (add) {
+    points(output$Year, output[, plotVar], type = 'l', ...)
+  } else {
+    plot(output$Year, output[, plotVar], type = 'l', las = 1, ylab = yLabel, xlab = "", xaxt = "n", ...)
+    axis(1, at = min(output$Year):max(output$Year), labels = round(min(output$Year):max(output$Year), 0)) # put this in bc R adds a decimal (e.g. 2019.0) to year when there are only 3 values
+  }
+  
+  if (showPoints) { # scale points by the number of surveys conducted in each year relative to the max
+    
+    maxNumSurveys = max(output$totalSurvs) 
+    points(output$Year, output[, plotVar], type = 'o', pch = 16, cex = 2*output$totalSurvs/maxNumSurveys, ...)
+  }
+  
+  if (showTrend) {
+    linmod = lm(output[, plotVar] ~ output$Year)
+    abline(linmod)
+    legend("topright", legend = paste("R2 =", round(summary(linmod)$r.squared, 2)), bty = 'n')
+  }
+  
+  return(output)
+}
+
+
+
+# Function for plotting annual trends for multiple sites in a multi-panel figure
+multiSiteTrendPlot = function(fullDataset, 
+                     sites,                 # vector of site names
+                     jdRange = c(121, 212), # range of julian days over which to summarize
+                     plotVar = "fracSurveys",    #other option "meanDensity"
+                     group = "caterpillar", 
+                     minSurveysPerYear = 100, # minimum number of surveys per year to be included in the regression
+                     showPoints = FALSE,      # if TRUE, display data points sized by number of surveys (otherwise just line)
+                     add = FALSE,
+                     showTrend = TRUE,        # display the regression line and R2
+                     write = FALSE,           # save the figure to a file
+                     filename,                # optional filename
+                     panelRows = 4,           # dimensions for multipanel plot
+                     panelCols = 6,
+                     col = 'purple3',         # line color for raw trend data
+                     regLineCol = 'magenta',  # color for regression line
+                     cex.main = 1.5,
+                     cex.lab = 1,
+                     cex.axis = 1,
+                     cex.text = 1.5,
+                     height = 8.5,
+                     width = 11,
+                     yLabOnPanels = FALSE,
+                     ...) {
+
+  if (write) {
+    pdf(paste('figs/', filename, '.pdf', sep = ''), height = height, width = width)  
+  }
+  
+  
+  # Arrange panels in order of descending latitude
+  siteTable = fullDataset %>%
+    filter(Name %in% sites) %>%
+    distinct(Name, Region, Latitude) %>%
+    dplyr::select(Name, Region, Latitude) %>%
+    arrange(desc(Latitude))
+  
+   # Make plot
+  par(mfrow = c(panelRows, panelCols), mar = c(3, 2, 4, 1), oma = c(5, 5, 0, 0))
+  
+  counter = 0
+  
+  for (site in siteTable$Name) {
+    
+    
+    # Add region abbreviation to the site name (if it's not already present) and then prettify
+    siteTable$siteNameRegion = apply(siteTable, 1, function(x) 
+      ifelse(substr(x[1], nchar(x[1])-3, nchar(x[1])) == paste(", ", x[2], sep = ""),
+             x[1], paste(x[1], ", ", x[2], sep = "")))
+    
+    siteLabel = siteNameForPlotting(siteTable$siteNameRegion[siteTable$Name == site], maxCharsPerLine = 23)
+    
+    
+    if (yLabOnPanels) {
+      panelYLabel = NULL      # This will display the default y-axis labels inherent to annual TrendPlot
+    } else {
+      panelYLabel = ""        # This will suppress y-axis labels on individual panels
+    }
+    
+    # Site trend
+    trendData = annualTrendPlot(fullDataset, site, jdRange = jdRange, plotVar = plotVar, group = group, 
+                                minSurveysPerYear = minSurveysPerYear, yLab = panelYLabel, col = col, ...)
+    
+    if (!is.null(trendData)) { #if there was enough data to calculate a trend (i.e. trendData != NULL)
+    
+      mtext(siteLabel, side = 3, cex = cex.main, line = 1)
+      
+      if (plotVar == "fracSurveys") { 
+        yLabel = "Percent of surveys"
+      } else if (plotVar == "meanDensity") {
+        yLabel = "Mean number per survey"
+      } 
+      
+      counter = counter + 1
+      
+      if (counter %% (panelRows*panelCols) == 0 | counter == length(sites)) {
+        mtext("Year", 1, outer = TRUE, line = 1, cex = 1.5)
+        mtext(yLabel, 2, outer = TRUE, line = 1, cex = 1.5)
+      }  
+      
+    } # end if
+  } #end site loop
+
+  if (write) {
+    dev.off()
+  }
+
+}
+
+
+
+
 
 
 
