@@ -36,6 +36,10 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
     
     numSitesThisYear = datasetThisYear %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
+    numRegionsTotal = dataset %>% summarize(n = n_distinct(Region)) %>% pull(n),
+    
+    numRegionsThisYear = datasetThisYear %>% summarize(n = n_distinct(Region)) %>% pull(n),
+    
     numUsers = dataset %>% summarize(n = n_distinct(UserFKOfObserver)) %>% pull(n), 
     
     numUsersThisYear = datasetThisYear %>% 
