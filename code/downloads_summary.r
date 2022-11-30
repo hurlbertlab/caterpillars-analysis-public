@@ -28,8 +28,5 @@ sum(IDdownloads$n)
 dataDownloads = byfile %>% filter(grepl("CSV", File))
 sum(dataDownloads$n)
 
-resourceDownloads = byfile %>% filter(File %in% c("paperDataSheet.pdf", "GettingStarted.pdf", "TrainingParticipants.pdf",
-                                                  "VisualSurveyTestBranch.pdf", "Building A Beat Sheet.pdf", "Data Exploration.pdf",
-                                                  "ManageMySurveysGuide.pdf", "MobileAppManual.pdf", "Site_Setup.pdf", "CCwebinar2022.pdf",
-                                                  "Educator_Guide.pdf"))
+resourceDownloads = bypage %>% filter(Page %in% c("resources", "conductASurvey", "conductASurvey/index.html"))
 sum(resourceDownloads$n)
