@@ -33,5 +33,5 @@ cc_map <- tm_shape(cc_sites, bbox=tmaptools::bb(matrix(c(-3200000, -1007822, 300
   tm_polygons(col = "cc", palette = cols, legend.show = F)
 
 # Save map as PDF
-tmap_save(cc_map, "figs/states_provs_CC_sites.pdf")
+tmap_save(cc_map, "figs/states_provs_CC_sites_2022.pdf")
 
