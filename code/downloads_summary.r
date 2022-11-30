@@ -21,3 +21,15 @@ downloads = read.csv(paste(github_raw, filter(data_links, grepl("Download.csv", 
 bypage = count(downloads, Page) %>% arrange(desc(n))
 
 byfile = count(downloads, File) %>% arrange(desc(n))
+
+IDdownloads = bypage %>% filter(Page %in% c("identificationSkills", "identificationSkills/index.html")) 
+sum(IDdownloads$n)
+
+dataDownloads = byfile %>% filter(grepl("CSV", File))
+sum(dataDownloads$n)
+
+resourceDownloads = byfile %>% filter(File %in% c("paperDataSheet.pdf", "GettingStarted.pdf", "TrainingParticipants.pdf",
+                                                  "VisualSurveyTestBranch.pdf", "Building A Beat Sheet.pdf", "Data Exploration.pdf",
+                                                  "ManageMySurveysGuide.pdf", "MobileAppManual.pdf", "Site_Setup.pdf", "CCwebinar2022.pdf",
+                                                  "Educator_Guide.pdf"))
+sum(resourceDownloads$n)
