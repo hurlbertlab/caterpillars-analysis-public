@@ -120,7 +120,13 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
     
     iNatObsTot = sum(dataset$Photo == 1, na.rm = TRUE),
     
-    iNatObsThisYear = sum(datasetThisYear$Photo == 1, na.rm = TRUE)
+    iNatObsThisYear = sum(datasetThisYear$Photo == 1, na.rm = TRUE),
+    
+    numUniversities = dataset %>% 
+      distinct(Name) %>%
+      filter(grepl("College", Name) | grepl("University", Name) | Name %in% c("UNC Chapel Hill Campus", "UNCW", "Georgetown")) %>%
+      summarize(n = n_distinct(Name)) %>% 
+      pull(n)
 
   )
   return(stats)
