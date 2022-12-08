@@ -134,7 +134,7 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
 
 
 
-# For a given year, provide site summary stats and then order results by the sortingVar.
+# SITE AWARDS AND OTHER STATS: For a given year, provide site summary stats and then order results by the sortingVar.
 # Possible sortingVar values: 'nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 
 #   'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers'
 annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = 'pctCat') {
@@ -148,6 +148,11 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     stop("Invalid sortingVar, which must be one of: 'nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers'")
   }
   
+  firstYear = fullDataset %>%
+    group_by(Name) %>%
+    summarize(firstYear = min(Year))
+  
+  
   dataset = fullDataset %>%
     filter(!grepl("BBS", Name), 
            !grepl("Coweeta", Name), Name != "Example Site",
@@ -156,14 +161,20 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     summarize(nSurvs = n_distinct(ID), 
               nDates = n_distinct(julianday), 
               nWeeks = n_distinct(julianweek), 
-              nCats = sum(Quantity[Group == "caterpillar"]), 
+              nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
               nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
               pctCat = 100*nCatSurvs/nSurvs, 
-              nLargeAvg = sum(Quantity[Length>=10])/nSurvs, 
+              nLargeAvg = sum(Quantity[Length>=10], na.rm = T)/nSurvs, 
               bigCat = max(Length[Group=="caterpillar"], na.rm = T), 
               pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
-              nUsers = n_distinct(UserFKOfObserver)) %>% 
-    arrange(desc(get(sortingVar)))
+              nUsers = n_distinct(UserFKOfObserver),
+              maxLatitude = max(Latitude),
+              minLatitude = min(Latitude),
+              maxLongitude = max(Longitude),
+              minLongitude = min(Longitude)) %>% 
+    arrange(desc(get(sortingVar))) %>%
+    left_join(firstYear, by = 'Name')
   
   return(dataset)
 }
+
