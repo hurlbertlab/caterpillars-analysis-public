@@ -162,6 +162,7 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
               nDates = n_distinct(julianday), 
               nWeeks = n_distinct(julianweek), 
               nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
+              nArths = sum(Quantity, na.rm = T),
               nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
               pctCat = 100*nCatSurvs/nSurvs, 
               nLargeAvg = sum(Quantity[Length>=10], na.rm = T)/nSurvs, 
@@ -176,5 +177,41 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     left_join(firstYear, by = 'Name')
   
   return(dataset)
+}
+
+
+
+
+# Project growth over time stats
+projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
+  require(dplyr)
+  
+  if (!exists("fullDataset")) {
+    fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
+  }
+  
+  trends = fullDataset %>%
+    filter(!grepl("BBS", Name), 
+           !grepl("Coweeta", Name), Name != "Example Site") %>% 
+    group_by(Year) %>% 
+    summarize(nSurvs = n_distinct(ID), 
+              nSites = n_distinct(SiteFK), 
+              nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
+              nArths = sum(Quantity, na.rm = T),
+              nPhotos = sum(Photo, na.rm = T),
+              pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
+              nUsers = n_distinct(UserFKOfObserver)) 
+  
+  if(plot) {
+    
+    if (!add) {
+      plot(trends$Year, unlist(trends[, plotVar]), xlab = 'Year', ylab = plotVar, ...)
+    } else {
+      points(trends$Year, unlist(trends[, plotVar]), ...)
+    }
+    
+  }
+    
+  return(trends)
 }
 
