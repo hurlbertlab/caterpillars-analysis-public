@@ -181,6 +181,10 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
 
 
 
+    
+
+
+
 
 # Project growth over time stats
 projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
@@ -190,9 +194,25 @@ projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
     fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
   }
   
-  trends = fullDataset %>%
+  dataset = fullDataset %>%
     filter(!grepl("BBS", Name), 
-           !grepl("Coweeta", Name), Name != "Example Site") %>% 
+           !grepl("Coweeta", Name), Name != "Example Site") 
+  
+  years = unique(dataset$Year)
+  
+  # cumulative site and user numbers
+  cumulative = data.frame(Year = NULL, cumNsites = NULL, cumNusers = NULL)
+  
+  for (y in 1:length(years)) {
+    
+    cumulative = rbind(cumulative,
+                   data.frame(Year = years[y],
+                              cumNsites = length(unique(dataset$SiteFK[dataset$Year <= years[y]])),
+                              cumNusers = length(unique(dataset$UserFKOfObserver[dataset$Year <= years[y]]))))
+  }
+  
+  # other annual trends
+  trends = dataset %>% 
     group_by(Year) %>% 
     summarize(nSurvs = n_distinct(ID), 
               nSites = n_distinct(SiteFK), 
@@ -200,12 +220,17 @@ projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
               nArths = sum(Quantity, na.rm = T),
               nPhotos = sum(Photo, na.rm = T),
               pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
-              nUsers = n_distinct(UserFKOfObserver)) 
+              nUsers = n_distinct(UserFKOfObserver)) %>%
+    left_join(cumulative, by = 'Year') %>%
+    mutate(cumNsurvs = cumsum(nSurvs),
+           cumNcats = cumsum(nCats),
+           cumNarths = cumsum(nArths),
+           cumNphotos = cumsum(nPhotos))
   
   if(plot) {
     
     if (!add) {
-      plot(trends$Year, unlist(trends[, plotVar]), xlab = 'Year', ylab = plotVar, ...)
+      plot(trends$Year, unlist(trends[, plotVar]), xlab = 'Year', ...)
     } else {
       points(trends$Year, unlist(trends[, plotVar]), ...)
     }
