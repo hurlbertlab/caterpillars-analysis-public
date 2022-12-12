@@ -187,7 +187,7 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
 
 
 # Project growth over time stats
-projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
+projectTrends = function(plot = F, add = F, plotVar = NULL, scalar = 1, ...) {
   require(dplyr)
   
   if (!exists("fullDataset")) {
@@ -230,9 +230,9 @@ projectTrends = function(plot = F, add = F, plotVar = NULL, ...) {
   if(plot) {
     
     if (!add) {
-      plot(trends$Year, unlist(trends[, plotVar]), xlab = 'Year', ...)
+      plot(trends$Year, scalar*unlist(trends[, plotVar]), xlab = 'Year', ...)
     } else {
-      points(trends$Year, unlist(trends[, plotVar]), ...)
+      points(trends$Year, scalar*unlist(trends[, plotVar]), ...)
     }
     
   }
