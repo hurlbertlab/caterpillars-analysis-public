@@ -4,8 +4,8 @@ library(lubridate)
 library(data.table)
 library(gsheet)
 library(maps)
-library(sp)
-library(maptools)
+#library(sp)
+#library(maptools)
 #library(tidyr)
 options(dplyr.summarise.inform = FALSE)
 
@@ -44,7 +44,7 @@ frassData = function(open = F, write = F) {
   
   if (write) {
     # Write a copy
-    write.csv(data, paste('data/frass/frass_', Sys.Date(), '.csv', sep = ''),
+    write.csv(data[, 1:10], paste('data/frass/frass_', Sys.Date(), '.csv', sep = ''),
               row.names = F)
   }
   if (open) { return (data) }
@@ -217,6 +217,11 @@ meanDensityByDay = function(surveyData, # merged dataframe of Survey and arthrop
 # The single argument to this function, pointsDF, is a data.frame in which:
 #   - column 1 contains the longitude in degrees (negative in the US)
 #   - column 2 contains the latitude in degrees
+
+
+dfr <- map_data("world") %>% select(long, lat, region)
+sfRegion <- st_as_sf(dfr, coords=c('long', 'lat'))
+
 
 latlong2county <- function(pointsDF) {
   # Prepare SpatialPolygons object with one SpatialPolygon
