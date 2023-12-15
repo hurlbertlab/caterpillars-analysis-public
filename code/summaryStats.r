@@ -152,6 +152,15 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     group_by(Name) %>%
     summarize(firstYear = min(Year))
   
+  peakCat = fullDataset %>%
+    filter(Year == reportYear) %>%
+    group_by(Name, julianweek) %>%
+    summarize(nSurvsPeak = n_distinct(ID),
+              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              pctCat = 100*nCatSurvs/nSurvsPeak) %>%
+    group_by(Name, nSurvsPeak) %>%
+    summarize(peakPctCat = max(pctCat),
+              peakWeek = julianweek[pctCat == peakPctCat])
   
   dataset = fullDataset %>%
     filter(!grepl("BBS", Name), 
@@ -174,11 +183,63 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
               maxLongitude = max(Longitude),
               minLongitude = min(Longitude)) %>% 
     arrange(desc(get(sortingVar))) %>%
-    left_join(firstYear, by = 'Name')
+    left_join(firstYear, by = 'Name') %>%
+    left_join(peakCat, by = 'Name')
   
   return(dataset)
 }
 
+
+
+# Function for calculating notable stats by user
+annualUserStats = function(reportYear = format(Sys.Date(), "%Y"), 
+                           sortingVar = 'pctCat', 
+                           usernames = FALSE) {
+  require(dplyr)
+  
+  if (!exists("fullDataset")) {
+    fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
+  }
+  
+  if (!sortingVar %in% c('nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers')) {
+    stop("Invalid sortingVar, which must be one of: 'nSurvs', 'nDates', 'nWeeks', 'nCats', 'nCatSurvs', 'pctCat', 'nLargeAvg', 'bigCat', 'pctPhoto', 'nUsers'")
+  }
+  
+  firstYear = fullDataset %>%
+    group_by(UserFKOfObserver) %>%
+    summarize(firstYear = min(Year))
+  
+  
+  dataset = fullDataset %>%
+    filter(!grepl("BBS", Name), 
+           !grepl("Coweeta", Name), Name != "Example Site",
+           Year == reportYear) %>% 
+    group_by(UserFKOfObserver) %>% 
+    summarize(nSurvs = n_distinct(ID), 
+              nDates = n_distinct(julianday), 
+              nWeeks = n_distinct(julianweek), 
+              nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
+              nArths = sum(Quantity, na.rm = T),
+              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              pctCat = 100*nCatSurvs/nSurvs, 
+              nLargeAvg = sum(Quantity[Length>=10], na.rm = T)/nSurvs, 
+              bigCat = max(Length[Group=="caterpillar"], na.rm = T), 
+              pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
+              nSites = n_distinct(Name)) %>% 
+    arrange(desc(get(sortingVar))) %>%
+    left_join(firstYear, by = 'UserFKOfObserver')
+  
+  if(usernames) {
+    users = read.csv('c:/git/caterpillars-analysis/data/2023-10-25_User.csv')
+    dataset1 = left_join(dataset, users[, c('ID', 'LastName', 'FirstName')],
+                         by = c('UserFKOfObserver' = 'ID')) %>%
+      select(UserFKOfObserver, LastName, FirstName, nSurvs:firstYear)
+  } else {
+    dataset1 = dataset
+  }
+  
+  return(dataset1)
+}
 
 
     
