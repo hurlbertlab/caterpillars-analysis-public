@@ -1,0 +1,607 @@
+"userPlantName","cleanedPlantName","sciName","itis_id","rank","notes","isConifer"
+"Maple","Maple","Acer","28727","genus","",0
+"Trident maple","Trident maple","Acer buergerianum","837859","species","",0
+"Hedge maple","Hedge maple","Acer campestre","28739","species","",0
+"Florida maple","Florida maple","Acer floridanum","183691","species","",0
+"Amur maple","Amur maple","Acer ginnala","28741","species","",0
+"Chalk maple","Chalk maple","Acer leucoderme","28761","species","",0
+"Bigleaf maple","Bigleaf maple","Acer macrophyllum","28748","species","",0
+"Acer negundo","Acer negundo","Acer negundo","28749","species","",0
+"Boxelder","Boxelder","Acer negundo","28749","species","",0
+"Black maple","Black maple","Acer nigrum","182135","species","",0
+"Japanese maple","Japanese maple","Acer palmatum","182136","species","",0
+"Striped maple","Striped maple","Acer pensylvanicum","28754","species","",0
+"Norway maple","Norway maple","Acer platanoides","28755","species","",0
+"Red maple","Red maple","Acer rubrum","28728","species","",0
+"Silver maple","Silver maple","Acer saccharinum","28757","species","",0
+"Sugar maple","Sugar maple","Acer saccharum","28731","species","",0
+"Acer x freemanii","Acer x freemanii","Acer X freemanii","500949","species","",0
+"Horned maple","Horned maple","Acer diabolicum","837851","species","",0
+"Southern sugar maple","Southern sugar maple","Acer saccharum","28731","species","",0
+"Buckeye","Buckeye","Aesculus","28714","genus","",0
+"Ohio buckeye","Ohio buckeye","Aesculus glabra","28718","species","",0
+"Aesculus hippocastanum","Aesculus hippocastanum","Aesculus hippocastanum","28721","species","",0
+"Aesculus parviflora","Aesculus parviflora","Aesculus parviflora","28722","species","",0
+"Bottlebrush buckeye","Bottlebrush buckeye","Aesculus parviflora","28722","species","",0
+"Red buckeye","Red buckeye","Aesculus pavia","28723","species","",0
+"Yellow buckeye","Yellow buckeye","Aesculus flava","837871","species","",0
+"Ailanthus","Ailanthus","Ailanthus","28826","genus","",0
+"Alder","Alder","Alnus","19466","genus","",0
+"Hazel alder","Hazel alder","Alnus serrulata","19468","species","",0
+"Speckled alder","Speckled alder","Alnus incana","19471","species","",0
+"Serviceberry","Serviceberry","Amelanchier","25108","species","",0
+"Common serviceberry","Common serviceberry","Amelanchier arborea","25110","species","",0
+"Amelanchier laevis","Amelanchier laevis","Amelanchier laevis","182046","species","",0
+"Pacific madrone","Pacific madrone","Arbutus menziesii","23627","species","",0
+"Dwarf pawpaw","Dwarf pawpaw","Asimina pygmea","18114","species","",0
+"Pawpaw","Pawpaw","Asimina triloba","18117","species","",0
+"Baccharis halimifolia","Baccharis halimifolia","Baccharis halimifolia","35682","species","",0
+"Birch","Birch","Betula","19478","genus","",0
+"Yellow birch","Yellow birch","Betula alleghaniensis","19481","species","",0
+"Black birch","Black birch","Betula lenta","19487","species","",0
+"Sweet birch","Sweet birch","Betula lenta","19487","species","",0
+"White birch","White birch","Betula minor","183534","species","",0
+"River birch","River birch","Betula nigra","19480","species","",0
+"Paper birch","Paper birch","Betula papyrifera","19489","species","",0
+"Gray birch","Gray birch","Betula populifolia","19497","species","",0
+"Heartleaf birch","Heartleaf birch","Betula cordifolia","195222","species","",0
+"Buxus","Buxus","Buxus","28022","genus","",0
+"Callicarpa americana","Callicarpa americana","Callicarpa americana","32144","species","",0
+"Calycanthus","Calycanthus","Calycanthus","18139","species","",0
+"Eastern sweetshrub","Eastern sweetshrub","Calycanthus floridus","18142","species","",0
+"Camellia","Camellia","Camellia","500689","genus","",0
+"Hornbeam","Hornbeam","Carpinus","19503","genus","",0
+"American hornbeam","American hornbeam","Carpinus caroliniana","19504","species","",0
+"Blue beech","Blue beech","Carpinus caroliniana","19504","species","",0
+"Hickory","Hickory","Carya","19223","genus","",0
+"Bitternut hickory","Bitternut hickory","Carya cordiformis","19227","species","",0
+"Pignut hickory","Pignut hickory","Carya glabra","19231","species","",0
+"Pecan","Pecan","Carya illinoinensis","19234","species","",0
+"Shellbark hickory","Shellbark hickory","Carya laciniosa","19235","species","",0
+"Nutmeg hickory","Nutmeg hickory","Carya myristiciformis","19239","species","",0
+"Shagbark hickory","Shagbark hickory","Carya ovata","19242","species","",0
+"Mockernut hickory","Mockernut hickory","Carya tomentosa","19247","species","",0
+"American chestnut","American chestnut","Castanea dentata","19454","species","",0
+"Chinese chestnut","Chinese chestnut","Castanea mollissima","501318","species","",0
+"Catalpa","Catalpa","Catalpa","34312","genus","",0
+"Southern catalpa","Southern catalpa","Catalpa bignonioides","34313","species","",0
+"Northern catalpa","Northern catalpa","Catalpa speciosa","34315","species","",0
+"Oriental bittersweet","Oriental bittersweet","Celastrus orbiculatus","506068","species","",0
+"Hackberry","Hackberry","Celtis","19039","genus","",0
+"Sugarberry","Sugarberry","Celtis laevigata","19042","species","",0
+"Common buttonbush","Common buttonbush","Cephalanthus occidentalis","34786","species","",0
+"Eastern redbud","Eastern redbud","Cercis canadensis","25782","species","",0
+"Chinese quince","Chinese quince","Chaenomeles sinensis","565928","species","",0
+"Atlantic white-cedar","Atlantic white-cedar","Chamaecyparis thyoides","18046","species","",0
+"White-cedar","White-cedar","Chamaecyparis thyoides","18046","species","",1
+"Fragrant wintersweet","Fragrant wintersweet","Chimonanthus praecox",NA,"species","",0
+"Fringetree","Fringetree","Chionanthus","32948","genus","",0
+"Kentucky yellowwood","Kentucky yellowwood","Cladrastis kentukea","26539","species","",0
+"Dogwood","Dogwood","Cornus","27798","genus","",0
+"Alternate-leaf dogwood","Alternate-leaf dogwood","Cornus alternifolia","27813","species","",0
+"Silky dogwood","Silky dogwood","Cornus amomum","27799","species","",0
+"Roughleaf dogwood","Roughleaf dogwood","Cornus drummondii","27807","species","",0
+"Flowering dogwood","Flowering dogwood","Cornus florida","27806","species","",0
+"Stiff dogwood","Stiff dogwood","Cornus foemina","27802","species","",0
+"Kousa dogwood","Kousa dogwood","Cornus kousa","507498","species","",0
+"Big-leaf dogwood","Big-leaf dogwood","Cornus macrophylla","896096","species","",0
+"Cornelian-cherry dogwood","Cornelian-cherry dogwood","Cornus mas","565094","species","",0
+"Cornus mas","Cornus mas","Cornus mas","565094","species","",0
+"Cornus stolonifera","Cornus stolonifera","Cornus sericea","501637","species","",0
+"Redosier dogwood","Redosier dogwood","Cornus sericea","501637","species","",0
+"Weeping knoss dogwood","Weeping knoss dogwood","Cornus kousa","507498","species","",0
+"Grey dogwood","Grey dogwood","Cornus racemosa","501635","species","",0
+"Hazelnut","Hazelnut","Corylus","19505","genus","",0
+"American hazelnut","American hazelnut","Corylus americana","19506","species","",0
+"Beaked hazel","Beaked hazel","Corylus cornuta","19507","species","",0
+"Hawthorn","Hawthorn","Crataegus","24539","genus","",0
+"Broadleaf hawthorn","Broadleaf hawthorn","Crataegus dilatata","24555","species","",0
+"Fanleaf hawthorn","Fanleaf hawthorn","Crataegus flabellata","24561","species","",0
+"Washington hawthorn","Washington hawthorn","Crataegus phaenopyrum","24593","species","",0
+"Cyrilla racemiflora","Cyrilla racemiflora","Cyrilla racemiflora","23449","species","",0
+"Bush honeysuckle","Bush honeysuckle","Diervilla","35309","genus","",0
+"Persimmon","Persimmon","Diospyros","23853","genus","",0
+"Common persimmon","Common persimmon","Diospyros virginiana","23855","species","",0
+"Edgeworthia chrysantha","Edgeworthia chrysantha","Edgeworthia chrysantha","512730","species","",0
+"Russian-olive","Russian-olive","Elaeagnus angustifolia","27770","species","",0
+"Autumn olive","Autumn olive","Elaeagnus umbellata","27776","species","",0
+"Euonymus alatus","Euonymus alatus","Euonymus alatus","27946","species","",0
+"European spindletree","European spindletree","Euonymus europaeus","27949","species","",0
+"Yeddo euonymous","Yeddo euonymous","Euonymus hamiltonianus","894989","species","",0
+"Beech","Beech","Fagus","19461","genus","",0
+"American beech","American beech","Fagus grandifolia","19462","species","",0
+"European beech","European beech","Fagus sylvatica","502590","species","",0
+"Fagus sylvatica","Fagus sylvatica","Fagus sylvatica","502590","species","",0
+"Japanese knotweed","Japanese knotweed","Fallopia japonica","565897","species","",0
+"Speckled japanese aralla","Speckled japanese aralla","Fatsia japonica","505935","species","",0
+"Ficus","Ficus","Ficus","19081","species","",0
+"Fig","Fig","Ficus","19081","species","",0
+"Florida forestiera","Florida forestiera","Forestiera segregata","32959","species","",0
+"Forsythia","Forsythia","Forsythia","32961","species","",0
+"Ash","Ash","Fraxinus","32928","species","",0
+"White ash","White ash","Fraxinus americana","32931","species","",0
+"Carolina ash","Carolina ash","Fraxinus caroliniana","32941","species","",0
+"Black ash","Black ash","Fraxinus nigra","32945","species","",0
+"Green ash","Green ash","Fraxinus pennsylvanica","32929","species","",0
+"Gardenia","Gardenia","Gardenia","35159","genus","",0
+"Huckleberry","Huckleberry","Gaylussacia","23659","genus","",0
+"Gaylussacia baccata","Gaylussacia baccata","Gaylussacia baccata","23660","species","",0
+"Ginkgo","Ginkgo","Ginkgo","183264","genus","",0
+"Honeylocust","Honeylocust","Gleditsia","26711","genus","",0
+"Carolina silverbell","Carolina silverbell","Halesia carolina","23864","species","",0
+"Halesia tetraptera","Halesia tetraptera","Halesia tetraptera","502868","species","",0
+"Witch hazel","Witch hazel","Hamamelis virginiana","19033","species","",0
+"witch-hazel","witch-hazel","Hamamelis virginiana","19033","species","",0
+"Hamamelis virginiana","Hamamelis virginiana","Hamamelis virginiana","19033","species","",0
+"Ozark witch hazel","Ozark witch hazel","Hamamelis vernalis","19032","species","",0
+"Rose of sharon","Rose of sharon","Hibiscus syriacus","21638","species","",0
+"Raisin","Raisin","Hovenia dulcis","28554","species","",0
+"Hydrangea","Hydrangea","Hydrangea","24194","genus","",0
+"Hydrangea quercifolia","Hydrangea quercifolia","Hydrangea quercifolia","24200","species","",0
+"Oakleaf hydrangea","Oakleaf hydrangea","Hydrangea quercifolia","24200","species","",0
+"Possumhaw","Possumhaw","Ilex decidua","27998","species","",0
+"Ilex glabra","Ilex glabra","Ilex glabra","27981","species","",0
+"Mountain holly","Mountain holly","Ilex montana","28002","species","",0
+"Mountain winterberry","Mountain winterberry","Ilex montana","28002","species","",0
+"Catberry","Catberry","Ilex mucronata","835359","species","",0
+"American holly","American holly","Ilex opaca","27982","species","",0
+"Ilex verticillata","Ilex verticillata","Ilex verticillata","27985","species","",0
+"Winterberry","Winterberry","Ilex verticillata","27985","species","",0
+"Ilex vomitoria","Ilex vomitoria","Ilex vomitoria","27986","species","",0
+"Itea virginica","Itea virginica","Itea virginica","24202","species","",0
+"Virginia sweetspire","Virginia sweetspire","Itea virginica","24202","species","",0
+"Walnut","Walnut","Juglans","19248","genus","",0
+"Black walnut","Black walnut","Juglans nigra","19254","species","",0
+"Kalmia latifolia","Kalmia latifolia","Kalmia latifolia","23677","species","",0
+"Mountain laurel","Mountain laurel","Kalmia latifolia","23677","species","",0
+"Kalopanax septemlobus","Kalopanax septemlobus","Kalopanax septemlobus","565257","species","",0
+"Golden rain tree","Golden rain tree","Koelreuteria elegans","503285","species","",0
+"Koelreuteria paniculata","Koelreuteria paniculata","Koelreuteria paniculata","503286","species","",0
+"Crepe myrtle","Crepe myrtle","Lagerstroemia indica","27110","species","",0
+"Tamarack","Tamarack","Larix laricina","183412","species","",1
+"Leucothoe axillaris","Leucothoe axillaris","Leucothoe axillaris","23550","species","",0
+"Privet","Privet","Ligustrum","32973","genus","",0
+"Japanese privet","Japanese privet","Ligustrum japonicum","503449","species","",0
+"Common privet","Common privet","Ligustrum vulgare","32980","species","",0
+"Olive quihoui","Olive quihoui","Ligustrum quihoui","32978","species","",0
+"Quihoui","Quihoui","Ligustrum quihoui","32978","species","",0
+"Spicebush","Spicebush","Lindera","18146","genus","",0
+"Common spicebush","Common spicebush","Lindera benzoin","18147","species","",0
+"Lindera benzoin","Lindera benzoin","Lindera benzoin","18147","species","",0
+"Northern spicebush","Northern spicebush","Lindera benzoin","18147","species","",0
+"Sweetgum","Sweetgum","Liquidambar styraciflua","19027","species","",0
+"Tulip poplar","Tulip poplar","Liriodendron tulipifera","18086","species","",0
+"Tuliptree","Tuliptree","Liriodendron tulipifera","18086","species","",0
+"Yellow-poplar","Yellow-poplar","Liriodendron tulipifera","18086","species","",0
+"Tanoak","Tanoak","Lithocarpus densiflorus","19464","species","",0
+"Honeysuckle","Honeysuckle","Lonicera","35281","genus","",0
+"Lonicera hispidula var. vacillans","Lonicera hispidula var. vacillans","Lonicera hispidula var. vacillans","528895","species","",0
+"Lonicera japonica","Lonicera japonica","Lonicera japonica","35283","species","",0
+"Amur honeysuckle","Amur honeysuckle","Lonicera maackii","35298","species","",0
+"Tatarian honeysuckle","Tatarian honeysuckle","Lonicera tatarica","35306","species","",0
+"Maackia amurensis","Maackia amurensis","Maackia amurensis","506254","species","",0
+"Osage orange","Osage orange","Maclura pomifera","19102","species","",0
+"Magnolia","Magnolia","Magnolia","18069","genus","",0
+"Southern magnolia","Southern magnolia","Magnolia grandiflora","18074","species","",0
+"Umbrella magnolia","Umbrella magnolia","Magnolia tripetala","18077","species","",0
+"Sweetbay","Sweetbay","Magnolia virginiana","18070","species","",0
+"Loebner magnolia","Loebner magnolia","Magnolia X loebneri",NA,"species","",0
+"Merrill magnolia","Merrill magnolia","Magnolia X loebneri",NA,"species","",0
+"Cucumber magnolia","Cucumber magnolia","Magnolia acuminata","18071","species","",0
+"Fraser magnolia","Fraser magnolia","Magnolia fraseri","18073","species","",0
+"Mountain or fraser magnolia","Mountain or fraser magnolia","Magnolia fraseri","18073","species","",0
+"Apple","Apple","Malus","25254","genus","",0
+"Malus","Malus","Malus","25254","genus","",0
+"Southern crab apple","Southern crab apple","Malus angustifolia","25255","species","",0
+"Southern crabapple","Southern crabapple","Malus angustifolia","25255","species","",0
+"Sweet crab apple","Sweet crab apple","Malus coronaria","25257","species","",0
+"Oregon crab apple","Oregon crab apple","Malus fusca","25258","species","",0
+"Prairie crab apple","Prairie crab apple","Malus ioensis","25259","species","",0
+"Malus siberica","Malus siberica","Malus baccata","25256","species","",0
+"Malus sargentii","Malus sargentii","Malus sargentii","507499","species","",0
+"Morella caroliniensis","Morella caroliniensis","Morella caroliniensis","507898","species","",0
+"Southern bayberry","Southern bayberry","Morella caroliniensis","507898","species","",0
+"Morella cerifera","Morella cerifera","Morella cerifera","507899","species","",0
+"Wax myrtle","Wax myrtle","Morella cerifera","507899","species","",0
+"Red bay","Red bay","Morella rubra","845182","species","",0
+"Myrica cerifera","Myrica cerifera","Morella cerifera","507899","species","",0
+"Mulberry","Mulberry","Morus","19064","genus","",0
+"White mulberry","White mulberry","Morus alba","19066","species","",0
+"Black mulberry","Black mulberry","Morus nigra","19069","species","",0
+"Red mulberry","Red mulberry","Morus rubra","19070","species","",0
+"Clerya","Clerya","Mulinia cleryana","80960","species","",0
+"Arrowwood","Arrowwood","Viburnum","35249","genus","",0
+"Arrowwood viburnum","Arrowwood viburnum","Viburnum","35249","genus","",0
+"Nandina domestica","Nandina domestica","Nandina domestica","18848","species","",0
+"Tupelo","Tupelo","Nyssa","27820","genus","",0
+"Water tupelo","Water tupelo","Nyssa aquatica","27824","species","",0
+"Black gum","Black gum","Nyssa sylvatica","27821","species","",0
+"Blackgum","Blackgum","Nyssa sylvatica","27821","species","",0
+"Hophornbeam","Hophornbeam","Ostrya","19508","genus","",0
+"Eastern hophornbeam","Eastern hophornbeam","Ostrya virginiana","19511","species","",0
+"Sourwood","Sourwood","Oxydendrum arboreum","23690","species","",0
+"Persian ironwood","Persian ironwood","Parrotia persica","895220","species","",0
+"Redbay","Redbay","Persea borbonia","18149","species","",0
+"Common ninebark","Common ninebark","Physocarpus opulifolius","25282","species","",0
+"Blue spruce","Blue spruce","Picea pungens","183307","species","",0
+"Spruce pine","Spruce pine","Pinus glabra","183342","species","",1
+"Monterey pine","Monterey pine","Pinus radiata","183372","species","",1
+"Eastern white pine","Eastern white pine","Pinus strobus","183385","species","",1
+"Virginia pine","Virginia pine","Pinus virginiana","183394","species","",1
+"Mountain ash","Mountain ash","Piptocarpha tetrantha","38860","species","",0
+"Sycamore","Sycamore","Platanus","19019","genus","",0
+"American sycamore","American sycamore","Platanus occidentalis","19020","species","",0
+"Podocarpus","Podocarpus","Podocarpus","183488","genus","",0
+"Balsam poplar","Balsam poplar","Populus balsamifera","22453","species","",0
+"Bigtooth aspen","Bigtooth aspen","Populus grandidentata","22463","species","",0
+"Quaking aspen","Quaking aspen","Populus tremuloides","195773","species","",0
+"Trembling aspen","Trembling aspen","Populus tremuloides","195773","species","",0
+"Cherry","Cherry","Prunus","24762","genus","",0
+"Cherry and plum","Cherry and plum","Prunus","24762","genus","",0
+"Chokecherry","Chokecherry","Prunus","24762","genus","",0
+"Wild cherry","Wild cherry","Prunus","24762","genus","",0
+"American plum","American plum","Prunus americana","24763","species","",0
+"Sweet cherry","Sweet cherry","Prunus avium","24770","species","",0
+"Sour cherry","Sour cherry","Prunus cerasus","24773","species","",0
+"Cherry laurel","Cherry laurel","Prunus laurocerasus","24786","species","",0
+"Prunus maritima","Prunus maritima","Prunus maritima","24790","species","",0
+"Japanese apricot","Japanese apricot","Prunus mume","506231","species","",0
+"Pin cherry","Pin cherry","Prunus pensylvanica","24799","species","",0
+"Peach","Peach","Prunus persica","24765","species","",0
+"Black cherry","Black cherry","Prunus serotina","24764","species","",0
+"Kwanzan cherry","Kwanzan cherry","Prunus serrulata","506233","species","",0
+"Weeping cherry","Weeping cherry","Prunus subhirtella","565436","species","",0
+"Wafer ash","Wafer ash","Ptelea trifoliata","28992","species","",0
+"Buffalo nut","Buffalo nut","Pyrularia pubera","504705","species","",0
+"Pear","Pear","Pyrus","25294","genus","",0
+"Callery pear","Callery pear","Pyrus calleryana","504706","species","",0
+"Oak","Oak","Quercus","19276","genus","",0
+"California live oak","California live oak","Quercus agrifolia","19289","species","",0
+"White oak","White oak","Quercus alba","19290","species","",0
+"Swamp white oak","Swamp white oak","Quercus bicolor","19300","species","",0
+"Scarlet oak","Scarlet oak","Quercus coccinea","19288","species","",0
+"Southern red oak","Southern red oak","Quercus falcata","19277","species","",0
+"Chinese evergreen oak","Chinese evergreen oak","Quercus glauca","845168","species","",0
+"Scrub oak","Scrub oak","Quercus ilicifolia","19358","species","suggested change to 'bear oak' due to ambiguity",0
+"Shingle oak","Shingle oak","Quercus imbricaria","19359","species","",0
+"Turkey oak","Turkey oak","Quercus laevis","19367","species","",0
+"Laurel oak","Laurel oak","Quercus laurifolia","19368","species","",0
+"Overcup oak","Overcup oak","Quercus lyrata","19278","species","",0
+"Bur oak","Bur oak","Quercus macrocarpa","19287","species","",0
+"Blackjack oak","Blackjack oak","Quercus marilandica","19374","species","",0
+"Swamp chestnut oak","Swamp chestnut oak","Quercus michauxii","19279","species","",0
+"Chestnut oak","Chestnut oak","Quercus montana","19379","species","",0
+"Quercus montana","Quercus montana","Quercus montana","19379","species","",0
+"Water oak","Water oak","Quercus nigra","19280","species","",0
+"Cherrybark oak","Cherrybark oak","Quercus pagoda","195195","species","",0
+"Pin oak","Pin oak","Quercus palustris","19281","species","",0
+"Willow oak","Willow oak","Quercus phellos","19282","species","",0
+"Quercus robur","Quercus robur","Quercus robur","19405","species","",0
+"Northern red oak","Northern red oak","Quercus rubra","19408","species","",0
+"Red oak","Red oak","Quercus rubra","19408","species","",0
+"Black oak","Black oak","Quercus velutina","19447","species","",0
+"Live oak","Live oak","Quercus virginiana","19283","species","",0
+"Shumard oak","Shumard oak","Quercus shumardii","19417","species","",0
+"Buckthorn","Buckthorn","Rhamnus","28561","genus","",0
+"Common buckthorn","Common buckthorn","Rhamnus cathartica","28573","species","",0
+"Rhamnus cathartica","Rhamnus cathartica","Rhamnus cathartica","28573","species","",0
+"Frangula alnus","Frangula alnus","Rhamnus frangula","28579","species","",0
+"Azalea","Azalea","Rhododendron","23700","genus","",0
+"Rhododendron","Rhododendron","Rhododendron","23700","genus","",0
+"Florida azalea","Florida azalea","Rhododendron austrinum","23705","species","",0
+"Rhododendron austrinum","Rhododendron austrinum","Rhododendron austrinum","23705","species","",0
+"Rhododendron canescens","Rhododendron canescens","Rhododendron canescens","23712","species","",0
+"Catawba rhododendron","Catawba rhododendron","Rhododendron catawbiense","23714","species","",0
+"Piedmont azalea","Piedmont azalea","Rhododendron flammeum","23717","species","",0
+"Plumleaf azalea","Plumleaf azalea","Rhododendron prunifolium","23728","species","",0
+"Coastal azalea","Coastal azalea","Rhododendron atlanticum","23704","species","",0
+"Great rhododendron","Great rhododendron","Rhododendron maximum","23721","species","",0
+"Jetbead","Jetbead","Rhodotypos scandens","25298","species","",0
+"Sumac","Sumac","Rhus","28772","genus","",0
+"Rhus copallinum","Rhus copallinum","Rhus copallinum","504754","species","",0
+"Rhus glabra","Rhus glabra","Rhus glabra","28782","species","",0
+"Rhus typhina","Rhus typhina","Rhus typhina","28777","species","",0
+"Black locust","Black locust","Robinia pseudoacacia","504804","species","",0
+"Rose","Rose","Rosa","24807","genus","",0
+"Multiflora rose","Multiflora rose","Rosa multiflora","24833","species","",0
+"Brambles","Brambles","Rubus","24848","genus","",0
+"Wineberry","Wineberry","Rubus phoenicolasius","25017","species","",0
+"Willow","Willow","Salix","22476","genus","",0
+"Weeping willow","Weeping willow","Salix babylonica","837788","species","",0
+"Black willow","Black willow","Salix nigra","22484","species","",0
+"Elderberry","Elderberry","Sambucus","35315","species","",0
+"Red elderberry","Red elderberry","Sambucus racemosa","35326","species","",0
+"Sassafras","Sassafras","Sassafras","18157","genus","",0
+"American mountain-ash","American mountain-ash","Sorbus americana","25319","species","",0
+"American bladdernut","American bladdernut","Staphylea trifolia","28646","species","",0
+"Stewartia rostrata","Stewartia rostrata","Stewartia","21389","genus","",0
+"Japanese snowbell","Japanese snowbell","Styrax japonicus","505974","species","",0
+"Symplocos tinctoria","Symplocos tinctoria","Symplocos tinctoria","23878","species","",0
+"Lilac","Lilac","Syringa","32994","genus","",0
+"Syringa reticulata","Syringa reticulata","Syringa reticulata","507196","species","",0
+"Bald cypress","Bald cypress","Taxodium distichum","18041","species","",0
+"Yew","Yew","Taxus","194882","genus","",1
+"Northern white-cedar","Northern white-cedar","Thuja occidentalis","505490","species","",1
+"White cedar","White cedar","Thuja occidentalis","505490","species","",1
+"American basswood","American basswood","Tilia americana","21536","species","",0
+"Basswood","Basswood","Tilia americana","21536","species","",0
+"Littleleaf linden","Littleleaf linden","Tilia cordata","505507","species","",0
+"Tilia cordata","Tilia cordata","Tilia cordata","505507","species","",0
+"Tilia x europaea","Tilia x europaea","Tilia X europaea","21538","species","",0
+"Chinese tallowtree","Chinese tallowtree","Triadica sebifera","522777","species","",0
+"Eastern hemlock","Eastern hemlock","Tsuga canadensis","183397","species","",1
+"Carolina hemlock","Carolina hemlock","Tsuga caroliniana","183399","species","",1
+"Elm","Elm","Ulmus","19048","genus","",0
+"Ulmus","Ulmus","Ulmus","19048","genus","",0
+"Winged elm","Winged elm","Ulmus alata","19051","species","",0
+"American elm","American elm","Ulmus americana","19049","species","",0
+"Siberian elm","Siberian elm","Ulmus pumila","19057","species","",0
+"Slippery elm","Slippery elm","Ulmus rubra","19050","species","",0
+"White elm","White elm","Ulmus americana","19049","species","",0
+"California laurel","California laurel","Umbellularia californica","18208","species","",0
+"Blueberry","Blueberry","Vaccinium","23571","genus","",0
+"Vaccinium","Vaccinium","Vaccinium","23571","genus","",0
+"Highbush blueberry","Highbush blueberry","Vaccinium corymbosum","23573","species","",0
+"Vaccinium caesariense","Vaccinium caesariense","Vaccinium corymbosum","23573","species","",0
+"Vaccinium corymbosum","Vaccinium corymbosum","Vaccinium corymbosum","23573","species","",0
+"Vaccinum corymbosum","Vaccinum corymbosum","Vaccinium corymbosum","23573","species","",0
+"Vaccineum stamineum","Vaccineum stamineum","Vaccinium stamineum","233615","species","",0
+"Tungoil tree","Tungoil tree","Vernicia fordii","505662","species","",0
+"Viburnum","Viburnum","Viburnum","35249","genus","",0
+"Mapleleaf viburnum","Mapleleaf viburnum","Viburnum acerifolium","35255","species","",0
+"Vibirnum dentatum","Vibirnum dentatum","Viburnum dentatum","35251","species","",0
+"Viburnum dentatum","Viburnum dentatum","Viburnum dentatum","35251","species","",0
+"Viburnum dilatatum","Viburnum dilatatum","Viburnum dilatatum","505677","species","",0
+"Viburnum lentago","Viburnum lentago","Viburnum lentago","35266","species","",0
+"Possumhaw viburnum","Possumhaw viburnum","Viburnum nudum","35252","species","",0
+"Viburnum nudum","Viburnum nudum","Viburnum nudum","35252","species","",0
+"Viburnum plicatum","Viburnum plicatum","Viburnum plicatum","35272","species","",0
+"Blackhaw","Blackhaw","Viburnum prunifolium","35253","species","",0
+"Viburnum rufidulum","Viburnum rufidulum","Viburnum rufidulum","35274","species","",0
+"Viburnum cassinoide","Viburnum cassinoide","Viburnum nudum","35252","species","",0
+"Viburnum trilobum","Viburnum trilobum","Viburnum opulus","35270","species","",0
+"Canyon grape","Canyon grape","Vitis arizonica","28612","species","",0
+"Wisteria","Wisteria","Wisteria","27019","genus","",0
+"Japanese zelkova","Japanese zelkova","Zelkova serrata","505790","species","",0
+"Zelkova serrata","Zelkova serrata","Zelkova serrata","505790","species","",0
+"Birch spp.","Birch","Betula","19478","genus","",0
+"N/A",NA,NA,NA,NA,"",0
+"Elm spp.","Elm","Ulmus","19048","genus","",0
+"Hop hornbeam","Hophornbeam","Ostrya","19508","genus","",0
+"Dogwood spp.","Dogwood","Cornus","27798","genus","",0
+"Basswood spp.","Basswood","Tilia","21535","genus","",0
+"Honey suckle","Honeysuckle","Lonicera","35281","genus","",0
+"Hydrangeas","Hydrangea","Hydrangea","24194","species","",0
+"Serviceberry spp.","Serviceberry","Amelanchier","25108","species","",0
+"Hackberry spp.","Hackberry","Celtis","19039","genus","",0
+"Hickory spp.","Hickory","Carya","19223","genus","",0
+"Cherry and plum spp.","Cherry plum","Prunus cerasifera","24772","species","",0
+"Vaccinium spp","Vaccinium","Vaccinium","23571","species","",0
+"Rhododendron sp","Rhododendron","Rhododendron","23700","species","",0
+"White fir","White fir","Abies concolor","181826","species","",1
+"Maple spp.","Maple","Acer","28727","species","",0
+"Oak spp.","Oak","Quercus","19276","genus","",0
+"White-cedar spp.","White-cedar","Chamaecyparis thyoides","18046","species","",0
+"Magnolia spp.","Magnolia","Magnolia","18069","genus","",0
+"Ironwood","Ironwood","Olneya tesota","26808","species","",0
+"Blueberry vaccinium sp.","Blueberry","Vaccinium","23571","genus","",0
+"Maple leaf viburnum","Mapleleaf viburnum","Viburnum acerifolium","35255","species","",0
+"Hawthorn spp.","Hawthorn","Crataegus","24539","genus","",0
+"Willow spp.","Willow","Salix","22476","genus","",0
+"Red osier dogwood","Redosier dogwood","Cornus sericea","501637","species","",0
+"Apple spp.","Apple","Malus","25254","genus","",0
+"Simplocos tinctoria","Symplocos tinctoria","Symplocos tinctoria","23878","species","",0
+"Walnut spp.","Walnut","Juglans","19248","genus","",0
+"Hop-hornbeam","Hophornbeam","Ostrya","19508","genus","",0
+"Red-osier dogwood","Redosier dogwood","Cornus sericea","501637","species","",0
+"Ulmus sp.","Elm","Ulmus","19048","genus","",0
+"American yellowwood","Yellowwood","Cladrastis kentukea","26539","species","",0
+"Red osier dogwood (cornus sericea)","Redosier dogwood","Cornus sericea","501637","species","",0
+"Ash spp.","Ash","Fraxinus","32928","genus","",0
+"Alder spp.","Alder","Betula","19478","genus","",0
+"Unknown",NA,NA,NA,NA,"",NA
+"Buckeye spp.","Buckeye","Aesculus","28714","genus","",0
+"Beech spp.","Beech","Fagus","19461","genus","",0
+"Rhododendron spp.","Rhododendron","Rhododendron","23700","species","",0
+"Clerya spp.","Clerya","Mulinia cleryana","80960","species","",0
+"Camellia spp.","Camellia","Camellia","500689","genus","",0
+"Catalpa spp.","Catalpa","Catalpa","34312","genus","",0
+"Azalea spp.","Azalea","Rhododendron","23700","species","",0
+"Symplocos tinctotria","Symplocos tinctoria","Symplocos tinctoria","23878","species","",0
+"Pear tree","Pear","Pyrus","25294","genus","",0
+"Sweet gum","Sweetgum","Liquidambar","19026","species","",0
+"Sumac?","Sumac","Rhus","28772","genus","",0
+"Sumac spp.","Sumac","Rhus","28772","genus","",0
+"Mulberry spp.","Mulberry","Morus","19064","genus","",0
+"Quihoui???","Waxyleaf privet","Ligustrum quihoui","32978","species","",0
+"Olive quihoui??","Waxyleaf privet","Ligustrum quihoui","32978","species","",0
+"Privet spp.","Privet","Ligustrum","32973","genus","",0
+"Bush honeysuckle (caprifoliaceae family)","Bush honeysuckle","Diervilla","35309","genus","",0
+"Box elder (acer negundo)","Boxelder","Acer negundo","28749","species","",0
+"Sycamore spp.","Sycamore","Platanus","19019","genus","",0
+"Calycanthus sp.","Calycanthus","Calycanthus","18139","genus","",0
+"Blueberry spp.","Blueberry","Vaccinium","23571","genus","",0
+"Boxelder maple","Boxelder maple","Acer negundo","28749","species","",0
+"California-laurel","California laurel","Umbellularia","18207","species","",0
+"Viburnum spp.","Viburnum","Viburnum","35249","genus","",0
+"American witch-hazel","American witchhazel","Hamamelis virginiana","19033","species","",0
+"Hawthorn sp.","Hawthorn","Crataegus","24539","genus","",0
+"8",NA,NA,NA,NA,"",0
+"9",NA,NA,NA,NA,"",0
+"Viburnum sp","Viburnum","Viburnum","35249","genus","",0
+"Persimmon spp.","Persimmon","Diospyros","23853","genus","",0
+"Crab apple sp","Apple","Malus","25254","genus","",0
+"Yew spp.","Yew","Taxus","194882","genus","",1
+"Honeysuckle spp.","Honeysuckle","Lonicera","35281","genus","",0
+"Burr oak","Bur oak","Quercus macrocarpa","19287","species","",0
+"Buxus spp.","Buxus","Buxus","28022","genus","",0
+"Yaupon","Yaupon","Ilex vomitoria","27986","species","",0
+"Pear spp.","Pear","Pyrus","25294","genus","",0
+"Ficus spp.","Ficus","Ficus","19081","species","",0
+"Carpinus spp.","Carpinus","Carpinus","19503","species","",0
+"Feijoa sellowiana","Acca sellowiana","Acca sellowiana","834974","species","",0
+"Olea spp.","Olea","Olea","32989","genus","",0
+"Osmanthus fragrans","Osmanthus fragrans","Osmanthus fragrans","505977","species","",0
+"Illicium spp.","Illicium","Illicium","18082","genus","",0
+"Magnolia figo","Magnolia figo","Magnolia figo",NA,"species","according to Global Names Resolver it's recognized in databases like Open Tree of Life Reference Taxonomy",0
+"Asimina spp.","Asimina","Asimina","18108","genus","",0
+"Eastern sweet shrub","Eastern sweetshrub","Calycanthus floridus","18142","species","",0
+"Lilac spp.","Lilac","Syringa","32994","genus","",0
+"Virburnum","Viburnum","Viburnum","35249","genus","",0
+"Gardenia spp.","Gardenia","Gardenia","35159","genus","",0
+"Forsythia spp.","Forsythia","Forsythia","32961","genus","",0
+"Carolina laurel cherry","Carolina laurelcherry","Prunus caroliniana","24771","species","",0
+"White spruce","White spruce","Picea glauca","183295","species","",1
+"Cherry spp.","Cherry","Prunus","24762","genus","",0
+"Amelanchier alnifolia","Amelanchier alnifolia","Amelanchier alnifolia","25109","species","",0
+"Green alder","Green alder","Alnus viridis","181892","species","",0
+"Buxus sempervirens","Buxus sempervirens","Buxus sempervirens","501097","species","",0
+"Euonymus japonicus","Euonymus japonicus","Euonymus japonicus","894987","species","",0
+"Nerium oleander","Nerium oleander","Nerium oleander","30184","species","",0
+"Viburnum tinus","Viburnum tinus","Viburnum tinus","505680","species","",0
+"Nothoscordum gracile (onionweed)","Nothoscordum gracile","Nothoscordum gracile","503967","species","",0
+"Texas sophora","Styphnolobium affine","Styphnolobium affine","820256","species","",0
+"Lombardy poplar","Lombardy's poplar","Populus nigra","22468","species","",0
+"Yucca rostrata","Yucca rostrata","Yucca rostrata","43150","species","",0
+"American beautyberry","American beautyberry","Callicarpa americana","32144","species","",0
+"Carolina cherry laurel","Carolina laurelcherry","Prunus caroliniana","24771","species","",0
+"Gum bumelia","Gum bully","Sideroxylon lanuginosum","505219","species","",0
+"Leatherleaf mahonia","Beale's barberry","Berberis bealei","509499","species","",0
+"Stretchberry","Stretchberry","Forestiera pubescens","32957","species","",0
+"Chinese holly","Chinese holly","Ilex cornuta","503155","species","",0
+"Heavenly bamboo","Heavenly bamboo","Nandina domestica","18848","species","",0
+"Groundsel tree","Eastern baccharis","Baccharis halimifolia","35682","species","",0
+"Chinese privet","Chinese privet","Ligustrum sinense","32979","species","",0
+"Fishpole bamboo","Golden bamboo","Phyllostachys aurea","42023","species","",0
+"Japanese spindle tree","Japanese spindletree","Euonymus japonicus","894987","species","",0
+"Common gardenia","Common gardenia","Gardenia volkensii","845972","species","",0
+"Tree privet","Tree privet","Ligustrum lucidum","503450","species","",0
+"Reeves spiraea","Reeve's meadowsweet","Spiraea cantoniensis","505334","species","",0
+"Buttonwood-mangrove","Button mangrove","Conocarpus erectus","27766","species","",0
+"Strawberry bush","Strawberry bush","Euonymus americanus","27947","species","",0
+"Winged eonymous","Winged euonymus","Euonymus alatus","27946","species","",0
+"Viburnum rhytidophyllum","Viburnum rhytidophyllum","Viburnum rhytidophyllum","505679","species","",0
+"Silver poplar","White poplar","Populus alba","22451","species","",0
+"Mountain maple","Mountain maple","Acer spicatum","28758","species","",0
+"Carolina laurelcherry","Carolina laurelcherry","Prunus caroliniana","24771","species","",0
+"Bigleaf snowbell","Bigleaf snowbell","Styrax grandifolius","505399","species","",0
+"American sweetgum","American sweetgum","Liquidambar styraciflua","19027","species","",0
+"Sweetbay magnolia","Sweetbay","Magnolia virginiana","18070","species","",0
+"Prunus spp. (apricot)","Prunus","Prunus","24762","genus","",0
+"Prunus spp. (cherry)","Prunus","Prunus","24762","genus","",0
+"Punica spp.","Punica","Punica","27277","genus","",0
+"Camptotheca spp.","Camptotheca","Camptotheca","500635","species","",0
+"Viburnum awabuki","Sweet arrowwood","Viburnum odoratissimum","505678","species","",0
+"Eriobotrya japonica","Eriobotrya japonica","Eriobotrya japonica","502403","species","",0
+"Silverbell spp.","Silverbell","Halesia","23863","species","",0
+"Black haw","Black haw","Viburnum prunifolium","35253","species","",0
+"Pussy willow","Pussy willow","Salix discolor","22524","species","",0
+"Prunus spp.(plum)","Prunus","Prunus","24762","genus","",0
+"Cockspur hawthorn","Cockspur hawthorn","Crataegus crus-galli","24552","species","",0
+"Honey locust","Honey locust","Gleditsia triacanthos","26714","species","",0
+"Winged euonymus","Winged euonymus","Euonymus alatus","27946","species","",0
+"Prunus laurocerasus","Prunus laurocerasus","Prunus laurocerasus","24786","species","",0
+"Japanese cherry","Japanese flowering cherry","Prunus serrulata","506233","species","",0
+"Alnus crispa","Alnus viridis ssp. crispa","Alnus viridis ssp. crispa","181894","species","",0
+"Rosa acicularis","Rosa acicularis","Rosa acicularis","24812","species","",0
+"Rubus idaeus","Rubus idaeus","Rubus idaeus","24947","species","",0
+"Lonicera involucrata","Lonicera involucrata","Lonicera involucrata","35297","species","",0
+"Franklin tree","Franklin tree","Franklinia alatamaha","21384","species","",0
+"Crepe myrtle spp.","Crepe myrtle","Lagerstroemia","27109","genus","",0
+"Prunus salicina","Prunus salicina","Prunus salicina","506232","species","",0
+"Na",NA,NA,NA,NA,"",NA
+"Tilia tomentosa","Tilia tomentosa","Tilia tomentosa","845764","species","",0
+"Ulmus carpinifolia","Ulmus procera","Ulmus procera","19056","species","",0
+"Pitch pine","Pitch pine","Pinus rigida","183376","species","",1
+"Sassafras spp.","Sassafras","Sassafras","18157","genus","",0
+"Cedar elm","Cedar elm","Ulmus crassifolia","19052","species","",0
+"Loblolly pine","Loblolly pine","Pinus taeda","18037","species","",1
+"Prickly ash","Pricklyash","Zanthoxylum","28849","species","",0
+"Fremont cottonwood","Fremont's cottonwood","Populus fremontii","22459","species","",0
+"Rosa spp.","Rosa","Rosa","24807","species","",0
+"Cypress spp.","Cypress","Cupressus","183455","genus","",0
+"Elderberry spp.","Elderberry","Sambucus","35315","genus","",0
+"Eastern cottonwood","Eastern cottonwood","Populus deltoides","22445","species","",0
+"Azalea, rhododendron spp.","Rhododendron","Rhododendron","23700","genus","",0
+"Post oak","Post oak","Quercus stellata","19422","species","",0
+"Shortleaf pine","Shortleaf pine","Pinus echinata","183335","species","",1
+"Syringa vulgaris","Syringa vulgaris","Syringa vulgaris","32996","species","",0
+"Horse chestnut","Horse chestnut","Aesculus hippocastanum","28721","species","",0
+"Arizona white oak","Arizona white oak","Quercus arizonica","19292","species","",0
+"Norway spruce","Norway spruce","Picea abies","183289","species","",1
+"Shining willow","Shining willow","Salix lucida","22554","species","",0
+"Myrobalan plum","Myrobalan plum","Prunus cerasifera","24772","species","",0
+"Magnolia kobus","Magnolia kobus","Magnolia kobus","895295","species","",0
+"Prunus serulata (japanese cherry blossom)","Prunus serrulata","Prunus serrulata","506233","species","",0
+"Prunus sargentii","Prunus sargentii","Prunus sargentii",NA,"species","according to Global Names Resolver it's recognized in databases like The International Plant Names Index",0
+"Amelanchier","Amelanchier","Amelanchier","25108","genus","",0
+"Prunus rosaceae","Prunus","Prunus","24762","genus","",0
+"Staghorn sumac","Staghorn sumac","Rhus typhina","28777","species","",0
+"Cottonwood and poplar spp.","Populus","Populus","22444","genus","",0
+"Buckthorn spp.","Buckthorn","Rhamnus","28561","genus","",0
+"Quercus hemispherica","Quercus hemisphaerica","Quercus hemisphaerica","195108","species","",0
+"Prunus umbellata","Prunus umbellata","Prunus umbellata","24805","species","",0
+"Ilex ambigua","Ilex ambigua","Ilex ambigua","27987","species","",0
+"Hibiscus coccineus albus","Hibiscus coccineus","Hibiscus coccineus","21625","species","",0
+"Quercus nuttallii","Quercus texana","Quercus texana","195188","species","",0
+"Hibiscus moscheutos","Hibiscus moscheutos","Hibiscus moscheutos","21612","species","",0
+"Eastern redcedar","Eastern redcedar","Juniperus virginiana","18048","species","",1
+"Southern arrowwood","Southern arrowwood","Viburnum dentatum","35251","species","",0
+"Cucumbertree","Cucumbertree","Magnolia acuminata","18071","species","",0
+"Redcedar/juniper spp.","Juniperus","Juniperus","18047","genus","",1
+"Red pine","Red pine","Pinus resinosa","183375","species","",1
+"Witch-hazel","Witch hazel","Hamamelidaceae","19025","genus","",0
+"Winged sumac","Winged sumac","Rhus copallinum","504754","species","",0
+"Lonicera sempervirens","Lonicera sempervirens","Lonicera sempervirens","35303","species","",0
+"Water hickory","Water hickory","Carya aquatica","845188","species","",0
+"Blackgum tupelo","Blackgum","Nyssa sylvatica","27821","species","",0
+"Yaupon holly","Yaupon","Ilex vomitoria","27986","species","",0
+"Chastetree","Chastetree","Vitex","32220","genus","",0
+"Duranta","Duranta","Duranta","32168","genus","",0
+"Golden thryallis","Galphimia glauca","Galphimia glauca","847560","species","",0
+"Lantana","Lantana","Lantana","32173","genus","",0
+"Southern red cedar","Southern red-cedar","Juniperus virginiana var. silicicola","528648","species","",1
+"Cabbage palmetto","Cabbage palmetto","Sabal palmetto","42506","species","",0
+"Silverberry","Silverberry","Elaeagnus commutata","27771","species","",0
+"Loropetalum","Loropetalum","Loropetalum",NA,"genus","according to Global Names Resolver it's recognized in databases like Open Tree of Life Reference Taxonomy",0
+"Chinese elm","Chinese elm","Ulmus parvifolia","19055","species","",0
+"Windy salvia","Salvia","Salvia","32680","genus","a hybrid I believe",0
+"Eastern baccharis","Eastern baccharis","Baccharis halimifolia","35682","species","",0
+"Pine spp.","Pine","Pinus","18035","genus","",1
+"Nannyberry","Nannyberry","Viburnum lentago","35266","species","",0
+"Hophornbeam spp.","Hophornbeam","Ostrya","19508","genus","",0
+"Tree of heaven","Tree of heaven","Ailanthus altissima","28827","species","",0
+"Tupelo spp.","Tupelo","Nyssa","27820","genus","",0
+"Hazelnut spp.","Hazelnut","Corylus","19505","genus","",0
+"Fringetree spp.","Fringetree","Chionanthus","32948","species","",0
+"Spicebush spp.","Spicebush","Lindera","18146","genus","",0
+"Bebb willow","Bebb's willow","Salix bebbiana","22507","species","",0
+"Dpwny arrowwood","Downy arrowwood","Viburnum rafinesqueanum","823482","species","",0
+"Downy arrowwood","Downy arrowwood","Viburnum rafinesqueanum","823482","species","",0
+"Deutzia spp.","Deutzia","Deutzia","24324","genus","",0
+"Fig spp.","Fig","Ficus","19081","genus","",0
+"Muscadine","Muscadine","Vitis rotundifolia","28609","species","",0
+"Freeman maple","Freeman's maple","Acer X freemanii","500949","species","",0
+"Beaked hazelnut","Beaked hazelnut","Corylus cornuta","19507","species","",0
+"Locust spp.","Locust","Robinia","26184","genus","",0
+"Salvia","Salvia","Salvia","32680","species",NA,0
+"Virginia roundleaf birch","Virginia roundleaf birch","Betula uber","19502","species",NA,0
+"Japanese snowball","Japanese snowball","Viburnum plicatum","35272","species",NA,0
+"Bigtooth maple","Bigtooth maple","Acer grandidentatum","28760","species",NA,0
+"Viburnum lantana","Viburnum lantana","Viburnum lantana","35264","species",NA,0
+"Linden arrowwood","Linden arrowwood","Viburnum dilatatum","505677","species",NA,0
+"Fraser fir","Fraser fir","Abies fraseri","181829","species",NA,1
+"Red spruce","Red spruce","Picea rubens","18034","species",NA,1
+"Pinkshell azalea","Pinkshell azalea","Rhododendron vaseyi","23730","species",NA,0
+"Crapemyrtle","Crapemyrtle","Lagerstroemia indica","27110","species",NA,0
+"Smooth sumac","Smooth sumac","Rhus glabra","28782","species",NA,0
+"Chinkapin oak","Chinkapin oak","Quercus muehlenbergii","504714","species",NA,0
+"Box elder","Box elder","Acer negundo","28749","species",NA,0
+"Clethra alnifolia","Clethra alnifolia","Clethra alnifolia","23454","species",NA,0
+"Mountain-ash spp.","Mountain-ash","Sorbus","25318","genus",NA,0
+"Gambel oak","Gambel's oak","Quercus gambelii","19337","genus",NA,0
+"Boxwood spp.","Buxus","Buxus","28022","genus",NA,0
+"L",NA,NA,NA,NA,NA,NA
+"Sweetshrub spp.","Sweetshrub","Calycanthus","18139","genus",NA,NA
+"Hornbeam spp.","Hornbeam","Carpinus","19503","genus",NA,NA
+"Chestnut spp.","Chestnut","Castanea","19451","genus",NA,NA
