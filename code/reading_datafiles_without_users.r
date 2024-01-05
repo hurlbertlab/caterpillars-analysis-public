@@ -43,16 +43,23 @@ surveys$Year = as.numeric(format(surveys$LocalDate, "%Y"))
 surveys$julianday = yday(surveys$LocalDate)
 surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
+# Read in official plant list
+officialPlantListFiles = list.files('data/plants')[str_detect(list.files('data/plants'), 'officialPlantList')]
+mostRecentOfficialPlantList = officialPlantListFiles[length(officialPlantListFiles)]
+officialPlantList = read.csv(paste0('data/plants/', mostRecentOfficialPlantList), header = T)
 
+
+# Join it all together
 fullDataset = surveys %>%
   dplyr::select(ID, UserFKOfObserver, PlantFK, LocalDate, julianday, julianweek, Year, ObservationMethod, Notes, WetLeaves, PlantSpecies, NumberOfLeaves,
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, names(arths) != "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants, by = c('PlantFK' = 'ID')) %>%
+  left_join(officialPlantList[, c('userPlantName', 'sciName', 'genus', 'rank')], by = c('Species' = 'userPlantName')) %>%
   left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
-  rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y) %>%
+  rename(surveyNotes = Notes.x, bugNotes = Notes.y, arthID = ID.y, plantRank = rank, plantGenus = genus) %>%
   filter(Name != "Example Site")
 
 
