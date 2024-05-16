@@ -45,9 +45,10 @@ surveys$julianday = yday(surveys$LocalDate)
 surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
 # Read in official plant list
-officialPlantListFiles = list.files('data/plants')[str_detect(list.files('data/plants'), 'officialPlantList')]
-mostRecentOfficialPlantList = officialPlantListFiles[length(officialPlantListFiles)]
-officialPlantList = read.csv(paste0('data/plants/', mostRecentOfficialPlantList), header = T)
+#officialPlantListFiles = list.files('data/plants')[str_detect(list.files('data/plants'), 'officialPlantList')]
+#mostRecentOfficialPlantList = officialPlantListFiles[length(officialPlantListFiles)]
+#officialPlantList = read.csv(paste0('data/plants/', mostRecentOfficialPlantList), header = T)
+officialPlantList = read.csv("c:/git/caterpillars-count-data/plantSpecies/officialPlantList2024-03-15.csv")
 
 
 # Join it all together
