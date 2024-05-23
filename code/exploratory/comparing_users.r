@@ -3,7 +3,7 @@
 # Load libraries
 library(dplyr)
 library(vioplot)
-
+library(tidyr)
 
 # Update the raw data files by 
 #   1) opening the caterpillars-count-data repo,
@@ -36,8 +36,9 @@ arthGroups = c("ant", "aphid", "bee", "beetle", "caterpillar",
 
 ## Arthropod size by observer
 
-par(mfrow = c(6, 2), mar = c(3, 3, 2, 1), oma = c(4, 4, 0, 0), 
+par(mfrow = c(3, 2), mar = c(3, 3, 2, 1), oma = c(4, 4, 0, 0), 
     mgp = c(2.5, 1, 0), tck = -0.01)
+
 for (a in arthGroups) {
   
   tmp = filter(fd, Group == a)
@@ -46,4 +47,22 @@ for (a in arthGroups) {
   
 }
 
+foo = fd %>% 
+  group_by(UserName) %>%
+  summarize(nSurvs = n_distinct(ID),
+            nCaterpillars = sum(Quantity[Group == 'caterpillar'], na.rm = T),
+            nCatSurvs = sum(Group == 'caterpillar', na.rm = T),
+            nSpiders = sum(Quantity[Group == 'spider'], na.rm = T))
 
+foo2 = fd %>% 
+  count(UserName, Group) %>%
+  left_join(foo, by = 'UserName') %>%
+  full_join(df, by = 'Group') %>%
+  mutate(pct = 100*n/nSurvs)
+  
+par(mfrow = c(1,1))
+barplot(foo2$pct ~ foo2$UserName)
+
+vader = pivot_wider(foo2, )
+
+annakin = 
