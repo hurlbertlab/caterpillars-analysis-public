@@ -45,10 +45,15 @@ surveys$julianday = yday(surveys$LocalDate)
 surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
 # Read in official plant list
-#officialPlantListFiles = list.files('data/plants')[str_detect(list.files('data/plants'), 'officialPlantList')]
-#mostRecentOfficialPlantList = officialPlantListFiles[length(officialPlantListFiles)]
-#officialPlantList = read.csv(paste0('data/plants/', mostRecentOfficialPlantList), header = T)
-officialPlantList = read.csv("c:/git/caterpillars-count-data/plantSpecies/officialPlantList2024-03-15.csv")
+plantSpecieswebpage <- read_html("https://github.com/hurlbertlab/caterpillars-count-data/tree/master/plantSpecies")
+plant_repo_links <- html_attr(html_nodes(plantSpecieswebpage, "a"), "href")
+plant_data_links <- tibble(link = plant_repo_links[grepl("officialPlant", plant_repo_links)]) %>%
+  mutate(file_name = word(link, 7, 7, sep = "/")) %>%
+  distinct()
+
+mostRecentOfficialPlantList = plant_data_links$file_name[nrow(plant_data_links)]
+officialPlantList = read.csv(paste0(github_raw, 'plantSpecies/', mostRecentOfficialPlantList), 
+                             header = T, quote = '\"', fill = TRUE)
 
 
 # Join it all together
