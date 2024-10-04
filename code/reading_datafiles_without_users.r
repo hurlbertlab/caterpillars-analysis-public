@@ -62,7 +62,7 @@ fullDataset = surveys %>%
          AverageLeafLength, HerbivoryScore) %>%
   left_join(arths[, names(arths) != "PhotoURL"], by = c('ID' = 'SurveyFK')) %>%
   left_join(plants[, c('ID', 'SiteFK', 'Circle', 'Orientation', 'Code', 'IsConifer', 'Species')], by = c('PlantFK' = 'ID')) %>%
-  left_join(officialPlantList[, c('userPlantName', 'sciName', 'genus', 'rank')], by = c('Species' = 'userPlantName')) %>%
+  left_join(officialPlantList[, c('userPlantName', 'sciName', 'genus', 'Family', 'rank')], by = c('Species' = 'userPlantName')) %>%
   left_join(sites[, c('ID', 'Name', 'Latitude', 'Longitude', 'Region')], by = c('SiteFK' = 'ID')) %>% 
   mutate_cond(is.na(Quantity), Quantity = 0, Group) %>%
   mutate_cond(is.na(Biomass_mg), Biomass_mg = 0, Group) %>%
