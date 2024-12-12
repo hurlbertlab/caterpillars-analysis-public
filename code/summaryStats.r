@@ -17,7 +17,12 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
   datasetThisYear = dataset %>%
     filter(Year == reportYear)
   
+  datasetBeforeThisYear = dataset %>%
+    filter(Year < reportYear)
+  
   sitesThisYear = unique(datasetThisYear$SiteFK)
+  
+  newSitesThisYear = sitesThisYear[!sitesThisYear %in% unique(datasetBeforeThisYear$SiteFK)]
   
   stats = list(
     numSurveysTotal = dataset %>% summarize(n = n_distinct(ID)) %>% pull(n),
@@ -35,6 +40,8 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
     numSitesTotal = dataset %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
     
     numSitesThisYear = datasetThisYear %>% summarize(n = n_distinct(SiteFK)) %>% pull(n),
+    
+    numNewSitesThisYear = length(newSitesThisYear),
     
     numRegionsTotal = dataset %>% summarize(n = n_distinct(Region)) %>% pull(n),
     
