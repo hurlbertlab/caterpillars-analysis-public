@@ -156,11 +156,11 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     filter(Year == reportYear) %>%
     group_by(Name, julianweek) %>%
     summarize(nSurvsPeak = n_distinct(ID),
-              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              nCatSurvs = n_distinct(ID[Group=="caterpillar" & !is.na(Group)]), 
               pctCat = 100*nCatSurvs/nSurvsPeak) %>%
-    group_by(Name, nSurvsPeak) %>%
+    group_by(Name) %>%
     summarize(peakPctCat = max(pctCat),
-              peakWeek = julianweek[pctCat == peakPctCat])
+              peakWeek = julianweek[pctCat == peakPctCat][1]) # return the 1st if there are multiple equal peaks
   
   dataset = fullDataset %>%
     filter(!grepl("BBS", Name), 
@@ -172,10 +172,10 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
               nWeeks = n_distinct(julianweek), 
               nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
               nArths = sum(Quantity, na.rm = T),
-              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              nCatSurvs = n_distinct(ID[Group=="caterpillar" & !is.na(Group)]), 
               pctCat = 100*nCatSurvs/nSurvs, 
               nLargeAvg = sum(Quantity[Length>=10], na.rm = T)/nSurvs, 
-              bigCat = max(Length[Group=="caterpillar"], na.rm = T), 
+              bigCat = ifelse(nCats > 0, max(Length[Group=="caterpillar"], na.rm = T), NA), 
               pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
               nUsers = n_distinct(UserFKOfObserver),
               maxLatitude = max(Latitude),
@@ -220,10 +220,10 @@ annualUserStats = function(reportYear = format(Sys.Date(), "%Y"),
               nWeeks = n_distinct(julianweek), 
               nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
               nArths = sum(Quantity, na.rm = T),
-              nCatSurvs = n_distinct(ID[Group=="caterpillar"]), 
+              nCatSurvs = n_distinct(ID[Group=="caterpillar" & !is.na(Group)]), 
               pctCat = 100*nCatSurvs/nSurvs, 
               nLargeAvg = sum(Quantity[Length>=10], na.rm = T)/nSurvs, 
-              bigCat = max(Length[Group=="caterpillar"], na.rm = T), 
+              bigCat = ifelse(nCats > 0, max(Length[Group=="caterpillar"], na.rm = T), NA),
               pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group)), 
               nSites = n_distinct(Name)) %>% 
     arrange(desc(get(sortingVar))) %>%
@@ -248,7 +248,9 @@ annualUserStats = function(reportYear = format(Sys.Date(), "%Y"),
 
 
 # Project growth over time stats
-projectTrends = function(plot = F, add = F, plotVar = NULL, scalar = 1, ...) {
+
+# plotVar can be 
+projectTrends = function(plot = F, add = F, plotVar = 'nSites', scalar = 1, ...) {
   require(dplyr)
   
   if (!exists("fullDataset")) {
