@@ -173,7 +173,7 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
     filter(!grepl("BBS", Name), 
            !grepl("Coweeta", Name), Name != "Example Site",
            Year == reportYear) %>% 
-    group_by(Name) %>% 
+    group_by(Name, Region) %>% 
     summarize(nSurvs = n_distinct(ID), 
               nDates = n_distinct(julianday), 
               nWeeks = n_distinct(julianweek), 
