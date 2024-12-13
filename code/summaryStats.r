@@ -167,7 +167,8 @@ annualSiteStats = function(reportYear = format(Sys.Date(), "%Y"), sortingVar = '
               pctCat = 100*nCatSurvs/nSurvsPeak) %>%
     group_by(Name) %>%
     summarize(peakPctCat = max(pctCat),
-              peakWeek = julianweek[pctCat == peakPctCat][1]) # return the 1st if there are multiple equal peaks
+              nSurvsPeak = nSurvsPeak[pctCat == peakPctCat][1],
+              peakWeek = as.Date(julianweek[pctCat == peakPctCat][1], origin = paste0(reportYear, "-01-01"))) # return the 1st if there are multiple equal peaks
   
   dataset = fullDataset %>%
     filter(!grepl("BBS", Name), 
