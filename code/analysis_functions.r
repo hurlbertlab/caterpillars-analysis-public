@@ -1028,6 +1028,9 @@ annualTrendPlot = function(fullDataset,
                            add = FALSE,
                            showTrend = TRUE,
                            yLab = NULL,
+                           trend.lwd = 1,
+                           trend.col = 'black',
+                           trend.lty = 'solid',
                            ...) {
   
   df = filter(fullDataset, Name == site, julianday >= jdRange[1], julianday <= jdRange[2])
@@ -1064,7 +1067,7 @@ annualTrendPlot = function(fullDataset,
   if (add) {
     points(output$Year, output[, plotVar], type = 'l', ...)
   } else {
-    plot(output$Year, output[, plotVar], type = 'l', las = 1, ylab = yLabel, xlab = "", xaxt = "n", ...)
+    plot(output$Year, output[, plotVar], type = 'l', las = 1, ylab = yLabel, xlab = "", xaxt = "n", ylim = c(0, 1.2*max(output[, plotVar], na.rm = TRUE)), ...)
     axis(1, at = min(output$Year):max(output$Year), labels = round(min(output$Year):max(output$Year), 0)) # put this in bc R adds a decimal (e.g. 2019.0) to year when there are only 3 values
   }
   
@@ -1076,7 +1079,7 @@ annualTrendPlot = function(fullDataset,
   
   if (showTrend) {
     linmod = lm(output[, plotVar] ~ output$Year)
-    abline(linmod)
+    abline(linmod, lwd = trend.lwd, col = trend.col, lty = trend.lty)
     legend("topright", legend = paste("R2 =", round(summary(linmod)$r.squared, 2)), bty = 'n')
   }
   
