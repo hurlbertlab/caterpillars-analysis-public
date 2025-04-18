@@ -1045,8 +1045,10 @@ annualTrendPlot = function(fullDataset,
     group_by(Year) %>%
     summarize(nSurvs = sum(Quantity > 0, na.rm = T),
               nTot = sum(Quantity, na.rm = T)) %>%
-    left_join(survsPerYear, by = 'Year') %>%
-    mutate(fracSurveys = 100*nSurvs/totalSurvs,
+    full_join(survsPerYear, by = 'Year') %>%
+    mutate(nSurvs = ifelse(is.na(nSurvs), 0, nSurvs),
+           nTot = ifelse(is.na(nTot), 0, nTot),
+           fracSurveys = 100*nSurvs/totalSurvs,
            meanDensity = nTot/totalSurvs) %>%
     filter(totalSurvs >= minSurveysPerYear) %>%
     data.frame()
