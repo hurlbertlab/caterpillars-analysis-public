@@ -5,6 +5,8 @@ library(sf)
 library(rvest)
 library(xml2)
 library(stringr)
+library(httr)
+library(jsonlite)
 
 source('code/analysis_functions.r')
 
@@ -44,16 +46,24 @@ surveys$Year = as.numeric(format(surveys$LocalDate, "%Y"))
 surveys$julianday = yday(surveys$LocalDate)
 surveys$julianweek = 7*floor(surveys$julianday/7) + 4
 
-# Read in official plant list
-plantSpecieswebpage <- read_html("https://github.com/hurlbertlab/caterpillars-count-data/tree/master/plantSpecies")
-plant_repo_links <- html_attr(html_nodes(plantSpecieswebpage, "a"), "href")
-plant_data_links <- tibble(link = plant_repo_links[grepl("officialPlant", plant_repo_links)]) %>%
-  mutate(file_name = word(link, 7, 7, sep = "/")) %>%
-  distinct()
+## Read in official plant list
+api_url <- "https://api.github.com/repos/hurlbertlab/caterpillars-count-data/contents/plantSpecies"
 
-mostRecentOfficialPlantList = plant_data_links$file_name[nrow(plant_data_links)]
-officialPlantList = read.csv(paste0(github_raw, 'plantSpecies/', mostRecentOfficialPlantList), 
-                             header = T, quote = '\"', fill = TRUE)
+# Send GET request
+res <- GET(api_url)
+
+# Parse JSON response
+files_info <- fromJSON(content(res, "text"))
+
+# Filter for files with "officialPlantList" in the name
+official_data_links <- files_info %>%
+  filter(grepl("officialPlantList", name)) %>%
+  transmute(
+    file_name = name,
+    download_url = download_url
+  )
+
+officialPlantList = read.csv(official_data_links$download_url[nrow(official_data_links)])
 
 
 # Join it all together
