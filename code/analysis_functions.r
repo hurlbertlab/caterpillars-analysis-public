@@ -222,10 +222,10 @@ siteEffortSummary = function(fullDataset,
   {
   
   summary = filter(fullDataset, Year == year) %>%
-    group_by(Name, Region, cell, Latitude, Longitude, julianweek, medianGreenup) %>%
+    group_by(Name, Region, Latitude, Longitude, julianweek) %>%
     summarize(nSurveysPerWeek = n_distinct(ID),
               nSurveyBranches = n_distinct(PlantFK)) %>%
-    group_by(Name, Region, cell, Latitude, Longitude, medianGreenup) %>%
+    group_by(Name, Region, Latitude, Longitude) %>%
     summarize(nSurveys = sum(nSurveysPerWeek, na.rm = TRUE),
               modalSurveyBranches = Mode(nSurveyBranches),
               modalSurveyCirclesPerWeek = Mode(ceiling(nSurveysPerWeek/5)),
@@ -240,9 +240,7 @@ siteEffortSummary = function(fullDataset,
               firstGoodDate = min(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
                                                (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
               lastGoodDate = max(julianweek[(julianweek >= minJulianWeek & julianweek <= maxJulianWeek) & 
-                                              (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T),
-              firstGDateAfterGreenup = firstGoodDate - medianGreenup[1],
-              lastGDateAfterGreenup = lastGoodDate - medianGreenup[1])
+                                              (nSurveysPerWeek > surveyThreshold*medianSurveysPerWeek | nSurveysPerWeek >= 50)], na.rm = T))
   
   return(summary)
 }
@@ -299,7 +297,7 @@ compareSamplingDatesBetweenSites = function(siteNames, year, cex.scalar = 10) {
 siteSummary = function(fullDataset, year, minNumRecords = 40, minNumWeeks = 5, write = TRUE) {
   out = fullDataset %>%
     filter(Year == year) %>%
-    group_by(Name, Region, Latitude, Longitude, medianGreenup, ebirdCounty) %>%
+    group_by(Name, Region, Latitude, Longitude) %>%
     summarize(nSurveys = n_distinct(ID),
               nDates = n_distinct(LocalDate),
               nWeeks = n_distinct(julianweek),
