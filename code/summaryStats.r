@@ -251,6 +251,52 @@ annualUserStats = function(reportYear = format(Sys.Date(), "%Y"),
 
 
     
+# SITE SUMMARY ACROSS YEARS
+# displayVar could be 'nSurvs', 'nDates', 'nWeeks', 'pctPhoto'
+
+siteByYearStats = function(minYear = 2015, 
+                           maxYear = format(Sys.Date(), "%Y"), 
+                           displayVar = 'nSurvs',
+                           orderByYearsOfData = FALSE) {
+  require(dplyr)
+  require(tidyr)
+  
+  if (!exists("fullDataset")) {
+    fullDataset = read.csv(paste('data/', list.files('data')[grep('fullDataset', list.files('data'))][1], sep = ''))
+  }
+  
+  if (!displayVar %in% c('nSurvs', 'nDates', 'nWeeks', 'pctCat', 'pctPhoto', 'nUsers')) {
+    stop("Invalid sortingVar, which must be one of: 'nSurvs', 'nDates', 'nWeeks', 'pctCat', 'pctPhoto', 'nUsers'")
+  }
+  
+  dataset = fullDataset %>%
+    filter(!grepl("BBS", Name), 
+           !grepl("Coweeta", Name), 
+           Name != "Example Site",
+           Year >= minYear,
+           Year <= maxYear) %>%
+    arrange(Year, Name) %>%
+    group_by(Name, Year) %>%
+    summarize(
+      nSurvs = n_distinct(ID), 
+      nDates = n_distinct(julianday), 
+      nWeeks = n_distinct(julianweek), 
+      nCats = sum(Quantity[Group == "caterpillar"], na.rm = T), 
+      nCatSurvs = n_distinct(ID[Group=="caterpillar" & !is.na(Group)]), 
+      pctCat = 100*nCatSurvs/nSurvs, 
+      pctPhoto = 100*sum(Photo, na.rm = T)/sum(!is.na(Group))
+    ) %>%
+    select(Name, Year, all_of(displayVar)) %>%
+    pivot_wider(names_from = Year, values_from = all_of(displayVar), names_sort = TRUE) 
+
+  dataset$nYears = apply(dataset[, 2:ncol(dataset)], 1, function(x) sum(!is.na(x)))
+  
+  if(orderByYearsOfData) {
+    dataset = dataset %>% arrange(desc(nYears))
+  }
+
+  return(dataset)
+}
 
 
 
