@@ -3,11 +3,11 @@ source('code/analysis_functions.r')
 fullDataset = read.csv('data/fullDataset_2025-11-10.csv', header = T)
 
 # Getting 2025 sites with 100+ surveys over 7+ weeks (excl UGA which doesn't survey in summer)
-sitesum2025 = siteSummary(fullDataset, 2025, minNumRecords = 100, minNumWeeks = 7) |> 
+sitesum2025 = siteSummary(fullDataset, 2025, minNumRecords = 100, minNumWeeks = 7, write = F) |> 
   filter(Name != "East Campus UGA")
 
 # Subset of sites with same minimum effort also in 2024
-sitesum2024 = siteSummary(fullDataset, 2024, minNumRecords = 100, minNumWeeks = 7) |> 
+sitesum2024 = siteSummary(fullDataset, 2024, minNumRecords = 100, minNumWeeks = 7, write = F) |> 
   filter(Name %in% sitesum2025$Name) %>%
   mutate(siteNameRegion = paste0(Name, ", ", Region))
 
