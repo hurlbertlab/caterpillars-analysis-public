@@ -22,7 +22,8 @@ data_repo <- "https://github.com/hurlbertlab/caterpillars-count-data"
 webpage <- read_html(data_repo)
 repo_links <- html_attr(html_nodes(webpage, "a"), "href")
 data_links <- tibble(link = repo_links[grepl(".csv", repo_links)]) %>%
-  mutate(file_name = word(link, 6, 6, sep = "/"))
+  mutate(file_name = word(link, 6, 6, sep = "/")) %>%
+  distinct()
 
 
 ## Read data files from data repo links
