@@ -2,7 +2,11 @@
 library(tidyverse)
 library(scatterpie)
 library(maps)
+library(mapdata)
+library(ggrepel)
 
+
+minNumPhotosPerSite = 15
 
 fullDataset = read.csv('data/fullDataset_2026-05-13.csv', header = T)
 
@@ -63,7 +67,7 @@ sitePhotos = catFamiliesBySite %>%
   group_by(Name) %>%
   summarize(sitePhotos = sum(nPhotos)) %>%
   arrange(desc(sitePhotos)) %>%
-  filter(sitePhotos >= 15)
+  filter(sitePhotos >= minNumPhotosPerSite)
 
 catColors = data.frame(family = c('Geometridae', 'Erebidae', 'Noctuidae', 'Notodontidae', 'Limacodidae', 'Tortricidae', 'Saturniidae', 'other', 'unknown'),
                        color = c('lightgreen', 'salmon', 'skyblue', 'dodgerblue', 'orange', 'thistle', 'yellow', 'white', 'gray90'))
@@ -76,7 +80,10 @@ catFamsBySite = catFamiliesBySite %>%
   summarize(pct = sum(pct)) %>%
   left_join(catColors, by = c('Family2' = 'family')) %>%
   arrange(Name) %>%
-  left_join(sites, by = 'Name')
+  left_join(sites, by = 'Name') %>%
+  mutate(ShortName = substr(Name, 1, 10))
+
+
 
 
 # Calculate mean pct by family
@@ -102,234 +109,202 @@ pieDat <- catFamsBySite %>%
     names_from = Family2,
     values_from = pct,
     values_fill = 0
+  ) %>%
+  mutate(Name2 = substr(Name, 1, 8))
+
+# ---------------------------
+# CREATE OFFSET COORDINATES
+# ---------------------------
+
+coords <- pieDat %>%
+  select(Name, Longitude, Latitude) %>%
+  distinct()
+
+# Start with original coordinates
+coords2 <- coords %>%
+  mutate(
+    plotLon = Longitude,
+    plotLat = Latitude
   )
 
-# Rebuild color vector in the same order
-familyCols <- catFamsBySite %>%
-  distinct(Family2, color) %>%
-  arrange(match(Family2, familyOrder)) %>%
-  deframe()
+# ---------------------------
+# MASSACHUSETTS / RHODE ISLAND
+# ---------------------------
 
-# Pie columns
-pieCols <- familyOrder
-
-# Get map data for eastern North America
-world <- map_data("world")
-
-eastNA <- world %>%
-  filter(
-    long > -95,
-    long < -60,
-    lat > 25,
-    lat < 50
-  )
-
-newEngland <- world %>%
-  filter(long > -73,
-         long < -70,
-         lat > 42,
-         lat < 43)
-
-toronto <- world %>%
-  filter(long > -79,
-         long < -78,
-         lat > 43.5,
-         lat < 44.5)
-
-
-# US states + Canadian provinces boundaries
-states <- map_data("state")
-
-canada <- map_data("world", region = "Canada")
-
-# Plot for Eastern North America
-ggplot() +
-  
-  geom_polygon(
-    data = eastNA,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray70",
-    linewidth = 0.2
-  ) +
-  
-  geom_path(
-    data = states,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_path(
-    data = canada,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_scatterpie(
-    data = pieDat,
-    aes(x = Longitude, y = Latitude),
-    cols = pieCols,
-    pie_scale = 0.8,
-    color = "black",
-    linewidth = 0.2
-  ) +
-  
-  coord_fixed(
-    1.3,
-    xlim = c(-92, -62),
-    ylim = c(28, 48)
-  ) +
-  
-  scale_fill_manual(
-    values = familyCols,
-    breaks = familyOrder
-  ) +
-  
-  guides(fill = guide_legend(ncol = 1)) +
-  
-  theme_bw() +
-  
-  labs(fill = "Family")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-pieDat <- catFamsBySite %>%
-  select(Name, Longitude, Latitude, Family2, pct, color) %>%
-  pivot_wider(
-    names_from = Family2,
-    values_from = pct,
-    values_fill = 0
-  )
-
-# Create named vector of colors
-familyCols <- catFamsBySite %>%
-  distinct(Family2, color) %>%
-  deframe()
-
-# Get map data for eastern North America
-world <- map_data("world")
-
-eastNA <- world %>%
-  filter(
-    long > -95,
-    long < -60,
-    lat > 25,
-    lat < 50
-  )
-
-
-# US states + Canadian provinces boundaries
-states <- map_data("state")
-
-canada <- map_data("world", region = "Canada")
-
-# Columns containing pie values
-pieCols <- setdiff(
-  colnames(pieDat),
-  c("Name", "Longitude", "Latitude", "color")
+ma_idx <- which(
+  coords2$Longitude > -73 &
+    coords2$Longitude < -69 &
+    coords2$Latitude > 41 &
+    coords2$Latitude < 43.5
 )
 
-# Plot
+coords2$plotLon[ma_idx] <-
+  coords2$plotLon[ma_idx] +
+  seq(-2, 2, length.out = length(ma_idx))
+
+coords2$plotLat[ma_idx] <-
+  coords2$plotLat[ma_idx] +
+  rep(c(-0.8, 0.8), length.out = length(ma_idx))
+
+# ---------------------------
+# TORONTO REGION
+# ---------------------------
+
+tor_idx <- which(
+  coords2$Longitude > -81 &
+    coords2$Longitude < -77 &
+    coords2$Latitude > 42 &
+    coords2$Latitude < 45
+)
+
+coords2$plotLon[tor_idx] <-
+  coords2$plotLon[tor_idx] +
+  seq(-1.2, 1.2, length.out = length(tor_idx))
+
+coords2$plotLat[tor_idx] <-
+  coords2$plotLat[tor_idx] +
+  rep(c(-0.8, 0.8), length.out = length(tor_idx))
+
+# ---------------------------
+# WISCONSIN
+# ---------------------------
+
+wi_idx <- which(
+  coords2$Longitude > -92 &
+    coords2$Longitude < -86 &
+    coords2$Latitude > 42 &
+    coords2$Latitude < 47
+)
+
+coords2$plotLon[wi_idx] <-
+  coords2$plotLon[wi_idx] +
+  seq(-2, 2, length.out = length(wi_idx))
+
+coords2$plotLat[wi_idx] <-
+  coords2$plotLat[wi_idx] +
+  rep(c(-0.8, 0.8), length.out = length(wi_idx))
+
+# ---------------------------
+# NORTH CAROLINA
+# ---------------------------
+
+nc_idx <- which(
+  coords2$Longitude > -80 &
+    coords2$Longitude < -77 &
+    coords2$Latitude > 35 &
+    coords2$Latitude < 37
+)
+
+coords2$plotLon[nc_idx] <-
+  coords2$plotLon[nc_idx] +
+  seq(-1.5, 1.5, length.out = length(nc_idx))
+
+coords2$plotLat[nc_idx] <-
+  coords2$plotLat[nc_idx] +
+  rep(c(-0.8, 0.8), length.out = length(nc_idx))
+
+# ---------------------------
+# SMALL GLOBAL JITTER
+# ---------------------------
+
+set.seed(123)
+
+coords2 <- coords2 %>%
+  mutate(
+    plotLon = plotLon + runif(n(), -0.2, 0.2),
+    plotLat = plotLat + runif(n(), -0.2, 0.2)
+  )
+
+# Merge displaced coordinates
+pieDat2 <- pieDat %>%
+  left_join(coords2,
+            by = c("Name", "Longitude", "Latitude"))
+
+# ---------------------------
+# MAP DATA
+# ---------------------------
+
+world <- map_data("world")
+
+eastNA <- world %>%
+  filter(
+    long > -100,
+    long < -45,
+    lat > 20,
+    lat < 55
+  )
+
+states <- map_data("state")
+
+canada <- map_data("world", region = "Canada")
+
+# ---------------------------
+# PIE COLUMNS
+# ---------------------------
+
+pieCols <- familyOrder
+
+# ---------------------------
+# PLOT
+# ---------------------------
+
 ggplot() +
+  
+  # Base map
   geom_polygon(
     data = eastNA,
-    aes(x = long, y = lat, group = group),
+    aes(long, lat, group = group),
     fill = "gray95",
     color = "gray70",
     linewidth = 0.2
   ) +
-  # US state boundaries
+  
+  # State boundaries
   geom_path(
     data = states,
-    aes(x = long, y = lat, group = group),
+    aes(long, lat, group = group),
     color = "gray60",
     linewidth = 0.3
   ) +
   
-  # Canadian province boundaries
+  # Canada outline
   geom_path(
     data = canada,
-    aes(x = long, y = lat, group = group),
+    aes(long, lat, group = group),
     color = "gray60",
+    linewidth = 0.3
+  ) +
+  
+  # Connector lines
+  geom_segment(
+    data = pieDat2,
+    aes(
+      x = Longitude,
+      y = Latitude,
+      xend = plotLon,
+      yend = plotLat
+    ),
+    color = "gray40",
     linewidth = 0.3
   ) +
   
   # Pie charts
   geom_scatterpie(
-    data = pieDat,
-    aes(x = Longitude, y = Latitude),
+    data = pieDat2,
+    aes(x = plotLon, y = plotLat),
     cols = pieCols,
-    pie_scale = 0.8,
+    pie_scale = 0.7,
     color = "black",
     linewidth = 0.2
   ) +
-  
-  coord_fixed(1.3,
-              xlim = c(-94, -62),
-              ylim = c(26, 49)) +
-  
-  scale_fill_manual(values = familyCols) +
-  
-  theme_bw() +
-  
-  labs(fill = "Family")
 
-
-
-# Plot for Eastern North America
-ggplot() +
-  
-  geom_polygon(
-    data = eastNA,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray70",
-    linewidth = 0.2
-  ) +
-  
-  geom_path(
-    data = states,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_path(
-    data = canada,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_scatterpie(
-    data = pieDat,
-    aes(x = Longitude, y = Latitude),
-    cols = pieCols,
-    pie_scale = 0.8,
-    color = "black",
-    linewidth = 0.2
-  ) +
+  # Site name labels, but kind of crowded  
+  #geom_text(aes(x=plotLon, y=plotLat + 1.1, label=Name2), data=pieDat2, size=3, color="black") +
   
   coord_fixed(
     1.3,
-    xlim = c(-92, -62),
-    ylim = c(28, 48)
+    xlim = c(-95, -65),
+    ylim = c(29, 48)
   ) +
   
   scale_fill_manual(
@@ -342,66 +317,3 @@ ggplot() +
   theme_bw() +
   
   labs(fill = "Family")
-
-
-
-
-
-
-
-
-
-
-
-# Plot for New England
-ggplot() +
-  
-  geom_polygon(
-    data = eastNA,
-    aes(x = long, y = lat, group = group),
-    fill = "gray95",
-    color = "gray70",
-    linewidth = 0.2
-  ) +
-  
-  geom_path(
-    data = states,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_path(
-    data = canada,
-    aes(x = long, y = lat, group = group),
-    color = "gray60",
-    linewidth = 0.3
-  ) +
-  
-  geom_scatterpie(
-    data = pieDat,
-    aes(x = Longitude, y = Latitude),
-    cols = pieCols,
-    pie_scale = 0.07,
-    color = "black",
-    linewidth = 0.2
-  ) +
-  
-  coord_fixed(
-    1.3,
-    xlim = c(-72.4, -70),
-    ylim = c(41.3, 42.6)
-  ) +
-  
-  scale_fill_manual(
-    values = familyCols,
-    breaks = familyOrder
-  ) +
-  
-  guides(fill = guide_legend(ncol = 1)) +
-  
-  theme_bw() +
-  
-  labs(fill = "Family")
-
-
