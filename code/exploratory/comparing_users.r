@@ -20,8 +20,8 @@ library(tidyr)
 # Update the date in the filename on the next line to read in this latest version.
 fullDataset = read.csv("data/fullDataset_2024-05-23.csv")
 
-people = data.frame(UserFKOfObserver = c(26, 3661, 4035, 4036, 4062),
-                    UserName = c("Allen", "Ivara", "Grace", "Alex", "Bella"))
+people = data.frame(UserFKOfObserver = c(26, 3661, 4369, 5281, 5201),
+                    UserName = c("Allen", "Ivara", "Nosa", "Oliver", "Sophia"))
 
 # Filter the full dataset down to just the surveys we have done
 fd = fullDataset %>% 
