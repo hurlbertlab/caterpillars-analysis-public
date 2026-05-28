@@ -18,7 +18,7 @@ library(tidyr)
 # 'reading_datafiles_without_users.r'
 
 # Update the date in the filename on the next line to read in this latest version.
-fullDataset = read.csv("data/fullDataset_2024-05-23.csv")
+fullDataset = read.csv("data/fullDataset_2026-05-13.csv")
 
 people = data.frame(UserFKOfObserver = c(26, 3661, 4369, 5281, 5201),
                     UserName = c("Allen", "Ivara", "Nosa", "Oliver", "Sophia"))
@@ -26,7 +26,7 @@ people = data.frame(UserFKOfObserver = c(26, 3661, 4369, 5281, 5201),
 # Filter the full dataset down to just the surveys we have done
 fd = fullDataset %>% 
   filter(UserFKOfObserver %in% people$UserFKOfObserver,
-         Year == 2024) %>%
+         Year == 2026) %>%
   left_join(people, by = 'UserFKOfObserver')
 
 arthGroups = c("ant", "aphid", "bee", "beetle", "caterpillar", 
@@ -47,22 +47,51 @@ for (a in arthGroups) {
   
 }
 
+
+# Herbivory scores by observer
+
+herb = fd %>%
+  group_by(UserName) %>%
+  summarize(nSurvs = n_distinct(ID),
+            n0 = n_distinct(ID[HerbivoryScore == 0]),
+            n1 = n_distinct(ID[HerbivoryScore == 1]),
+            n2 = n_distinct(ID[HerbivoryScore == 2]),
+            n3 = n_distinct(ID[HerbivoryScore == 3]),
+            n4 = n_distinct(ID[HerbivoryScore == 4]),
+            none = n0/nSurvs,
+            trace = n1/nSurvs,
+            light = n2/nSurvs,
+            moderate = n3/nSurvs,
+            heavy = n4/nSurvs)
+  
+
+  pct.mat <- as.matrix(herb[, c("none", "trace", "light", "moderate", "heavy")])
+  
+  # Optional colors
+  cols <- c("gray70", "skyblue", "orange", "red", "darkred")
+  
+  # Stacked barplot
+  barplot(
+    t(pct.mat),                         # transpose so categories stack within users
+    names.arg = herb$UserName,
+    col = cols,
+    xlab = "User",
+    ylab = "Percent Herbivory",
+    legend.text = colnames(pct.mat),
+    args.legend = list(x = "topright"),
+    border = "white"
+  )  
+  
+  
+
 foo = fd %>% 
   group_by(UserName) %>%
   summarize(nSurvs = n_distinct(ID),
             nCaterpillars = sum(Quantity[Group == 'caterpillar'], na.rm = T),
             nCatSurvs = sum(Group == 'caterpillar', na.rm = T),
-            nSpiders = sum(Quantity[Group == 'spider'], na.rm = T))
+            nSpiders = sum(Quantity[Group == 'spider'], na.rm = T),
+            pctCat = 100*nCaterpillars/nSurvs)
 
-foo2 = fd %>% 
-  count(UserName, Group) %>%
-  left_join(foo, by = 'UserName') %>%
-  full_join(df, by = 'Group') %>%
-  mutate(pct = 100*n/nSurvs)
-  
-par(mfrow = c(1,1))
-barplot(foo2$pct ~ foo2$UserName)
+par(mfrow = c(1,1), mar = c(4, 4, 1, 1))
+barplot(foo$pctCat ~ foo$UserName, xlab = "", ylab = "% surveys with caterpillars")
 
-vader = pivot_wider(foo2, )
-
-annakin = 
