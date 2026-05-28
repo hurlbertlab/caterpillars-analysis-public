@@ -18,7 +18,7 @@ library(tidyr)
 # 'reading_datafiles_without_users.r'
 
 # Update the date in the filename on the next line to read in this latest version.
-fullDataset = read.csv("data/fullDataset_2026-05-13.csv")
+fullDataset = read.csv("data/fullDataset_2026-05-28.csv")
 
 people = data.frame(UserFKOfObserver = c(26, 3661, 4369, 5281, 5201),
                     UserName = c("Allen", "Ivara", "Nosa", "Oliver", "Sophia"))
@@ -43,7 +43,7 @@ for (a in arthGroups) {
   
   tmp = filter(fd, Group == a)
   vioplot(tmp$Length ~ tmp$UserName, ylab = 'Length', 
-          xlab = '', main = a, las = 1)
+          xlab = '', main = a, las = 1, cex.axis = 1.1)
   
 }
 
@@ -65,33 +65,65 @@ herb = fd %>%
             heavy = n4/nSurvs)
   
 
-  pct.mat <- as.matrix(herb[, c("none", "trace", "light", "moderate", "heavy")])
+pct.mat <- as.matrix(herb[, c("none", "trace", "light", "moderate", "heavy")])
   
-  # Optional colors
-  cols <- c("gray70", "skyblue", "orange", "red", "darkred")
+# Optional colors
+cols <- c("gray70", "skyblue", "orange", "red", "darkred")
   
+par(mfrow = c(1,1))
   # Stacked barplot
-  barplot(
-    t(pct.mat),                         # transpose so categories stack within users
-    names.arg = herb$UserName,
-    col = cols,
-    xlab = "User",
-    ylab = "Percent Herbivory",
-    legend.text = colnames(pct.mat),
-    args.legend = list(x = "topright"),
-    border = "white"
-  )  
+barplot(
+  t(pct.mat),                         # transpose so categories stack within users
+  names.arg = herb$UserName,
+  col = cols,
+  xlab = "User",
+  ylab = "Percent Herbivory",
+  legend.text = colnames(pct.mat),
+  args.legend = list(x = "topright"),
+  border = "white"
+)  
   
   
-
+# Percent of surveys with each type of arthropod by user
 foo = fd %>% 
   group_by(UserName) %>%
   summarize(nSurvs = n_distinct(ID),
-            nCaterpillars = sum(Quantity[Group == 'caterpillar'], na.rm = T),
-            nCatSurvs = sum(Group == 'caterpillar', na.rm = T),
-            nSpiders = sum(Quantity[Group == 'spider'], na.rm = T),
-            pctCat = 100*nCaterpillars/nSurvs)
+            nCats = n_distinct(ID[Group == 'caterpillar'], na.rm = T),
+            nSpiders = n_distinct(ID[Group == 'spider'], na.rm = T),
+            nBeets = n_distinct(ID[Group == 'beetle'], na.rm = T),
+            nBugs = n_distinct(ID[Group == 'truebugs'], na.rm = T),
+            nHops = n_distinct(ID[Group == 'leafhopper'], na.rm = T),
+            nAphids = n_distinct(ID[Group == 'aphid'], na.rm = T),
+            pctCat = 100*nCats/nSurvs,
+            pctSpi = 100*nSpiders/nSurvs,
+            pctBeet = 100*nBeets/nSurvs,
+            pctBug = 100*nBugs/nSurvs,
+            pctHop = 100*nHops/nSurvs,
+            pctAph = 100*nAphids/nSurvs)
 
-par(mfrow = c(1,1), mar = c(4, 4, 1, 1))
-barplot(foo$pctCat ~ foo$UserName, xlab = "", ylab = "% surveys with caterpillars")
+pct.mat <- as.matrix(foo[, c("pctCat", "pctSpi", "pctBeet",
+                             "pctBug", "pctHop", "pctAph")])
+
+# Transpose so each arthropod group becomes a separate bar
+# within each UserName group
+pct.mat <- t(pct.mat)
+
+# Colors for the 6 arthropod groups
+cols <- c("forestgreen", "orange", "gold",
+          "skyblue", "purple", "red")
+
+# Grouped barplot
+barplot(
+  pct.mat,
+  beside = TRUE,
+  names.arg = foo$UserName,
+  col = cols,
+  ylim = c(0, 40),
+  ylab = "Percent of surveys",
+  xlab = "User",
+  legend.text = c('caterpillar', 'spider', 'beetle', 'true bug', 'leafhopper', 'aphid'),
+  args.legend = list(x = "topright", bty = "n"),
+  las = 2   # rotate usernames if needed
+)
+
 
