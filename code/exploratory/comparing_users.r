@@ -65,7 +65,7 @@ herb = fd %>%
             heavy = n4/nSurvs)
   
 
-pct.mat <- as.matrix(herb[, c("none", "trace", "light", "moderate", "heavy")])
+herb.mat <- as.matrix(herb[, c("none", "trace", "light", "moderate", "heavy")])
   
 # Optional colors
 cols <- c("gray70", "skyblue", "orange", "red", "darkred")
@@ -73,13 +73,13 @@ cols <- c("gray70", "skyblue", "orange", "red", "darkred")
 par(mfrow = c(1,1))
   # Stacked barplot
 barplot(
-  t(pct.mat),                         # transpose so categories stack within users
+  t(herb.mat),                         # transpose so categories stack within users
   names.arg = herb$UserName,
   col = cols,
   xlab = "User",
   ylab = "Percent Herbivory",
-  legend.text = colnames(pct.mat),
-  args.legend = list(x = "topright"),
+  legend.text = colnames(herb.mat),
+  args.legend = list(x = "right"),
   border = "white"
 )  
   
@@ -112,13 +112,15 @@ pct.mat <- t(pct.mat)
 cols <- c("forestgreen", "orange", "gold",
           "skyblue", "purple", "red")
 
+
+par(mar = c(5, 4, 1, 1), mgp = c(3, 1, 0))
 # Grouped barplot
 barplot(
   pct.mat,
   beside = TRUE,
   names.arg = foo$UserName,
   col = cols,
-  ylim = c(0, 40),
+  ylim = c(0, 35),
   ylab = "Percent of surveys",
   xlab = "User",
   legend.text = c('caterpillar', 'spider', 'beetle', 'true bug', 'leafhopper', 'aphid'),
