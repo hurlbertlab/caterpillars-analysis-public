@@ -129,3 +129,50 @@ barplot(
 )
 
 
+# Pcts for large bugs
+# Percent of surveys with each type of arthropod by user
+foo.large = fd %>% 
+  filter(Length >= 6) %>%
+  group_by(UserName) %>%
+  summarize(nSurvs = n_distinct(ID),
+            nCats = n_distinct(ID[Group == 'caterpillar'], na.rm = T),
+            nSpiders = n_distinct(ID[Group == 'spider'], na.rm = T),
+            nBeets = n_distinct(ID[Group == 'beetle'], na.rm = T),
+            nBugs = n_distinct(ID[Group == 'truebugs'], na.rm = T),
+            nHops = n_distinct(ID[Group == 'leafhopper'], na.rm = T),
+            nAphids = n_distinct(ID[Group == 'aphid'], na.rm = T),
+            pctCat = 100*nCats/nSurvs,
+            pctSpi = 100*nSpiders/nSurvs,
+            pctBeet = 100*nBeets/nSurvs,
+            pctBug = 100*nBugs/nSurvs,
+            pctHop = 100*nHops/nSurvs,
+            pctAph = 100*nAphids/nSurvs)
+
+pct.mat.large <- as.matrix(foo.large[, c("pctCat", "pctSpi", "pctBeet",
+                             "pctBug", "pctHop", "pctAph")])
+
+# Transpose so each arthropod group becomes a separate bar
+# within each UserName group
+pct.mat.large <- t(pct.mat.large)
+
+# Colors for the 6 arthropod groups
+cols <- c("forestgreen", "orange", "gold",
+          "skyblue", "purple", "red")
+
+
+par(mar = c(5, 4, 1, 1), mgp = c(3, 1, 0))
+# Grouped barplot
+barplot(
+  pct.mat.large,
+  beside = TRUE,
+  names.arg = foo$UserName,
+  col = cols,
+  ylim = c(0, 35),
+  ylab = "Percent of surveys",
+  xlab = "User",
+  legend.text = c('caterpillar', 'spider', 'beetle', 'true bug', 'leafhopper', 'aphid'),
+  args.legend = list(x = "topright", bty = "n"),
+  las = 2   # rotate usernames if needed
+)
+
+
