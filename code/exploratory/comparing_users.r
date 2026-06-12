@@ -18,7 +18,7 @@ library(tidyr)
 # 'reading_datafiles_without_users.r'
 
 # Update the date in the filename on the next line to read in this latest version.
-fullDataset = read.csv("data/fullDataset_2026-05-28.csv")
+fullDataset = read.csv("data/fullDataset_2026-06-12.csv")
 
 people = data.frame(UserFKOfObserver = c(26, 3661, 4369, 5281, 5201),
                     UserName = c("Allen", "Ivara", "Nosa", "Oliver", "Sophia"))
@@ -131,8 +131,10 @@ barplot(
 
 # Pcts for large bugs
 # Percent of surveys with each type of arthropod by user
+sizeThreshold = 6
+
 foo.large = fd %>% 
-  filter(Length >= 6) %>%
+  filter(Length >= sizeThreshold) %>%
   group_by(UserName) %>%
   summarize(nSurvs = n_distinct(ID),
             nCats = n_distinct(ID[Group == 'caterpillar'], na.rm = T),
@@ -167,6 +169,7 @@ barplot(
   beside = TRUE,
   names.arg = foo$UserName,
   col = cols,
+  main = paste("Bugs at least", sizeThreshold, "mm"),
   ylim = c(0, 35),
   ylab = "Percent of surveys",
   xlab = "User",
@@ -176,3 +179,28 @@ barplot(
 )
 
 
+
+# Leaf length by tree species - observer
+commonTreeSpp = fd %>%
+  count(PlantSpecies) %>%
+  arrange(desc(n)) %>%
+  slice(1:10)
+
+leaflength = fd %>%
+  filter(PlantSpecies %in% commonTreeSpp$PlantSpecies) %>%
+  group_by(UserName, PlantSpecies) %>%
+  summarize(aveLength = round(mean(AverageLeafLength, na.rm = T), 1)) %>%
+  pivot_wider(names_from = UserName, values_from = aveLength)
+
+userColors = c("forestgreen", "orange", "gold",
+               "skyblue", "purple")
+
+leaflength$spID = 1:10
+
+plot(leaflength$spID, leaflength$Allen, pch = 16, col = userColors[1], ylim = c(3, 17),
+     xaxt = "n", ylab = "Length (cm)", xlab = "", cex = 2)
+for (u in 2:5) {
+  points(leaflength$spID, leaflength[[u+1]], pch = 16, col = userColors[u], cex = 2)
+}
+axis(1, at = 1:10, labels = commonTreeSpp$PlantSpecies, las = 2, cex.axis = 0.8)
+legend("topright", legend = people$UserName, pch = 16, col = userColors, cex = 1.5)
