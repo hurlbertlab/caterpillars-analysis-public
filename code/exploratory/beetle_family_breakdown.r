@@ -8,9 +8,9 @@ library(ggrepel)
 
 minNumPhotosPerSite = 15
 
-fullDataset = read.csv('data/fullDataset_2026-05-13.csv', header = T)
+fullDataset = read.csv('data/fullDataset_2026-06-12.csv', header = T)
 
-expert = read.csv('../caterpillars-count-data/2026-05-17_ExpertIdentification.csv')
+expert = read.csv('../caterpillars-count-data/2026-06-12_ExpertIdentification.csv')
 
 expertclass = read.csv('../caterpillars-count-data/classified_expert_identifications.csv')
 
@@ -45,7 +45,8 @@ beetFamilies = beets %>%
   summarize(n = n(),
             totAbund = sum(Quantity),
             nSites = n_distinct(Name),
-            nPhotos = sum(Photo)) %>%
+            nPhotos = sum(Photo),
+            medianLength = median(Length)) %>%
   arrange(desc(n)) %>%
   filter(!is.na(Family)) %>%
   mutate(pct = 100*round(n/sum(n), 3))
@@ -70,15 +71,18 @@ sitePhotos = beetFamiliesBySite %>%
   filter(sitePhotos >= minNumPhotosPerSite)
 
 beetColors = data.frame(family = c('Curculionidae', 'Coccinellidae', 'Elateridae', 'Chrysomelidae', 'Mordellidae', 'Lampyridae', 'Cantharidae', 'other', 'unknown'),
+                        commonName = c('True weevils', 'Lady beetles',
+                                       'Click beetles', 'Leaf beetles',
+                                       'Tumbling flower', 'Fireflies', 'Soldier beetles', 'other', 'unknown'),
                        color = c('lightgreen', 'salmon', 'skyblue', 'dodgerblue', 'orange', 'thistle', 'yellow', 'white', 'gray90'))
 beetColors$color = as.character(beetColors$color)
 
 beetFamsBySite = beetFamiliesBySite %>%
   filter(Name %in% sitePhotos$Name) %>%
   mutate(Family2 = ifelse(!Family %in% beetColors$family, 'other', Family)) %>%
-  group_by(Family2, Name) %>%
-  summarize(pct = sum(pct)) %>%
   left_join(beetColors, by = c('Family2' = 'family')) %>%
+  group_by(commonName, Name, color) %>%
+  summarize(pct = sum(pct)) %>%
   arrange(Name) %>%
   left_join(sites, by = 'Name') %>%
   mutate(ShortName = substr(Name, 1, 10))
@@ -86,34 +90,34 @@ beetFamsBySite = beetFamiliesBySite %>%
 
 # Calculate mean pct by family
 familyOrder <- beetFamsBySite %>%
-  group_by(Family2) %>%
+  group_by(commonName) %>%
   summarize(meanPct = mean(pct, na.rm = TRUE)) %>%
   
   # Put "other" last
   mutate(
-    sortVal = ifelse(Family2 == "other", -Inf, meanPct)
+    sortVal = ifelse(commonName == "other", -Inf, meanPct)
   ) %>%
   
   arrange(desc(sortVal)) %>%
-  pull(Family2)
+  pull(commonName)
 
 # Reorder factor levels
-beetFamsBySite$Family2 <- factor(beetFamsBySite$Family2, levels = familyOrder)
+beetFamsBySite$commonName <- factor(beetFamsBySite$commonName, levels = familyOrder)
 
-# Reorder factor levels
-beetFamsBySite$Family2 <- factor(beetFamsBySite$Family2, levels = familyOrder)
-
-familyCols <- beetFamsBySite %>%
-  distinct(Family2, color) %>%
-  arrange(match(Family2, familyOrder)) %>%
-  deframe()
+familyCols <- beetColors %>%
+  select(commonName, color) %>%
+  distinct() %>%
+  filter(commonName %in% familyOrder) %>%
+  mutate(commonName = factor(commonName, levels = familyOrder)) %>%
+  arrange(commonName) %>%
+  { setNames(.$color, as.character(.$commonName)) }
 
 
 # Rebuild pie data after factor reordering
 pieDat <- beetFamsBySite %>%
-  select(Name, Longitude, Latitude, Family2, pct) %>%
+  select(Name, Longitude, Latitude, commonName, pct) %>%
   pivot_wider(
-    names_from = Family2,
+    names_from = commonName,
     values_from = pct,
     values_fill = 0
   ) %>%
