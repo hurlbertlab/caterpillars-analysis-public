@@ -74,7 +74,15 @@ beetColors = data.frame(family = c('Curculionidae', 'Coccinellidae', 'Elateridae
                         commonName = c('True weevils', 'Lady beetles',
                                        'Click beetles', 'Leaf beetles',
                                        'Tumbling flower', 'Fireflies', 'Soldier beetles', 'other', 'unknown'),
-                       color = c('lightgreen', 'salmon', 'skyblue', 'dodgerblue', 'orange', 'thistle', 'yellow', 'white', 'gray90'))
+                       color = pie_colors <- c(
+                         "steelblue",
+                         "tomato",
+                         "goldenrod",
+                         "seagreen3",
+                         "yellow",
+                         "darkorange",
+                         "slategray3"
+                       , 'white', 'gray90'))
 beetColors$color = as.character(beetColors$color)
 
 beetFamsBySite = beetFamiliesBySite %>%
