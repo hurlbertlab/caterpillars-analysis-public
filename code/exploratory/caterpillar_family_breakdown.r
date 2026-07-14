@@ -99,6 +99,15 @@ familyOrder <- catFamsBySite %>%
   arrange(desc(sortVal)) %>%
   pull(Family2)
 
+
+familyCols <- catColors %>%
+  filter(family %in% familyOrder) %>%
+  distinct(family, .keep_all = TRUE) %>%
+  slice(match(familyOrder, family)) %>%
+  pull(color)
+
+names(familyCols) <- familyOrder
+
 # Reorder factor levels
 catFamsBySite$Family2 <- factor(catFamsBySite$Family2, levels = familyOrder)
 
