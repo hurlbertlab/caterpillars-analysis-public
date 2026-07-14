@@ -4,6 +4,8 @@ library(scatterpie)
 library(maps)
 library(mapdata)
 library(ggrepel)
+library(ggplot2)
+library(patchwork)
 
 
 minNumPhotosPerSite = 15
@@ -346,38 +348,73 @@ week_prop <- dat %>%
   mutate(prop = n / sum(n)) %>%
   ungroup()
 
+# Caterpillar families in MA/RI (EwA and ASRI sites)
+dat2 = cats %>% 
+  filter(grepl("ASRI|EwA", Name), 
+         Family %in% c("Geometridae", "Erebidae", "Noctuidae", 
+                       "Notodontidae", "Limacodidae", "Saturniidae"))
+
+
+week_prop2 <- dat2 %>%
+  mutate(julianweek = as.integer(julianweek)) %>%
+  group_by(julianweek, Family) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(julianweek) %>%
+  mutate(prop = n / sum(n)) %>%
+  ungroup()
+
+
 label_df <- data.frame(
   x = c(121, 135, 152, 166, 182, 196, 213),
   label = c("May-1", "May-15", "Jun-1", "Jun-15", "Jul-1", "Jul-15", "Aug-1")
 )
 
-ggplot(week_prop, aes(x = julianweek, y = prop, fill = Family)) +
+p1 <- ggplot(week_prop, aes(x = julianweek, y = prop, fill = Family)) +
   geom_col(color = "white", linewidth = 0.2, width = 6) +
-  scale_x_continuous(
-    limits = c(130, 214),
-    breaks = NULL
-  ) +
+  scale_x_continuous(limits = c(130, 214), breaks = NULL) +
   coord_cartesian(clip = "off") +
   labs(x = NULL, y = "Relative proportion", fill = "Family") +
   theme_classic() +
   theme(
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 14),
+    axis.title.y = element_text(size = 16),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
     plot.margin = margin(10, 10, 35, 10)
   ) +
   geom_text(
     data = label_df,
     aes(x = x, y = -0.06, label = label),
     inherit.aes = FALSE,
-    size = 3.5
-  )
+    size = 5
+  ) +
+  annotate("text", x = 156, y = 1.08, label = "North Carolina", hjust = 0, size = 8)
 
-#ggplot(week_prop, aes(x = julianweek, y = prop, fill = Family)) +
-#  geom_col(color = "white", linewidth = 0.2) +
-#  labs(
-#    x = "Julian week",
-#    y = "Relative proportion",
-#    fill = "Family"
-#  ) +
-#  theme_classic()
+p2 <- ggplot(week_prop2, aes(x = julianweek, y = prop, fill = Family)) +
+  geom_col(color = "white", linewidth = 0.2, width = 6) +
+  scale_x_continuous(limits = c(130, 249), breaks = NULL) +
+  coord_cartesian(clip = "off") +
+  labs(x = NULL, y = "Relative proportion", fill = "Family") +
+  theme_classic() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.y = element_text(size = 14),
+    axis.title.y = element_text(size = 16),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 16),
+    plot.margin = margin(10, 10, 35, 10)
+  ) +
+  geom_text(
+    data = label_df2,
+    aes(x = x, y = -0.06, label = label),
+    inherit.aes = FALSE,
+    size = 5
+  ) +
+  annotate("text", x = 145, y = 1.08, label = "Massachusetts / Rhode Island", hjust = 0, size = 8)
 
+(p2 / p1) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "right")
