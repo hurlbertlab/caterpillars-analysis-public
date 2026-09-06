@@ -16,22 +16,47 @@ NAmap <- read_sf('data/maps', 'ne_50m_admin_1_states_provinces_lakes') %>%
   filter(sr_adm0_a3 %in% c("USA", "CAN"))
 
 
+# Classify states/provinces
 cc_sites <- NAmap %>%
-  mutate(cc = as.factor(ifelse(postal %in% states, 1, 0))) %>%
-  st_transform(crs = "+proj=laea +x_0=0 +y_0=0 +lon_0=-100 +lat_0=35")
+  mutate(
+    cc = factor(
+      if_else(postal %in% states, "CC site", "No CC site"),
+      levels = c("No CC site", "CC site")
+    )
+  ) %>%
+  st_transform(
+    crs = "+proj=laea +x_0=0 +y_0=0 +lon_0=-100 +lat_0=35"
+  )
 
-# Set colors for states with/without CC site
-cols <- c("gray95", rgb(93/255, 156/255, 47/255))
+# Colors corresponding to the factor levels above
+cols <- c(
+  "No CC site" = "gray95",
+  "CC site"    = rgb(93 / 255, 156 / 255, 47 / 255)
+)
 
-# Get bounding box coordinates
-st_bbox(cc_sites)
-#     xmin     ymin     xmax     ymax 
-# -6497839 -1007822  3375854  5298100 
+# Bounding box in the same projected CRS as cc_sites
+map_bbox <- st_bbox(
+  c(
+    xmin = -3200000,
+    ymin = -1007822,
+    xmax =  3000000,
+    ymax =  4500000
+  ),
+  crs = st_crs(cc_sites)
+)
 
-# Plot states/provinces shaded by CC site yes/no
-cc_map <- tm_shape(cc_sites, bbox=tmaptools::bb(matrix(c(-3200000, -1007822, 3000000, 4500000),2,2))) + 
-  tm_polygons(col = "cc", palette = cols, legend.show = F)
+# Plot
+cc_map <- tm_shape(cc_sites, bbox = map_bbox) +
+  tm_polygons(
+    fill = "cc",
+    fill.scale = tm_scale_categorical(values = cols),
+    fill.legend = tm_legend(show = FALSE),
+    col = "gray30",
+    lwd = 0.3
+  ) +
+  tm_layout(frame = FALSE)
 
+cc_map
 # Save map as PDF
 tmap_save(cc_map, "figs/states_provs_CC_sites_2024.pdf")
 
