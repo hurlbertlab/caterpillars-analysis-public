@@ -133,8 +133,13 @@ summaryStats = function(reportYear = format(Sys.Date(), "%Y")) {
       distinct(Name) %>%
       filter(grepl("College", Name) | grepl("University", Name) | Name %in% c("UNC Chapel Hill Campus", "UNCW", "Georgetown", "East Campus UGA")) %>%
       summarize(n = n_distinct(Name)) %>% 
-      pull(n) + 1 # adding 1 to account for UW Madison which was involved in monitoring BHRC sites
+      pull(n) + 1, # adding 1 to account for UW Madison which was involved in monitoring BHRC sites
 
+    numUniversitiesThisYear = datasetThisYear %>% 
+      distinct(Name) %>%
+      filter(grepl("College", Name) | grepl("University", Name) | Name %in% c("UNC Chapel Hill Campus", "UNCW", "Georgetown", "East Campus UGA")) %>%
+      summarize(n = n_distinct(Name)) %>% 
+      pull(n)
   )
   return(stats)
 }
